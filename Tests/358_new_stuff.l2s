@@ -1,0 +1,224 @@
+PRINT_TEXT "start of MATH test"
+PRINT_TEXT ""
+PRINT_TEXT "START OF 2 OP ALGREBRAIC OPERTORS"
+/////////////////////////////////////////////////
+	PRINT_TEXT "addition test"
+	CALL MATHTEST_2ops NULL 1 "#$+"
+	PRINT_TEXT ""
+
+/////////////////////////////////////////////////
+	PRINT_TEXT "subtraction test"
+	CALL MATHTEST_2ops NULL 1 "#$-"
+	PRINT_TEXT ""
+
+/////////////////////////////////////////////////
+	PRINT_TEXT "multiply test"
+	CALL MATHTEST_2ops NULL 1 "#$*"
+	PRINT_TEXT ""
+
+/////////////////////////////////////////////////
+	PRINT_TEXT "division test"
+	CALL MATHTEST_2ops NULL 1 "#$/"
+	PRINT_TEXT ""
+
+/////////////////////////////////////////////////
+	PRINT_TEXT "modulus test"
+	CALL MATHTEST_2ops NULL 1 "#$%"
+	PRINT_TEXT ""
+
+/////////////////////////////////////////////////
+	PRINT_TEXT "power test"
+	CALL MATHTEST_2ops NULL 1 "#$^"
+	PRINT_TEXT ""
+
+/////////////////////////////////////////////////
+	PRINT_TEXT "log test"
+	CALL MATHTEST_2ops NULL 1 "#$LOG"
+	PRINT_TEXT ""
+
+//*************************
+PRINT_TEXT "START OF 1 OP ALGREBRAIC OPERTORS"
+/////////////////////////////////////////////////
+	PRINT_TEXT "square root test"
+	CALL MATHTEST_1op NULL 2 "#$SQRT" "#$"
+	PRINT_TEXT ""
+
+/////////////////////////////////////////////////
+	PRINT_TEXT "abs + test"
+	CALL MATHTEST_1op NULL 2 "#$ABS" "#$"
+	PRINT_TEXT ""
+
+/////////////////////////////////////////////////
+	PRINT_TEXT "abs - test"
+	CALL MATHTEST_1op NULL 2 "#$ABS" "#$-"
+	PRINT_TEXT ""
+
+/////////////////////////////////////////////////
+	PRINT_TEXT "sin test"
+	CALL MATHTEST_1op NULL 2 "#$SIN" "#$"
+	PRINT_TEXT ""
+/////////////////////////////////////////////////
+	PRINT_TEXT "sinh test"
+	CALL MATHTEST_1op NULL 2 "#$SINH" "#$"
+	PRINT_TEXT ""
+/////////////////////////////////////////////////
+	PRINT_TEXT "asin test"
+	CALL MATHTEST_1op NULL 2 "#$ASIN" "#$"
+	PRINT_TEXT ""
+/////////////////////////////////////////////////
+	PRINT_TEXT "cos test"
+	CALL MATHTEST_1op NULL 2 "#$COS" "#$"
+	PRINT_TEXT ""
+/////////////////////////////////////////////////
+	PRINT_TEXT "cosh test"
+	CALL MATHTEST_1op NULL 2 "#$COSH" "#$"
+	PRINT_TEXT ""
+/////////////////////////////////////////////////
+	PRINT_TEXT "acos test"
+	CALL MATHTEST_1op NULL 2 "#$ACOS" "#$"
+	PRINT_TEXT ""
+/////////////////////////////////////////////////
+	PRINT_TEXT "tan test"
+	CALL MATHTEST_1op NULL 2 "#$TAN" "#$"
+	PRINT_TEXT ""
+/////////////////////////////////////////////////
+	PRINT_TEXT "tanh test"
+	CALL MATHTEST_1op NULL 2 "#$TANH" "#$"
+	PRINT_TEXT ""
+/////////////////////////////////////////////////
+	PRINT_TEXT "atan test"
+	CALL MATHTEST_1op NULL 2 "#$ATAN" "#$"
+	PRINT_TEXT ""
+/////////////////////////////////////////////////
+	PRINT_TEXT "equal test"
+	CALL MATHTEST_1op NULL 2 "#$" "#$"
+	PRINT_TEXT ""
+
+	PRINT_TEXT "CLONE TEST"
+	DEFINE STRING s1 "string 1"
+	DEFINE NULL s2 0
+
+	s2 = s1.CLONE
+	s1 = s1 + "#$ post op"
+	
+	PRINT_TEXT "s1: <&s1&>"
+	PRINT_TEXT "s2: <&s2&>"
+	PRINT_TEXT ""
+/////////////////////////////////////////////////
+PRINT_TEXT "START OF FILE IO"
+	CALL FILETEST NULL 0
+
+PRINT_TEXT "HEX Test"
+	DEFINE STRING dS " "
+	DEFINE INT i1000 1000
+	dS = i1000.GET_HEX
+	PRINT_TEXT "hex of <&i1000&> is: \"<&dS&>\""
+	dS = i1000.GET_HEX32
+	PRINT_TEXT "hex32 of <&i1000&> is: \"<&dS&>\""
+
+END_SCRIPT
+
+FUNCTION FILETEST 0
+	PRINT_TEXT "FileWriter Test"
+	DEFINE STRING S1 "ThIs IS a TeSt"
+	DEFINE INT I1 100
+	DEFINE DOUBLE D1 11.12345
+
+	PRINT_TEXT "Opening File Scripts\Files\my_file.txt for writing"
+	DEFINE FILEWRITER FW "my_file"
+
+	PRINT_TEXT "writing string <&S1&>"
+	FW.WRITE S1
+
+	PRINT_TEXT "writing int <&I1&>"
+	FW.WRITE I1
+
+	PRINT_TEXT "writing double <&D1&>"
+	FW.WRITE D1
+
+	PRINT_TEXT "flushing file"
+	FW.FLUSH
+
+	PRINT_TEXT "closing file"
+	FW.CLOSE
+	PRINT_TEXT ""
+
+	PRINT_TEXT "FileReader Test"
+	DEFINE STRING S2 " "
+	DEFINE INT I2 0
+	DEFINE DOUBLE D2 0
+
+	PRINT_TEXT "Opening File Scripts\Files\my_file.txt for reading"
+	DEFINE FILEREADER FR "my_file"
+
+	PRINT_TEXT "reading string ..."
+	FR.READ S2
+	PRINT_TEXT "read: <&S2&>"
+
+	PRINT_TEXT "reading int ..."
+	FR.READ I2
+	PRINT_TEXT "read: <&i2&>"
+
+	PRINT_TEXT "reading double ..."
+	FR.READ D2
+	PRINT_TEXT "read: <&d2&>"
+
+	PRINT_TEXT "closing file"
+	FR.CLOSE
+	PRINT_TEXT ""
+RETURN NULL
+
+FUNCTION MATHTEST_2ops 1 V
+
+	DEFINE INT iA 20
+	DEFINE INT iB 7
+	DEFINE INT iDest 0
+	DEFINE DOUBLE dA 20.20
+	DEFINE DOUBLE dB 7
+	DEFINE DOUBLE dDest 0
+	
+	PRINT_TEXT "int <&V&> int"
+	iDEST = iA "<&V&>" iB
+		PRINT_TEXT "iA (<&iA&>) <&V&> iB(<&iB&>) stored in int = <&iDest&>"
+	dDEST = iA "<&V&>" iB
+		PRINT_TEXT "iA (<&iA&>) <&V&> iB(<&iB&>) stored in double = <&dDest&>"
+	
+	PRINT_TEXT "double <&V&> double"
+	iDEST = dA "<&V&>" dB
+		PRINT_TEXT "dA (<&dA&>) <&V&> dB(<&dB&>) stored in int = <&iDest&>"
+	dDEST = dA "<&V&>" dB
+		PRINT_TEXT "dA (<&dA&>) <&V&> dB(<&dB&>) stored in double = <&dDest&>"
+	
+	PRINT_TEXT "int <&V&> double"
+	iDEST = iA "<&V&>" dB
+		PRINT_TEXT "iA (<&iA&>) <&V&> dB(<&dB&>) stored in int = <&iDest&>"
+	dDEST = iA "<&V&>" dB
+		PRINT_TEXT "iA (<&iA&>) <&V&> dB(<&dB&>) stored in double = <&dDest&>"
+	
+	PRINT_TEXT "double <&V&> int"
+	iDEST = dA "<&V&>" iB
+		PRINT_TEXT "dA (<&dA&>) <&V&> iB(<&iB&>) stored in int = <&iDest&>"
+	dDEST = dA "<&V&>" iB
+		PRINT_TEXT "dA (<&dA&>) <&V&> iB(<&iB&>) stored in double = <&dDest&>"
+	
+RETURN NULL
+
+FUNCTION MATHTEST_1op 2 V S
+	
+	DEFINE INT iA "<&S&>20"
+	DEFINE INT iDest 0
+	DEFINE DOUBLE dA "<&S&>20.20"
+	DEFINE DOUBLE dDest 0
+	
+	PRINT_TEXT "<&V&> int"
+	iDEST = "<&V&>" iA
+	PRINT_TEXT "<&V&> iA(<&iA&>) stored in int = <&iDest&>"
+	dDEST = "<&V&>" iA
+	PRINT_TEXT "<&V&> iA(<&iA&>) stored in double = <&dDest&>"
+	PRINT_TEXT "<&V&> double"
+	iDEST = "<&V&>" dA
+	PRINT_TEXT "<&V&> dA(<&dA&>) stored in int = <&iDest&>"
+	dDEST = "<&V&>" dA
+	PRINT_TEXT "<&V&> dA(<&dA&>) stored in double = <&dDest&>"
+	
+RETURN NULL

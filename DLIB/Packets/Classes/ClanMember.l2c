@@ -1,0 +1,21 @@
+// ClanMember.l2c Packet class data
+// for L2.net.
+// by d00d
+//
+// v1.0 - Initial Draft
+
+
+CLASS ClanMember null
+VAR_START
+
+  PUBLIC STRING MEMBER_NAME " "
+  PUBLIC INT MEMBER_LEVEL " "
+  PUBLIC INT MEMBER_CLASS 0
+  PUBLIC INT MEMBER_GENDER 0
+  PUBLIC INT MEMBER_RACE 0
+  PUBLIC INT IS_ONLINE 0
+  PUBLIC INT IS_SPONSORED
+  
+VAR_END
+
+END_CLASS

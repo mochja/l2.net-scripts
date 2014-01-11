@@ -1,0 +1,36 @@
+// ---------------------------------------------------------------------------------------------- //
+// Author: Ring Mao                                                                                    //
+// Location: Giran warehouse, starting at Gesto                                                      //
+// Description : Delevel Script                                                                      //
+// ---------------------------------------------------------------------------------------------- //
+
+// ///////////////////////////////////////Global setting///////////////////////////////////////// //
+define_global int level 64
+
+// ////////////////////Main Program, edit it if you know what to do////////////////////////////// //
+print_text "Begin"
+command "/target Levian"
+sleep 1000
+while char_level > level
+    print_text "Disband Clan"
+    talk_target
+    sleep 1000    
+    npc_dialog "bypass -h npc_<&target_id&>_Quest 9000_clan"
+    sleep 1000
+    npc_dialog "bypass -h Quest 9000_clan 9000-04.htm"
+    sleep 1000
+    npc_dialog "bypass -h npc_<&target_id&>_dissolve_clan"
+    sleep 1000
+    
+    print_text "Restore Clan"
+    talk_target
+    sleep 1000    
+    npc_dialog "bypass -h npc_<&target_id&>_Quest 9000_clan"
+    sleep 1000    
+    npc_dialog "bypass -h Quest 9000_clan 9000-05.htm"
+    sleep 1000    
+    npc_dialog "bypass -h npc_<&target_id&>_recover_clan"
+    sleep 1000
+wend    
+end_script
+// ///////////////////////////////////////////////THE END//////////////////////////////////////// //

@@ -1,0 +1,34 @@
+// Handle TargetSelected packets.
+
+FUNCTION Packet::TargetSelected 1 _bTargetSelected
+
+  DEFINE SORTEDLIST TargetSelected_SL
+  
+  CALL_EXTERN "DLIB\Packets\ReadTargetSelected.l2s" DLIB::Packets::ReadTargetSelected TargetSelected_SL 1 _bTargetSelected
+  
+  LOCK AEGIS.MUTEX.ENTITYTRACKING.PLAYERS
+   
+    IF "AEGIS.ENTITYTRACKING.PLAYERS.CONTAINS_KEY <&TargetSelected_SL.#$SOURCE_OID&>" == TRUE
+      "AEGIS.ENTITYTRACKING.PLAYERS.#$<&TargetSelected_SL.#$SOURCE_OID&>.CURRENT_TARGET" = "TargetSelected_SL.#$TARGET_OID"
+      IF "AEGIS.OPTIONS.CONFIG.CONTAINS_KEY TARGET_TRACKING" == TRUE
+        IF "AEGIS.OPTIONS.CONFIG.#$TARGET_TRACKING" == TRUE
+          IF "TargetSelected_SL.#$TARGET_OID" == CHAR_ID
+            DEFINE BYTEBUFFER _bCharInfo 4096
+            CALL_EXTERN "AEGIS\functions\TargetingPerception.l2s" AEGIS::TargetPerception::ProcessCharInfo _bCharInfo 1 "AEGIS.ENTITYTRACKING.PLAYERS.#$<&TargetSelected_SL.#$SOURCE_OID&>.CharInfo"
+            AEGIS.PIPELINE.NETWORK.SERVER.ADD _bCharInfo
+          ENDIF
+        ENDIF
+      ENDIF
+    ENDIF
+    
+  UNLOCK AEGIS.MUTEX.ENTITYTRACKING.PLAYERS
+  
+  LOCK AEGIS.MUTEX.NETWORK.NPCINFO
+   
+    IF "AEGIS.ENTITYTRACKING.NPCS.CONTAINS_KEY <&TargetSelected_SL.#$SOURCE_OID&>" == TRUE
+      "AEGIS.ENTITYTRACKING.NPCS.#$<&TargetSelected_SL.#$SOURCE_OID&>.CURRENT_TARGET" = "TargetSelected_SL.#$TARGET_OID"
+    ENDIF
+    
+  UNLOCK AEGIS.MUTEX.NETWORK.NPCINFO
+  
+RETURN VOID

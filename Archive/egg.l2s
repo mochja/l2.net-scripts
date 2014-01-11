@@ -1,0 +1,741 @@
+//Ltwo.co.nr for more scripts!
+//Credits to GrandMasterBash for bailing my ass out once again...
+DEFINE INT FIVE 5
+DEFINE INT FOUR 4
+DEFINE INT THREE 3
+DEFINE INT TWO 2
+DEFINE INT ONE 1
+DEFINE INT ZERO 0
+DEFINE INT x ZERO
+DEFINE INT y ZERO
+DEFINE INT z ZERO
+DEFINE INT SOETIME 736
+DEFINE INT HASTEPOT 734
+DEFINE STRING itemname1 "Boiled Eggs"
+DEFINE STRING itemname2 "Special Drink"
+DEFINE INT BoiledEggs 0
+DEFINE INT SpecialDrink 0
+DEFINE INT BoiledEggs2 7195
+DEFINE INT SpecialDrink2 7197
+DEFINE INT COINS1 ZERO
+DEFINE INT COINS2 ZERO
+ITEM_GET_ID BoiledEggs "<&itemname1&>"
+ITEM_GET_ID SpecialDrink "<&itemname2&>"
+PRINT_TEXT "<&BoiledEggs&>"
+PRINT_TEXT "<&SpecialDrink&>"
+ 
+//Change the following... this is how close until the next coordinates get sent out.
+DEFINE_GLOBAL INT HOW_GAY_IS_MPJ 10
+//START
+DO
+CALLSUB GETQUESTS
+CALLSUB BEOLIN1
+CALLSUB Pulin1
+CALLSUB NAFF1
+CALLSUB Kuber1
+CALLSUB CROCUS
+CALLSUB Kuber2
+CALLSUB Beolin2
+CALLSUB NAFF2
+CALLSUB Pulin2
+CALLSUB Jeremy2
+CALLSUB SOETOGODDARD
+CALLSUB MagicShopEgg
+CALLSUB WarehouseLiquor
+CALLSUB TOGK
+LOOP ZERO == ZERO
+END_SCRIPT
+ 
+ 
+///////////SUB////////////////
+//////////START/////////////
+ 
+ 
+SUB GETQUESTS
+//Setting up anti-newb lag
+DO
+    PRINT_TEXT "Getting Egg Quest"
+    COMMAND "/TARGET Jeremy"
+    SLEEP 1000
+    TALK_TARGET
+    SLEEP 1000
+    NPC_DIALOG "bypass -h npc_<&TARGET_ID&>_Quest"
+    SLEEP 1000
+    NPC_DIALOG "bypass -h npc_<&TARGET_ID&>_Quest 621_EggDelivery"
+    SLEEP 1000
+    NPC_DIALOG "bypass -h Quest 621_EggDelivery 31521-1.htm"
+    SLEEP 1000
+    ITEM_COUNT BoiledEggs2 "7195"
+PRINT_TEXT "<&BoiledEggs2&>"
+LOOP BoiledEggs2 == ZERO
+ 
+//Getting Liquor Quest
+DO
+    PRINT_TEXT "Getting Liquor Quest"
+    COMMAND "/target Jeremy"
+    SLEEP 1000
+    TALK_TARGET
+    SLEEP 1000
+    NPC_DIALOG "bypass -h npc_<&TARGET_ID&>_Quest"
+    SLEEP 1000
+    NPC_DIALOG "bypass -h npc_<&TARGET_ID&>_Quest 622_DeliveryOfSpecialLiquor"
+    SLEEP 1000
+    NPC_DIALOG "bypass -h Quest 622_DeliveryOfSpecialLiquor 31521-1.htm"
+    SLEEP 1000
+    ITEM_COUNT SpecialDrink2 "7197"
+PRINT_TEXT "<&SpecialDrink2&>"
+LOOP SpecialDrink2 == ZERO
+PRINT_TEXT "WE GOT OUR QUESTS!"
+RETURNSUB
+ 
+///////////Talking to Beolin//////////
+ 
+ 
+SUB BEOLIN1
+PRINT_TEXT "Moving from Jeremy to Beolin"
+CALLSUB USEPOTS
+CALLSUB DASHSTEALTH
+x = 149590
+y = -112618
+z = -2065
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+x = 149038
+y = -112434
+z = -2075
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+x = 147514
+y = -113272
+z = -2112
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+ 
+DO
+    PRINT_TEXT "Getting quest for liquor Beorin"
+    COMMAND "/target Beolin"
+    SLEEP 1000
+    TALK_TARGET
+    SLEEP 1000
+    NPC_DIALOG "bypass -h npc_<&TARGET_ID&>_Quest"
+    SLEEP 1000
+    NPC_DIALOG "bypass -h npc_<&TARGET_ID&>_Quest 622_DeliveryOfSpecialLiquor"
+    SLEEP 1000
+    NPC_DIALOG "bypass -h Quest 622_DeliveryOfSpecialLiquor 31547-1.htm"
+    SLEEP 1000
+    ITEM_COUNT SpecialDrink2 "7197"
+    PRINT_TEXT "<&SpecialDrink2&>"
+LOOP SpecialDrink2 == FIVE
+RETURNSUB
+ 
+////////////Beolin TO Pulin///////////
+ 
+//Beolin to Pulin
+SUB Pulin1
+PRINT_TEXT "BEOLIN TO PULIN"
+CALLSUB DASHSTEALTH
+SET x 147564
+SET y -113237
+SET z -2112
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 148802
+SET y -113145
+SET z -2087
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 150112
+SET y -114296
+SET z -1920
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 151597
+SET y -115397
+SET z -1559
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 154221
+SET y -115556
+SET z -1499
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 157621
+SET y -115412
+SET z -1904
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+ 
+DO
+    PRINT_TEXT "Talking to Pulin"
+    COMMAND "/target Pulin"
+    SLEEP 1000
+    TALK_TARGET
+    SLEEP 1000
+    NPC_DIALOG "bypass -h npc_<&TARGET_ID&>_Quest"
+    SLEEP 1000
+    NPC_DIALOG "bypass -h npc_<&TARGET_ID&>_Quest 621_EggDelivery"
+    SLEEP 1000
+    NPC_DIALOG "bypass -h Quest 621_EggDelivery 31543-1.htm"
+    SLEEP 1000
+    PRINT_TEXT "Done talking to Pulin"
+    ITEM_COUNT BoiledEggs2 "7195"
+    PRINT_TEXT "<&BoiledEggs2&>"
+LOOP BoiledEggs2 == FIVE
+RETURNSUB
+ 
+ 
+///////////////////////Pulin to Naff////////////////////
+ 
+ 
+SUB NAFF1
+//Pulin to... Naff
+PRINT_TEXT "Pulin to Naff"
+CALLSUB DASHSTEALTH
+SET x 156734
+SET y -114259
+SET z -1754
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 156379
+SET y -112824
+SET z -1797
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 156388
+SET y -112394
+SET z -1824
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 156555
+SET y -111673
+SET z -2337
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 156046
+SET y -110691
+SET z -2611
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 156042
+SET y -110221
+SET z -2641
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 156592
+SET y -107927
+SET z -2636
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 156019
+SET y -106350
+SET z -2737
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 155678
+SET y -105758
+SET z -2754
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+DO
+PRINT_TEXT "Talking to Naff"
+COMMAND "/target Naff"
+SLEEP 1000
+TALK_TARGET
+SLEEP 1000
+NPC_DIALOG "bypass -h npc_<&TARGET_ID&>_Quest"
+SLEEP 1000
+NPC_DIALOG "bypass -h npc_<&TARGET_ID&>_Quest 621_EggDelivery"
+SLEEP 1000
+NPC_DIALOG "bypass -h Quest 621_EggDelivery 31544-1.htm"
+SLEEP 1000
+ITEM_COUNT BoiledEggs2 "7195"
+PRINT_TEXT "<&BoiledEggs2&>"
+LOOP BoiledEggs2 == FOUR
+RETURNSUB
+ 
+//////////////Naff to Kuber//////////////////
+ 
+Sub Kuber1
+PRINT_TEXT "Naff to Kuber"
+CALLSUB DASHSTEALTH
+SET x 154115
+SET y -109093
+SET z -2715
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 153891
+SET y -110109
+SET z -2695
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 151776
+SET y -111818
+SET z -2388
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 150268
+SET y -112034
+SET z -2208
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 149021
+SET y -108991
+SET z -2561
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 147715
+SET y -108844
+SET z -2873
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 145667
+SET y -108976
+SET z -3406
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 142399
+SET y -109492
+SET z -3577
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 141682
+SET y -109428
+SET z -3592
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+DO
+PRINT_TEXT "Talking to Kuber"
+COMMAND "/target Kuber"
+SLEEP 1000
+TALK_TARGET
+SLEEP 1000
+NPC_DIALOG "bypass -h npc_<&TARGET_ID&>_Quest"
+SLEEP 1000
+NPC_DIALOG "bypass -h npc_<&TARGET_ID&>_Quest 622_DeliveryOfSpecialLiquor"
+SLEEP 1000
+NPC_DIALOG "bypass -h Quest 622_DeliveryOfSpecialLiquor 31546-1.htm"
+SLEEP 1000
+ITEM_COUNT SpecialDrink2 "7197"
+PRINT_TEXT "<&SpecialDrink2&>"
+LOOP SpecialDrink2 == FOUR
+RETURNSUB
+ 
+///////////////////////Kuber to Crocus////////////////////////////////////
+ 
+SUB CROCUS
+PRINT_TEXT "Kuber to Crocus"
+CALLSUB DASHSTEALTH
+SET x 142119
+SET y -107911
+SET z -3517
+SET x 142119
+SET y -107911
+SET z -3517
+SET x 142119
+SET y -107911
+SET z -3517
+PRINT_TEXT "SEE I DID SET ME SHIT RIGHT!"
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 141129
+SET y -106027
+SET z -3622
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 140698
+SET y -105505
+SET z -3632
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+DO
+PRINT_TEXT "Crocus"
+COMMAND "/target Crocus"
+SLEEP 1000
+TALK_TARGET
+SLEEP 1000
+NPC_DIALOG "bypass -h npc_<&TARGET_ID&>_Quest"
+SLEEP 1000
+NPC_DIALOG "bypass -h npc_<&TARGET_ID&>_Quest 621_EggDelivery"
+SLEEP 1000
+NPC_DIALOG "bypass -h Quest 621_EggDelivery 31545-1.htm"
+SLEEP 1000
+    ITEM_COUNT BoiledEggs2 "7195"
+PRINT_TEXT "<&BoiledEggs2&>"
+LOOP BoiledEggs2 == THREE
+ 
+DO
+PRINT_TEXT "Crocus"
+COMMAND "/target Crocus"
+SLEEP 1000
+TALK_TARGET
+SLEEP 1000
+NPC_DIALOG "bypass -h npc_<&TARGET_ID&>_Quest"
+SLEEP 1000
+NPC_DIALOG "bypass -h npc_<&TARGET_ID&>_Quest 622_DeliveryOfSpecialLiquor"
+SLEEP 1000
+NPC_DIALOG "bypass -h Quest 622_DeliveryOfSpecialLiquor 31545-1.htm"
+SLEEP 1000
+    ITEM_COUNT SpecialDrink2 "7197"
+    PRINT_TEXT "<&SpecialDrink2&>"
+LOOP SpecialDrink2 == THREE
+RETURNSUB
+ 
+ 
+////////Crocus to Kuber again////////
+ 
+Sub Kuber2
+CALLSUB DASHSTEALTH
+PRINT_TEXT "Speaking to Kuber 2nd time"
+SET x 141887
+SET y -106614
+SET z -3515
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 142315
+SET y -109086
+SET z -3587
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 141690
+SET y -109422
+SET z -3591
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+DO
+PRINT_TEXT "Talking to Kuber again"
+COMMAND "/target Kuber"
+SLEEP 1000
+TALK_TARGET
+SLEEP 1000
+NPC_DIALOG "bypass -h npc_<&TARGET_ID&>_Quest"
+SLEEP 1000
+NPC_DIALOG "bypass -h npc_<&TARGET_ID&>_Quest 621_EggDelivery"
+SLEEP 1000
+NPC_DIALOG "bypass -h Quest 621_EggDelivery 31546-1.htm"
+SLEEP 1000
+    ITEM_COUNT BoiledEggs2 "7195"
+PRINT_TEXT "<&BoiledEggs2&>"
+LOOP BoiledEggs2 == TWO
+RETURNSUB
+ 
+/////////Kuber to Beolin again///////////////
+ 
+ 
+SUB Beolin2
+CALLSUB DASHSTEALTH
+PRING_TEXT "Kuber to Beolin "
+SET x 143148
+SET y -108942
+SET z -3537
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 147629
+SET y -108921
+SET z -2906
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 148846
+SET y -108876
+SET z -2601
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 149582
+SET y -109791
+SET z -2419
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 149398
+SET y -111684
+SET z -2192
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 147655
+SET y -113165
+SET z -2112
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+DO
+PRINT_TEXT "Beolin again..."
+COMMAND "/target Beolin"
+SLEEP 1000
+TALK_TARGET
+SLEEP 1000
+NPC_DIALOG "bypass -h npc_<&TARGET_ID&>_Quest"
+SLEEP 1000
+NPC_DIALOG "bypass -h npc_<&TARGET_ID&>_Quest 621_EggDelivery"
+SLEEP 1000
+NPC_DIALOG "bypass -h Quest 621_EggDelivery 31547-1.htm"
+SLEEP 1000
+    ITEM_COUNT BoiledEggs2 "7195"
+PRINT_TEXT "<&BoiledEggs2&>"
+LOOP BoiledEggs2 == ONE
+RETURNSUB
+ 
+ 
+///////////Beolin to Naff again///////
+ 
+Sub NAFF2
+CALLSUB DASHSTEALTH
+SET x 148798
+SET y -111892
+SET z -2163
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 151016
+SET y -112054
+SET z -2282
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 152378
+SET y -111421
+SET z -2489
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 154392
+SET y -109620
+SET z -2705
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 155063
+SET y -106873
+SET z -2682
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 155587
+SET y -105695
+SET z -2755
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+DO
+PRINT_TEXT "We are at Naff"
+COMMAND "/target Naff"
+SLEEP 1000
+TALK_TARGET
+SLEEP 1000
+NPC_DIALOG "bypass -h npc_<&TARGET_ID&>_Quest"
+SLEEP 1000
+NPC_DIALOG "bypass -h npc_<&TARGET_ID&>_Quest 622_DeliveryOfSpecialLiquor"
+SLEEP 1000
+NPC_DIALOG "bypass -h Quest 622_DeliveryOfSpecialLiquor 31544-1.htm"
+SLEEP 1000
+    ITEM_COUNT SpecialDrink2 "7197"
+    PRINT_TEXT "<&SpecialDrink2&>"
+LOOP SpecialDrink2 == TWO
+RETURNSUB
+ 
+/////////////Naff to Pulin again//////////////////
+ 
+SUB Pulin2
+CALLSUB DASHSTEALTH
+PRINT_TEXT "Naff to Pulin"
+SET x 153926
+SET y -110085
+SET z -2697
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 151049
+SET y -112380
+SET z -2260
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 149956
+SET y -114620
+SET z -1861
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 152211
+SET y -115299
+SET z -1562
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 154502
+SET y -115495
+SET z -1496
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 157602
+SET y -115349
+SET z -1904
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+DO
+PRINT_TEXT "Pulin"
+COMMAND "/target Pulin"
+SLEEP 1000
+TALK_TARGET
+SLEEP 1000
+NPC_DIALOG "bypass -h npc_<&TARGET_ID&>_Quest"
+SLEEP 1000
+NPC_DIALOG "bypass -h npc_<&TARGET_ID&>_Quest 622_DeliveryOfSpecialLiquor"
+SLEEP 1000
+NPC_DIALOG "bypass -h Quest 622_DeliveryOfSpecialLiquor 31543-1.htm"
+SLEEP 1000
+    ITEM_COUNT SpecialDrink2 "7197"
+    PRINT_TEXT "<&SpecialDrink2&>"
+LOOP SpecialDrink2 == ONE
+RETURNSUB
+ 
+ 
+///////////////////////Pulin to Jeremy////////////////
+ 
+SUB Jeremy2
+CALLSUB DASHSTEALTH
+SET x 155723
+SET y -115362
+SET z -1668
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 153582
+SET y -114831
+SET z -1555
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 150536
+SET y -115312
+SET z -1638
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 149773
+SET y -112643
+SET z -2065
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 149527
+SET y -112682
+SET z -2065
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+ 
+PRINT_TEXT "almost done, last step before we SOE (Egg)"
+COMMAND "/target Jeremy"
+SLEEP 1000
+TALK_TARGET
+SLEEP 1000
+NPC_DIALOG "bypass -h npc_<&TARGET_ID&>_Quest"
+SLEEP 1000
+NPC_DIALOG "bypass -h npc_<&TARGET_ID&>_Quest 621_EggDelivery"
+SLEEP 1000
+NPC_DIALOG "bypass -h Quest 621_EggDelivery 31521-3.htm"
+SLEEP 1000
+COMMAND "/target Jeremy"
+SLEEP 1000
+TALK_TARGET
+SLEEP 1000
+NPC_DIALOG "bypass -h npc_<&TARGET_ID&>_Quest"
+SLEEP 1000
+NPC_DIALOG "bypass -h npc_<&TARGET_ID&>_Quest 621_EggDelivery"
+SLEEP 1000
+NPC_DIALOG "bypass -h Quest 621_EggDelivery 31521-3.htm"
+SLEEP 1000
+PRINT_TEXT "almost done, last step before we SOE (Liquor)"
+COMMAND "/target Jeremy"
+SLEEP 1000
+TALK_TARGET
+SLEEP 1000
+NPC_DIALOG "bypass -h npc_<&TARGET_ID&>_Quest"
+SLEEP 1000
+NPC_DIALOG "bypass -h npc_<&TARGET_ID&>_Quest 622_DeliveryOfSpecialLiquor"
+SLEEP 1000
+NPC_DIALOG "bypass -h Quest 622_DeliveryOfSpecialLiquor 31521-3.htm"
+SLEEP 1000
+PRINT_TEXT "almost done, last step before we SOE (Liquor)"
+COMMAND "/target Jeremy"
+SLEEP 1000
+TALK_TARGET
+SLEEP 1000
+NPC_DIALOG "bypass -h npc_<&TARGET_ID&>_Quest"
+SLEEP 1000
+NPC_DIALOG "bypass -h npc_<&TARGET_ID&>_Quest 622_DeliveryOfSpecialLiquor"
+SLEEP 1000
+NPC_DIALOG "bypass -h Quest 622_DeliveryOfSpecialLiquor 31521-3.htm"
+SLEEP 1000
+ 
+RETURNSUB
+ 
+///////////////////////SOE to Goddard///////////////
+ 
+SUB SOETOGODDARD
+PRINT_TEXT "using Scroll of Escape"
+USE_ITEM "<&SOETIME&>"
+SLEEP 30000
+PRINT_TEXT "Arrived in Goddard!"
+RETURNSUB
+ 
+///////////////////////Goddard to Magic Shop////////////////////////////
+ 
+SUB MagicShopEgg
+SET x 150276
+SET y -57095
+SET z -2981
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 149289
+SET y -58120
+SET z -2981
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 149101
+SET y -57631
+SET z -2968
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 149309
+SET y -57488
+SET z -2968
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+ 
+ 
+DO
+PRINT_TEXT "Talking to Valentine"
+COMMAND "/target Valentine"
+SLEEP 1000
+TALK_TARGET
+SLEEP 1000
+NPC_DIALOG "bypass -h npc_<&TARGET_ID&>_Quest"
+SLEEP 1000
+NPC_DIALOG "bypass -h Quest 621_EggDelivery 31584-2.htm"
+SLEEP 1000
+ITEM_COUNT COINS1 "7196"
+PRINT_TEXT "<&COINS1&>"
+LOOP COINS1 >= ONE
+RETURNSUB
+ 
+ 
+///////////////////////Magic shop to Liquor///////////////////////////////
+SUB WarehouseLiquor
+SET x 149131
+SET y -57712
+SET z -2968
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 149249
+SET y -58086
+SET z -2981
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 146048
+SET y -58205
+SET z -2981
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 146400
+SET y -57545
+SET z -2967
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+DO
+PRINT_TEXT "Talking to Lietta"
+COMMAND "/target Lietta"
+SLEEP 1000
+TALK_TARGET
+SLEEP 1000
+NPC_DIALOG "bypass -h npc_<&TARGET_ID&>_Quest"
+SLEEP 1000
+NPC_DIALOG "bypass -h Quest 622_DeliveryOfSpecialLiquor 31267-2.htm"
+SLEEP 1000
+ITEM_COUNT COINS2 "7198"
+    PRINT_TEXT "<&COINS2&>"
+LOOP COINS2 >= ONE
+RETURNSUB
+ 
+///////////////////////Warehouse to GK AKADONE///////////////////////
+ 
+ 
+SUB TOGK
+ 
+SET x 146103
+SET y -58144
+SET z -2981
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 147654
+SET y -58329
+SET z -2981
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 147813
+SET y -55708
+SET z -2743
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+SET x 147940
+SET y -55272
+SET z -2735
+CALL MPJ_IS_A_HOMO VOID 3 X Y Z
+PRINT_TEXT "Teleporting"
+COMMAND "/target Tatiana"
+SLEEP 1000
+TALK_TARGET
+SLEEP 1000
+NPC_DIALOG "bypass -h npc_<&TARGET_ID&>_Chat 1"
+SLEEP 1000
+NPC_DIALOG "bypass -h npc_<&TARGET_ID&>_goto 1095"
+SLEEP 30000
+RETURNSUB
+ 
+SUB USEPOTS
+    USE_ITEM "<&HASTEPOT&>"
+  SLEEP 500
+RETURNSUB
+ 
+ 
+SUB DASHSTEALTH
+    USE_SKILL 411
+    SLEEP 2000
+    USE_SKILL 4
+    SLEEP 1000
+RETURNSUB
+ 
+ 
+ 
+ 
+ 
+PRINT_TEXT "Shouldn't get to this point :<"
+SCRIPT_END
+//Functions here
+FUNCTION MPJ_IS_A_HOMO 3 X Y Z
+    DEFINE INT TDIST 0
+    PRINT_TEXT "TDIST = <&tdist&>"
+    DISTANCE TDIST X Y Z CHAR_X CHAR_Y CHAR_Z
+    WHILE TDIST > HOW_GAY_IS_MPJ
+        MOVE_TO "<&X&>" "<&Y&>" "<&Z&>"
+        SLEEP 500
+        DISTANCE TDIST X Y Z CHAR_X CHAR_Y CHAR_Z
+        PRINT_TEXT "TDIST = <&tdist&>"
+    WEND
+RETURN VOID
+

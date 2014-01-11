@@ -1,0 +1,67 @@
+FUNCTION WarcryerBuffs
+DEFINE STRING BUFF "muzes buff?"
+DEFINE STRING BUFFCOV "cov ftw"
+DEFINE STRING BUFFWC "wc"
+DEFINE STRING BUFFEC "ec"
+IF MESSAGETYPE == CHANNEL_PRIVATE
+    IF MESSAGE CONTAINS BUFF
+        SAY_TEXT "<&CHANNEL_PRIVATE&>" "jo muzu" "<&SENDERNAME&>"
+        SLEEP 1000
+        COMMAND "/target <&SENDERNAME&>"
+        COMMAND "/invite <&SENDERNAME&>"
+        SLEEP 700
+        USE_SKILL 1002 0 0 //flame chant
+        SLEEP 700
+        USE_SKILL 1007 0 0 //chant of battle
+        SLEEP 700
+        USE_SKILL 1009 0 0 //chant of shielding
+        SLEEP 700
+        USE_SKILL 1006 0 0 //chant of fire
+        SLEEP 700
+        USE_SKILL 1251 0 0 //chant of fury
+        SLEEP 700
+        USE_SKILL 1253 0 0 //rage
+        SLEEP 700
+        USE_SKILL 1308 0 0 //predator
+        SLEEP 700
+        USE_SKILL 1252 0 0 //evasion
+        SLEEP 700
+        USE_SKILL 1309 0 0 //eagle
+        SLEEP 700
+        USE_SKILL 1310 0 0 //vampire
+        SLEEP 700
+        USE_SKILL 1390 0 0 //warchant
+        SLEEP 700
+        USE_SKILL 1461 0 0 //protection
+        SLEEP 700
+        //SAY_TEXT "<&CHANNEL_PRIVATE&>" "want cov or something else? :)" "<&SENDERNAME&>"
+    ENDIF
+    IF MESSAGE CONTAINS BUFFCOV
+        SAY_TEXT "<&CHANNEL_PRIVATE&>" "kk" "<&SENDERNAME&>"
+        SLEEP 1000
+        COMMAND "/target <&SENDERNAME&>"
+        COMMAND "/invite <&SENDERNAME&>"
+        SLEEP 700
+        USE_SKILL 1363 0 0 //cov
+        SAY_TEXT "<&CHANNEL_PRIVATE&>" "THERE U GO" "<&SENDERNAME&>"
+    ENDIF
+    IF MESSAGE CONTAINS BUFFWC
+        SAY_TEXT "<&CHANNEL_PRIVATE&>" "kk" "<&SENDERNAME&>"
+        SLEEP 1000
+        COMMAND "/target <&SENDERNAME&>"
+        COMMAND "/invite <&SENDERNAME&>"
+        SLEEP 700
+        USE_SKILL 1390 0 0 //WAR CHANT
+        SAY_TEXT "<&CHANNEL_PRIVATE&>" ":/" "<&SENDERNAME&>"
+    ENDIF
+    IF MESSAGE CONTAINS BUFFEC
+        SAY_TEXT "<&CHANNEL_PRIVATE&>" "kk" "<&SENDERNAME&>"
+        SLEEP 1000
+        COMMAND "/target <&SENDERNAME&>"
+        COMMAND "/invite <&SENDERNAME&>"
+        SLEEP 700
+        USE_SKILL 1391 0 0 //EARTH CHANT
+        SAY_TEXT "<&CHANNEL_PRIVATE&>" ":\" "<&SENDERNAME&>"
+    ENDIF
+ENDIF
+RETURN VOID

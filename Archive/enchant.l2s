@@ -1,0 +1,201 @@
+INCLUDE StdLib\inventory.l2c
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" ChooseInventoryItem 124
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKETEX&>" "<&SYSTEM_CURRENTFILE&>" ExEnchant 129
+
+// You need to change these values
+//19:07:24 :[You have earned Earring of Black Ore.
+
+DEFINE_GLOBAL STRING selected_enchanted_item "Earring of Black Ore"
+DEFINE_GLOBAL STRING selected_enchanted_scroll "Scroll: Enchant Armor (B)"
+DEFINE_GLOBAL STRING selected_enchanted_crystals "Crystal: B Grade"
+DEFINE_GLOBAL INT loop_delay 3600        //too low here, and u risk BAN/KICK timer (3600 default)
+DEFINE_GLOBAL INT number_of_items_which_should_stay 1         // HOW MANY YOU WANT TO KEEP??
+
+//-----//----- DO NOT CHANGE ANYTHING BELOW THIS LINE
+
+DEFINE_GLOBAL INT GOTCHOOSE 0
+DEFINE_GLOBAL INT GOTEX 0
+DEFINE_GLOBAL STRING item_name 0
+DEFINE_GLOBAL ARRAYLIST bag_inventory 0    
+
+DEFINE_GLOBAL INT enchanted_items_count 0
+DEFINE_GLOBAL INT enchanted_scrolls_count 0
+DEFINE_GLOBAL INT crystals_count 0
+DEFINE_GLOBAL INT crystals_count_after_enchanting 0
+DEFINE_GLOBAL INT id_of_item 0
+DEFINE_GLOBAL INT id_of_enchant 0
+DEFINE_GLOBAL INT id_of_crystals 0
+
+DEFINE_GLOBAL Inventory current_enchanted_item 0
+DEFINE_GLOBAL INT current_enchant_level 9999
+DEFINE_GLOBAL INT current_items_count 0
+
+DEFINE_GLOBAL Inventory item_of_scroll 0
+DEFINE_GLOBAL INT enchanting_process 0
+DEFINE_GLOBAL INT enchant_size 0    
+
+    Enchant
+
+SCRIPT_END
+
+FUNCTION Enchant
+
+    ITEM_GET_ID id_of_enchant "<&selected_enchanted_scroll&>"
+    ITEM_COUNT enchanted_scrolls_count "<&id_of_enchant&>"
+
+    ITEM_GET_ID id_of_crystals "<&selected_enchanted_crystals&>"
+    ITEM_COUNT crystals_count "<&id_of_crystals&>"
+    ITEM_COUNT crystals_count_after_enchanting "<&id_of_crystals&>"
+
+    ITEM_GET_ID id_of_item "<&selected_enchanted_item&>"    
+
+    GET_INVENTORY bag_inventory
+    FOREACH item Inventory bag_inventory
+        item_name = bag_inventory.item.name
+        
+        if item_name == selected_enchanted_item
+            enchanted_items_count = enchanted_items_count + ONE
+        endif 
+
+        if item_name == selected_enchanted_scroll
+            item_of_scroll = bag_inventory.item
+        endif 
+    NEXTEACH
+
+    PRINT_TEXT " ___________________________________________________________ ]"
+    PRINT_TEXT " Selected item: <&selected_enchanted_item&> (x<&enchanted_items_count&>) ]"
+    PRINT_TEXT " Selected scroll: <&selected_enchanted_scroll&> (x<&enchanted_scrolls_count&>) ]"
+    PRINT_TEXT " Selected crystals: <&selected_enchanted_crystals&> (x<&crystals_count&>) ]"
+    PRINT_TEXT " ___________________________________________________________ ]"
+    PRINT_TEXT " <&selected_enchanted_item&>'s to keep: <&number_of_items_which_should_stay&> ]"
+    PRINT_TEXT " ___________________________________________________________ ]"
+   
+
+    if enchanted_items_count <= number_of_items_which_should_stay
+        PRINT_TEXT " Not enough <&selected_enchanted_item&> to enchant. ]"
+        JUMP_TO_LABEL END
+    endif
+
+    if enchanted_scrolls_count < ONE
+        PRINT_TEXT " Not enough scrolls to enchant. ]"
+        JUMP_TO_LABEL END
+    endif
+
+    enchanting_process = ONE
+
+    do
+        bag_inventory.clear
+    
+        GET_INVENTORY bag_inventory
+        
+        current_enchant_level = #i9999
+        current_items_count = ZERO
+
+        ITEM_COUNT crystals_count "<&id_of_crystals&>"
+        ITEM_COUNT enchanted_scrolls_count "<&id_of_enchant&>"
+
+        FOREACH item Inventory bag_inventory
+            item_name = bag_inventory.item.name
+                
+            if item_name == selected_enchanted_item    
+                current_items_count = current_items_count + ONE
+                
+                if bag_inventory.item.enchant < current_enchant_level
+                    current_enchant_level = bag_inventory.item.enchant
+                    current_enchanted_item = bag_inventory.item
+                endif
+            endif 
+        NEXTEACH
+
+        if current_items_count <= number_of_items_which_should_stay
+            PRINT_TEXT " <&selected_enchanted_item&>'s to keep: <&current_items_count&> ]"
+            enchanting_process = ZERO
+        endif
+
+        if enchanted_scrolls_count < ONE
+            PRINT_TEXT " Not enough scrolls to enchant. ]"
+            enchanting_process = ZERO
+        endif
+
+        if enchanting_process == ONE
+
+            DEFINE BYTEBUFFER buffer_of_selected_enchant 256
+            DEFINE BYTEBUFFER buffer_of_selecting_item 256
+            DEFINE BYTEBUFFER buffer_of_selected_item 256
+   
+            buffer_of_selected_enchant.write_byte #i25
+            buffer_of_selected_enchant.write_int32 item_of_scroll.id
+            buffer_of_selected_enchant.write_int32 #i0
+            buffer_of_selected_enchant.trim_to_index
+            INJECTBB buffer_of_selected_enchant
+            SLEEP 500
+
+            IF GOTCHOOSE == #i1
+              buffer_of_selecting_item.write_byte #I208
+              buffer_of_selecting_item.write_byte #I76
+              buffer_of_selecting_item.write_byte #I0
+              buffer_of_selecting_item.write_int32 current_enchanted_item.id
+              buffer_of_selecting_item.trim_to_index
+              INJECTBB buffer_of_selecting_item
+              SLEEP "<&loop_delay&>"
+
+              IF GOTEX == #i1
+                buffer_of_selected_item.write_byte #i95
+                buffer_of_selected_item.write_int32 current_enchanted_item.id
+                buffer_of_selected_item.write_int32 #i0
+                buffer_of_selected_item.trim_to_index
+                INJECTBB buffer_of_selected_item
+                SLEEP "<&loop_delay&>"
+              GOTEX = ZERO
+              ENDIF
+
+            GOTCHOOSE = ZERO
+            ENDIF
+
+            ITEM_COUNT crystals_count_after_enchanting "<&id_of_crystals&>"
+
+            if crystals_count_after_enchanting > crystals_count
+                PRINT_TEXT " <&selected_enchanted_item&> has been crystallized at +<&current_enchant_level&> ]"
+            else                    
+                PRINT_TEXT " <&selected_enchanted_item&> has successfully enchanted from +<&current_enchant_level&> ]"
+            endif    
+            
+            DELETE buffer_of_selected_enchant
+            DELETE buffer_of_selecting_item
+            DELETE buffer_of_selected_item
+        endif
+
+    loop enchanting_process == ONE    
+
+    PRINT_TEXT " ___________________________________________________________ ]"
+    PRINT_TEXT " Enchanted items: ]"
+
+    GET_INVENTORY bag_inventory
+
+    ITEM_COUNT crystals_count "<&id_of_crystals&>"
+    ITEM_COUNT enchanted_scrolls_count "<&id_of_enchant&>"
+
+    FOREACH item Inventory bag_inventory
+        item_name = bag_inventory.item.name
+                
+        if item_name == selected_enchanted_item            
+            PRINT_TEXT " <&bag_inventory.item.name&> +<&bag_inventory.item.enchant&> ]"
+        endif 
+    NEXTEACH
+
+ LABEL END
+ PRINT_TEXT " ___________________________________________________________ ]"
+ PRINT_TEXT " Script Ended ]"
+
+RETURN VOID
+
+
+FUNCTION ChooseInventoryItem
+//PRINT_TEXT "Recieved ChooseInventoryItem Packet  !!"
+GOTCHOOSE = #i1
+RETURN VOID
+
+FUNCTION ExEnchant
+//PRINT_TEXT "Recieved ExEnchant Packet  !!"
+GOTEX = #i1
+RETURN VOID

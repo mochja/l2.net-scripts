@@ -1,0 +1,389 @@
+
+	INCLUDE "Include/EngineX.l2c"
+	DEFINE_GLOBAL ENGINEX ENGINEX 0
+
+	INCLUDE "Include/Lazy.l2c"
+	DEFINE_GLOBAL LAZY LAZY 0
+
+//-------------------------------------------------------------------------------------
+//
+// this is a test file to show the MIGHTINESS of LAZY xD
+//
+// i was using this file with:
+//
+//   - two human mage characters about lvl 20 (ig bots)
+//   - both of them needs to got the skills "aura burn", "vampiric touch" and "blaze"
+//   - the position is in the field south west of the obelisk of viktory
+//
+// this file will:
+//
+//   - search targets with the names "werewolf" or "goblin"
+//   - search targets thats NOT targeted by the other character
+//   - search targets thats REALY alive
+//   - search targets where you didnt got messages like "cannot see" or "is incorrect"
+//   - search targets ONLY within an area
+//
+//   - cast only when the mob is still alive
+//   - stop casting when the mob dies
+//   - stop casting when you got messages like "cannot see" or "is incorrect"
+//
+//   - use skills intelligent:
+//     if (hp < 80%) {
+//        use "vampiric touch"
+//     } else {
+//        if (distance < 200) {
+//           use "aura burn"
+//        } else {
+//           use "blaze"
+//        }
+//     }
+//
+//-------------------------------------------------------------------------------------
+
+   DEFINE INT TARGETING 0
+   LAZY.REGISTER TARGETING 1 #$TARGETING
+
+   DEFINE INT RETURNING 0
+   LAZY.REGISTER RETURNING 1 #$RETURNING
+
+   DEFINE INT CASTING 0
+   LAZY.REGISTER CASTING 1 #$CASTING
+
+//-------------------------------------------------------------------------------------
+
+   // "Self_HpPercent" will return the percentage hp of your character
+   //
+   DEFINE INT MYPIECE 0
+   RETURNING.NEW_PIECE MYPIECE 2 #$Self_HpPercent #$ObjectData
+   MYPIECE.SET_VARIABLE VOID 2 #$OBJECT_ID #$CHAR_ID
+   MYPIECE.SET_VALUE VOID 2 #$DATA_KEY #$HP_PERCENT
+   MYPIECE.SET_VALUE VOID 2 #$DEFAULT_RETURN #i0
+   DELETE MYPIECE
+
+   // "Self_MyHpIsOk" will return TRUE when the percent is above 80, otherwise FALSE
+   //
+   DEFINE INT MYPIECE 0
+   RETURNING.NEW_PIECE MYPIECE 2 #$Self_MyHpIsOk #$DoubleComparison
+   MYPIECE.SET_REFERENCE VOID 2 #$LEFT #$Self_HpPercent
+   MYPIECE.SET_VALUE VOID 2 #$OPERATOR #$>
+   MYPIECE.SET_VALUE VOID 2 #$RIGHT #d80.0
+   DELETE MYPIECE
+
+   // "Target_DistanceToObject" will return the distance to our target
+   //
+   DEFINE INT MYPIECE 0
+   RETURNING.NEW_PIECE MYPIECE 2 #$Target_DistanceToObject #$ObjectData
+   MYPIECE.SET_VARIABLE VOID 2 #$OBJECT_ID #$TARGET_ID
+   MYPIECE.SET_VALUE VOID 2 #$DATA_KEY #$DISTANCE
+   MYPIECE.SET_VALUE VOID 2 #$DEFAULT_RETURN ZERO
+   DELETE MYPIECE
+
+   // "Target_IsNearMe" will return TRUE when our target is in range of 200, otherwise FALSE
+   //
+   DEFINE INT MYPIECE 0
+   RETURNING.NEW_PIECE MYPIECE 2 #$Target_IsNearMe #$DOUBLEComparison
+   MYPIECE.SET_REFERENCE VOID 2 #$LEFT #$Target_DistanceToObject
+   MYPIECE.SET_VALUE VOID 2 #$OPERATOR #$<
+   MYPIECE.SET_VALUE VOID 2 #$RIGHT #d200.0
+   DELETE MYPIECE
+
+   // "Target_ObjectIsDead" will return TRUE when our target is dead, otherwise FALSE
+   //
+   DEFINE INT MYPIECE 0
+   RETURNING.NEW_PIECE MYPIECE 2 #$Target_ObjectIsDead #$ObjectIs
+   MYPIECE.SET_VARIABLE VOID 2 #$OBJECT_ID #$TARGET_ID
+   MYPIECE.SET_VALUE VOID 2 #$IS #$DEAD
+   DELETE MYPIECE
+
+   // "Target_ObjectIsNotseen" will return TRUE when our target is notseen (you cannot see the target), otherwise FALSE
+   //
+   DEFINE INT MYPIECE 0
+   RETURNING.NEW_PIECE MYPIECE 2 #$Target_ObjectIsNotseen #$ObjectIs
+   MYPIECE.SET_VARIABLE VOID 2 #$OBJECT_ID #$TARGET_ID
+   MYPIECE.SET_VALUE VOID 2 #$IS #$NOTSEEN
+   DELETE MYPIECE
+
+   // "Target_ObjectIsIncorrect" will return TRUE when our target is incorrect (this is the incorrect target), otherwise FALSE
+   //
+   DEFINE INT MYPIECE 0
+   RETURNING.NEW_PIECE MYPIECE 2 #$Target_ObjectIsIncorrect #$ObjectIs
+   MYPIECE.SET_VARIABLE VOID 2 #$OBJECT_ID #$TARGET_ID
+   MYPIECE.SET_VALUE VOID 2 #$IS #$INCORRECT
+   DELETE MYPIECE
+
+   // "Target_ObjectIsDead" will return TRUE when our target is DEAD, NOTSEEN or INCORRECT... returns FALSE when its none of them
+   //
+   DEFINE INT MYPIECE 0
+   RETURNING.NEW_PIECE MYPIECE 2 #$Target_ObjectIsInvalid #$OrMultiple
+   MYPIECE.ADD_REFERENCE VOID 2 #$BOOLS #$Target_ObjectIsDead
+   MYPIECE.ADD_REFERENCE VOID 2 #$BOOLS #$Target_ObjectIsNotseen
+   MYPIECE.ADD_REFERENCE VOID 2 #$BOOLS #$Target_ObjectIsIncorrect
+   DELETE MYPIECE
+
+//-------------------------------------------------------------------------------------
+
+   // now lets create the pieces for our target-searching part
+   //
+   // while the class TARGETING is searching a target we can use its global value "LAZY.CLASSES.#$TARGETING.SEARCH_OBJECT_ID".
+   // it will be filled with the id of the object the class is currently checking
+   //
+
+   // "Searching_GetMobName" will return the name of the searching object
+   //
+   DEFINE INT MYPIECE 0
+   RETURNING.NEW_PIECE MYPIECE 2 #$Searching_GetMobName #$ObjectData
+   MYPIECE.SET_VARIABLE VOID 2 #$OBJECT_ID #$LAZY.CLASSES.#$TARGETING.SEARCH_OBJECT_ID
+   MYPIECE.SET_VALUE VOID 2 #$DATA_KEY #$NAME
+   MYPIECE.SET_VALUE VOID 2 #$DEFAULT_RETURN "#$-unknown-"
+   DELETE MYPIECE
+
+   // "Searching_MobName1" will return TRUE when the name contains "Goblin"
+   //
+   DEFINE INT MYPIECE 0
+   RETURNING.NEW_PIECE MYPIECE 2 #$Searching_MobName1 #$StringComparison
+   MYPIECE.SET_REFERENCE VOID 2 #$LEFT #$Searching_GetMobName
+   MYPIECE.SET_VALUE VOID 2 #$OPERATOR #$CONTAINS
+   MYPIECE.SET_VALUE VOID 2 #$RIGHT #$Goblin
+   DELETE MYPIECE
+
+   // "Searching_MobName2" will return TRUE when the name contains "Werewolf"
+   //
+   DEFINE INT MYPIECE 0
+   RETURNING.NEW_PIECE MYPIECE 2 #$Searching_MobName2 #$StringComparison
+   MYPIECE.SET_REFERENCE VOID 2 #$LEFT #$Searching_GetMobName
+   MYPIECE.SET_VALUE VOID 2 #$OPERATOR #$CONTAINS
+   MYPIECE.SET_VALUE VOID 2 #$RIGHT #$Werewolf
+   DELETE MYPIECE
+
+   // "Searching_OneOfTheNames" will return TRUE when the name contains "Werewolf" or "Goblin", otherwise FALSE
+   //
+   DEFINE INT MYPIECE 0
+   RETURNING.NEW_PIECE MYPIECE 2 #$Searching_OneOfTheNames #$OrMultiple
+   MYPIECE.ADD_REFERENCE VOID 2 #$BOOLS #$Searching_MobName1
+   MYPIECE.ADD_REFERENCE VOID 2 #$BOOLS #$Searching_MobName2
+   DELETE MYPIECE
+
+   // "Searching_ObjectIsDead" will return TRUE when the object is dead, otherwise FALSE
+   //
+   DEFINE INT MYPIECE 0
+   RETURNING.NEW_PIECE MYPIECE 2 #$Searching_ObjectIsDead #$ObjectIs
+   MYPIECE.SET_VARIABLE VOID 2 #$OBJECT_ID #$LAZY.CLASSES.#$TARGETING.SEARCH_OBJECT_ID
+   MYPIECE.SET_VALUE VOID 2 #$IS #$DEAD
+   DELETE MYPIECE
+
+   // "Searching_ObjectIsNotDead" will return TRUE when "Searching_ObjectIsDead" return false, otherwise FALSE
+   // "Searching_ObjectIsNotDead" will return TRUE when the object is NOT dead, otherwise FALSE
+   // "Searching_ObjectIsNotDead" will return TRUE when the object is alive, otherwise FALSE
+   //
+   DEFINE INT MYPIECE 0
+   RETURNING.NEW_PIECE MYPIECE 2 #$Searching_ObjectIsNotDead #$Not
+   MYPIECE.SET_REFERENCE VOID 2 #$BOOL #$Searching_ObjectIsDead
+   DELETE MYPIECE
+
+   // "Searching_ObjectIsNotSeen" will return TRUE when the object is marked as "notseen", otherwise FALSE
+   //
+   DEFINE INT MYPIECE 0
+   RETURNING.NEW_PIECE MYPIECE 2 #$Searching_ObjectIsNotSeen #$ObjectIs
+   MYPIECE.SET_VARIABLE VOID 2 #$OBJECT_ID #$LAZY.CLASSES.#$TARGETING.SEARCH_OBJECT_ID
+   MYPIECE.SET_VALUE VOID 2 #$IS #$notseen
+   DELETE MYPIECE
+
+   // "Searching_ObjectIsSeen" will return TRUE when "Searching_ObjectIsNotSeen" return false, otherwise FALSE
+   // "Searching_ObjectIsSeen" will return TRUE when the object is NOT notseen, otherwise FALSE
+   // "Searching_ObjectIsSeen" will return TRUE when the object is visible, otherwise FALSE
+   //
+   DEFINE INT MYPIECE 0
+   RETURNING.NEW_PIECE MYPIECE 2 #$Searching_ObjectIsSeen #$Not
+   MYPIECE.SET_REFERENCE VOID 2 #$BOOL #$Searching_ObjectIsNotSeen
+   DELETE MYPIECE
+
+   // "Searching_ObjectIsIncorrect" will return TRUE when the object is marked as "incorrect", otherwise FALSE
+   //
+   DEFINE INT MYPIECE 0
+   RETURNING.NEW_PIECE MYPIECE 2 #$Searching_ObjectIsIncorrect #$ObjectIs
+   MYPIECE.SET_VARIABLE VOID 2 #$OBJECT_ID #$LAZY.CLASSES.#$TARGETING.SEARCH_OBJECT_ID
+   MYPIECE.SET_VALUE VOID 2 #$IS #$incorrect
+   DELETE MYPIECE
+
+   // "Searching_ObjectIsCorrect" will return TRUE when "Searching_ObjectIsIncorrect" return false, otherwise FALSE
+   // "Searching_ObjectIsCorrect" will return TRUE when the object is NOT incorrect, otherwise FALSE
+   // "Searching_ObjectIsCorrect" will return TRUE when the object is correct, otherwise FALSE
+   //
+   DEFINE INT MYPIECE 0
+   RETURNING.NEW_PIECE MYPIECE 2 #$Searching_ObjectIsCorrect #$Not
+   MYPIECE.SET_REFERENCE VOID 2 #$BOOL #$Searching_ObjectIsIncorrect
+   DELETE MYPIECE
+
+//-------------------------------------------------------------------------------------
+
+   // now how to check if the object is in the area.
+   // for that we are using a global defined arraylist of vector2 variables
+   //
+   DEFINE_GLOBAL ARRAYLIST AREAPOLY 0
+   ENGINEX.MATRIX.ADD_V2 VOID 3 AREAPOLY #i-100245 #i238251
+   ENGINEX.MATRIX.ADD_V2 VOID 3 AREAPOLY #i-108557 #i233855
+   ENGINEX.MATRIX.ADD_V2 VOID 3 AREAPOLY #i-109080 #i238633
+   ENGINEX.MATRIX.ADD_V2 VOID 3 AREAPOLY #i-103107 #i243354
+   ENGINEX.MATRIX.ADD_V2 VOID 3 AREAPOLY #i-99342 #i243026
+
+   // "Searching_ObjectInArea" will return TRUE when the object is in that area, otherwise FALSE
+   //
+   DEFINE INT MYPIECE 0
+   RETURNING.NEW_PIECE MYPIECE 2 #$Searching_ObjectInArea #$PolyContainsObject
+   MYPIECE.SET_VARIABLE VOID 2 #$POLYGON #$AREAPOLY
+   MYPIECE.SET_VARIABLE VOID 2 #$OBJECT_ID #$LAZY.CLASSES.#$TARGETING.SEARCH_OBJECT_ID
+   MYPIECE.SET_VALUE VOID 2 #$DEFAULT_RETURN FALSE
+   DELETE MYPIECE
+
+//-------------------------------------------------------------------------------------
+
+   // how to check the target of the other character
+   // first we need to get the target it.
+   // thats easy by using the ObjectData-piece again
+   //
+
+   // "Searching_FriendsTarget" will return the TARGET_ID of the other character
+   //
+   DEFINE INT MYPIECE 0
+   RETURNING.NEW_PIECE MYPIECE 2 #$Searching_FriendsTarget #$ObjectData
+   IF (CHAR_ID == #i269869328)
+      MYPIECE.SET_VALUE VOID 2 #$OBJECT_ID #i271266318
+   ENDIF
+   IF (CHAR_ID == #i271266318)
+      MYPIECE.SET_VALUE VOID 2 #$OBJECT_ID #i269869328
+   ENDIF
+   MYPIECE.SET_VALUE VOID 2 #$DATA_KEY #$TARGET_ID
+   MYPIECE.SET_VALUE VOID 2 #$DEFAULT_RETURN ZERO
+   DELETE MYPIECE
+
+   // "Searching_NotTargetedByFriend" will return TRUE, when the others character target is different then ours
+   //
+   DEFINE INT MYPIECE 0
+   RETURNING.NEW_PIECE MYPIECE 2 #$Searching_NotTargetedByFriend #$IntegerComparison
+   MYPIECE.SET_REFERENCE VOID 2 #$LEFT #$Searching_FriendsTarget
+   MYPIECE.SET_VALUE VOID 2 #$OPERATOR #$!=
+   MYPIECE.SET_VARIABLE VOID 2 #$RIGHT #$LAZY.CLASSES.#$TARGETING.SEARCH_OBJECT_ID
+   DELETE MYPIECE
+
+   // "Searching_ObjectIsValid" is the final searching piece
+   // "Searching_ObjectIsValid" will return TRUE, when the object is valid for targeting, otherwise FALSE
+   //
+   DEFINE INT MYPIECE 0
+   RETURNING.NEW_PIECE MYPIECE 2 #$Searching_ObjectIsValid #$AndMultiple
+   MYPIECE.ADD_REFERENCE VOID 2 #$BOOLS #$Searching_ObjectIsNotDead
+   MYPIECE.ADD_REFERENCE VOID 2 #$BOOLS #$Searching_ObjectIsSeen
+   MYPIECE.ADD_REFERENCE VOID 2 #$BOOLS #$Searching_ObjectIsCorrect
+   MYPIECE.ADD_REFERENCE VOID 2 #$BOOLS #$Searching_OneOfTheNames
+   MYPIECE.ADD_REFERENCE VOID 2 #$BOOLS #$Searching_ObjectInArea
+   MYPIECE.ADD_REFERENCE VOID 2 #$BOOLS #$Searching_NotTargetedByFriend
+   DELETE MYPIECE
+
+//-------------------------------------------------------------------------------------
+
+   // by using a piece we can break the casting.
+   // the piece needs to return an integer.
+   // possible values are:
+   //  0 = nothing will happen
+   //  1 = cast the current skill again
+   //  2 = next skill
+   //  3 = abort casting, ignores repeating
+   //  4 = force abort! also stopps repeating
+   //
+
+   // "Casting_BreakCount" will abort the casting when the object gets invalid
+   //
+   DEFINE INT MYPIECE 0
+   RETURNING.NEW_PIECE MYPIECE 2 #$Casting_BreakCount #$IfThenElse
+   MYPIECE.SET_REFERENCE VOID 2 #$IF #$Target_ObjectIsInvalid
+   MYPIECE.SET_VALUE VOID 2 #$THEN #i4
+   MYPIECE.SET_VALUE VOID 2 #$ELSE #i0
+   DELETE MYPIECE
+
+//-------------------------------------------------------------------------------------
+
+   // this is how to use pieces for the right skill id
+   //     if (hp < 80%) {
+   //        use "vampiric touch"
+   //     } else {
+   //        if (distance < 200) {
+   //           use "aura burn"
+   //        } else {
+   //           use "blaze"
+   //        }
+   //     }
+   //
+
+   DEFINE INT MYPIECE 0
+   RETURNING.NEW_PIECE MYPIECE 2 #$Casting_SelfHpIsBad #$IfThenElse
+   MYPIECE.SET_REFERENCE VOID 2 #$IF #$Target_IsNearMe
+   MYPIECE.SET_VALUE VOID 2 #$THEN #i1172
+   MYPIECE.SET_VALUE VOID 2 #$ELSE #i1220
+   DELETE MYPIECE
+
+   DEFINE INT MYPIECE 0
+   RETURNING.NEW_PIECE MYPIECE 2 #$Casting_SkillId #$IfThenElse
+   MYPIECE.SET_REFERENCE VOID 2 #$IF #$Self_MyHpIsOk
+   MYPIECE.SET_REFERENCE VOID 2 #$THEN #$Casting_SelfHpIsBad
+   MYPIECE.SET_VALUE VOID 2 #$ELSE #i1147
+   DELETE MYPIECE
+
+//-------------------------------------------------------------------------------------
+
+   // the pointer to our castlist
+   DEFINE INT CASTLIST 0
+
+   // create the castlist
+   CASTING.CREATE_CASTLIST CASTLIST 1 #$MyCastlist
+
+   // of course we want to repeat the castlist, as long as the mob is alive
+   CASTLIST.REPEAT = TRUE
+
+   // the pointer to our castlist-skill
+   DEFINE INT CASTLISTSKILL 0
+
+   // adds the skill to the castlist
+   CASTLIST.ADD_SKILL CASTLISTSKILL 0
+
+   // set the break piece ("4" when the target is invalid, otherwise "0")
+   CASTLISTSKILL.BREAK_PIECE = #$Casting_BreakCount
+
+   // set the piece to search for the best skill-id
+   CASTLISTSKILL.SET_PIECE VOID 1 #$Casting_SkillId
+
+   // now we dont need this pointer anymore
+   DELETE CASTLISTSKILL
+
+//-------------------------------------------------------------------------------------
+
+   DEFINE INT OBJECT_ID 0
+   WHILE (TRUE == TRUE)
+
+      // search for a valid target
+      TARGETING.GET_TARGET OBJECT_ID 2 TRUE #$Searching_ObjectIsValid
+
+      IF (OBJECT_ID != ZERO)
+
+         // target the id
+         ENGINEX.UTILS.TARGET_UNIQUE VOID 3 OBJECT_ID #i1000 #i3
+
+         // start the castlist by using the pointer
+         CASTLIST.START VOID 0
+
+         // its the same like:
+         // starting the castling by using the lazy-class
+         //CASTING.START VOID 1 #$MyCastlist
+
+         // sleep this script while casting
+         CASTING.SLEEP VOID 0
+
+      ELSE
+         PRINT_TEXT "no target found"
+         SLEEP 1000
+      ENDIF
+
+      SLEEP 100
+   WEND
+
+//-------------------------------------------------------------------------------------
+
+END_SCRIPT

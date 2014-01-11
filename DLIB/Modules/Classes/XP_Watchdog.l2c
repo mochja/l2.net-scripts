@@ -1,0 +1,11 @@
+// Module Class
+
+CLASS XP_Watchdog null
+VAR_START
+
+  PUBLIC INT TIME_LIMIT 0
+  PUBLIC STRING MUTEX "LOCK"
+  
+VAR_END
+
+END_CLASS

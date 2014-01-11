@@ -1,0 +1,204 @@
+
+//-------------------------------------------------------------------------------------
+CLASS ENGINEX_DATABASE_WAYPOINTSYSTEM NULL
+//-------------------------------------------------------------------------------------
+
+   VAR_START
+      PUBLIC ARRAYLIST DIVISORS 0
+      PUBLIC ARRAYLIST CELLSIZES 0
+      PUBLIC INT WORLD_MIN_X 0
+      PUBLIC INT WORLD_MAX_X 0
+      PUBLIC INT WORLD_MIN_Y 0
+      PUBLIC INT WORLD_MAX_Y 0
+      PUBLIC INT WORLD_MIN_Z 0
+      PUBLIC INT WORLD_MAX_Z 0
+   VAR_END
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT
+      DEFINE STRING LINEREADER ""
+      DEFINE FILEREADER FROPEN "../Include/EngineX/DataBase/WayPointSystem/Config.txt"
+      FROPEN.READ LINEREADER
+      THIS.WORLD_MIN_X = "<&LINEREADER&>"
+      FROPEN.READ LINEREADER
+      THIS.WORLD_MAX_X = "<&LINEREADER&>"
+      FROPEN.READ LINEREADER
+      THIS.WORLD_MIN_Y = "<&LINEREADER&>"
+      FROPEN.READ LINEREADER
+      THIS.WORLD_MAX_Y = "<&LINEREADER&>"
+      FROPEN.READ LINEREADER
+      THIS.WORLD_MIN_Z = "<&LINEREADER&>"
+      FROPEN.READ LINEREADER
+      THIS.WORLD_MAX_Z = "<&LINEREADER&>"
+      FROPEN.READ LINEREADER
+      DEFINE INT STRPOS 0
+      DEFINE STRING SUBSTR ""
+      DEFINE STRING OLDSTR ""
+      WHILE ( STRPOS < LINEREADER.LENGTH )
+         SUBSTR = LINEREADER.SUBSTRING STRPOS 1
+         IF ( SUBSTR == #$, )
+            THIS.DIVISORS.ADD "#i<&OLDSTR&>"
+            OLDSTR = "#$"
+         ELSE
+            OLDSTR = "#$<&OLDSTR&><&SUBSTR&>"
+         ENDIF
+         STRPOS = STRPOS + 1
+      WEND
+      THIS.DIVISORS.ADD "#i<&OLDSTR&>"
+      DEFINE INT CELLSIZE 0
+      CELLSIZE = THIS.WORLD_MAX_X - THIS.WORLD_MIN_X
+      FOR I 0 "<&THIS.DIVISORS.COUNT&>" 1
+         CELLSIZE = CELLSIZE / THIS.DIVISORS.I
+         THIS.CELLSIZES.ADD "<&CELLSIZE&>"
+      NEXT
+      FROPEN.CLOSE
+      SLEEP 1
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CELL_POS_X 2 WORLD_POS_X CELLSIZE
+      DEFINE INT CELL_POS_X "<&WORLD_POS_X&>"
+      CELL_POS_X = CELL_POS_X - THIS.WORLD_MIN_X
+      CELL_POS_X = CELL_POS_X / CELLSIZE
+   RETURN CELL_POS_X
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CELL_POS_Y 2 WORLD_POS_Y CELLSIZE
+      DEFINE INT CELL_POS_Y "<&WORLD_POS_Y&>"
+      CELL_POS_Y = CELL_POS_Y - THIS.WORLD_MIN_Y
+      CELL_POS_Y = CELL_POS_Y / CELLSIZE
+   RETURN CELL_POS_Y
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CELL_POS_Z 2 WORLD_POS_Z CELLSIZE
+      DEFINE INT CELL_POS_Z "<&WORLD_POS_Z&>"
+      CELL_POS_Z = CELL_POS_Z - THIS.WORLD_MIN_Z
+      CELL_POS_Z = CELL_POS_Z / CELLSIZE
+   RETURN CELL_POS_Z
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC NEAREST_SUBCELL 3 CELLSIZE FROM_CELL TO_CELL
+      DEFINE VECTOR3 NEAR_CELL 0
+      DEFINE VECTOR3 CUR_CELL 0
+      DEFINE DOUBLE BEST_DISTANCE 99999999
+      DEFINE DOUBLE TEMP_DISTANCE 0
+      DEFINE ARRAYLIST SPLITS 0
+      DEFINE INT STRPOS 0
+      DEFINE STRING SUBSTR ""
+      DEFINE STRING OLDSTR ""
+      DEFINE STRING LINEREADER ""
+      DEFINE FILEREADER FROPEN "../Include/EngineX/DataBase/WayPointSystem/<&CELLSIZE&>/<&FROM_CELL.X&>_<&FROM_CELL.Y&>_<&FROM_CELL.Z&>/SubCells.txt"
+      DEFINE INT EOF 0
+      FROPEN.READ EOF
+      FOR I 0 "<&EOF&>" 1
+         FROPEN.READ LINEREADER
+         WHILE ( STRPOS < LINEREADER.LENGTH )
+            SUBSTR = LINEREADER.SUBSTRING STRPOS 1
+            IF ( SUBSTR == #$_ )
+               SPLITS.ADD "#$<&OLDSTR&>"
+               OLDSTR = "#$"
+            ELSE
+               OLDSTR = "#$<&OLDSTR&><&SUBSTR&>"
+            ENDIF
+            STRPOS = STRPOS + 1
+         WEND
+         CUR_CELL.X = "#i<&SPLITS.0&>"
+         CUR_CELL.Y = "#i<&SPLITS.1&>"
+         CUR_CELL.Z = "#i<&OLDSTR&>"
+         STRPOS = 0
+         SPLITS.CLEAR
+         OLDSTR = "#$"
+         DISTANCE TEMP_DISTANCE TO_CELL.X TO_CELL.Y TO_CELL.Z CUR_CELL.X CUR_CELL.Y CUR_CELL.Z
+         IF ( TEMP_DISTANCE < BEST_DISTANCE )
+            NEAR_CELL = CUR_CELL.CLONE
+            BEST_DISTANCE = "#d<&TEMP_DISTANCE&>"
+         ENDIF
+      NEXT
+      FROPEN.CLOSE
+   RETURN NEAR_CELL
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CELL_EXISTS 4 CELLSIZE CELL_X CELL_Y CELL_Z
+      IF ( FILE_EXISTS "#$Scripts/Include/Enginex/DataBase/WayPointSystem/<&CELLSIZE&>/<&CELL_X&>_<&CELL_Y&>_<&CELL_Z&>/SubCells.txt" )
+         RETURN TRUE
+      ENDIF
+      IF ( FILE_EXISTS "#$Scripts/Include/Enginex/DataBase/WayPointSystem/<&CELLSIZE&>/<&CELL_X&>_<&CELL_Y&>_<&CELL_Z&>/CellConnections.txt" )
+         RETURN TRUE
+      ENDIF
+      IF ( FILE_EXISTS "#$Scripts/Include/Enginex/DataBase/WayPointSystem/<&CELLSIZE&>/<&CELL_X&>_<&CELL_Y&>_<&CELL_Z&>/PointCoords.txt" )
+         RETURN TRUE
+      ENDIF
+      IF ( FILE_EXISTS "#$Scripts/Include/Enginex/DataBase/WayPointSystem/<&CELLSIZE&>/<&CELL_X&>_<&CELL_Y&>_<&CELL_Z&>/PointConnections.txt" )
+         RETURN TRUE
+      ENDIF
+   RETURN FALSE
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC NEAREST_POINT 3 TO_COORD_X TO_COORD_Y TO_COORD_Z
+      DEFINE VECTOR3 CUR_CELL 0
+      DEFINE INT LAST_CELLSIZE 0
+      LAST_CELLSIZE = THIS.WORLD_MAX_X - THIS.WORLD_MIN_X
+      CUR_CELL.X = 0
+      CUR_CELL.Y = 0
+      CUR_CELL.Z = 0
+      DEFINE VECTOR3 TO_COORD 0
+      TO_COORD.X = TO_COORD_X
+      TO_COORD.Y = TO_COORD_Y
+      TO_COORD.Z = TO_COORD_Z
+      DEFINE VECTOR3 TO_CELL 0
+      FOR I 1 "<&THIS.CELLSIZES.COUNT&>" 1
+         THIS.CELL_POS_X TO_CELL.X 2 TO_COORD.X THIS.CELLSIZES.I
+         THIS.CELL_POS_Y TO_CELL.Y 2 TO_COORD.Y THIS.CELLSIZES.I
+         THIS.CELL_POS_Z TO_CELL.Z 2 TO_COORD.Z THIS.CELLSIZES.I
+         THIS.NEAREST_SUBCELL CUR_CELL 3 LAST_CELLSIZE CUR_CELL TO_CELL
+         LAST_CELLSIZE = THIS.CELLSIZES.I
+      NEXT
+      DEFINE FILEREADER FROPEN "../Include/EngineX/DataBase/WayPointSystem/<&LAST_CELLSIZE&>/<&CUR_CELL.X&>_<&CUR_CELL.Y&>_<&CUR_CELL.Z&>/PointCoords.txt"
+      DEFINE STRING LINEREADER ""
+      DEFINE VECTOR3 CUR_COORD 0
+      DEFINE INT STRPOS 0
+      DEFINE DOUBLE BEST_DISTANCE 99999999
+      DEFINE DOUBLE TEMP_DISTANCE 0
+      DEFINE VECTOR3 NEAREST_POINT 0
+      DEFINE STRING SUBSTR ""
+      DEFINE STRING OLDSTR ""
+      DEFINE ARRAYLIST SPLITS 0
+      DEFINE INT EOF 0
+      FROPEN.READ EOF
+      FOR I 0 "<&EOF&>" 1
+         FROPEN.READ LINEREADER
+         WHILE ( STRPOS < LINEREADER.LENGTH )
+            SUBSTR = LINEREADER.SUBSTRING STRPOS 1
+            IF ( SUBSTR == #$| )
+               SPLITS.ADD "#$<&OLDSTR&>"
+               OLDSTR = "#$"
+            ELSE
+               OLDSTR = "#$<&OLDSTR&><&SUBSTR&>"
+            ENDIF
+            STRPOS = STRPOS + 1
+         WEND
+         CUR_COORD.X = "#i<&SPLITS.0&>"
+         CUR_COORD.Y = "#i<&SPLITS.1&>"
+         CUR_COORD.Z = "#i<&SPLITS.2&>"
+         STRPOS = 0
+         SPLITS.CLEAR
+         OLDSTR = "#$"
+         DISTANCE TEMP_DISTANCE TO_COORD_X TO_COORD_Y TO_COORD_Z CUR_COORD.X CUR_COORD.Y CUR_COORD.Z
+         IF ( TEMP_DISTANCE < BEST_DISTANCE )
+            NEAREST_POINT = CUR_COORD.CLONE
+            BEST_DISTANCE = "#d<&TEMP_DISTANCE&>"
+         ENDIF
+      NEXT
+      FROPEN.CLOSE
+   RETURN NEAREST_POINT
+
+//-------------------------------------------------------------------------------------
+END_CLASS
+//-------------------------------------------------------------------------------------

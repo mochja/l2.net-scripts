@@ -1,0 +1,79 @@
+// Antharas checker...
+// Server: all
+// Autor: mochitto
+// Date: 1. 10. 2011
+// Special thanks for L2.NET contributors
+// rev.: 2
+PRINT_TEXT "SCRIPT STARTED!]"
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" HTML 25
+
+DEFINE_GLOBAL INT CAN_CHECK 1
+DEFINE_GLOBAL ARRAYLIST PLAYERS                       // DONT EDIT!!!
+DEFINE_GLOBAL INT ALARM 1                             // if 1 - On RB spawn play l2.net alarm and show message box 
+DEFINE_GLOBAL INT COUNTPMS 1                          // count pm then be sended
+DEFINE_GLOBAL INT PMSINTERVAL 1000                    // inteval with pm pack send in ms (1s = 1000ms)  
+DEFINE_GLOBAL STRING MSG_ALIVE "antik ;)"
+DEFINE INT RAND
+
+// Players list who will send message for RBspawn
+// You can add next playrs if put next line: PLAYERS.add "#$playerName"
+PLAYERS.ADD "#$Player"
+
+WHILE CAN_CHECK == 1
+	GET_RAND RAND 10000 30000
+	IF TARGET_NAME != "#$Heart of Warding"
+		COMMAND "/target Heart of Warding"
+		SLEEP 1000
+	ENDIF
+	TALK_TARGET                                     
+	SLEEP "<&RAND&>"
+WEND
+
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT
+
+// Main section
+// ===============================
+FUNCTION HTML
+	DEFINE STRING _html
+	PACKET.READ_BYTE NULL
+	PACKET.READ_INT32 NULL
+	PACKET.READ_STRING _html
+	
+	DEFINE STRING LINK1 "bypass -h npc_<&target_id&>_Quest 6000_GrandBossTeleporters"
+	DEFINE STRING ALIVE_MESSAGE "Only those with a Portal Stone may meet Antharas."
+	DEFINE INT RAND
+	
+	GET_RAND RAND 500 1000
+	SLEEP "<&RAND&>"
+	
+	IF "_html.CONTAINS LINK1" == TRUE
+		NPC_DIALOG "<&LINK1&>"	
+	ELSE
+		IF "_html.CONTAINS ALIVE_MESSAGE" == TRUE
+			PRINT_TEXT "Antharas ALIVE!"
+			THREAD ALERT_PLAYERS
+			CAN_CHECK = #i0
+			IF ALARM == #i1
+				NMESSAGE_BOX "RaidBoss ALIVE" "RaidBoss: Antharas's alive!" "<&INFORMATION&>"
+				WHILE 1 == 1
+					PLAYALARM
+					SLEEP 30000
+				WEND
+			ENDIF
+		ELSE
+			PRINT_TEXT "Antharas DEAD!"			
+		ENDIF
+	ENDIF
+RETURN VOID
+
+FUNCTION ALERT_PLAYERS
+	FOR A 0 "<&COUNTPMS&>" 1
+		FOREACH A STRING PLAYERS
+			SAY_TEXT "<&CHANNEL_PRIVATE&>" "<&MSG_ALIVE&>" "<&PLAYERS.A&>"
+			SLEEP 1000
+		NEXTEACH
+		SLEEP "<&PMSINTERVAL&>"
+	NEXT
+	PRINT_TEXT "== MESSAGES SENDED"
+RETURN VOID

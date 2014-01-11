@@ -1,0 +1,121 @@
+// Kratky popis
+// Server: 
+// Autor: mochitto
+// Date: 
+// Special thanks for L2.NET contributors
+// rev.: 0
+PRINT_TEXT "SCRIPT STARTED!]"
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" NpcHtmMessage 25
+// Main section
+// ===============================  18:41:18 :[M8H6BN644N897JM has given Guardian of Western Seal damage of 47.
+DEFINE_GLOBAL STRING NPC_NAME  "Guardian of Western Seal"
+DEFINE_GLOBAL STRING NPC_NAME1 "Delusion Manager"
+DEFINE_GLOBAL INT PROCESS 1
+
+THREAD MP
+
+COMMAND "/target <&NPC_NAME&>"
+SLEEP 1000
+TALK_TARGET
+
+WHILE ONE == ONE
+	SLEEP 1231
+WEND
+	
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT
+
+FUNCTION NpcHtmMessage
+	PRINT_TEXT "== f:NpcHtmMessage"
+	DEFINE STRING LINK1 "bypass -h npc_<&TARGET_ID&>_Quest ChamberOfDelusionWest"
+	DEFINE STRING HTML
+	DEFINE INT REUSE 800
+	
+//	PRINT_TEXT "<&HTML&>"
+	
+	PACKET.READ_BYTE NULL
+	PACKET.READ_INT32 NULL
+	PACKET.READ_STRING HTML 
+	//PRINT_TEXT "<&HTML&>"
+	SLEEP 1000
+	
+	
+    SWITCH PROCESS
+		CASE #i1
+			PRINT_TEXT "== E:ONE"   
+			IF "HTML.CONTAINS LINK1" == TRUE
+				PRINT_TEXT "== E:ONE"
+				IF CHAR_CUR_HP < 4000
+					COMMAND "/target <&CHAR_NAME&>"
+					SLEEP 1000
+					USE_SKILL 1015
+					SLEEP 800
+					USE_SKILL 1015
+					SLEEP 800
+					USE_SKILL 1015
+					SLEEP 800
+					USE_SKILL 1015
+					SLEEP 800
+					USE_SKILL 1015
+				ENDIF
+				NPC_DIALOG "<&LINK1&>"
+				SLEEP 500
+				TARGET_NEAREST
+				USE_SKILL 1417
+				SLEEP "<&REUSE&>"
+				USE_SKILL 1417
+				SLEEP "<&REUSE&>"
+				USE_SKILL 1417
+				SLEEP "<&REUSE&>"
+				USE_SKILL 1417
+				SLEEP "<&REUSE&>"
+				USE_SKILL 1417
+				SLEEP "<&REUSE&>"
+				USE_SKILL 1417
+				SLEEP "<&REUSE&>"
+				USE_SKILL 1417
+				SLEEP "<&REUSE&>"
+				USE_SKILL 1417
+				SLEEP "<&REUSE&>"
+				COMMAND "/target <&NPC_NAME1&>"
+				PROCESS = 2
+				SLEEP 1000
+				TALK_TARGET
+    		ENDIF
+   			BREAK 1
+   		CASE #i2  
+   			IF "HTML.CONTAINS LINK1" == TRUE 
+   				PRINT_TEXT "== E:TWO" 
+				NPC_DIALOG "<&LINK1&>"
+				SLEEP 1000
+				COMMAND "/target <&NPC_NAME&>"
+				PROCESS = 1
+				SLEEP 1000
+				TALK_TARGET
+    		ENDIF
+   			BREAK 1
+	ENDSWITCH
+RETURN VOID
+
+FUNCTION MP
+	DEFINE INT ASD 0
+	DEFINE INT MPPOTS 0
+	WHILE ZERO == ZERO  
+		ITEM_COUNT MPPOTS 728
+		IF (MPPOTS > #i1)
+			ASD = CHAR_MAX_MP * 11			
+			ASD = ASD / 100 		
+			IF (CHAR_CUR_MP < ASD)
+				ASD = CHAR_MAX_MP * 80	
+				ASD = ASD / 100 		
+				WHILE (CHAR_CUR_MP < ASD) 
+					USE_ITEM 728 // Mana Potion
+					SLEEP 500
+				WEND
+			ENDIF
+		ELSE
+			SLEEP 10000
+		ENDIF
+		SLEEP 1000	
+	WEND
+RETURN VOID

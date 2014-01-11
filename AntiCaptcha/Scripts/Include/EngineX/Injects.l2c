@@ -1,0 +1,23 @@
+
+INCLUDE Include/EngineX/Injects/ToClient.l2c
+INCLUDE Include/EngineX/Injects/ToServer.l2c
+
+//-------------------------------------------------------------------------------------
+CLASS ENGINEX_INJECTS NULL
+//-------------------------------------------------------------------------------------
+
+   VAR_START
+      PUBLIC ENGINEX_INJECTS_TOCLIENT TOCLIENT 0
+      PUBLIC ENGINEX_INJECTS_TOSERVER TOSERVER 0
+   VAR_END
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT 0
+      THIS.TOCLIENT.CONSTRUCT VOID 0
+      THIS.TOSERVER.CONSTRUCT VOID 0
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+END_CLASS
+//-------------------------------------------------------------------------------------

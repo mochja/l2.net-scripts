@@ -1,0 +1,20 @@
+DEFINE INT A 10
+DEFINE INT B 100
+DEFINE INT C 1000
+DEFINE INT D 0
+
+PRINT_TEXT "A = <&A&>"
+PRINT_TEXT "B = <&B&>"
+PRINT_TEXT "C = <&C&>"
+PRINT_TEXT "D = <&D&>"
+
+DEFINE STRING poo "Tests"
+
+CALL_EXTERN "<&poo&>\call_extern2.l2s" TESTF D 1 A
+
+PRINT_TEXT "A = <&A&>"
+PRINT_TEXT "B = <&B&>"
+PRINT_TEXT "C = <&C&>"
+PRINT_TEXT "D = <&D&>"
+
+END_SCRIPT

@@ -1,0 +1,100 @@
+// Handle MagicSkillUse packets.
+
+FUNCTION Packet::MagicSkillUse 1 _bMagicSkillUse
+
+  DEFINE SORTEDLIST MagicSkillUse_SL
+  DEFINE INT ModuleHook 0
+  
+  CALL_EXTERN "DLIB\Packets\ReadMagicSkillUse.l2s" DLIB::Packets::ReadMagicSkillUse MagicSkillUse_SL 1 _bMagicSkillUse
+
+  SWITCH "MagicSkillUse_SL.#$SKILL"
+    CASE #I485
+    CASE #I775
+    CASE #I794
+      IF "AEGIS.OPTIONS.CONFIG.CONTAINS_KEY COUNTER_DISARM" == TRUE
+        IF "AEGIS.OPTIONS.CONFIG.#$COUNTER_DISARM" == TRUE
+          CALL_EXTERN "AEGIS\functions\CounterDisarm.l2s" AEGIS::CounterDisarm::ProcessMSU VOID 1 MagicSkillUse_SL
+        ENDIF
+      ENDIF
+      BREAK 1
+    CASE #I922
+      IF "AEGIS.OPTIONS.CONFIG.CONTAINS_KEY COUNTER_HIDE" == TRUE
+        IF "AEGIS.OPTIONS.CONFIG.#$COUNTER_HIDE" == TRUE     
+          CALL_EXTERN "AEGIS\functions\CounterHide.l2s" AEGIS::CounterHide::ProcessMSU VOID 1 MagicSkillUse_SL
+        ENDIF
+      ENDIF
+      BREAK 1
+    CASE #I701   // Divine Healer Resurrection
+    CASE #I740   // Heretic Resurrection
+    CASE #I1016  // Resurrection
+    CASE #I1254  // Mass Resurrection
+    CASE #I2014  // Scroll of Resurrection
+    CASE #I2049  // BREZ
+    CASE #I2062  // BREZ
+    CASE #I2179  // BREZ
+    CASE #I2321  // BREZ - Pet
+    CASE #I2393  // BREZ - Event
+    CASE #I2596  // Gran Kain's BREZ Scroll
+    CASE #I3160  // Item Skill: Resurection
+    CASE #I3263  // Blessed Resurection
+    CASE #I3409  // Blessed Ring of Resurrection
+    CASE #I5541  // Agathion Rez
+    CASE #I5545  // Agathion Rez
+    CASE #I21054 // BREZ - Unknown
+    CASE #I21095 // BREZ - Unknown
+    CASE #I21102 // BREZ - Unknown
+    CASE #I22104 // BREZ - Event
+    CASE #I23005 // Agathion Rez
+    CASE #I23009 // Agathion Rez
+    CASE #I23014 // Agathion Rez
+    CASE #I23030 // Agathion Rez
+    CASE #I23062 // Agathion Rez
+    CASE #I1419  // Volcano
+    CASE #I1420  // Cyclone
+    CASE #I1421  // Raging Waves
+    CASE #I1423  // Gehenna
+      IF "AEGIS.OPTIONS.CONFIG.CONTAINS_KEY TARGET_TRACKING" == TRUE
+        IF "AEGIS.OPTIONS.CONFIG.#$TARGET_TRACKING" == TRUE
+          CALL_EXTERN "AEGIS\functions\TargetingPerception.l2s" AEGIS::TargetingPerception::ProcessMSU VOID 1 MagicSkillUse_SL
+        ENDIF
+      ENDIF
+      BREAK 1
+  ENDSWITCH
+  
+  IF "AEGIS.OPTIONS.CONFIG.CONTAINS_KEY ACTIVE_RIPOSTE" == TRUE
+    IF "AEGIS.OPTIONS.CONFIG.#$ACTIVE_RIPOSTE" == TRUE
+      CALL_EXTERN "AEGIS\functions\ActiveRiposte.L2S" AEGIS::ActiveRiposte::ProcessMSU VOID 1 MagicSkillUse_SL
+    ENDIF
+  ENDIF
+
+  IF "AEGIS.OPTIONS.CONFIG.CONTAINS_KEY ACTIVE_PARRY" == TRUE
+    IF "AEGIS.OPTIONS.CONFIG.#$ACTIVE_PARRY" == TRUE
+      CALL_EXTERN "AEGIS\functions\ActivePARRY.L2S" AEGIS::ActivePARRY::ProcessMSU VOID 1 MagicSkillUse_SL
+    ENDIF
+  ENDIF
+  
+  IF "MagicSkillUse_SL.#$Target" == CHAR_ID
+ 
+    IF "AEGIS.OPTIONS.CONFIG.CONTAINS_KEY BUFF_PROTECT" == TRUE
+      IF "AEGIS.OPTIONS.CONFIG.#$BUFF_PROTECT" == TRUE
+        CALL_EXTERN "AEGIS\functions\BuffProtect.l2s" AEGIS::BuffProtect::ProcessMSU VOID 1 MagicSkillUse_SL
+      ENDIF
+    ENDIF
+    
+    IF "AEGIS.OPTIONS.CONFIG.CONTAINS_KEY COUNTER_STAB" == TRUE
+      IF "AEGIS.OPTIONS.CONFIG.#$COUNTER_STAB" == TRUE
+        IF "AEGIS.OPTIONS.CONFIG.#$COUNTER_STABS.CONTAINS_KEY <&MagicSkillUse_SL.#$SKILL&>" == TRUE
+          CALL_EXTERN "AEGIS\functions\CounterStab.L2S" AEGIS::CounterStab::ProcessMSU VOID 1 MagicSkillUse_SL
+        ENDIF
+      ENDIF
+    ENDIF
+    
+  ENDIF
+
+  IF "AEGIS.OPTIONS.CONFIG.CONTAINS_KEY SKILL_RECON" == TRUE
+    IF "AEGIS.OPTIONS.CONFIG.#$SKILL_RECON" == TRUE
+      CALL_EXTERN "AEGIS\functions\SkillRecon.l2s" AEGIS::SkillRecon::ProcessMSU VOID 1 MagicSkillUse_SL
+    ENDIF
+  ENDIF
+  
+RETURN VOID

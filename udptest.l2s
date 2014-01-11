@@ -1,0 +1,23 @@
+// Kratky popis
+// Server: 
+// Autor: mochitto
+// Date: 
+// Special thanks for L2.NET contributors
+// rev.: 0
+PRINT_TEXT "SCRIPT STARTED!]"
+define int cislo 0
+// Main section
+// ===============================
+while zero == 0
+	cislo = cislo + 1
+	DEFINE BYTEBUFFER SystemMessage 256
+	SystemMessage.WRITE_INT16 #i1212
+	SystemMessage.WRITE_STRING "#$Jsi zmrd <&cislo&>"
+	SystemMessage.TRIM_TO_INDEX
+	UDP_SENDBB SystemMessage
+	delete SystemMessage
+	sleep 1000
+wend
+	
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT

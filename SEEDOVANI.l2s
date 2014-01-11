@@ -1,0 +1,38 @@
+// Kratky popis
+// Server: 
+// Autor: mochitto
+// Date: 
+// Special thanks for L2.NET contributors
+// rev.: 0
+PRINT_TEXT "SCRIPT STARTED!]"
+define int SEED 1
+DEFINE INT MAX 0
+DEFINE INT NEXT_TARGET 1
+// Main section
+// ===============================
+DO
+	IF NEXT_TARGET == 1
+		TARGET_NEAREST
+		MAX = TARGET_MAX_HP
+	ENDIF
+	WHILE (TARGET_CUR_HP < MAX)
+		NEXT_TARGET = 0
+		IF SEED == 1
+			USE_ITEM 5034
+			SEED = 0
+		ENDIF
+		IF TARGET_CUR_HP == 0
+			IF SEED == 0
+				USE_ITEM 5125	
+				SEED = 1
+				MAX = -100
+				NEXT_TARGET = 1
+			ENDIF			
+		ENDIF
+		SLEEP 1000
+	WEND
+	SLEEP 1000
+LOOP ONE == ONE
+	
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT

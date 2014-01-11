@@ -1,0 +1,25 @@
+<html>
+<title>Tenshi no Sekai</title>
+<body>
+<center>
+<font color="00AAFF">TnS Shop</font><br>
+<br>
+<tr>
+<td><button value="Weapons" action="bypass -h npc_268478835_Chat 1" width=100 height=23 back="L2UI_ct1.button_df" fore="L2UI_ct1.button_df"></td>
+</tr>
+<tr>
+<td><button value="Armors" action="bypass -h npc_268478835_Chat 2" width=100 height=23 back="L2UI_ct1.button_df" fore="L2UI_ct1.button_df"></td>
+</tr>
+<tr>
+<td><button value="Jewelry" action="bypass -h npc_268478835_Chat 3" width=100 height=23 back="L2UI_ct1.button_df" fore="L2UI_ct1.button_df"></td>
+</tr>
+<tr>
+<td><button value="Miscellaneous" action="bypass -h npc_268478835_Chat 4" width=100 height=23 back="L2UI_ct1.button_df" fore="L2UI_ct1.button_df"></td>
+</tr>
+<br>
+<td><a action="bypass -h npc_268478835_TerritoryStatus"><font color="FF9900">Tax Info</font></a></td><br>
+<br>
+</center>
+</body>
+</html>
+

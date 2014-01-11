@@ -1,0 +1,447 @@
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+//////////////////////includes//////////////////////////////
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+INCLUDE StdLib/npc.l2c
+INCLUDE StdLib/inventory.l2c
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+////////////////////////events//////////////////////////////
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" SystemMessage 98
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" cancel_trade 112
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" cancel_party 57
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" cancel_clan 44
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+////////////////////////arrays//////////////////////////////
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+DEFINE_GLOBAL ARRAYLIST ALL_MOBLIST 0
+DEFINE_GLOBAL SORTEDLIST AGGRO_MOBLIST 0
+DEFINE_GLOBAL SORTEDLIST RANGE_MOBLIST 0
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+//////////////////////////vars//////////////////////////////
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+DEFINE_GLOBAL INT TIMEOUT 0
+DEFINE_GLOBAL INT FARM 1 // 1=farm; 0=dontfarm
+DEFINE_GLOBAL INT StartTime 0
+DEFINE_GLOBAL INT EndTime 7200
+DEFINE_GLOBAL INT RunTime 0
+DEFINE_GLOBAL INT TempTime 0
+DEFINE_GLOBAL STRING NICK_ONE "FromZeroo"
+DEFINE_GLOBAL STRING NICK_TWO "WindTard"
+DEFINE_GLOBAL INT CANT_SEE 0 // 0=can see; 1=cant see (recieved from event)
+DEFINE_GLOBAL INT MOB_DIST 0
+DEFINE_GLOBAL INT NPC_DIST 0
+DEFINE_GLOBAL INT MOB_DIST_LOOPZ 0
+DEFINE_GLOBAL STRING MOB_DIST_STRING ""
+DEFINE_GLOBAL INT MAX_MOB_DIST 2300
+DEFINE_GLOBAL INT CAN_ATTACK 0
+DEFINE_GLOBAL INT ATTACK_SUBJECT 0
+DEFINE_GLOBAL INT MOB_DEAD 0
+DEFINE_GLOBAL INT SUBJECT_AGGRO 0
+DEFINE_GLOBAL INT ARCANE_ON 0 // 0=off; 1=on
+DEFINE_GLOBAL INT DEATHS 0
+DEFINE_GLOBAL INT DEATH_MSG 0
+DEFINE_GLOBAL INT LOC 0
+DEFINE_GLOBAL INT PERCENT_HP 0
+DEFINE_GLOBAL INT DANGER_HP 0
+DEFINE_GLOBAL INT MINDIST 50
+DEFINE_GLOBAL INT TDIST 150
+DEFINE_GLOBAL INT X 0
+DEFINE_GLOBAL INT y 0
+DEFINE_GLOBAL INT z 0
+DEFINE_GLOBAL INT X_STORE 0
+DEFINE_GLOBAL INT Y_STORE
+DEFINE_GLOBAL INT Z_STORE
+DEFINE_GLOBAL STRING TITLE_AVOID "Mantra Master"
+//for antidisarm
+DEFINE_GLOBAL STRING WEAPON "Icarus Spirit" //name of weapon, only have 1 in inv
+ 
+DEFINE_GLOBAL STRING USE_ME ""
+DEFINE_GLOBAL STRING TEMP ""
+DEFINE_GLOBAL ARRAYLIST INV_LIST 0
+ 
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+////////////////////MAIN_SCRIPT/////////////////////////////
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+GET_TIME StartTime
+PERCENT_HP = CHAR_MAX_HP / #i100
+DANGER_HP = PERCENT_HP * #i60
+PRINT_TEXT "critical HP is <&DANGER_HP&>"
+SLEEP 1000
+DEATHS = ZERO
+ 
+DO
+CALLSUB DETECT_AGGRO_MOBS
+SLEEP 100
+CALLSUB DETECT_RANGE_MOBS
+SLEEP 100
+CALLSUB DESTROY_AGGRO_MOBS
+SLEEP 100
+CALLSUB DESTROY_RANGE_MOBS
+SLEEP 100
+LOOP CHAR_CUR_HP != ZERO
+SLEEP 1000
+TAP_TO TOWN
+SCRIPT_END
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+/////////////////////functions//////////////////////////////
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+FUNCTION SystemMessage
+DEFINE INT PacketType 0
+DEFINE INT MsgID 0
+DEFINE INT typesCount 0
+ 
+PACKET.READ_BYTE PacketType
+PACKET.READ_INT32 MsgID
+PACKET.READ_INT32 typesCount
+ 
+ 
+IF MsgID == #i181
+PRINT_TEXT ">>>> recieved cantsee_sysmsg"
+CANT_SEE = ONE
+ENDIF
+RETURN VOID
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+ 
+FUNCTION CONVERT_DIST 2 INTVALUE STRLENGTH
+DEFINE STRING RETURNSTRING "<&INTVALUE&>"
+DEFINE INT REST 0
+REST = STRLENGTH - RETURNSTRING.LENGTH
+FOR I 0 "<&REST&>" 1
+RETURNSTRING = "#$0<&RETURNSTRING&>"
+NEXT
+ 
+RETURN RETURNSTRING
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+FUNCTION MOVER 3 X Y Z
+DISTANCE TDIST X Y Z CHAR_X CHAR_Y CHAR_Z
+IF CHAR_CUR_HP < ONE 
+TDIST = ZERO 
+ENDIF 
+WHILE TDIST > MINDIST
+MOVE_TO "<&X&>" "<&Y&>" "<&Z&>"
+SLEEP 100
+DISTANCE TDIST X Y Z CHAR_X CHAR_Y CHAR_Z
+PRINT_TEXT "TDIST = <&TDIST&>"
+ 
+IF CHAR_CUR_HP < ONE 
+TDIST = ZERO 
+ENDIF 
+WEND
+RETURN VOID
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+FUNCTION cancel_trade
+PRINT_TEXT "recieved trade invite ..."
+SLEEP 2000
+PRINT_TEXT "cancelling trade invite ..."
+INJECT "55 00 00 00 00"
+SLEEP 1000
+RETURN VOID
+FUNCTION cancel_party
+PRINT_TEXT "recieved party invite ..."
+SLEEP 2000
+PRINT_TEXT "cancelling party invite ..."
+INJECT "43 00 00 00 00"
+SLEEP 1000
+RETURN VOID
+FUNCTION cancel_clan
+PRINT_TEXT "recieved clan invite ..."
+SLEEP 2000
+PRINT_TEXT "cancelling clan invite ..."
+INJECT "27 00 00 00 00"
+SLEEP 1000
+RETURN VOID
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+FUNCTION CHECKEQ
+ 
+FOREACH I Inventory INV_LIST
+ 
+IF INV_LIST.I.NAME == "#$<&WEAPON&>"
+IF INV_LIST.I.EQUIPPED == #i0
+PRINT_TEXT "Equipping <&WEAPON&>"
+TEMP = INV_LIST.I.ID.GET_HEX32
+USE_ME = "#$19 <&TEMP&> 00 00 00 00"
+INJECT "<&USE_ME&>"
+ENDIF
+ENDIF
+ 
+//PRINT_TEXT "Name:<&INV_LIST.I.NAME&>|ObjID:<&INV_LIST.I.ID&>|Equip:<&INV_LIST.I.EQUIPPED&>"
+NEXTEACH
+ 
+RETURN VOID
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+//////////////////////////subs//////////////////////////////
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+SUB DETECT_AGGRO_MOBS
+ALL_MOBLIST.CLEAR
+AGGRO_MOBLIST.CLEAR
+GET_NPCS ALL_MOBLIST
+PRINT_TEXT ""
+PRINT_TEXT ""
+PRINT_TEXT "================================="
+PRINT_TEXT "================================="
+PRINT_TEXT "!!!!!<&ALL_MOBLIST.COUNT&> NPC detected!!!!!"
+PRINT_TEXT "================================="
+PRINT_TEXT "================================="
+PRINT_TEXT "!!!!! detecting AGGRO mobs !!!!!!"
+PRINT_TEXT "================================="
+PRINT_TEXT ""
+PRINT_TEXT ""
+FOREACH A NPC ALL_MOBLIST
+IF ALL_MOBLIST.A.TARGET_ID == CHAR_ID
+DISTANCE MOB_DIST CHAR_X CHAR_Y CHAR_Z ALL_MOBLIST.A.X ALL_MOBLIST.A.Y ALL_MOBLIST.A.Z
+CONVERT_DIST MOB_DIST_STRING 2 MOB_DIST #i6
+AGGRO_MOBLIST.ADD ALL_MOBLIST.A.ID "<&MOB_DIST_STRING&>"
+ENDIF
+NEXTEACH
+ 
+PRINT_TEXT "...<&AGGRO_MOBLIST.COUNT&> AGGRO mobs detected..."
+PRINT_TEXT "================================="
+PRINT_TEXT "================================="
+RETURNSUB
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+SUB DETECT_RANGE_MOBS
+ALL_MOBLIST.CLEAR
+RANGE_MOBLIST.CLEAR
+GET_NPCS ALL_MOBLIST
+PRINT_TEXT ""
+PRINT_TEXT ""
+PRINT_TEXT "================================="
+PRINT_TEXT "================================="
+PRINT_TEXT "!!!!!<&ALL_MOBLIST.COUNT&> NPCs detected!!!!!"
+PRINT_TEXT "================================="
+PRINT_TEXT "================================="
+PRINT_TEXT "!!!!! detecting RANGE mobs !!!!!!"
+PRINT_TEXT "================================="
+PRINT_TEXT ""
+PRINT_TEXT ""
+FOREACH B NPC ALL_MOBLIST
+IF ALL_MOBLIST.B.ATTACKABLE == ONE
+IF ALL_MOBLIST.B.TITLE != TITLE_AVOID
+DISTANCE MOB_DIST CHAR_X CHAR_Y CHAR_Z ALL_MOBLIST.B.X ALL_MOBLIST.B.Y ALL_MOBLIST.B.Z
+IF MOB_DIST <= MAX_MOB_DIST
+CONVERT_DIST MOB_DIST_STRING 2 MOB_DIST #i6
+RANGE_MOBLIST.ADD ALL_MOBLIST.B.ID "<&MOB_DIST_STRING&>"
+ENDIF
+ENDIF
+ENDIF
+NEXTEACH
+ 
+PRINT_TEXT "...<&RANGE_MOBLIST.COUNT&> RANGE mobs detected..."
+PRINT_TEXT "================================="
+PRINT_TEXT "================================="
+RETURNSUB
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+SUB PRINT_AGGRO_MOBS
+PRINT_TEXT "AGGRO MOBLIST ARRAY:COUNT:<&AGGRO_MOBLIST.COUNT&>"
+FOREACH C INT AGGRO_MOBLIST
+PRINT_TEXT "index:<&C&> ID:<&AGGRO_MOBLIST.C&> range:<&AGGRO_MOBLIST.GET_KEY C&>"
+NEXTEACH
+PRINT_TEXT "end of AGGRO moblist print"
+RETURNSUB
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+SUB PRINT_RANGE_MOBS
+PRINT_TEXT "RANGE MOBLIST ARRAY:COUNT:<&RANGE_MOBLIST.COUNT&>"
+FOREACH D INT RANGE_MOBLIST
+PRINT_TEXT "index:<&D&> ID:<&RANGE_MOBLIST.D&> range:<&RANGE_MOBLIST.GET_KEY D&>"
+NEXTEACH
+PRINT_TEXT "end of RANGE moblist print"
+RETURNSUB
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+SUB DESTROY_AGGRO_MOBS
+MOB_DEAD = ZERO
+FOREACH C INT AGGRO_MOBLIST
+ 
+PRINT_TEXT "targetting <&AGGRO_MOBLIST.C&>"
+ATTACK_SUBJECT = AGGRO_MOBLIST.C
+SUBJECT_AGGRO = ONE
+CALLSUB ATTACK_SPH
+NEXTEACH
+RETURNSUB
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+SUB DESTROY_RANGE_MOBS
+IF MOB_DEAD == ZERO
+FOREACH D INT RANGE_MOBLIST
+ 
+IF MOB_DEAD == ZERO
+PRINT_TEXT "targetting <&RANGE_MOBLIST.D&>"
+ATTACK_SUBJECT = RANGE_MOBLIST.D
+SUBJECT_AGGRO = ZERO
+CALLSUB ATTACK_SPH
+ENDIF
+NEXTEACH
+ENDIF
+RETURNSUB
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+SUB ATTACK_SPH
+CANT_SEE = ZERO
+CAN_ATTACK = ZERO 
+PRINT_TEXT "attacking subject: <&ATTACK_SUBJECT&> ..."
+TARGET "<&ATTACK_SUBJECT&>"
+SLEEP 100
+IF TARGET_ID != ATTACK_SUBJECT
+TARGET "<&ATTACK_SUBJECT&>"
+SLEEP 100
+PRINT_TEXT "retargetting at begin of atk ..."
+ENDIF
+IF TARGET_CUR_HP == ZERO
+CAN_ATTACK = ONE
+PRINT_TEXT "its dead ... HP <&TARGET_CUR_HP&>/<&TARGET_MAX_HP&> " 
+ENDIF 
+IF SUBJECT_AGGRO == ZERO
+IF TARGET_CUR_HP != TARGET_MAX_HP
+CAN_ATTACK = ONE
+IF TARGET_CUR_HP > ZERO
+PRINT_TEXT "we wont KS ..." 
+ENDIF
+ENDIF 
+ENDIF
+ 
+IF CAN_ATTACK == ZERO
+DISTANCE MOB_DIST CHAR_X CHAR_Y CHAR_Z TARGET_X TARGET_Y TARGET_Z
+MOB_DIST_LOOPZ = ZERO 
+WHILE MOB_DIST > #i900
+MOB_DIST_LOOPZ = MOB_DIST_LOOPZ + ONE
+PRINT_TEXT "...comming:(loop <&MOB_DIST_LOOPZ&>)"
+IF MOB_DIST_LOOPZ == ONE
+X_STORE = CHAR_X
+Y_STORE = CHAR_Y
+Z_STORE = CHAR_Z
+PRINT_TEXT "storing values: <&X_STORE&>;<&Y_STORE&>;<&Z_STORE&>"
+ENDIF
+ATTACK_TARGET
+SLEEP 250
+DISTANCE MOB_DIST CHAR_X CHAR_Y CHAR_Z TARGET_X TARGET_Y TARGET_Z
+IF MOB_DIST_LOOPZ == #i20
+PRINT_TEXT "comparing stored values: <&X_STORE&>;<&Y_STORE&>;<&Z_STORE&> vs current: <&CHAR_X&>;<&CHAR_Y&>;<&CHAR_Z&>"
+IF X_STORE == CHAR_X
+IF Y_STORE == CHAR_Y
+IF Z_STORE == CHAR_Z
+PRINT_TEXT "still jerked, canceling loop"
+MOB_DIST = ZERO
+CAN_ATTACK = ONE
+ENDIF
+ENDIF
+ENDIF
+MOB_DIST_LOOPZ = ZERO
+ENDIF
+IF CANT_SEE == ONE
+MOB_DIST = ZERO
+CAN_ATTACK = ONE
+ENDIF
+WEND
+ENDIF
+ 
+IF CAN_ATTACK == ZERO
+USE_SKILL 1074 //surrender to wind
+SLEEP 300
+ENDIF
+IF CANT_SEE == ONE
+CAN_ATTACK = ONE
+SLEEP 100
+ENDIF
+IF CAN_ATTACK == ZERO 
+IF ARCANE_ON == ZERO
+SLEEP 200
+USE_SKILL 337 //arcane power turn on
+SLEEP 200
+ARCANE_ON = ONE
+ENDIF
+ENDIF
+IF CAN_ATTACK == ZERO
+USE_SKILL 1343 //dark vortex 1341=wind vortex
+SLEEP 200
+ENDIF
+IF CANT_SEE == ONE
+CAN_ATTACK = ONE
+SLEEP 100
+ENDIF
+ 
+WHILE CAN_ATTACK == ZERO
+IF TARGET_ID != ATTACK_SUBJECT
+TARGET "<&ATTACK_SUBJECT&>"
+PRINT_TEXT "retargetting in the loop"
+ENDIF
+IF CHAR_CUR_HP <= DANGER_HP
+USE_SKILL 1343 //dark vortex 1341=wind vortex
+SLEEP 200
+ENDIF
+USE_SKILL 1234 //vampiric
+SLEEP 200 
+USE_SKILL 1239 //hurricane
+SLEEP 200
+IF CANT_SEE == ONE
+CAN_ATTACK = ONE
+ENDIF
+IF TARGET_CUR_HP == ZERO
+CAN_ATTACK = ONE
+MOB_DEAD = ONE
+ENDIF 
+IF CHAR_CUR_HP == ZERO 
+CAN_ATTACK = ONE
+ENDIF
+GET_INVENTORY INV_LIST
+SLEEP 100
+CALL CHECKEQ
+SLEEP 100
+WEND
+IF MOB_DEAD == ONE
+IF CHAR_CUR_HP <= DANGER_HP
+USE_SKILL 1151 //corpse life drain
+SLEEP 100
+ENDIF
+ENDIF
+IF ARCANE_ON == ONE
+SLEEP 200
+USE_SKILL 337 //arcane power turn off
+SLEEP 200
+ARCANE_ON = ZERO
+ENDIF
+RETURNSUB
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////

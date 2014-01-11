@@ -1,0 +1,65 @@
+// DLIB::Packets::WriteSystemMessage - v1.1 for Gracia 2.4
+// by d00d [08/15/09]
+//
+// Creates a System Message packet based on a sorted list
+// template of values.
+
+// Version 1.0 - Initial Release
+// Version 1.1 - massive bugfixes
+
+FUNCTION DLIB::Packets::WriteSystemMessage 1 _oSystemMessage
+
+  DEFINE BYTEBUFFER _bOutBuffer 8192
+
+  DEFINE INT TYPE_TEXT        0
+  DEFINE INT TYPE_NUMBER      1
+  DEFINE INT TYPE_NPC_NAME    2
+  DEFINE INT TYPE_ITEM_NAME   3
+  DEFINE INT TYPE_SKILL_NAME  4
+  DEFINE INT TYPE_FORTRESS    5
+  DEFINE INT TYPE_ITEM_NUMBER 6
+  DEFINE INT TYPE_ZONE_NAME   7
+  DEFINE INT TYPE_AUGMENT     8
+
+  IF _oSystemMessage.CLASSNAME == "#$SORTEDLIST"
+
+    _bOutBuffer.WRITE_BYTE #I98
+    _bOutBuffer.WRITE_INT32 "_oSystemMessage.#$MESSAGE_ID"
+    _bOutBuffer.WRITE_INT32 "_oSystemMessage.#$MESSAGE_SIZE"
+
+    FOREACH Obj SystemMessage _oSystemMessage.#$DATA
+    
+      _bOutBuffer.WRITE_INT32 "_oSystemMessage.#$DATA.Obj.MESSAGE_TYPE"
+      
+      SWITCH "_oSystemMessage.#$DATA.Obj.MESSAGE_TYPE"
+        CASE TYPE_TEXT
+          _bOutBuffer.WRITE_STRING "_oSystemMessage.#$DATA.Obj.STRING_BUFFER"
+          BREAK 1
+        CASE TYPE_ITEM_NUMBER
+          _bOutBuffer.WRITE_INT64 "_oSystemMessage.#$DATA.Obj.INT_BUFFER0"
+          BREAK 1
+        CASE TYPE_ITEM_NAME
+        CASE TYPE_FORTRESS
+        CASE TYPE_NUMBER
+        CASE TYPE_NPC_NAME
+          _bOutBuffer.WRITE_INT32 "_oSystemMessage.#$DATA.Obj.INT_BUFFER0"
+          BREAK 1
+        CASE TYPE_SKILL_NAME
+          _bOutBuffer.WRITE_INT32 "_oSystemMessage.#$DATA.Obj.INT_BUFFER0"
+          _bOutBuffer.WRITE_INT32 "_oSystemMessage.#$DATA.Obj.INT_BUFFER1"
+          BREAK 1
+        CASE TYPE_ZONE_NAME
+          _bOutBuffer.WRITE_INT32 "_oSystemMessage.#$DATA.Obj.INT_BUFFER0"
+          _bOutBuffer.WRITE_INT32 "_oSystemMessage.#$DATA.Obj.INT_BUFFER1"
+          _bOutBuffer.WRITE_INT32 "_oSystemMessage.#$DATA.Obj.INT_BUFFER2"
+          BREAK 1
+      ENDSWITCH
+      
+    NEXTEACH
+    _bOutBuffer.TRIM_TO_INDEX
+    _bOutBuffer.RESET_INDEX   
+  ELSE
+    PRINT_TEXT "_oSystemMessage is not a sorted list."
+  ENDIF
+  
+RETURN _bOutBuffer

@@ -1,0 +1,123 @@
+INCLUDE class/nodeManager.l2c
+
+DEFINE INT LevelYouWant 24
+
+
+//------------------------------------------- DO NOT EDIT FROM HERE -------------------------------------\\
+
+SET_TARGETING TYPE TWO
+SET_TARGETING ATTACKABLE TWO
+SET_TARGETING COMBAT TWO
+
+DEFINE NodeManager myNodes 0
+DEFINE INT goodIndex 0
+
+myNodes.startNodeGroup NULL 0
+	myNodes.addNode NULL 3 -14713 121916 -2995
+	myNodes.addNode NULL 3 -14681 121041 -2990
+	myNodes.addTarget NULL 1 "#$Thoma"
+myNodes.endNodeGroup NULL 0
+
+myNodes.startNodeGroup NULL 0
+	myNodes.addNode NULL 3 -14611 123182 -2995
+	myNodes.addTarget NULL 1 "#$Thoma"
+myNodes.endNodeGroup NULL 0
+
+myNodes.startNodeGroup NULL 0
+	myNodes.addNode NULL 3 -14295 122787 -2995
+	myNodes.addTarget NULL 1 "#$Thoma"
+myNodes.endNodeGroup NULL 0
+
+myNodes.startNodeGroup NULL 0
+	myNodes.addNode NULL 3 -14469 121909 -2995
+	myNodes.addTarget NULL 1 "#$Thoma"
+myNodes.endNodeGroup NULL 0
+
+myNodes.startNodeGroup NULL 0
+	myNodes.addNode NULL 3 -15612 123881 -2995
+	myNodes.addTarget NULL 1 "#$Babenco"
+myNodes.endNodeGroup NULL 0
+
+myNodes.startNodeGroup NULL 0
+	myNodes.addNode NULL 3 -14246 122768 -2995
+	myNodes.addTarget NULL 1 "#$Thoma"
+myNodes.endNodeGroup NULL 0
+
+myNodes.startNodeGroup NULL 0
+	myNodes.addNode NULL 3 -13907 123436 -2995
+	myNodes.addTarget NULL 1 "#$Mellvile"
+myNodes.endNodeGroup NULL 0
+
+myNodes.startNodeGroup NULL 0
+	myNodes.addNode NULL 3 -13690 123535 -2995
+	myNodes.addTarget NULL 1 "#$Mellvile"
+myNodes.endNodeGroup NULL 0
+
+myNodes.startNodeGroup NULL 0
+	myNodes.addNode NULL 3 -14285 124417 -2995
+	myNodes.addTarget NULL 1 "#$Mellvile"
+myNodes.endNodeGroup NULL 0
+
+myNodes.startNodeGroup NULL 0
+	myNodes.addNode NULL 3 -14301 125608 -3141
+	myNodes.addTarget NULL 1 "#$Curtis"
+myNodes.endNodeGroup NULL 0
+
+
+//myNodes.printNodeTree NULL 0
+
+PRINT_TEXT "Started Schuttgart Delevel Script"
+PRINT_TEXT "Starting devel in 2 second"
+SLEEP 2000
+
+//Check if we are dead or alive
+IF CHAR_CUR_HP == ZERO
+	CALLSUB SpawnToTown
+ENDIF
+
+WHILE ONE == ONE
+	//Check level for finish
+	IF CHAR_LEVEL <= LevelYouWant
+		CALLSUB Finished
+	ENDIF
+
+	//Travel to a guard
+	PRINT_TEXT "Moving..."
+	myNodes.calcDistances NULL 0
+	myNodes.findSmallestIndex goodIndex 0
+	myNodes.followNodeTrain NULL 1 goodIndex
+	
+	//Target and Attack guard
+	PRINT_TEXT "Attacking patrol"
+	//COMMAND "/target Patrol"
+	SLEEP 600
+	ATTACK_TARGET
+	
+	//wait to die
+	PRINT_TEXT "Waiting to Die"
+	CALLSUB WaitForDeath
+	PRINT_TEXT "Ok, now I'm dead. Time to respawn!"
+	SLEEP 1000
+	CALLSUB SpawnToTown
+	SLEEP 3000
+WEND
+
+SUB WaitForDeath
+	WHILE CHAR_CUR_HP > ZERO
+		//PRINT_TEXT "Waiting to get killed..."
+		ATTACK_TARGET
+		SLEEP 3000
+	WEND
+RETURNSUB
+
+SUB SpawnToTown
+	//INJECT "7D 00 00 00 00" //accept rez to town
+	TAP_TO TOWN
+RETURNSUB
+
+SUB Finished
+	PRINT_TEXT "Finished Deleveling..."
+	WHILE ONE == ONE
+		SLEEP 9000000
+	WEND
+RETURNSUB

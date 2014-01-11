@@ -1,0 +1,225 @@
+// 
+// Server: all (for l2-divinity)
+// Autor: mochitto
+// Date: 5.6.2010
+// Special thanks for L2.NET contributors
+// rev.: 7
+PRINT_TEXT "SCRIPT STARTED!]"
+
+INCLUDE "DLIB\Packets\Classes\AbnormalStatusUpdate.l2c"
+INCLUDE "StdLib\Item.l2c"
+// Main section
+// ========================================
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" AbnormalStatusUpdate 133 
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" RequestMagicSkillUse 0x39
+
+WHILE ZERO == ZERO
+     SLEEP 1000
+WEND
+     
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT
+
+
+FUNCTION ExShowScreenMessage 1 TEXT
+     DEFINE BYTEBUFFER ExShowScreenMessage 256
+     ExShowScreenMessage.WRITE_BYTE #i254
+     ExShowScreenMessage.WRITE_INT16 #i57
+     ExShowScreenMessage.WRITE_INT32 #i1 // 1 inan wiad --- 0 sys mas
+     ExShowScreenMessage.WRITE_INT32 #i2 // system ssg id
+     ExShowScreenMessage.WRITE_INT32 #i2 // DEST
+     ExShowScreenMessage.WRITE_INT32 #i0
+     ExShowScreenMessage.WRITE_INT32 #i1 // font size
+     ExShowScreenMessage.WRITE_INT32 #i0
+     ExShowScreenMessage.WRITE_INT32 #i0
+     ExShowScreenMessage.WRITE_INT32 #i0 //effect
+     ExShowScreenMessage.WRITE_INT32 #i1500 // TIME
+     ExShowScreenMessage.WRITE_INT32 #i0
+     ExShowScreenMessage.WRITE_STRING "#$<&TEXT&>"
+     ExShowScreenMessage.TRIM_TO_INDEX
+     INJECTBB_CLIENT ExShowScreenMessage
+     DELETE ExShowScreenMessage
+RETURN VOID
+
+FUNCTION MSG 1 TEXT
+     DEFINE BYTEBUFFER SystemMessage 256
+     SystemMessage.WRITE_BYTE #i98
+     SystemMessage.WRITE_INT32 #i1987
+     SystemMessage.WRITE_INT32 TEXT.LENGTH
+     SystemMessage.WRITE_INT32 #i0
+     SystemMessage.WRITE_STRING TEXT
+     SystemMessage.TRIM_TO_INDEX
+     INJECTBB_CLIENT SystemMessage
+     DELETE SystemMessage
+RETURN VOID
+
+FUNCTION MagicSkillUse
+     DEFINE INT charObjId 0
+     DEFINE INT targetId 0
+     DEFINE INT skillId 0
+     DEFINE INT skillLevel 0
+     DEFINE INT hitTime 0
+     DEFINE INT reuseDelay 0
+     DEFINE INT x 0
+     DEFINE INT y 0
+     DEFINE INT z 0
+     DEFINE INT tx 0
+     DEFINE INT ty 0
+     DEFINE INT tz 0 
+     DEFINE STRING SKILL_NAME 0      
+
+     PACKET.READ_BYTE NULL
+     PACKET.READ_INT32 charObjId
+     PACKET.READ_INT32 targetId
+     PACKET.READ_INT32 skillId
+     PACKET.READ_INT32 skillLevel
+     PACKET.READ_INT32 hitTime
+     PACKET.READ_INT32 reuseDelay
+     PACKET.READ_INT32 x
+     PACKET.READ_INT32 y
+     PACKET.READ_INT32 z
+     PACKET.READ_INT32 NULL
+     PACKET.READ_INT32 tx
+     PACKET.READ_INT32 ty
+     PACKET.READ_INT32 tz      
+     
+     SWITCH skillId
+          CASE #i5495
+          CASE #i5496
+          CASE #i5497
+          CASE #i5498
+          CASE #i5499
+          CASE #i5531
+          CASE #i5532
+          CASE #i5533
+          CASE #i1015
+          CASE #i2153
+          CASE #i2154
+          CASE #i2164
+               BREAK 1
+          DEFAULT
+               DEFINE BYTEBUFFER MagicSkillUseCLIENT 512
+               MagicSkillUseCLIENT.WRITE_BYTE #i72
+               MagicSkillUseCLIENT.WRITE_INT32 charObjId
+               MagicSkillUseCLIENT.WRITE_INT32 targetId
+               MagicSkillUseCLIENT.WRITE_INT32 skillId
+               MagicSkillUseCLIENT.WRITE_INT32 skillLevel
+               MagicSkillUseCLIENT.WRITE_INT32 hitTime
+               MagicSkillUseCLIENT.WRITE_INT32 reuseDelay
+               MagicSkillUseCLIENT.WRITE_INT32 x
+               MagicSkillUseCLIENT.WRITE_INT32 y
+               MagicSkillUseCLIENT.WRITE_INT32 z
+               MagicSkillUseCLIENT.WRITE_INT32 #i0
+               MagicSkillUseCLIENT.WRITE_INT32 tx
+               MagicSkillUseCLIENT.WRITE_INT32 ty
+               MagicSkillUseCLIENT.WRITE_INT32 tz
+               //SKILL_GET_NAME SKILL_NAME skillId
+               //PRINT_TEXT "SKILL USED: <&skillId&>"
+               INJECTBB_CLIENT MagicSkillUseCLIENT
+               DELETE MagicSkillUseCLIENT
+     ENDSWITCH     
+RETURN VOID
+
+FUNCTION PICKUP
+     DEFINE ARRAYLIST ITEMS
+     WHILE ZERO == ZERO
+          LABEL O
+          GET_ITEMS ITEMS
+          FOREACH I ITEM ITEMS
+               SWITCH ITEMS.I.ITEM_ID
+                    CASE #i6660 //Ring of Queen Ant
+                    CASE #i6659 //Zaken's Earring
+                    CASE #i6656 //Earring of Antharas
+                    CASE #i6658 //Ring of Baium
+                    CASE #i6662 //Ring of Core
+                    CASE #i6661 //Earring of Orfen
+                    CASE #i6657 //Necklace of Valakas
+                    case #i10486
+                    case #i9576
+                    case #i14169
+                    //CASE #i57
+                         DEFINE BYTEBUFFER Action 256
+                         Action.WRITE_BYTE #i31 // 1F
+                         Action.WRITE_INT32 ITEMS.I.ID // Object ID
+                         Action.WRITE_INT32 ITEMS.I.X
+                         Action.WRITE_INT32 ITEMS.I.Y
+                         Action.WRITE_INT32 ITEMS.I.Z
+                         Action.WRITE_BYTE #i0 // normal or shift
+                         Action.TRIM_TO_INDEX
+                         INJECTBB Action
+                         DELETE Action  
+                         SLEEP 500
+                         JUMP_TO_LABEL O 
+               ENDSWITCH
+          NEXTEACH
+          SLEEP 500
+     WEND 
+RETURN VOID
+
+FUNCTION SetupGauge 2 COLOR TIME
+     DEFINE BYTEBUFFER B_SetupGauge 256
+     B_SetupGauge.WRITE_BYTE #i107
+     B_SetupGauge.WRITE_INT32 COLOR
+     B_SetupGauge.WRITE_INT32 TIME
+     B_SetupGauge.WRITE_INT32 TIME
+     B_SetupGauge.TRIM_TO_INDEX
+     INJECTBB_CLIENT B_SetupGauge
+     DELETE B_SetupGauge
+RETURN VOID
+
+FUNCTION AbnormalStatusUpdate 
+     DEFINE INT EFFECT_COUNT
+    
+    PACKET.READ_BYTE NULL
+    PACKET.READ_INT16 EFFECT_COUNT
+  
+    FOR Z 0 "<&EFFECT_COUNT&>" 1
+    
+      DEFINE AbnormalStatusUpdate Effect
+      
+      PACKET.READ_INT32 EFFECT.EFFECT_ID
+      PACKET.READ_INT16 EFFECT.EFFECT_LEVEL
+      PACKET.READ_INT32 EFFECT.EFFECT_DURATION
+      EFFECT.EFFECT_ORDER = "#I<&Z&>"
+      //print_text "<&EFFECT.EFFECT_ID&>"
+
+      SWITCH EFFECT.EFFECT_ID
+           CASE #I6059  // CC Trigger
+           case #i5428
+           //CASE #I5576  // bariera
+                RequestDispel VOID 2 EFFECT.EFFECT_ID EFFECT.EFFECT_LEVEL
+                BREAK 1
+       ENDSWITCH
+
+      DELETE Effect
+      
+    NEXT
+RETURN VOID
+
+FUNCTION RequestDispel 2 _iSkill _iLevel
+      DEFINE BYTEBUFFER _bInject 256
+     _bInject.WRITE_BYTE #I208 // Request Dispel
+     _bInject.WRITE_BYTE #I75  // Unknown
+     _bInject.WRITE_BYTE #I0   // Unknown
+     //SKILL_GET_ID _iSkill "<&DispelEffects.Buff&>"
+     _bInject.WRITE_INT32 _iSkill // Skill ID
+     _bInject.WRITE_INT32 _iLevel // Skill Level
+     _bInject.TRIM_TO_INDEX
+     //_bInject.RESET_INDEX
+     SLEEP 100
+     INJECTBB _bInject
+     DELETE _bInject 
+RETURN VOID
+// 5425 -- CC Trigger
+// 5576 -- bariera 
+
+function RequestMagicSkillUse
+     DEFINE int skill_id
+     define int Ctrl
+     DEFINE INT sHIFT
+
+     packet.read_byte null
+     packet.READ_INT32 SKILL_ID
+     PACKET.READ_INT32 Ctrl
+     PACKET.READ_INT32 Shift
+RETURN VOID

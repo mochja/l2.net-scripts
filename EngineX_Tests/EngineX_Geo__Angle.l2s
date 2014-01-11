@@ -1,0 +1,22 @@
+
+	INCLUDE Include/EngineX.l2c
+	DEFINE_GLOBAL ENGINEX ENGINEX 0
+
+	PRINT_TEXT ""
+	PRINT_TEXT "-------------------------------------------------"
+
+	DEFINE INT ANGLE 0
+
+	ENGINEX.GEO.ANGLE ANGLE 4 #i0 #i0 #i100 #i0
+	PRINT_TEXT "Angle: <&ANGLE&> (should be 0)"
+
+	ENGINEX.GEO.ANGLE ANGLE 4 #i0 #i0 #i100 #i100
+	PRINT_TEXT "Angle: <&ANGLE&> (should be 45)"
+
+	ENGINEX.GEO.ANGLE ANGLE 4 #i0 #i0 #i-100 #i-100
+	PRINT_TEXT "Angle: <&ANGLE&> (should be 225)"
+
+	PRINT_TEXT "-------------------------------------------------"
+	PRINT_TEXT ""
+
+END_SCRIPT

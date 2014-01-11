@@ -1,0 +1,126 @@
+// AEGIS/functions/SkillRecon.l2s
+// Reports the skills used by the currently targeted player
+
+FUNCTION SkillReconAdmin
+
+  // Block RequestSendL2FriendSay 6b
+  BLOCK_CLIENT 107
+  
+  IF "AEGIS.OPTIONS.CONFIG.CONTAINS_KEY SKILL_RECON" == FALSE
+    AEGIS.OPTIONS.CONFIG.ADD FALSE "SKILL_RECON"
+  ENDIF
+
+  IF "AEGIS.OPTIONS.CONFIG.CONTAINS_KEY SKILL_RECON_MODE" == FALSE
+    AEGIS.OPTIONS.CONFIG.ADD FALSE "SKILL_RECON_MODE"
+  ENDIF
+  
+  IF "AEGIS.OPTIONS.CONFIG.#$SKILL_RECON" == TRUE
+    PRINT_TEXT "Skill Recon enabled."
+  ELSE
+    PRINT_TEXT "Skill Recon disabled."
+  ENDIF
+  
+RETURN VOID
+
+
+FUNCTION AEGIS::SkillRecon::ProcessMSU 1 _oMagicSkillUse
+
+  DEFINE BYTEBUFFER _bL2FriendSay 4096
+  DEFINE STRING MSG_BUF
+
+  DEFINE STRING SKILL_NAME
+  DEFINE STRING SKILL_LEVEL
+  DEFINE STRING SKILL_DESC
+
+  IF "AEGIS.OPTIONS.CONFIG.CONTAINS_KEY SKILL_RECON_MODE" == TRUE
+    IF AEGIS.OPTIONS.CONFIG.#$SKILL_RECON_MODE == FALSE
+      IF _oMagicSkillUse.#$SOURCE == TARGET_ID
+       
+        SWITCH _oMagicSkillUse.#$SKILL
+          CASE #I8    // Focus Sonic
+          CASE #I2033 // Pet SS
+          CASE #I2047 // Beast Soul Shot
+          CASE #I2149 // SoulShot No Grade
+          CASE #I2150 // SoulShot D Grade
+          CASE #I2151 // SoulShot C Grade
+          CASE #I2152 // SoulShot B Grade
+          CASE #I2153 // SoulShot A Grade
+          CASE #I2154 // SoulShot S Grade
+          CASE #I2159 // Blessed Spirit Shot No Grade
+          CASE #I2160 // Blessed Spirit Shot D Grade
+          CASE #I2161 // Blessed Spirit Shot C Grade
+          CASE #I2162 // Blessed Spirit Shot B Grade
+          CASE #I2163 // Blessed Spirit Shot A Grade
+          CASE #I2164 // Blessed Spirit Shot S Grade
+            BREAK 1
+          DEFAULT
+  
+            SKILL_GET_NAME SKILL_NAME "<&_oMagicSkillUse.#$SKILL&>" "<&_oMagicSkillUse.#$LEVEL&>"
+    
+            SKILL_GET_DESC2 SKILL_DESC "<&_oMagicSkillUse.#$SKILL&>" "<&_oMagicSkillUse.#$LEVEL&>"
+    
+    
+            IF SKILL_DESC == "#$none"
+              MSG_BUF = "#$<&TARGET_NAME&> used <&SKILL_NAME&> (<&_oMagicSkillUse.#$SKILL&>)"
+            ELSE
+              MSG_BUF = "#$<&TARGET_NAME&> used <&SKILL_NAME&> (<&_oMagicSkillUse.#$SKILL&>) OE: <&SKILL_DESC&>"
+            ENDIF
+    
+            _bL2FriendSay.WRITE_BYTE #I120
+            _bL2FriendSay.WRITE_INT32 ZERO
+            _bL2FriendSay.WRITE_STRING CHAR_NAME
+            _bL2FriendSay.WRITE_STRING "#$SKILL_RECON"
+            _bL2FriendSay.WRITE_STRING MSG_BUF    
+            _bL2FriendSay.TRIM_TO_INDEX
+            _bL2FriendSay.RESET_INDEX
+  
+            INJECTBB_CLIENT _bL2FriendSay
+            BREAK 1
+        ENDSWITCH
+      ENDIF
+    ELSE
+      SWITCH _oMagicSkillUse.#$SKILL
+        CASE #I8    // Focus Sonic
+        CASE #I2033 // Pet SS
+        CASE #I2047 // Beast Soul Shot
+        CASE #I2149 // SoulShot No Grade
+        CASE #I2150 // SoulShot D Grade
+        CASE #I2151 // SoulShot C Grade
+        CASE #I2152 // SoulShot B Grade
+        CASE #I2153 // SoulShot A Grade
+        CASE #I2154 // SoulShot S Grade
+        CASE #I2159 // Blessed Spirit Shot No Grade
+        CASE #I2160 // Blessed Spirit Shot D Grade
+        CASE #I2161 // Blessed Spirit Shot C Grade
+        CASE #I2162 // Blessed Spirit Shot B Grade
+        CASE #I2163 // Blessed Spirit Shot A Grade
+        CASE #I2164 // Blessed Spirit Shot S Grade
+          BREAK 1
+        DEFAULT
+  
+          SKILL_GET_NAME SKILL_NAME "<&_oMagicSkillUse.#$SKILL&>" "<&_oMagicSkillUse.#$LEVEL&>"
+  
+          SKILL_GET_DESC2 SKILL_DESC "<&_oMagicSkillUse.#$SKILL&>" "<&_oMagicSkillUse.#$LEVEL&>"
+  
+  
+          IF SKILL_DESC == "#$none"
+            MSG_BUF = "#$<&TARGET_NAME&> used <&SKILL_NAME&> (<&_oMagicSkillUse.#$SKILL&>)"
+          ELSE
+            MSG_BUF = "#$<&TARGET_NAME&> used <&SKILL_NAME&> (<&_oMagicSkillUse.#$SKILL&>) OE: <&SKILL_DESC&>"
+          ENDIF
+  
+          _bL2FriendSay.WRITE_BYTE #I120
+          _bL2FriendSay.WRITE_INT32 ZERO
+          _bL2FriendSay.WRITE_STRING CHAR_NAME
+          _bL2FriendSay.WRITE_STRING "#$SKILL_RECON"
+          _bL2FriendSay.WRITE_STRING MSG_BUF    
+          _bL2FriendSay.TRIM_TO_INDEX
+          _bL2FriendSay.RESET_INDEX
+         
+          INJECTBB_CLIENT _bL2FriendSay
+          BREAK 1
+      ENDSWITCH
+    ENDIF
+  ENDIF
+  
+RETURN VOID

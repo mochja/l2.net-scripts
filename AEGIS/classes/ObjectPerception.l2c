@@ -1,0 +1,11 @@
+CLASS ObjectPerception null
+VAR_START
+ 
+  PUBLIC MyCharacter Character
+  PUBLIC SORTEDLIST Players
+  PUBLIC SORTEDLIST Npcs
+  PUBLIC SORTEDLIST Skills
+  
+VAR_END
+ 
+END_CLASS

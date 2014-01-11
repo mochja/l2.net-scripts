@@ -1,0 +1,7 @@
+PRINT_TEXT   		  "whitespace test"
+
+DEFINE 	 INT	A	 100
+
+	PRINT_TEXT 	"aaaa"
+
+END_SCRIPT

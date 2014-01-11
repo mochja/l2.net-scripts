@@ -1,0 +1,73 @@
+// Kratky popis
+// Server: 
+// Autor: mochitto
+// Date: 
+// Special thanks for L2.NET contributors
+// rev.: 0
+PRINT_TEXT "SCRIPT STARTED!]"
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" UpdatePetInventory 180
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" UpdatePetInventory 179
+DEFINE_GLOBAL INT FOOD_ID
+// Main section
+// ===============================
+DEFINE_GLOBAL INT PERCENT_HP 99
+DEFINE_GLOBAL INT PERCENT_MP 99
+THREAD PETSUPPORT
+
+SLEEP 182637128  	
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT
+
+FUNCTION PetSupport
+	DEFINE INT A 0	
+	DO     
+			PRINT_TEXT "Pet use hp pot"
+			SLEEP 1000
+			INJECT "94 <&FOOD_ID.GET_HEX32&>" 
+	
+		SLEEP 35283
+	LOOP ONE == ONE
+RETURN VOID
+
+FUNCTION UpdatePetInventory
+	PRINT_TEXT "===F:UpdatePetInventory"
+	DEFINE INT TMP_OBJ_ID
+	DEFINE INT TMP_ITEM_ID
+	DEFINE INT COUNT
+	UMP_POT = 0
+	UHP_POT = 0
+	
+	PACKET.READ_BYTE NULL
+	PACKET.READ_INT16 COUNT
+	FOR A 0 "<&COUNT&>" 1
+		PACKET.READ_INT16 NULL //writeH(item.getChange());
+		PACKET.READ_INT16 NULL //writeH(item.getItem().getType1()); // item type1
+		PACKET.READ_INT32 TMP_OBJ_ID // writeD(item.getObjectId());
+		PACKET.READ_INT32 TMP_ITEM_ID //writeD(item.getItem().getItemId());
+		PACKET.READ_INT64 NULL //writeQ(item.getCount());
+		PACKET.READ_INT16 NULL //writeH(item.getItem().getType2());	// item type2
+		PACKET.READ_INT16 NULL // writeH(0x00);	// ?
+		PACKET.READ_INT16 NULL //writeH(item.getEquipped());
+		PACKET.READ_INT32 NULL //writeD(item.getItem().getBodyPart());	// rev 415   slot    0006-lr.ear  0008-neck  0030-lr.finger  0040-head  0080-??  0100-l.hand  0200-gloves  0400-chest  0800-pants  1000-feet  2000-??  4000-r.hand  8000-r.hand
+		
+		PACKET.READ_INT16 NULL // writeH(item.getEnchant());	// enchant level
+		PACKET.READ_INT16 NULL // writeH(0x00);	// ?
+		PACKET.READ_INT16 NULL 
+		PACKET.READ_INT16 NULL 
+		PACKET.READ_INT16 NULL 
+		PACKET.READ_INT16 NULL 
+		PACKET.READ_INT16 NULL 
+		PACKET.READ_INT16 NULL 
+		PACKET.READ_INT16 NULL 
+		PACKET.READ_INT16 NULL		                
+		PACKET.READ_INT16 NULL // (0x00); // Enchant effect 1
+		PACKET.READ_INT16 NULL // writeH(0x00); // Enchant effect 2
+		PACKET.READ_INT16 NULL // writeH(0x00); // Enchant effect 3
+		//print_text "========================== <&TMP_ITEM_ID&>"
+		
+		SWITCH TMP_ITEM_ID
+			CASE #i2515
+				FOOD_ID = TMP_OBJ_ID
+		ENDSWITCH 
+	NEXT
+RETURN VOID               

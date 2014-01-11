@@ -1,0 +1,7 @@
+FUNCTION TESTF 1 Cad
+PRINT_TEXT "in function"
+DEFINE INT A 222
+PRINT_TEXT "A = <&A&>"
+PRINT_TEXT "Cad = <&Cad&>"
+//PAUSE
+RETURN A

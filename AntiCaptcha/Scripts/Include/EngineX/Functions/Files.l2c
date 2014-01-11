@@ -1,0 +1,63 @@
+
+//-------------------------------------------------------------------------------------
+CLASS ENGINEX_FUNCTIONS_FILES NULL
+//-------------------------------------------------------------------------------------
+
+   VAR_START
+   VAR_END
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT 0
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   // original idea @ iosc
+   PUBLIC READ 2 FILENAME EOF_CALLER
+
+      DEFINE ARRAYLIST CONTENT 0
+      IF ( FILE_EXISTS "#$Scripts/Files/<&FILENAME&>" )
+         DEFINE FILEREADER FROPEN "<&FILENAME&>"
+         WHILE ( TRUE == TRUE )
+            DEFINE STRING LINEREADER ""
+            FROPEN.READ LINEREADER
+            IF ( LINEREADER == "#$<&EOF_CALLER&>" )
+               BREAK 2
+            ELSE
+               CONTENT.ADD LINEREADER
+            ENDIF
+            DELETE LINEREADER
+         WEND
+         FROPEN.CLOSE
+      ENDIF
+
+   RETURN CONTENT
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC WRITE 3 FILENAME CONTENT EOF
+      DEFINE FILEWRITER FW "<&FILENAME&>"
+      THIS._WRITE VOID 2 FW CONTENT
+      FW.WRITE "#$<&EOF&>"
+      FW.FLUSH
+      FW.CLOSE
+   RETURN VOID
+
+   PUBLIC _WRITE 2 FW CONTENT
+      IF ( ( CONTENT.CLASSNAME == #$ARRAYLIST ) || ( CONTENT.CLASSNAME == #$SORTEDLIST ) )
+         FOR I 0 "<&CONTENT.COUNT&>" 1
+            THIS._WRITE VOID 2 FW CONTENT.I
+         NEXT
+      ELSE
+         IF ( ( ( CONTENT.CLASSNAME == #$STRING ) || ( CONTENT.CLASSNAME == #$DOUBLE ) ) || ( CONTENT.CLASSNAME == #$INT ) )
+            FW.WRITE CONTENT
+         ELSE
+            FW.WRITE CONTENT.CLASSNAME
+         ENDIF
+      ENDIF
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+END_CLASS
+//-------------------------------------------------------------------------------------

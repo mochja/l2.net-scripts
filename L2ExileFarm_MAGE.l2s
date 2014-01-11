@@ -1,0 +1,81 @@
+SET_EVENT "<&SCRIPTEVENT_SELFDIE&>" "<&SYSTEM_CURRENTFILE&>" SelfDie
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" TeleportToLocation 34
+ PRINT_TEXT "SCRIPT STARTED!]"
+	THREAD CAN_BOT_CHECKER
+	THREAD BUFF_CHECKER
+	
+	DEFINE_GLOBAL INT CAN_BOT 1
+
+	INCLUDE "Include/EngineX.l2c"
+	DEFINE_GLOBAL ENGINEX ENGINEX 0
+	DEFINE INT ITEM_C 0
+	DEFINE INT REQUESTED_ADENA 0
+   
+	WHILE ZERO == ZERO
+		ITEM_COUNT ITEM_C 6673
+		IF ITEM_C > 1000
+			//-------------------------------------------------------------------------------------
+			DEFINE NULL xAUTOMAIL 0
+			ENGINEX.CONSTRUCT xAUTOMAIL 1 #$EngineX.AutoBot.Mailing
+			//-------------------------------------------------------------------------------------
+
+			//xAUTOMAIL.ADD_SEND_ITEM VOID 3 [ITEM_ID] [COUNT] [TYPE]
+			//types:
+			//0 = send all u have
+			//1 = send only this count, dont send if u have less
+			//2 = send this count, send less if u dont have that much
+			//3 = send this count multiple times as often as possible
+			//4 = send as much but keep this count
+
+			xAUTOMAIL.ADD_SEND_ITEM VOID 3 6673 0 0
+			xAUTOMAIL.ADD_SEND_ITEM VOID 3 57 10000000000 1 
+   
+   
+			xAUTOMAIL.SEND_ITEMS VOID 4 #$EmoBaby #$[RE]hello #$ REQUESTED_ADENA
+			DELETE xAUTOMAIL
+		ENDIF
+		SLEEP 1000 
+	WEND
+	
+	END_SCRIPT
+	
+FUNCTION TeleportToLocation
+     DEFINE INT OBJ_ID 0
+     
+     PACKET.READ_BYTE NULL
+     PACKET.READ_INT32 OBJ_ID 
+     
+     IF OBJ_ID == CHAR_ID
+          CAN_BOT = FALSE
+          NMESSAGE_BOX "Teleported?!" "Why I was teleported?! Maybe GM?" "<&WARNING&>"
+     ENDIF
+RETURN VOID
+
+FUNCTION SelfDie
+	CAN_BOT = FALSE
+	SLEEP 2131
+	TAP_TO TOWN
+	SLEEP 27312
+	INJECT "57"                          
+	NMESSAGE_BOX "Dead??!" "Why Im dead??! Maybe GM?" "<&WARNING&>"
+RETURN VOID 
+
+FUNCTION CAN_BOT_CHECKER
+	DO
+		IF CAN_BOT == FALSE
+			BOTSET ACTIVE_TARGET_ON "<&FALSE&>"
+			CANCEL_TARGET
+			SLEEP 5500000
+		ENDIF
+		SLEEP 25
+	LOOP ONE == ONE
+RETURN VOID
+
+FUNCTION BUFF_CHECKER
+	DO
+		IF CAN_BOT == TRUE
+			USE_SKILL_SMART 1457
+			SLEEP 1100000
+		ENDIF
+	LOOP ONE == ONE
+RETURN VOID

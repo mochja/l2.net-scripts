@@ -1,0 +1,157 @@
+//BY slothmo, CHaNG, and mpj123
+
+//SET_TARGETING COMBAT TWO
+
+//lets make a variable to store the hp to rest when we drop below
+DEFINE INT HP 2
+MATH HP CHAR_MAX_HP DIVIDE HP
+//we make it equal to half our max
+
+//let set a range to pick up loot
+DEFINE INT loot_range 150
+
+//variables for detecting if we are blocked
+DEFINE INT StartTime 0
+DEFINE INT CurTime 0
+DEFINE INT TotTime 0
+DEFINE INT MaxTime 50000000
+
+//make a variable to store our rest info
+DEFINE INT Rest "<&ONE&>"
+
+//just a printout 
+PRINT_TEXT "rest below <&HP&>"
+PRINT_TEXT "Max time is <&MaxTime&>"
+
+//lets make sure we start with decent hp
+IF CHAR_CUR_HP < HP
+	CALLSUB Rest
+ENDIF
+
+DO 
+	DO 
+		CALLSUB Target
+
+		//if we got a target
+		IF TARGET_CUR_HP > ZERO
+			//lets spoil it
+			CALLSUB Spoil
+			//lets kill it
+			CALLSUB KillTarget
+		ENDIF
+
+		PRINT_TEXT "target dead"
+
+		//now our target is dead
+		//PRINT_TEXT "<&NEAREST_ITEM_DISTANCE&>"
+		WHILE NEAREST_ITEM_DISTANCE < loot_range
+			//PRINT_TEXT "loot is nearby"
+			CALLSUB pickup
+		WEND
+	//do we need to rest? if not lets keep fighting
+	LOOP CHAR_CUR_HP > HP 
+
+	PRINT_TEXT "lower than <&HP&>, resting"
+	CALLSUB Rest
+	PRINT_TEXT "hp is full, starting to fight again"
+LOOP ZERO == ZERO
+
+END_SCRIPT
+
+////////SUBS//////////
+
+SUB Target
+	TARGET_NEAREST
+	SLEEP 300
+RETURNSUB
+
+
+SUB pickup
+	CLICK_NEAREST_ITEM
+	SLEEP 100
+RETURNSUB
+
+SUB Spoil
+	//lets run over to the target first
+	ATTACK_TARGET
+	SLEEP 7500
+	PRINT_TEXT "Spoiling"
+	USE_SKILL 254
+	SLEEP 50
+RETURNSUB
+
+SUB KillTarget
+		
+		//when do we start the killtarget sub?
+		GET_TIME StartTime
+		
+		While TARGET_CUR_HP > ZERO
+			//what time is it now?
+			GET_TIME CurTime
+
+			ATTACK_TARGET
+			SLEEP 2000
+			PRINT_TEXT "Attack"
+						
+			//how much time have we used to kill the mob?
+			MATH TotTime CurTime SUBTRACT StartTime
+			PRINT_TEXT "Calculate time"
+			PRINT_TEXT "<&TotTime&>"
+			
+			//5 seconds and still no attack? we must be stuck, lets switch target
+			IF TotTime > MaxTime
+			PRINT_TEXT "First IF"
+				IF TARGET_CUR_HP == TARGET_MAX_HP
+					PRINT_TEXT "Second IF"
+					TARGET_NEAREST
+				ENDIF
+			ENDIF				
+
+		Wend
+	PRINT_TEXT "While loop complete"
+			
+		//target is dead, lets check if its spoiled and sweep
+		IF TARGET_SPOILED == ONE
+			PRINT_TEXT "Target is spoiled, sweeping"
+			USE_SKILL 42
+		ENDIF 
+		
+
+	PRINT_TEXT "killtarget sub finished"
+RETURNSUB
+
+SUB Rest
+	PRINT_TEXT "Were starting the sitting loop sitting"
+
+	SET Rest "<&ONE&>"
+	DO
+		//check if anything has us targeted
+		IF COUNT_NPC_TARGETME > ZERO
+			//we are targeted, let not be sitting shall we?
+			SET Rest "<&ZERO&>"
+			PRINT_TEXT "Some monster attacked us, lets defend ourselves"
+		ENDIF
+
+		//check if we are rested to full
+		IF CHAR_CUR_HP == CHAR_MAX_HP
+			//full hp, lets get up
+			SET Rest "<&ZERO&>"
+			PRINT_TEXT "We are ready to go."
+		ENDIF
+
+		//are we still resting?
+		IF Rest == ONE
+			//lets sleep a bit (first off to not look so bot like)
+			//second of all, because we need hpzzz
+			SLEEP 1000
+			COMMAND "/sit"
+			//PRINT_TEXT "Were sitting"
+		ENDIF
+
+	//are we still resting? if so lets run the loop again
+	LOOP Rest == ONE
+
+	//done resting lets stand
+	COMMAND "/stand"
+	SLEEP 200
+RETURNSUB

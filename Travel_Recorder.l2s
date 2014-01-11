@@ -1,0 +1,43 @@
+
+	INCLUDE Include/EngineX.l2c
+	DEFINE_GLOBAL ENGINEX ENGINEX 0
+
+	INCLUDE Include/Travel.l2c
+	DEFINE_GLOBAL TRAVEL TRAVEL 0
+
+
+	// all you need to do is the following:
+	TRAVEL.RECORDER.RECORD_MYSELF = TRUE
+	TRAVEL.RECORDER.RECORD_OTHERS = TRUE
+	TRAVEL.RECORDER.LINES_PER_FILE = #i100
+	TRAVEL.RECORDER.START_RECORDING VOID 0
+
+	// the recorder script will save the movie packets from you and/or other players
+	// and will save it to the files folder with <LINES_PER_FILE> lines in each file
+
+	// with the recorded data you would help the project to keep the travel-points up to date
+
+	// - cut and paste the recorded files to a new folder
+	// - add the folder to an archiv
+	// - upload the archive on any hoster
+	// - and send me the link via PN
+	// - http://ltwonet.com/private.php?do=newpm&u=8342
+
+	// atleast thx for using the travel-project x3
+
+
+
+	// you can add the code above at the top of your scripts
+	// or if you just wanna help without even using your own script
+	// then just run this script and play the game ^^
+	//
+	// also helpful is, if you're running an enchant script
+	// then just change the values to:
+	// RECORD_MYSELF = FALSE
+	// RECORD_OTHERS = TRUE
+	// and you're recording the data from others while enchanting :D
+	WHILE (TRUE == TRUE)
+		SLEEP 1000
+	WEND
+
+END_SCRIPT

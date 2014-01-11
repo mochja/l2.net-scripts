@@ -1,0 +1,56 @@
+
+v1 (???)
+- released
+
+v2 (???)
+- added function "EngineX.Functions.Strings.Hex2Dec"
+- added structure "Size"
+- added structure "Htmltag"
+
+V3 (13.03.2011)
+- updated function "EngineX.Functions.Strings.HtmlData"
+- changed class "EngineX.ScriptEvents.ServerPackets" to forward only packets without getting the packet data
+- added function "EngineX.ScriptEvents.ServerPackets.Read" (NEED TESTING)
+- added function "Vector2.+"
+- added function "Vector3.+"
+- updated "EngineX.ScriptEvents.ServerPackets"-files (NEED TESTING)
+- added function "WRITE" to ServerPackets-files (NEED TESTING)
+- deleted class "EngineX.Injects"
+- added function "EngineX.ScriptEvents.ServerPackets.Write" (NEED TESTING)
+- added structure "Shortcut"
+- added structure "Skill"
+- added structure "SysMessData"
+- added structure "MultiSellEntry"
+- added structure "MultiSellItem"
+
+V4 (-)
+- renamed class "EngineX.Active" to "EngineX.Extended"
+- added class "EngineX.AutoBot"
+- added class "EngineX.AutoBot.AutoPot"
+- added class "EngineX.AutoBot.AutoTarget"
+- added class "EngineX.World"
+- added class "EngineX.World.Objects"
+- added class "EngineX.Servers"
+- added class "EngineX.Servers.L2Inc"
+- added class "EngineX.Servers.L2Inc.AntiRabbit"
+- added structure "Attachment"
+- fixed class "EngineX.ScriptEvents.ServerPackets" when forwarding to extern file
+- added function "EngineX.Functions.Utils.Target_Unique"
+- added class "EngineX.AutoBot.AutoMail"
+- added functions "Vector2.Binary" "Vector2.-" "Vector2.*" "Vector2./" "Vector2.%"
+- added functions "Vector3.Binary" "Vector3.-" "Vector3.*" "Vector3./" "Vector3.%"
+
+v5 (10.04.2011)
+- revamped whole lib with subclass construction feature
+
+v6 (13.04.2011)
+- added first functions to "ENGINEX.DATABASE.WAYPOINTSYSTEM"
+
+v7 (23.04.2011)
+- fixed first functions of "ENGINEX.DATABASE.WAYPOINTSYSTEM"
+- renamed "ENGINEX.FUNCTIONS" to "ENGINEX.SYSTEM"
+- changed "ENGINEX.SYSTEM.FILES.READ" - deleted check if file exists
+- added class "EngineX.AutoBot.Targeting"
+- moved function "EngineX.System.Utils.Target_Unique" to "EngineX.AutoBot.Targeting.TargetU"
+- fixed all "PipeLoop" functions in "EngineX.ScriptEvents" subclasses
+

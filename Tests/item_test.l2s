@@ -1,0 +1,17 @@
+DEFINE STRING itemname " "
+DEFINE INT id 500
+
+ITEM_GET_NAME itemname "<&id&>"
+
+PRINT_TEXT "item <&id&> = <&itemname&>"
+
+////////////
+
+DEFINE STRING itemname2 "Great Helmet"
+DEFINE INT id2 0
+
+ITEM_GET_ID id2 "<&itemname2&>"
+
+PRINT_TEXT "item <&itemname2&> = <&id2&>"
+
+END_SCRIPT

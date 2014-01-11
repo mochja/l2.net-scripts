@@ -1,0 +1,97 @@
+// Automatic berserker dance on Join pt
+// Server: l2-divinty.com
+// Autor: mochitto
+// Date: 5. 6. 2010
+// Special thanks for L2.NET contributors and Divinity Server :P
+// rev.: 82
+
+// Script nabizi 2 moznosti
+// 		1. Automaticke prijeti pt kazdemu a nasledne zatancovani
+//		2. Prijeti party pouze urcitym lidem a nasledne zatancovani
+
+PRINT_TEXT "SCRIPT STARTED!]"
+
+// Event section
+// ===============================
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" JOINPT 57
+//SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" JOINPT2 57
+
+// Main section
+// ===============================
+WHILE ZERO == ZERO
+	SLEEP 60000
+WEND
+	
+PRINT_TEXT "STOP SCRIPT!]"
+END_SCRIPT
+
+// Function section
+// ===============================
+FUNCTION JOINPT
+	DEFINE INT REUSE 0
+	DEFINE STRING PartyLeader 0
+	DEFINE ARRAYLIST NICKLIST 0
+  
+	PACKET.READ_BYTE NULL
+	PACKET.READ_STRING PartyLeader
+	PACKET.READ_INT32 NULL
+
+	SLEEP 800
+	INJECT "43 01 00 00 00" //Party Invite CONFIRM...
+	LOCK UI_MUTEX 
+	SKILL_GET_REUSE REUSE 915
+	REUSE = REUSE + #i300
+	IF REUSE > #i300
+		SAY_TEXT "<&CHANNEL_PARTY&>" "reuse w8 pls"
+	ENDIF
+	SLEEP "<&REUSE&>"
+	PRINT_TEXT "== GIVING DANCE OF BERS <&PartyLeader&>"
+	SLEEP 300
+	USE_SKILL 915   
+	SLEEP 3000
+	UNLOCK UI_MUTEX 
+	COMMAND "/leave"
+RETURN VOID
+
+FUNCTION JOINPT2
+	DEFINE INT REUSE 0
+	DEFINE STRING PartyLeader 0
+	DEFINE ARRAYLIST NICKLIST 0
+  
+	PACKET.READ_BYTE NULL
+	PACKET.READ_STRING PartyLeader
+	PACKET.READ_INT32 NULL
+  
+  	NICKLIST.ADD "#$mochitto"
+	NICKLIST.ADD "#$EidolonR"
+	NICKLIST.ADD "#$Brainstorm"
+	NICKLIST.ADD "#$PutaNero"
+	NICKLIST.ADD "#$Kozel11"
+	NICKLIST.ADD "#$DarkWind"
+	NICKLIST.ADD "#$PockejteNaMe"
+	NICKLIST.ADD "#$Jamie"
+  
+	FOREACH A STRING NICKLIST
+		IF "NICKLIST.A.CONTAINS PartyLeader" == TRUE
+			SLEEP 800
+			INJECT "43 01 00 00 00" //Party Invite confirm...
+			SKILL_GET_REUSE REUSE 915
+			REUSE = REUSE + #i300
+			IF REUSE > #i300
+				SAY_TEXT "<&CHANNEL_PARTY&>" "reus cekej..."
+			ENDIF
+			SLEEP "<&REUSE&>"
+			PRINT_TEXT "GIVING DANCE OF BERS TO <&PartyLeader&>"
+			SLEEP 300
+			USE_SKILL 915 // Use Skill: Dance of Berserker  
+			SLEEP 3000
+			COMMAND "/leave"
+			RETURN VOID
+		ENDIF
+	NEXTEACH
+  
+	SLEEP 1000
+	PRINT_TEXT "FUCKING YOU <&PartyLeader&>"
+	INJECT "43 00 00 00 00" //Party Invite decline...
+	SLEEP 1000
+RETURN VOID

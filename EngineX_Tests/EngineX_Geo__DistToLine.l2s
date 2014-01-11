@@ -1,0 +1,63 @@
+
+	INCLUDE Include/EngineX.l2c
+	DEFINE_GLOBAL ENGINEX ENGINEX 0
+
+	PRINT_TEXT ""
+	PRINT_TEXT "-------------------------------------------------"
+
+//             y-
+//             |
+//             |
+//             |
+//  x- -------[P1]-----[P2]- x+
+//             |
+//             |
+//             |       [P3]
+//             y+
+//
+// the function calulates the distance between P3 and the virual line P1-P2
+
+	DEFINE INT Pos1_X 0
+	DEFINE INT Pos1_Y 0
+	DEFINE INT Pos2_X 100
+	DEFINE INT Pos2_Y 0
+	DEFINE INT Pos3_X 100
+	DEFINE INT Pos3_Y 100
+
+	DEFINE INT MYDIST 0
+	ENGINEX.GEO.DIST_TO_LINE MYDIST 6 Pos1_X Pos1_Y Pos2_X Pos2_Y Pos3_X Pos3_Y
+	PRINT_TEXT "Distance: <&MYDIST&> (Should be 100)"
+
+	Pos1_X = 0
+	Pos1_Y = 0
+	Pos2_X = 100
+	Pos2_Y = 100
+	Pos3_X = 0
+	Pos3_Y = 0
+
+//             y-
+//             |
+//             |
+//             |
+//  x- -------[P1]-----[P3]- x+
+//             |
+//             |
+//             |       [P2]
+//             y+
+//
+// the function calulates the distance between P3 and the virual line P1-P2
+
+	Pos1_X = 0
+	Pos1_Y = 0
+	Pos2_X = 100
+	Pos2_Y = 100
+	Pos3_X = 100
+	Pos3_Y = 0
+
+	ENGINEX.GEO.DIST_TO_LINE MYDIST 6 Pos1_X Pos1_Y Pos2_X Pos2_Y Pos3_X Pos3_Y
+	PRINT_TEXT "Distance: <&MYDIST&> (Should be less then 100)"
+
+	PRINT_TEXT "-------------------------------------------------"
+	PRINT_TEXT ""
+
+END_SCRIPT

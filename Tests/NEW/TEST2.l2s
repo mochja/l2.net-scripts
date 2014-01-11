@@ -1,0 +1,88 @@
+// Kratky popis
+// Server: 
+// Autor: mochitto
+// Date: 
+// Special thanks for L2.NET contributors
+// rev.: 0
+PRINT_TEXT "SCRIPT STARTED!]"
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" HTML 25
+
+DEFINE_GLOBAL INT COMM
+
+// Main section
+// ===============================
+
+SLEEP 986234234
+	
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT
+
+FUNCTION HTML
+	DEFINE STRING HTML
+	
+	PACKET.READ_BYTE NULL
+	PACKET.READ_INT32 NULL
+	PACKET.READ_STRING HTML
+	
+	SLEEP 800
+	
+	DEFINE STRING Link0 "bypass -h npc_<&target_id&>_Quest 9000_clan"
+	DEFINE STRING Link1 "bypass -h Quest 9000_clan 9000-04.htm"
+	DEFINE STRING Link2 "bypass -h npc_<&target_id&>_dissolve_clan"
+	DEFINE STRING Link3 "bypass -h Quest 9000_clan 9000-05.htm"
+	DEFINE STRING Link4 "bypass -h npc_<&target_id&>_recover_clan"
+
+	IF CHAR_LEVEL <= 44
+		MESSAGE_BOX "DELEVEL COMPLETED" "DELEVEL COMPLETED" HAND
+		SCRIPT_END
+	ENDIF
+	
+	SWITCH COMM
+		CASE #i0
+			IF "HTML.CONTAINS Link0" == TRUE
+				NPC_DIALOG "<&Link0&>"
+				PRINT_TEXT "Click 0"
+				COMM = #i1
+			ENDIF
+			BREAK 1
+		CASE #i1
+			IF "HTML.CONTAINS Link1" == TRUE
+				NPC_DIALOG "<&Link1&>"
+				PRINT_TEXT "Click 1"
+				COMM = #i2
+			ENDIF
+			BREAK 1	
+		CASE #i2
+			IF "HTML.CONTAINS Link2" == TRUE
+				NPC_DIALOG "<&Link2&>"
+				PRINT_TEXT "Click 2"
+				COMM = #i3
+				SLEEP 400
+				TALK_TARGET
+			ENDIF
+			BREAK 1	
+		CASE #i3
+			IF "HTML.CONTAINS Link0" == TRUE
+				NPC_DIALOG "<&Link0&>"
+				PRINT_TEXT "Click 3"
+				COMM = #i4
+			ENDIF
+			BREAK 1	
+		CASE #i4
+			IF "HTML.CONTAINS Link3" == TRUE
+				NPC_DIALOG "<&Link3&>"
+				PRINT_TEXT "Click 4"
+				COMM = #i5
+			ENDIF
+			BREAK 1	
+		CASE #i5
+			IF "HTML.CONTAINS Link4" == TRUE
+				NPC_DIALOG "<&Link4&>"
+				PRINT_TEXT "Click 5"
+				COMM = #i0
+				SLEEP 400
+				TALK_TARGET
+			ENDIF
+			BREAK 1				
+	ENDSWITCH
+RETURN VOID

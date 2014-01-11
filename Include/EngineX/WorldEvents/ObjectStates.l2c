@@ -1,0 +1,138 @@
+
+INCLUDE Include/EngineX/WorldEvents/ObjectStates/Object.l2c
+
+//-------------------------------------------------------------------------------------
+CLASS ENGINEX_WORLDEVENTS_OBJECTS NULL
+//-------------------------------------------------------------------------------------
+
+   VAR_START
+      PUBLIC SORTEDLIST OBJECTS 0
+      PUBLIC SORTEDLIST KEEPTIMES 0
+      PUBLIC INT KEEPTIME_ALL 60000
+   VAR_END
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT
+      ENGINEX.CONSTRUCT VOID 1 #$EngineX.ScriptEvents.ServerPackets
+      ENGINEX.SCRIPTEVENTS.SERVERPACKETS.ADD_PIPE VOID 2 "0" "#$ENGINEX.WORLDEVENTS.OBJECTSTATES.PIPE_Die"
+      ENGINEX.SCRIPTEVENTS.SERVERPACKETS.ADD_PIPE VOID 2 "8" "#$ENGINEX.WORLDEVENTS.OBJECTSTATES.PIPE_ObjectDelete"
+      ENGINEX.SCRIPTEVENTS.SERVERPACKETS.ADD_PIPE VOID 2 "98" "#$ENGINEX.WORLDEVENTS.OBJECTSTATES.PIPE_SystemMessage"
+      THIS.KEEPTIMES.ADD 30000 "DEAD"
+      THIS.KEEPTIMES.ADD 10000 "INCORRECT"
+      THIS.KEEPTIMES.ADD 30000 "NOTSEEN"
+      //THREAD CLEANUP_THREAD
+      SLEEP 1
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC SET_OBJECT_IS 3 OID STATE VALUE
+      IF ( VALUE.TYPE == NULL )
+         VALUE = TRUE
+      ENDIF
+      DEFINE STRING OID2STR "<&OID&>"
+      IF ( "THIS.OBJECTS.CONTAINS_KEY <&OID2STR&>" == FALSE )
+         DEFINE ENGINEX_WORLDEVENTS_OBJECTSTATES_OBJECT OBJ 0
+         THIS.OBJECTS.ADD "OBJ" "<&OID&>"
+         DELETE OBJ
+      ENDIF
+      IF ( VALUE == TRUE )
+         IF ( "THIS.OBJECTS.OID2STR.IS_STATES.CONTAINS_KEY <&STATE&>" == FALSE )
+            THIS.OBJECTS.OID2STR.IS_STATES.ADD TRUE "<&STATE&>"
+         ENDIF
+         IF ( "THIS.OBJECTS.OID2STR.LASTTIMES.CONTAINS_KEY <&STATE&>" == FALSE )
+            THIS.OBJECTS.OID2STR.LASTTIMES.ADD ZERO "<&STATE&>"
+         ENDIF
+         THIS.OBJECTS.OID2STR.LASTTIMES.STATE = "<&NOW&>"
+         THIS.OBJECTS.OID2STR.IS_STATES.STATE = VALUE
+         THIS.OBJECTS.OID2STR.LASTTIME_ALL = "<&NOW&>"
+      ELSE
+         THIS.OBJECTS.OID2STR.IS_STATES.REMOVE "<&STATE&>"
+         THIS.OBJECTS.OID2STR.LASTTIMES.REMOVE "<&STATE&>"
+      ENDIF
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC GET_OBJECT_IS 2 OID STATE
+      IF ( "THIS.OBJECTS.CONTAINS_KEY <&OID&>" == FALSE )
+         RETURN FALSE
+      ENDIF
+      DEFINE STRING OID2STR "<&OID&>"
+      IF ( "THIS.OBJECTS.OID2STR.IS_STATES.CONTAINS_KEY <&STATE&>" == FALSE )
+         RETURN FALSE
+      ENDIF
+      DEFINE INT ADD_TIME 0
+      IF ( "THIS.KEEPTIMES.CONTAINS_KEY <&STATE&>" == TRUE )
+         ADD_TIME = THIS.KEEPTIMES.STATE * 10000
+         ADD_TIME = NOW - ADD_TIME
+      ENDIF
+      IF ( THIS.OBJECTS.OID2STR.LASTTIMES.STATE <= ADD_TIME )
+         THIS.OBJECTS.OID2STR.IS_STATES.STATE = FALSE
+      ENDIF
+   RETURN THIS.OBJECTS.OID2STR.IS_STATES.STATE
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CLEANUP_THREAD 0
+      DEFINE NULL THIS 0
+      THIS = ENGINEX.WORLDEVENTS.OBJECTS
+      WHILE ( THIS.CLASSNAME == #$STRING )
+         SLEEP 1
+      WEND
+      DEFINE INT ADD_TIME 0
+      WHILE ( TRUE == TRUE )
+         SLEEP 60000
+         ADD_TIME = THIS.NOTSEEN_KEEP * 10000
+         ADD_TIME = NOW - ADD_TIME
+         //FOR I 0 "<&THIS.OBJECTS.COUNT&>" 1
+         //   IF ( THIS.OBJECTS.I.LASTTIME_ALL <= ADD_TIME )
+         //      THIS.OBJECTS.REMOVE "<&THIS.OBJECTS.GET_KEY I&>"
+         //   ENDIF
+         //NEXT
+      WEND
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC PIPE_Die 1 PACKET
+      PACKET.READ_BYTE VOID
+      DEFINE INT OBJECT_ID
+      PACKET.READ_INT32 OBJECT_ID
+      THIS.SET_OBJECT_IS VOID 3 OBJECT_ID #$DEAD
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC PIPE_SystemMessage 1 PACKET
+      IF ( TARGET_ID == ZERO )
+         RETURN VOID
+      ENDIF
+      PACKET.READ_BYTE VOID
+      DEFINE INT MESSAGE_ID 0
+      PACKET.READ_INT32 MESSAGE_ID
+      SWITCH MESSAGE_ID
+         CASE 144 // That is the incorrect target.
+            THIS.SET_OBJECT_IS VOID 3 TARGET_ID #$INCORRECT
+            BREAK 1
+         CASE 181 // Cannot see target.
+            THIS.SET_OBJECT_IS VOID 3 TARGET_ID #$NOTSEEN
+            BREAK 1
+      ENDSWITCH
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC PIPE_ObjectDelete 1 PACKET
+      PACKET.READ_BYTE VOID
+      DEFINE INT OBJECT_ID
+      PACKET.READ_INT32 OBJECT_ID
+      //ENGINEX.WORLD.OBJECTS.DEAD_OBJECTS.REMOVE "<&OBJECT_ID&>"
+      //ENGINEX.WORLD.OBJECTS.INCORRECT_OBJECTS.REMOVE "<&OBJECT_ID&>"
+      //ENGINEX.WORLD.OBJECTS.NOTSEEN_OBJECTS.REMOVE "<&OBJECT_ID&>"
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+END_CLASS
+//-------------------------------------------------------------------------------------

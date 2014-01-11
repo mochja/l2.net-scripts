@@ -1,0 +1,14 @@
+
+//-------------------------------------------------------------------------------------
+CLASS ENGINEX_DATABASE NULL
+//-------------------------------------------------------------------------------------
+
+   VAR_START
+      PUBLIC STRING WAYPOINTSYSTEM "Include/EngineX/DataBase/WayPointSystem.l2c"
+      PUBLIC STRING OBJECTS "Include/EngineX/DataBase/Objects.l2c"
+      PUBLIC STRING GEODATA "Include/EngineX/DataBase/GeoData.l2c"
+   VAR_END
+
+//-------------------------------------------------------------------------------------
+END_CLASS
+//-------------------------------------------------------------------------------------

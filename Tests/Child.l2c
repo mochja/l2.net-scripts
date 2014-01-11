@@ -1,0 +1,11 @@
+INCLUDE Tests\Base.l2c
+
+CLASS Child Base
+	VAR_START
+	VAR_END
+
+	PUBLIC MethodName 0
+		PRINT_TEXT "Child"
+		THIS.BASE.MethodName Void 0
+	RETURN NULL
+END_CLASS

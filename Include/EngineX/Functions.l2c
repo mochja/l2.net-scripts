@@ -1,0 +1,18 @@
+
+//-------------------------------------------------------------------------------------
+CLASS ENGINEX_FUNCTIONS NULL
+//-------------------------------------------------------------------------------------
+
+   VAR_START
+      PUBLIC STRING UTILS "Include/EngineX/Functions/Utils.l2c"
+      PUBLIC STRING STRINGS "Include/EngineX/Functions/Strings.l2c"
+      PUBLIC STRING FILES "Include/EngineX/Functions/Files.l2c"
+      PUBLIC STRING MATH "Include/EngineX/Functions/Math.l2c"
+      PUBLIC STRING LISTS "Include/EngineX/Functions/Lists.l2c"
+      PUBLIC STRING GEO "Include/EngineX/Functions/Geo.l2c"
+      PUBLIC STRING TIME "Include/EngineX/Functions/Time.l2c"
+   VAR_END
+
+//-------------------------------------------------------------------------------------
+END_CLASS
+//-------------------------------------------------------------------------------------

@@ -1,0 +1,7 @@
+// Handle PrivateStoreBuyMsg / PrivateStoreSellMsg
+
+FUNCTION Packet::PrivateStoreMsg 1 _bPrivateStoreMsg
+
+  INJECTBB_CLIENT _bPrivateStoreMsg
+  
+RETURN VOID

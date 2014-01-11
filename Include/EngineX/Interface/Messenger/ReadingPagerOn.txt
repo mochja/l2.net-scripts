@@ -1,0 +1,2 @@
+<font color=FFCC00>[<a action="LINK <&THIS.MENUKEY&>_Page|<&I&>"><&PAGE&></a>]</font>
+__EOF

@@ -1,0 +1,21 @@
+
+	INCLUDE Include/EngineX.l2c
+	DEFINE_GLOBAL ENGINEX ENGINEX 0
+
+	PRINT_TEXT ""
+	PRINT_TEXT "-------------------------------------------------"
+
+	DEFINE INT MAP_X 0
+	DEFINE INT MAP_Y 0
+	DEFINE STRING MAP_ID "_"
+
+	ENGINEX.UTILS.GET_MAP_X MAP_X 1 CHAR_X
+	ENGINEX.UTILS.GET_MAP_Y MAP_Y 1 CHAR_Y
+
+	MAP_ID = "#$<&MAP_X&><&MAP_ID&><&MAP_Y&>"
+	PRINT_TEXT "<&MAP_ID&>"
+
+	PRINT_TEXT "-------------------------------------------------"
+	PRINT_TEXT ""
+
+END_SCRIPT

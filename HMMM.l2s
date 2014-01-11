@@ -1,0 +1,24 @@
+// Kratky popis
+// Server: 
+// Autor: mochitto
+// Date: 
+// Special thanks for L2.NET contributors
+// rev.: 0
+PRINT_TEXT "SCRIPT STARTED!]"
+
+// Main section
+// ===============================
+DO 
+SLEEP 1000  
+TALK_TARGET
+SLEEP 1000
+NPC_DIALOG "bypass -h npc_<&target_id&>_Quest"
+SLEEP 1000
+NPC_DIALOG "bypass -h npc_<&target_id&>_Quest 132_MatrasCuriosity"
+SLEEP 1000
+NPC_DIALOG "bypass -h Quest 132_MatrasCuriosity 32245-02.htm"
+SLEEP 1000
+INJECT "63 84 00 00 00"
+LOOP ONE == ONE	
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT

@@ -1,0 +1,29 @@
+
+//-------------------------------------------------------------------------------------
+CLASS ENGINEX_SYSTEM_UTILS NULL
+//-------------------------------------------------------------------------------------
+
+   PUBLIC SLOT_ID 2 BAR SLOT
+      DEFINE INT SLOT_ID 0
+      SLOT_ID = BAR - #i1
+      SLOT_ID = SLOT_ID * #i12
+      SLOT_ID = SLOT_ID + SLOT
+      SLOT_ID = SLOT_ID - #i1
+      SLEEP 1
+   RETURN SLOT_ID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC SLEEP 2 MIN MAX
+      IF ( MIN >= MAX )
+         MAX = MIN + MAX
+      ENDIF
+      DEFINE INT TIME 0
+      GET_RAND TIME "<&MIN&>" "<&MAX&>"
+      SLEEP "<&TIME&>"
+      SLEEP 1
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+END_CLASS
+//-------------------------------------------------------------------------------------

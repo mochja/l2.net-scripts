@@ -1,0 +1,181 @@
+// Kratky popis
+// Server: 
+// Autor: mochitto
+// Date: 
+// Special thanks for L2.NET contributors
+// rev.: 0
+PRINT_TEXT "SCRIPT STARTED!]"
+
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" CharList 9 
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" ACADEMY 44
+
+
+DEFINE_GLOBAL INT    CHARSLOT 0
+DEFINE_GLOBAL INT    LASTID   0  
+DEFINE_GLOBAL INT    CHARS    0
+DEFINE_GLOBAL INT    WCHARS   0
+DEFINE_GLOBAL INT    CHARLIST 0
+DEFINE_GLOBAL INT    TOTAL_CHARS 0
+DEFINE_GLOBAL INT    RELOG_DELAY 7000
+DEFINE_GLOBAL STRING NICK
+DEFINE_GLOBAL STRING NAME "SexyBoy"
+
+// Main section
+// ===============================
+DEFINE FILEREADER FR "last_id.ini" 
+FR.READ LASTID
+FR.CLOSE       
+
+CharCreate   
+
+DEFINE FILEWRITER FW "last_id.ini"
+FW.WRITE LASTID
+FW.FLUSH
+FW.CLOSE
+
+THREAD CheckClass
+PRINT_TEXT "== Thread for check class was started.. ]"
+
+SLEEP 3000
+
+CALLSUB Relog
+
+SLEEP 3000
+
+FOR A 0 "<&CHARS&>" 1 	
+	SLEEP 3000
+
+	IF ( CHAR_CLASS != 2 )
+		WHILE ( CHAR_LEVEL < 41 )
+			IF CHAR_CLAN != 0
+				PRINT_TEXT "== Attack Gremlin!!! ]"
+	    		//TARGET_NEAREST
+				//SLEEP 1000
+				//COMMAND "/attack"
+				BOTSET ACTIVE_TARGET_ON "<&TRUE&>"
+				BOTSET ACTIVE_ATTACK_ON "<&TRUE&>"
+				SLEEP 3000
+			ENDIF
+			SLEEP 500
+		WEND
+	    BOTSET ACTIVE_TARGET_ON "<&FALSE&>"
+		//BOTSET ACTIVE_ATTACK_ON "<&FALSE&>"
+		
+	    PRINT_TEXT "== Wating for class change... ]"
+	    
+		WHILE ( CHAR_CLASS != 2 )
+			SLEEP 1000
+		WEND
+		
+		SLEEP 10000
+	ENDIF
+
+    WHILE IS_INCOMBAT CHAR_ID
+		SLEEP 500
+	WEND
+
+	PRINT_TEXT "== Restart ]"
+	INJECT "57" //RELOG
+	SLEEP 5000
+	CALLSUB Relog
+	SLEEP 25
+NEXT
+
+PLAYALARM
+	
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT
+
+FUNCTION CharCreate
+	WHILE CHARS < 7
+		IF CHARLIST == 1
+			INJECT "13" //Create CHAR
+			SLEEP 3124
+			LASTID = LASTID + 1
+			NICK = "#$<&NAME&><&LASTID&>"
+			PRINT_TEXT "== Created char in slot <&CHARS&> with nick <&NICK&> ]"
+			DEFINE BYTEBUFFER CharCreateBuffer 512
+			CharCreateBuffer.WRITE_BYTE 12
+			CharCreateBuffer.WRITE_STRING NICK
+			CharCreateBuffer.WRITE_INT32 0
+			CharCreateBuffer.WRITE_INT32 0
+			CharCreateBuffer.WRITE_INT32 0
+			CharCreateBuffer.WRITE_INT32 28
+			CharCreateBuffer.WRITE_INT32 39
+			CharCreateBuffer.WRITE_INT32 30
+			CharCreateBuffer.WRITE_INT32 27
+			CharCreateBuffer.WRITE_INT32 35
+			CharCreateBuffer.WRITE_INT32 11
+			CharCreateBuffer.WRITE_INT32 0
+			CharCreateBuffer.WRITE_INT32 0
+			CharCreateBuffer.WRITE_INT32 0
+			CharCreateBuffer.TRIM_TO_INDEX
+			INJECTBB CharCreateBuffer
+			DELETE CharCreateBuffer
+			SLEEP 1900
+		ENDIF
+		SLEEP 25
+	WEND  
+RETURN VOID
+
+SUB Relog
+	IF ( CHARSLOT < CHARS )
+		DEFINE BYTEBUFFER CharSelect_bb 64 
+		print_text "== Loggin char in slot <&CHARSLOT&> ]"
+		CharSelect_bb.WRITE_BYTE #i18
+		CharSelect_bb.WRITE_INT32 CHARSLOT
+		CharSelect_bb.WRITE_INT16 #i0
+		CharSelect_bb.WRITE_INT32 #i0
+		CharSelect_bb.WRITE_INT32 #i0
+		CharSelect_bb.WRITE_INT32 #i0
+		CharSelect_bb.TRIM_TO_INDEX
+		INJECTBB CharSelect_bb
+		DELETE CharSelect_bb 
+		CHARSLOT = CHARSLOT + 1 
+		SLEEP "<&RELOG_DELAY&>"
+	ENDIF
+RETURNSUB
+
+FUNCTION CheckClass
+	WHILE ZERO == ZERO  
+		IF ( ( CHAR_CLASS == #i0 ) && ( CHAR_LEVEL >= #i20 ) )
+			INJECT "87 E9 03 00 00"
+			SLEEP 1000
+			INJECT "85 43 00 4F 00 31 00 00 00 "
+			print_text "== Im Human Warrior now ]"
+		ENDIF         	
+		IF ( ( CHAR_CLASS == #i1 ) && ( CHAR_LEVEL >= #i40 ) )
+			SLEEP 3000
+			INJECT "87 E9 03 00 00"
+			SLEEP 1000
+			INJECT "85 43 00 4F 00 32 00 00 00"
+			print_text "== Im Gladiator now ]"
+		ENDIF  	
+		SLEEP 5000
+	WEND
+RETURN VOID
+
+FUNCTION CharList
+     PACKET.READ_BYTE NULL
+     PACKET.READ_INT32 CHARS
+     
+     PRINT_TEXT "== Chars at your account <&CHARS&> ]"
+     CHARLIST = 1
+RETURN VOID 
+
+FUNCTION ACADEMY
+	DEFINE INT _astobj
+	DEFINE INT CharID
+	
+	PACKET.READ_BYTE NULL
+	PACKET.READ_INT32 _astobj
+	
+	CHAR_GET_ID CharID "Gej"
+	
+	IF CharID == _astobj
+		SLEEP 500
+		INJECT "27 01 00 00 00" // clan
+		PRINT_TEXT "== Accepted invite request to academy ]"
+	ENDIF
+	SLEEP 1000
+RETURN VOID

@@ -1,0 +1,15 @@
+
+	INCLUDE Include/EngineX.l2c
+	DEFINE_GLOBAL ENGINEX ENGINEX 0
+
+	PRINT_TEXT ""
+	PRINT_TEXT "-------------------------------------------------"
+
+	SLEEP 10000
+	PRINT_TEXT "HOLD"
+	ENGINEX.UTILS.HOLD VOID 0
+
+	PRINT_TEXT "-------------------------------------------------"
+	PRINT_TEXT ""
+
+END_SCRIPT

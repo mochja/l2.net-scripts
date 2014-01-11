@@ -1,0 +1,19 @@
+// AbnormalStatusUpdate / ShortBuffStatusUpdate Packet class data
+// for L2.net.
+// by d00d
+//
+// v1.0 - Initial Draft
+
+CLASS AbnormalStatusUpdate null
+VAR_START
+
+  PUBLIC INT AGE
+  PUBLIC INT IS_DIRTY
+  PUBLIC INT EFFECT_LEVEL
+  PUBLIC INT EFFECT_ID
+  PUBLIC INT EFFECT_ORDER
+  PUBLIC DOUBLE EFFECT_DURATION
+  
+VAR_END
+
+END_CLASS

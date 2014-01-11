@@ -1,0 +1,22 @@
+
+	INCLUDE Include/EngineX.l2c
+	DEFINE_GLOBAL ENGINEX ENGINEX 0
+
+	PRINT_TEXT ""
+	PRINT_TEXT "-------------------------------------------------"
+
+	DEFINE STRING NORMALSTRING "Hello, my name is {0}, i'm {1} years old and do live in {2} {{{{{"
+	DEFINE STRING RETURNSTRING ""
+
+	DEFINE ARRAYLIST MYDATA 0
+	MYDATA.ADD "#$Agita"
+	MYDATA.ADD "#i21"
+	MYDATA.ADD "#$Germany"
+
+   ENGINEX.STRINGS.REPLACE_BY_LIST RETURNSTRING 2 NORMALSTRING MYDATA
+   PRINT_TEXT "<&RETURNSTRING&>"
+
+	PRINT_TEXT "-------------------------------------------------"
+	PRINT_TEXT ""
+
+END_SCRIPT

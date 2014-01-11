@@ -1,0 +1,65 @@
+
+	INCLUDE Include/EngineX.l2c
+	DEFINE_GLOBAL ENGINEX ENGINEX 0
+
+	DEFINE STRING HTMLTEXT ""
+	HTMLTEXT = "#$<&HTMLTEXT&> <html>"
+	HTMLTEXT = "#$<&HTMLTEXT&>  <title>Table-Test</title>"
+	HTMLTEXT = "#$<&HTMLTEXT&>  <body>"
+	HTMLTEXT = "#$<&HTMLTEXT&>   <table>"
+	HTMLTEXT = "#$<&HTMLTEXT&>   <tr><td><font color=555e34>*</font></td><td><font color=555e34>*</font></td><td><font color=555e34>*</font></td><td><font color=e3e1b1>*</font></td><td><font color=555e34>*</font></td><td><font color=e3e1b1>*</font></td><td><font color=555e34>*</font></td><td><font color=555e34>*</font></td><td><font color=555e34>*</font></td></tr>"
+	HTMLTEXT = "#$<&HTMLTEXT&>   <tr><td><font color=555e34>*</font></td><td><font color=555e34>*</font></td><td><font color=555e34>*</font></td><td><font color=e3e1b1>*</font></td><td><font color=555e34>*</font></td><td><font color=555e34>*</font></td><td><font color=e3e1b1>*</font></td><td><font color=555e34>*</font></td><td><font color=555e34>*</font></td></tr>"
+	HTMLTEXT = "#$<&HTMLTEXT&>   <tr><td><font color=555e34>*</font></td><td><font color=555e34>*</font></td><td><font color=555e34>*</font></td><td><font color=e3e1b1>*</font></td><td><font color=555e34>*</font></td><td><font color=555e34>*</font></td><td><font color=555e34>*</font></td><td><font color=555e34>*</font></td><td><font color=555e34>*</font></td></tr>"
+	HTMLTEXT = "#$<&HTMLTEXT&>   <tr><td><font color=e3e1b1>*</font></td><td><font color=e3e1b1>*</font></td><td><font color=e3e1b1>*</font></td><td><font color=e3e1b1>*</font></td><td><font color=e3e1b1>*</font></td><td><font color=e3e1b1>*</font></td><td><font color=e3e1b1>*</font></td><td><font color=e3e1b1>*</font></td><td><font color=e3e1b1>*</font></td></tr>"
+	HTMLTEXT = "#$<&HTMLTEXT&>   <tr><td><font color=555e34>*</font></td><td><font color=555e34>*</font></td><td><font color=555e34>*</font></td><td><font color=e3e1b1>*</font></td><td><font color=555e34>*</font></td><td><font color=555e34>*</font></td><td><font color=e3e1b1>*</font></td><td><font color=555e34>*</font></td><td><font color=555e34>*</font></td></tr>"
+	HTMLTEXT = "#$<&HTMLTEXT&>   <tr><td><font color=555e34>*</font></td><td><font color=555e34>*</font></td><td><font color=555e34>*</font></td><td><font color=e3e1b1>*</font></td><td><font color=555e34>*</font></td><td><font color=555e34>*</font></td><td><font color=555e34>*</font></td><td><font color=e3e1b1>*</font></td><td><font color=555e34>*</font></td></tr>"
+	HTMLTEXT = "#$<&HTMLTEXT&>   <tr><td><font color=555e34>*</font></td><td><font color=555e34>*</font></td><td><font color=555e34>*</font></td><td><font color=e3e1b1>*</font></td><td><font color=555e34>*</font></td><td><font color=555e34>*</font></td><td><font color=555e34>*</font></td><td><font color=555e34>*</font></td><td><font color=555e34>*</font></td></tr>"
+	HTMLTEXT = "#$<&HTMLTEXT&>   <tr><td><font color=555e34>*</font></td><td><font color=555e34>*</font></td><td><font color=555e34>*</font></td><td><font color=e3e1b1>*</font></td><td><font color=555e34>*</font></td><td><font color=555e34>*</font></td><td><font color=555e34>*</font></td><td><font color=555e34>*</font></td><td><font color=555e34>*</font></td></tr>"
+	HTMLTEXT = "#$<&HTMLTEXT&>   <tr><td><font color=555e34>*</font></td><td><font color=555e34>*</font></td><td><font color=555e34>*</font></td><td><font color=e3e1b1>*</font></td><td><font color=555e34>*</font></td><td><font color=555e34>*</font></td><td><font color=555e34>*</font></td><td><font color=555e34>*</font></td><td><font color=555e34>*</font></td></tr>"
+	HTMLTEXT = "#$<&HTMLTEXT&>   </table>"
+	HTMLTEXT = "#$<&HTMLTEXT&>  </body>"
+	HTMLTEXT = "#$<&HTMLTEXT&> </htmL>"
+
+	DEFINE ARRAYLIST HTMLTAGS_TR 0
+	DEFINE ARRAYLIST HTMLTAGS_TD 0
+	DEFINE ARRAYLIST HTMLTAGS 0
+	HTMLTAGS_TR.ADD "#$tr"  
+	HTMLTAGS_TD.ADD "#$td" 
+	HTMLTAGS.ADD "#$FONT" 
+
+	DEFINE SORTEDLIST HTMLDATA_TR 0
+	DEFINE SORTEDLIST HTMLDATA 0
+	DEFINE SORTEDLIST HTMLDATA_TD 0
+
+	// get rows
+	ENGINEX.STRINGS.PARSEHTML HTMLDATA_TR 2 HTMLTEXT HTMLTAGS_TR
+
+	// for each row
+	FOREACH I1 SORTEDLIST HTMLDATA_TR.#$TR
+
+		// get cols
+		ENGINEX.STRINGS.PARSEHTML HTMLDATA_TD 2 HTMLDATA_TR.#$TR.I1.#$INNER HTMLTAGS_TD
+
+		// for each col
+		FOREACH I2 SORTEDLIST HTMLDATA_TD.#$TD
+
+			// print inner
+			//PRINT_TEXT "<&HTMLDATA_TD.#$TD.I2.#$INNER&>"
+			ENGINEX.STRINGS.PARSEHTML HTMLDATA 2 HTMLDATA_TD.#$TD.I2.#$INNER HTMLTAGS
+			
+			FOREACH I3 SORTEDLIST HTMLDATA.#$FONT
+
+				IF "HTMLDATA.#$FONT.I3.#$ATTRIBUTES.#$COLOR" == "#$e3e1b1"
+					//PRINT_TEXT "<&I3&>!!!!"
+				ELSE
+					
+				ENDIF 
+
+			NEXTEACH     
+			
+		NEXTEACH
+	NEXTEACH  
+	
+	PRINT_TEXT "END!!!!"
+END_SCRIPT    
+					  

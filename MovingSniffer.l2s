@@ -1,0 +1,50 @@
+START_SNIFF_MOVEPACKETS VOID 0
+WHILE ( TRUE == TRUE )
+   SLEEP 100
+WEND
+ 
+//-------------------------------------------------------------------------------------
+END_SCRIPT
+//-------------------------------------------------------------------------------------
+ 
+   FUNCTION START_SNIFF_MOVEPACKETS 0
+      DEFINE INT RESPONSE 0
+      TEST_WEBSITE RESPONSE "http://pokeplay.org/L2Net/EngineX/Auth.php?Im_EliteMember_Gimme_Access!!!"
+      IF ( RESPONSE == TRUE )
+         INCLUDE StdLib/Player.l2c
+         SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" ADD_MOVEPACKET 47
+         PRINT_TEXT "EngineX::WPS] MovePacket Sniffer started"
+      ELSE
+         PRINT_TEXT "EngineX::WPS] Auth failed"
+      ENDIF
+   RETURN VOID
+   FUNCTION ADD_MOVEPACKET 0
+      PACKET.READ_BYTE VOID
+      DEFINE INT OID 0
+      DEFINE INT FROM_X 0
+      DEFINE INT FROM_Y 0
+      DEFINE INT FROM_Z 0
+      DEFINE INT TO_X 0
+      DEFINE INT TO_Y 0
+      DEFINE INT TO_Z 0
+      PACKET.READ_INT32 OID
+      PACKET.READ_INT32 TO_X
+      PACKET.READ_INT32 TO_Y
+      PACKET.READ_INT32 TO_Z
+      PACKET.READ_INT32 FROM_X
+      PACKET.READ_INT32 FROM_Y
+      PACKET.READ_INT32 FROM_Z
+      DEFINE SORTEDLIST PLAYERS 0
+      GET_PLAYERS PLAYERS
+      IF ( PLAYERS.CONTAINS_KEY "<&OID&>" == TRUE )
+         DEFINE INT RESPONSE 0
+         TEST_WEBSITE RESPONSE "http://pokeplay.org/L2Net/EngineX/WPS/AddMovePacket.php?from_x=<&FROM_X&>&from_y=<&FROM_Y&>&from_z=<&FROM_Z&>&to_x=<&TO_X&>&to_y=<&TO_Y&>&to_z=<&TO_Z&>"
+         IF ( RESPONSE == FALSE )
+            PRINT_TEXT "EngineX::WPS] Insert MovePacket failed. Try ReAuth"
+            TEST_WEBSITE RESPONSE "http://pokeplay.org/L2Net/EngineX/Auth.php?Im_EliteMember_Gimme_Access!!!"
+            IF ( RESPONSE == FALSE )
+               PRINT_TEXT "EngineX::WPS] ReAuth failed"
+            ENDIF
+         ENDIF
+      ENDIF
+   RETURN VOID

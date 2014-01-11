@@ -1,0 +1,37 @@
+
+INCLUDE Include/EngineX/Structures/Vector2.l2c
+INCLUDE Include/EngineX/Structures/Vector3.l2c
+INCLUDE Include/EngineX/Structures/Size.l2c
+INCLUDE Include/EngineX/Structures/HtmlTag.l2c
+
+INCLUDE Include/EngineX/Functions.l2c
+INCLUDE Include/EngineX/ScriptEvents.l2c
+INCLUDE Include/EngineX/Active.l2c
+INCLUDE Include/EngineX/Injects.l2c
+INCLUDE Include/EngineX/Servers.l2c
+
+//-------------------------------------------------------------------------------------
+CLASS ENGINEX NULL
+//-------------------------------------------------------------------------------------
+
+   VAR_START
+      PUBLIC ENGINEX_FUNCTIONS FUNCTIONS 0
+      PUBLIC ENGINEX_SCRIPTEVENTS SCRIPTEVENTS 0
+      PUBLIC ENGINEX_ACTIVE ACTIVE 0
+      PUBLIC ENGINEX_INJECTS INJECTS 0
+      PUBLIC ENGINEX_SERVERS SERVERS 0
+   VAR_END
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT 0
+      THIS.FUNCTIONS.CONSTRUCT VOID 0
+      THIS.SCRIPTEVENTS.CONSTRUCT VOID 0
+      THIS.ACTIVE.CONSTRUCT VOID 0
+      THIS.INJECTS.CONSTRUCT VOID 0
+      THIS.SERVERS.CONSTRUCT VOID 0
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+END_CLASS
+//-------------------------------------------------------------------------------------

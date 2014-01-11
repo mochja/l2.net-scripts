@@ -1,0 +1,70 @@
+// Speedy Load 2 - Monster only edition
+// by d00d.mailbox@gmail.com
+//
+// Rewrites the npcinfo packet of all npc's in perception to look like
+// a training dummy.
+//
+// Requires DLIB 0.6+
+
+Init::GlobalVariables VOID 0
+
+BLOCK 12
+
+THREAD Unpack::Pipeline::NpcInfo
+
+WHILE ONE == ONE
+
+  SLEEP 60000
+  
+WEND
+
+END_SCRIPT
+
+FUNCTION Init::GlobalVariables
+
+  DEFINE_GLOBAL SORTEDLIST NpcInfo_SL
+  DEFINE_GLOBAL QUEUE Pipeline::NpcInfo
+  
+  Init::Events VOID 0
+  
+RETURN VOID
+
+FUNCTION Init::Events
+
+  SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" Packet::NpcInfo 12
+  
+RETURN VOID
+
+FUNCTION Packet::NpcInfo
+
+  Pipeline::NpcInfo.ADD PACKET
+  
+RETURN VOID
+
+FUNCTION Unpack::Pipeline::NpcInfo
+
+  DEFINE BYTEBUFFER _bNpcInfo
+  DEFINE BYTEBUFFER _bInject
+  
+  WHILE ONE == ONE
+  
+    IF Pipeline::NpcInfo.COUNT > ZERO
+     
+      _bNpcInfo = Pipeline::NpcInfo.POP
+      
+      CALL_EXTERN "DLIB\Packets\ReadNpcInfo.l2s" DLIB::Packets::ReadNpcInfo NpcInfo_SL 1 _bNpcInfo
+      
+      "NpcInfo_SL.#$NPC_ID"        = #I1031691
+      "NpcInfo_SL.#$R_HAND_WEAPON" = ZERO
+      "NpcInfo_SL.#$L_HAND_WEAPON" = ZERO
+      
+      CALL_EXTERN "DLIB\Packets\WriteNpcInfo.l2s" DLIB::Packets::WriteNpcInfo _bInject 1 NpcInfo_SL
+      
+      INJECTBB_CLIENT _bInject
+     
+    ENDIF
+    
+    SLEEP 5
+  WEND
+  
+RETURN VOID

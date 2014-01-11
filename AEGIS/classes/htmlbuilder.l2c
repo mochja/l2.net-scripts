@@ -1,0 +1,42 @@
+// HTML Construction Class
+
+CLASS HTMLBUILDER null
+VAR_START
+
+  PUBLIC STRING BUFFER
+  PUBLIC STRING HTML_OPEN "<html>"
+  PUBLIC STRING HTML_CLOSE "</html>"
+  PUBLIC STRING BODY_OPEN "<body>"
+  PUBLIC STRING BODY_CLOSE "</body>"
+  PUBLIC STRING TITLE_OPEN "<title>"
+  PUBLIC STRING TITLE_CLOSE "</title>"
+  PUBLIC STRING CENTER_OPEN "<CENTER>"
+  PUBLIC STRING CENTER_CLOSE "</CENTER>"
+  
+  // PUBLIC STRING FONT_OPEN "<font>
+  // PUBLIC STRONG FONT_CLOSE "</font>"
+  
+  PUBLIC STRING NEWLINE "<br>"
+  PUBLIC STRING SPACE " "
+  PUBLIC STRING DIVIDER "--------------------------------------------------"
+
+  PUBLIC STRING BUTTON_ON "ON"
+  PUBLIC STRING BUTTON_OFF "OFF"
+
+  PUBLIC STRING TABLE1_OPEN "<table width=280 border=0 bgcolor=\"444444\">"
+  PUBLIC STRING TABLE2_OPEN "<table width=280 border=1>"
+  PUBLIC STRING TABLE3_OPEN "<table width=280 border=0>"
+  PUBLIC STRING TABLE_CLOSE "</table>"
+  PUBLIC STRING ROW1_OPEN "<tr>"
+  // PUBLIC STRING ROW2_OPEN "<tr align=\"center\">"
+  PUBLIC STRING ROW_CLOSE "</tr>"
+  PUBLIC STRING CELL_OPEN "<td>"
+  PUBLIC STRING CELL2_OPEN "<td align=\"center\">"
+  PUBLIC STRING CELL_CLOSE "</td>"
+ 
+  PUBLIC STRING BUTTON_OPEN "<button value=\""
+  PUBLIC STRING BUTTON_ACTION "\" action=\""
+  PUBLIC STRING BUTTON_CLOSE "\" width=60 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\">"
+  
+VAR_END
+END_CLASS

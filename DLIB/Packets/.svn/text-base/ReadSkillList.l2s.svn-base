@@ -1,0 +1,46 @@
+// DLIB::Packets::ReadSkillList - v1.3 for Gracia 2.4
+// by #d00d [06/16/09]
+//
+// Creates a SkillList packet based on a sorted list
+// template of values.
+
+// REQUIRES - SkillList.l2c - placed in calling script
+
+// Version 1.0 - Initial Release
+// Version 1.1 - Removed redundant calling variable _oSortedList
+// Version 1.2 - updates
+// Version 1.3 - updates
+
+FUNCTION DLIB::Packets::ReadSkillList 1 _bInBuffer
+
+  DEFINE SORTEDLIST _oSkillList 0
+  
+  IF _bInBuffer.CLASSNAME == "#$BYTEBUFFER"
+
+    _bInBuffer.RESET_INDEX
+    
+    _bInBuffer.READ_BYTE NULL
+    
+    DEFINE INT SKILL_COUNT 0
+    _bInBuffer.READ_INT32 SKILL_COUNT
+    
+    FOR Z 0 "<&SKILL_COUNT&>" 1
+	  
+      DEFINE SkillList SKILL 0
+      
+      _bInBuffer.READ_INT32 SKILL.TYPE
+      _bInBuffer.READ_INT32 SKILL.LEVEL
+      _bInBuffer.READ_INT32 SKILL.ID
+      _bInBuffer.READ_BYTE SKILL.DISABLED
+      _bInBuffer.READ_BYTE SKILL.ENCHANTED
+      
+      SKILL_GET_NAME SKILL.NAME "<&SKILL.ID&>" "<&SKILL.LEVEL&>"
+      _oSkillList.ADD SKILL "<&SKILL.ID&>"
+      
+      DELETE SKILL
+    NEXT
+  ELSE
+    PRINT_TEXT "_bInBuffer is not a ByteBuffer"
+  ENDIF
+  
+RETURN _oSkillList

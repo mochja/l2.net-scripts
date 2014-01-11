@@ -1,0 +1,47 @@
+INCLUDE StdLib\player.l2c
+
+DEFINE STRING NADA "0"
+
+DEFINE STRING P1 "Fighter1"
+DEFINE INT P1_MAGE 0
+
+DEFINE STRING P2 "Fighter2"
+DEFINE INT P2_MAGE 0
+
+DEFINE STRING P3 "MageBuffer1"
+DEFINE INT P3_MAGE 1
+
+DEFINE STRING P4 "0"
+DEFINE INT P4_MAGE 0
+
+DEFINE_GLOBAL ARRAYLIST PartyPlayerList NULL
+DEFINE_GLOBAL ARRAYLIST PartyPlayerClassList NULL
+
+IF P1 != NADA
+	PartyPlayerList.ADD P1
+	PartyPlayerClassList.ADD P1_MAGE
+	PRINT_TEXT "Player 1 was pushed to array"
+ENDIF
+IF P2 != NADA
+	PartyPlayerList.ADD P2
+	PartyPlayerClassList.ADD P2_MAGE
+	PRINT_TEXT "Player 2 was pushed to array"
+ENDIF
+IF P3 != NADA
+	PRINT_TEXT "Player 3 was pushed to array"
+	PartyPlayerList.ADD P3
+	PartyPlayerClassList.ADD P3_MAGE
+ENDIF
+IF P4 != NADA
+	PartyPlayerList.ADD P4
+	PartyPlayerClassList.ADD P4_MAGE
+	PRINT_TEXT "Player 4 was pushed to array"
+ENDIF
+
+FOREACH A STRING PartyPlayerList
+	PRINT_TEXT "<&PartyPlayerList.A&>"
+NEXTEACH
+
+PRINT_TEXT "Script Done"
+PAUSE
+SCRIPT_END

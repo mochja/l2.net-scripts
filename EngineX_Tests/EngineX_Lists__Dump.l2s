@@ -1,0 +1,37 @@
+
+	INCLUDE Include/EngineX.l2c
+	DEFINE_GLOBAL ENGINEX ENGINEX 0
+
+	PRINT_TEXT ""
+	PRINT_TEXT "-------------------------------------------------"
+
+	DEFINE ARRAYLIST TEST1 0
+	TEST1.ADD "#$123"
+	TEST1.ADD "#$456"
+	DEFINE ARRAYLIST TEST2 0
+	TEST2.ADD "#$7"
+	TEST2.ADD "#$8"
+	TEST2.ADD "#$9"
+	DEFINE SORTEDLIST TEST3 0
+	TEST3.ADD "#$aValue" "aKey"
+	TEST3.ADD "#$bValue" "bKey"
+	TEST3.ADD "#$cValue" "cKey"
+	DEFINE VECTOR3 TEST4 0
+	TEST3.ADD TEST4 "dKey"
+	TEST2.ADD TEST3
+	TEST1.ADD TEST2
+
+	DEFINE ARRAYLIST DUMPDATA 0
+	ENGINEX.LISTS.DUMP DUMPDATA 1 TEST1
+
+	// write to file
+	DEFINE INT TICKS 0
+	GET_TIME TICKS
+	ENGINEX.FILES.WRITE_FILE VOID 3 "#$EngineX_Lists__Dump_<&TICKS&>" "#$__EOF" DUMPDATA
+
+	PRINT_TEXT "Dump written to: Files/EngineX_Lists__Dump_<&TICKS&>.txt"
+
+	PRINT_TEXT "-------------------------------------------------"
+	PRINT_TEXT ""
+
+END_SCRIPT

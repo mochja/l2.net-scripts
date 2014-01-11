@@ -1,0 +1,30 @@
+DEFINE INT A 6
+
+FOR A 0 10 1
+	PRINT_TEXT "starting switch... A = <&a&>"
+
+	SWITCH A
+		CASE #i1
+			PRINT_TEXT "A = 1"
+			BREAK 1
+		CASE #i2
+			PRINT_TEXT "A = 2"
+			BREAK 1
+		CASE #i3
+			PRINT_TEXT "A = 3"
+			BREAK 1
+		CASE #i4
+			PRINT_TEXT "A = 4"
+			BREAK 1
+		CASE #i5
+			PRINT_TEXT "A = 5"
+			BREAK 1
+		DEFAULT
+		PRINT_TEXT "A couldn't be found"
+			BREAK 1
+	ENDSWITCH
+NEXT
+
+PRINT_TEXT "done"
+
+END_SCRIPT

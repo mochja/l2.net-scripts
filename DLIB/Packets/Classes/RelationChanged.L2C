@@ -1,0 +1,57 @@
+CLASS RelationChanged null
+VAR_START
+
+  PUBLIC INT UNKNOWN_00 0
+  PUBLIC INT OBJECT_ID 0
+  PUBLIC INT RELATION 0
+  PUBLIC INT AUTO_ATTACKABLE 0
+  PUBLIC INT KARMA 0
+  PUBLIC INT PVP_FLAG 0
+  PUBLIC INT PARTY_MEMBER1 0
+  PUBLIC INT PARTY_MEMBER2 0
+  PUBLIC INT PARTY_MEMBER3 0
+  PUBLIC INT PARTY_MEMBER4 0
+  PUBLIC INT PARTY_LEADER 0
+  PUBLIC INT IN_PARTY 0
+  PUBLIC INT IN_CLAN 0
+  PUBLIC INT CLAN_LEADER 0
+  PUBLIC INT CLAN_MEMBER 0
+  PUBLIC INT IN_SIEGE 0
+  PUBLIC INT SIEGE_ATTACKER 0
+  PUBLIC INT SIEGE_ALLY 0
+  PUBLIC INT SIEGE_ENEMY 0
+  PUBLIC INT MUTUAL_WAR 0
+  PUBLIC INT 1SIDE_WAR 0
+  PUBLIC INT IN_ALLY 0
+  PUBLIC INT IN_TWAR 0
+  
+  PUBLIC ARRAYLIST RelationStates
+  
+VAR_END
+
+
+PUBLIC InitRelationStates
+
+  DEFINE ARRAYLIST rs
+
+  rs.ADD "#I1"     // Party Member
+  rs.ADD "#I2"     // Party Member
+  rs.ADD "#I4"     // Party Member
+  rs.ADD "#I8"     // Party Member
+  rs.ADD "#I16"    // Party Leader
+  rs.ADD "#I32"    // In Party
+  rs.ADD "#I64"    // In clan
+  rs.ADD "#I128"   // Clan Leader
+  rs.ADD "#I256"   // Clan Member
+  rs.ADD "#I512"   // In Siege
+  rs.ADD "#I1024"  // Attacker
+  rs.ADD "#I2048"  // Siege Ally
+  rs.ADD "#I4096"  // Siege Enemy
+  rs.ADD "#I8192"  // 2 way war
+  rs.ADD "#I16384" // 1 way war
+  rs.ADD "#I32768" // Ally member
+  rs.ADD "#I65536" // territory war participant
+  
+RETURN rs
+
+END_CLASS

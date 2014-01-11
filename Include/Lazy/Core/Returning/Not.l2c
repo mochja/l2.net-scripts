@@ -1,0 +1,31 @@
+
+CLASS LAZY_RETURNING_NOT LAZY_RETURNING_BASEPIECE
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT
+
+      // the boolean value
+      THIS.SET_VALUE VOID 2 #$BOOL TRUE
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC _GET_RETURN 1 CALLTIME
+
+      DEFINE INT _BOOL 0
+
+      THIS.DATA.#$BOOL.GET_RETURN _BOOL 1 CALLTIME
+
+      // --- --- ---
+
+      IF (_BOOL != TRUE)
+         RETURN TRUE
+      ENDIF
+
+   RETURN FALSE
+
+//-------------------------------------------------------------------------------------
+
+END_CLASS

@@ -1,0 +1,652 @@
+INCLUDE StdLib/inventory.l2c
+INCLUDE Include/AugDataHandler.l2c
+INCLUDE Include/Time.l2c
+
+CLASS AugEngine NULL
+	VAR_START
+		PUBLIC ARRAYLIST CHOSE_SKILL 0
+		PUBLIC STRING BASE_STAT ""
+		
+		PUBLIC STRING NPC_DIAG11 ""
+		PUBLIC STRING NPC_DIAG12 ""
+		PUBLIC STRING NPC_DIAG21 ""
+		PUBLIC STRING NPC_DIAG22 ""
+		
+		PUBLIC INT AUG_TYPE 0
+		PUBLIC INT SAVE_LOG 0
+		
+		PUBLIC ARRAYLIST INV_LIST 0
+		
+		PUBLIC Inventory WRK_ITEM 0
+		PUBLIC Inventory WRK_LS 0
+		PUBLIC Inventory WRK_GEM 0
+		
+		PUBLIC INT GEMS_REQ 0
+		PUBLIC INT GEMS_COUNT 0
+		PUBLIC INT LS_COUNT 0
+		PUBLIC INT ADENA_COUNT 0
+		PUBLIC INT ADENA_REQ 0
+		
+		PUBLIC AugData AUG_DATA 0
+		PUBLIC DateTime TObj 0
+		
+		PUBLIC INT HAS_AUG FALSE
+		
+		PRIVATE INT AUG_TIMES 0
+		
+		PUBLIC INT PROTECT_DELAY 0
+		
+		PUBLIC QUEUE _tmpq 0
+		PUBLIC QUEUE _logaug 0
+		PUBLIC STRING _logfname ""
+		PUBLIC INT LOG_LINES 0
+		
+		PUBLIC STRING _evtlogfn ""
+		PUBLIC QUEUE _evtlogs 0
+		PUBLIC QUEUE _chatlogs 0
+		PUBLIC QUEUE _chatplogs 0
+	VAR_END
+
+	PUBLIC LOAD_AND_CHECK 0
+		PRINT_TEXT "Loading and checking augmentation data and settings started."
+		IF SYSTEM_VERSION < #i375
+			PRINT_TEXT "Please update your version of L2.Net"
+			THIS.SCRIPT_END
+		ENDIF
+		THIS.CHECK_TARGET_NPC
+		THIS.LOAD_INV
+		IF THIS.WRK_ITEM.ID == ZERO
+			PRINT_TEXT "Selected item verification FAILD!"
+			PRINT_TEXT "Double check the item name that you entered."
+			THIS.SCRIPT_END
+		ENDIF
+		PRINT_TEXT "Selected item verified."
+		IF THIS.WRK_LS.ID == ZERO 
+			PRINT_TEXT "Selected Life Stone verification FAILD!"
+			PRINT_TEXT "Double check the Life Stone name that you entered."
+			THIS.SCRIPT_END
+		ENDIF
+		IF THIS.LS_COUNT <= ONE
+			PRINT_TEXT "Not enough <&THIS.WRK_LS.NAME&> for starting auto augmentation."
+			PRINT_TEXT "Make sure you have more than 1 Life Stone."
+			THIS.SCRIPT_END
+		ENDIF
+		PRINT_TEXT "Selected Life Stones and their count verified."	
+		SWITCH THIS.AUG_TYPE
+			CASE #i1
+			CASE #i2
+			CASE #i3
+			CASE #i4
+				BREAK 1
+			DEFAULT
+				PRINT_TEXT "Invalid augmentation type selected."
+				THIS.SCRIPT_END
+		ENDSWITCH
+		IF THIS.AUG_TYPE != #i1
+			SWITCH THIS.BASE_STAT
+				CASE #$STR
+				CASE #$CON
+				CASE #$MEN
+				CASE #$INT
+					BREAK 1
+				DEFAULT
+					PRINT_TEXT "Invalid base stat selected."
+					THIS.SCRIPT_END
+			ENDSWITCH
+		ENDIF
+		THIS.AUG_DATA.LOAD_DATA
+		IF THIS.AUG_TYPE != #i2
+			THIS.CHECK_SKILLS
+		ENDIF
+		IF THIS.WRK_ITEM.AUG_ID != ZERO
+			THIS.AUG_DATA.GET_AUG VOID 2 THIS.WRK_ITEM.AUG_ID NULL
+			THIS.HAS_AUG = TRUE
+		ENDIF
+		IF THIS.HAS_AUG == TRUE
+			THIS.CHK_AUGSKL
+		ENDIF
+		IF THIS.SAVE_LOG == TRUE
+			THIS._logaug.PUSH "#$'<&THIS.WRK_LS.NAME&>' x <&THIS.LS_COUNT&>"
+			THIS._logaug.PUSH "#$'Adena' x <&THIS.ADENA_COUNT&>"
+			THIS._logaug.PUSH "#$'<&THIS.WRK_ITEM.NAME&>' +<&THIS.WRK_ITEM.ENCHANT&>"
+			THIS._logtaugm
+			THIS._logaug.PUSH "#$ "
+			THIS._logaug.PUSH "#$Selected augments:"
+			IF THIS.AUG_TYPE != #i2
+				THIS._logaug.PUSH "#$ - Skills:"
+				WHILE THIS._tmpq.LENGTH > ZERO
+					DEFINE STRING _pushtmp ""
+					
+					_pushtmp = THIS._tmpq.POP
+					THIS._logaug.PUSH "#$      - <&_pushtmp&>"
+					DELETE _pushtmp
+				WEND
+			ENDIF
+			IF THIS.AUG_TYPE != #i1
+				THIS._logaug.PUSH "#$ - Base Stat - <&THIS.BASE_STAT&>+1"
+			ENDIF
+		ENDIF
+		PRINT_TEXT "Augmentation data loaded successfully"
+	RETURN VOID
+
+	PUBLIC SCRIPT_END 0
+		PRINT_TEXT ""
+		PRINT_TEXT "== Please visit ltwonet.org forum"
+		PRINT_TEXT "== and give feedback."
+		PRINT_TEXT "====================================="
+		END_SCRIPT
+	RETURN VOID
+	
+	PUBLIC PRINT_AUGMENT 0
+		IF THIS.HAS_AUG == TRUE
+			PRINT_TEXT "== Current Augment details:"
+			FOREACH nam ARRAYLIST THIS.AUG_DATA.STATS
+				PRINT_TEXT "==     - <&THIS.AUG_DATA.STATS.nam.ZERO&> <&THIS.AUG_DATA.STATS.nam.ONE&>"
+			NEXTEACH
+			IF THIS.AUG_DATA.ASKILL_ID > ZERO
+				PRINT_TEXT "==     - Skill ID: <&THIS.AUG_DATA.ASKILL_ID&>"
+				PRINT_TEXT "==     - <&THIS.AUG_DATA.ASKILL_DETAIL&>"
+			ENDIF
+			IF THIS.AUG_DATA.BASESTAT.LENGTH > TWO
+				PRINT_TEXT "==     - <&THIS.AUG_DATA.BASESTAT&>"
+			ENDIF
+		ENDIF
+	RETURN VOID
+	
+	PRIVATE _logtaugm 0
+		IF THIS.HAS_AUG == TRUE
+			FOREACH nam ARRAYLIST THIS.AUG_DATA.STATS
+				THIS._logaug.PUSH "#$ - <&THIS.AUG_DATA.STATS.nam.ZERO&> <&THIS.AUG_DATA.STATS.nam.ONE&>"
+			NEXTEACH
+			IF THIS.AUG_DATA.ASKILL_ID > ZERO
+				THIS._logaug.PUSH "#$ - Skill:"
+				THIS._logaug.PUSH "#$     ID: <&THIS.AUG_DATA.ASKILL_ID&>"
+				THIS._logaug.PUSH "#$     <&THIS.AUG_DATA.ASKILL_DETAIL&>"
+			ENDIF
+			IF THIS.AUG_DATA.BASESTAT.LENGTH > TWO
+				THIS._logaug.PUSH "#$ - <&THIS.AUG_DATA.BASESTAT&>"
+			ENDIF
+		ENDIF
+	RETURN VOID
+	
+	PUBLIC CHECK_TARGET_NPC 0
+		PRINT_TEXT "Checking for NPC target. Please wait..."
+		SET_TARGETING TYPE TWO
+		SET_TARGETING ATTACKABLE TWO
+		SET_TARGETING ALIVE TWO
+		SET_TARGETING INBOX TWO
+		IF TARGET_TYPE != #i3
+			PRINT_TEXT "Invalid target!"
+			THIS.SCRIPT_END
+		ENDIF
+		CALL_EXTERN "Auto Augment.l2s" CHECK_DIAG
+		PRINT_TEXT "NPC and dialog options verified."	
+	RETURN VOID
+	
+	PUBLIC CHECK_SKILLS 0
+		DEFINE ARRAYLIST _remskills 0
+		FOREACH si INT THIS.CHOSE_SKILL
+			DEFINE INT _tmpflag 0
+				FOREACH sig ARRAYLIST THIS.AUG_DATA._aug_skills_g
+					IF THIS.AUG_DATA._aug_skills_g.sig.#i0 == THIS.CHOSE_SKILL.si
+						THIS._tmpq.PUSH "#$<&THIS.AUG_DATA._aug_skills_g.sig.#i1&>"
+						_tmpflag = ONE
+						BREAK 2
+					ENDIF
+				NEXTEACH
+			IF _tmpflag != ONE
+				FOREACH sib ARRAYLIST THIS.AUG_DATA._aug_skills_b
+					FOREACH sic ARRAYLIST THIS.AUG_DATA._aug_skills_b.sib
+						IF THIS.AUG_DATA._aug_skills_b.sib.sic.#i0 == THIS.CHOSE_SKILL.si
+							THIS._tmpq.PUSH "#$<&THIS.AUG_DATA._aug_skills_b.sib.sic.#i1&>"
+							_tmpflag = ONE
+							BREAK 2
+						ENDIF
+					NEXTEACH
+				NEXTEACH
+			ENDIF
+			IF _tmpflag != ONE
+				PRINT_TEXT "The number <&THIS.CHOSE_SKILL.si&> it's not a valid Skill ID!"
+				_remskills.ADD si
+			ENDIF
+			DELETE _tmpflag
+		NEXTEACH
+		FOREACH as INT _remskills
+			THIS.CHOSE_SKILL.REMOVE _remskills.as
+		NEXTEACH
+		IF THIS._tmpq.LENGTH == ZERO
+			PRINT_TEXT "No valid Skill IDs were found."
+			THIS.SCRIPT_END
+		ENDIF
+		PRINT_TEXT "Entered augment skills checked."
+	RETURN VOID
+	
+	PUBLIC CHK_AUGSKL 0
+		SWITCH THIS.AUG_TYPE
+			CASE #i1
+				FOREACH si INT THIS.CHOSE_SKILL
+					IF THIS.CHOSE_SKILL.si == THIS.AUG_DATA.ASKILL_ID
+						THIS.HAVESEL
+					ENDIF
+				NEXTEACH
+				BREAK 1
+			CASE #i2
+				IF "THIS.AUG_DATA.BASESTAT.CONTAINS THIS.BASE_STAT" == TRUE
+					THIS.HAVESEL
+				ENDIF
+				BREAK 1
+			CASE #i3
+				FOREACH si INT THIS.CHOSE_SKILL
+					IF THIS.CHOSE_SKILL.si == THIS.AUG_DATA.ASKILL_ID
+						THIS.HAVESEL
+					ENDIF
+				NEXTEACH
+				IF "THIS.AUG_DATA.BASESTAT.CONTAINS THIS.BASE_STAT" == TRUE
+					THIS.HAVESEL
+				ENDIF
+				BREAK 1
+			CASE #i4
+				FOREACH si INT THIS.CHOSE_SKILL
+					IF THIS.CHOSE_SKILL.si == THIS.AUG_DATA.ASKILL_ID
+						IF "THIS.AUG_DATA.BASESTAT.CONTAINS THIS.BASE_STAT" == TRUE
+							THIS.HAVESEL
+						ENDIF
+					ENDIF
+				NEXTEACH
+				BREAK 1
+		ENDSWITCH
+	RETURN VOID
+	
+	PUBLIC HAVESEL 0
+		PRINT_TEXT "Already have the selected augment."
+		THIS.SCRIPT_END
+	RETURN VOID
+	
+	PUBLIC NPC_DIAG_NOMATCH 0
+		PRINT_TEXT "The targeted NPC and the dialog options does not match."
+		THIS.SCRIPT_END
+	RETURN VOID
+	
+	PUBLIC S_RAND_100 0
+		DEFINE INT random_delay 0
+		GET_RAND random_delay 50 100
+		SLEEP "<&random_delay&>"
+	RETURN VOID
+
+	PUBLIC S_RAND_300 0
+		DEFINE INT random_delay 0
+		GET_RAND random_delay 150 300
+		SLEEP "<&random_delay&>"
+	RETURN VOID
+	
+	PUBLIC S_RAND_500 0
+		DEFINE INT random_delay 0
+		GET_RAND random_delay 350 500
+		SLEEP "<&random_delay&>"
+	RETURN VOID
+
+	PUBLIC S_RAND_800 0
+		DEFINE INT random_delay 0
+		GET_RAND random_delay 650 800
+		SLEEP "<&random_delay&>"
+	RETURN VOID
+
+	PUBLIC S_RAND_1500 0
+		DEFINE INT random_delay 0
+		GET_RAND random_delay 1150 1500
+		SLEEP "<&random_delay&>"
+	RETURN VOID
+	
+	PUBLIC S_RANDL_1500 0
+		DEFINE INT random_delay 0
+		GET_RAND random_delay 1000 2000
+		SLEEP "<&random_delay&>"
+	RETURN VOID
+	
+	PUBLIC S_RAND_2400 0
+		DEFINE INT random_delay 0
+		GET_RAND random_delay 2103 2400
+		SLEEP "<&random_delay&>"
+	RETURN VOID
+	
+	PUBLIC LOAD_INV 0
+		PRINT_TEXT "Loading inventory data."
+		GET_INVENTORY THIS.INV_LIST
+		FOREACH item Inventory THIS.INV_LIST
+			IF ( THIS.INV_LIST.item.NAME == THIS.WRK_ITEM.NAME ) && ( THIS.WRK_ITEM.ID == ZERO )
+				THIS.WRK_ITEM = THIS.INV_LIST.item
+				PRINT_TEXT "Selected item loaded."
+			ENDIF 
+			IF THIS.INV_LIST.item.NAME == THIS.WRK_LS.NAME
+				THIS.WRK_LS = THIS.INV_LIST.item
+				ITEM_COUNT THIS.LS_COUNT "<&THIS.INV_LIST.item.ITEM_ID&>"
+				PRINT_TEXT "Selected life stone loaded."
+			ENDIF
+		NEXTEACH
+		ITEM_COUNT THIS.ADENA_COUNT 57
+		PRINT_TEXT "Inventory data loaded."
+	RETURN VOID
+	
+	PUBLIC UNSET_EVENT 1 _evtid
+		SET_EVENT "<&SCRIPTEVENT_SERVERPACKETEX&>" "Auto Augment.l2s" _nof "<&_evtid&>"
+	RETURN VOID
+			
+	PUBLIC RELOAD_INV 0
+		GET_INVENTORY THIS.INV_LIST
+		ITEM_COUNT THIS.ADENA_COUNT 57
+		ITEM_COUNT THIS.LS_COUNT "<&THIS.WRK_LS.ITEM_ID&>"
+		IF THIS.WRK_GEM.ID != ZERO
+			ITEM_COUNT THIS.GEMS_COUNT "<&THIS.WRK_GEM.ITEM_ID&>"
+		ENDIF
+	RETURN VOID
+	
+	PUBLIC CHK_STOK 0
+		THIS.RELOAD_INV
+		IF THIS.LS_COUNT <= ONE
+			THIS.LOG_NFD
+			PRINT_TEXT "====================================="
+			PRINT_TEXT "== Not enough <&THIS.WRK_LS.NAME&> for auto augmenting to countinue."
+			PRINT_TEXT "== Make sure you have more than 1 <&THIS.WRK_LS.NAME&>."
+			PRINT_TEXT "====================================="
+			THIS.SCRIPT_END
+		ENDIF
+		IF ( THIS.WRK_GEM.ID != ZERO ) && ( THIS.GEMS_COUNT <= THIS.GEMS_REQ )
+			THIS.LOG_NFD
+			PRINT_TEXT "====================================="
+			PRINT_TEXT "== Not enough <&THIS.WRK_GEM.NAME&> for auto augmenting to countinue."
+			PRINT_TEXT "== Make sure you have more than <&THIS.GEMS_REQ&> <&THIS.WRK_GEM.NAME&>."
+			PRINT_TEXT "====================================="
+			THIS.SCRIPT_END
+		ENDIF
+	RETURN VOID 
+	
+	PUBLIC CHK_ADENA 0
+		ITEM_COUNT THIS.ADENA_COUNT 57
+		IF THIS.ADENA_COUNT <= THIS.ADENA_REQ
+			THIS.LOG_NFD
+			PRINT_TEXT "====================================="
+			PRINT_TEXT "== Not enough Adena for removing augmentation."
+			PRINT_TEXT "== Make sure you have more than <&THIS.ADENA_REQ&> Adena."
+			PRINT_TEXT "====================================="
+			THIS.SCRIPT_END
+		ENDIF
+	RETURN VOID
+	
+	PUBLIC LOG_NFD 0
+		IF THIS.SAVE_LOG == TRUE
+			LOCK FLWRT
+			THIS.TObj.LTIMER_STOP
+			THIS._logaug.PUSH "#$ "
+			THIS._logaug.PUSH "#$ Prefered augmentation not found."
+			THIS._logaug.PUSH "#$ "
+			THIS.LOG_STATISTIC
+			THIS.FWLOG_END
+		ENDIF
+	RETURN VOID
+	
+	PUBLIC LOAD_GEMINF 0
+		FOREACH item Inventory THIS.INV_LIST
+			IF THIS.INV_LIST.item.ITEM_ID == THIS.WRK_GEM.ITEM_ID
+				THIS.WRK_GEM = THIS.INV_LIST.item
+				ITEM_COUNT THIS.GEMS_COUNT "<&THIS.INV_LIST.item.ITEM_ID&>"
+			ENDIF
+		NEXTEACH
+	RETURN VOID 
+	
+	PUBLIC COMPARE 0
+		THIS.AUG_TIMES = THIS.AUG_TIMES + ONE
+		THIS.HAS_AUG = TRUE
+		THIS.AUG_DATA.GET_AUG VOID 2 NULL NULL
+		IF THIS.SAVE_LOG == TRUE
+			LOCK FLWRT
+		ENDIF
+		IF THIS.AUG_DATA.KNOWN == TRUE
+			SWITCH THIS.AUG_TYPE
+				CASE #i1
+					FOREACH si INT THIS.CHOSE_SKILL
+						IF THIS.CHOSE_SKILL.si == THIS.AUG_DATA.ASKILL_ID
+							THIS.AUG_FOUND
+						ENDIF
+					NEXTEACH
+					BREAK 1
+				CASE #i2
+					IF "THIS.AUG_DATA.BASESTAT.CONTAINS THIS.BASE_STAT" == TRUE
+						THIS.AUG_FOUND
+					ENDIF
+					BREAK 1
+				CASE #i3
+					FOREACH si INT THIS.CHOSE_SKILL
+						IF THIS.CHOSE_SKILL.si == THIS.AUG_DATA.ASKILL_ID
+							THIS.AUG_FOUND
+						ENDIF
+					NEXTEACH
+					IF "THIS.AUG_DATA.BASESTAT.CONTAINS THIS.BASE_STAT" == TRUE
+						THIS.AUG_FOUND
+					ENDIF
+					BREAK 1
+				CASE #i4
+					FOREACH si INT THIS.CHOSE_SKILL
+						IF THIS.CHOSE_SKILL.si == THIS.AUG_DATA.ASKILL_ID
+							IF "THIS.AUG_DATA.BASESTAT.CONTAINS THIS.BASE_STAT" == TRUE
+								THIS.AUG_FOUND
+							ENDIF
+						ENDIF
+					NEXTEACH
+					BREAK 1
+			ENDSWITCH
+		ELSE
+			IF THIS.SAVE_LOG == TRUE
+				THIS._logaug.PUSH "#$ "
+				THIS._logaug.PUSH "#$ Augmentation Unknown. Please report to forum."
+				THIS._logaug.PUSH "#$ "
+				THIS.TObj.LTIMER_STOP
+				THIS.LOG_STATISTIC
+				THIS.FWLOG_END
+			ENDIF
+			PRINT_TEXT "====================================="
+			PRINT_TEXT "== Augmentation Unknown. Please report to forum."
+			PRINT_TEXT "====================================="
+			THIS.SCRIPT_END
+		ENDIF
+		IF THIS.SAVE_LOG == TRUE
+			THIS._logaug.PUSH "#$ "
+			THIS._logaug.PUSH "#$ ------------------------------------------------------------------------------------------------------------------ "
+			THIS._logaug.PUSH "#$ "
+			THIS._logtaugm
+			UNLOCK FLWRT
+		ENDIF
+			PRINT_TEXT "====================================="
+			PRINT_TEXT "== Prefered augmentation not found."
+			PRINT_TEXT "== Proceeding to augmentation removal."
+			PRINT_TEXT "====================================="
+	RETURN VOID
+	
+	PRIVATE AUG_FOUND 0
+		IF THIS.SAVE_LOG == TRUE
+			THIS.TObj.LTIMER_STOP
+			THIS._logaug.PUSH "#$ "
+			THIS._logaug.PUSH "#$ ------------------------------------------------------------------------------------------------------------------ "
+			THIS._logaug.PUSH "#$ "
+			THIS._logaug.PUSH "#$Selected augmentation found:"
+			THIS._logtaugm
+			THIS._logaug.PUSH "#$ "
+			THIS.LOG_STATISTIC
+			THIS.FWLOG_END
+		ENDIF
+		PRINT_TEXT "====================================="
+		PRINT_TEXT "== Selected augmentation is finally found."
+		PRINT_TEXT "====================================="
+		THIS.PRINT_AUGMENT
+		PRINT_TEXT "====================================="
+		THIS.SCRIPT_END
+	RETURN VOID
+	
+	PRIVATE LOG_STATISTIC 0
+		DEFINE INT _temp 0
+		THIS.TObj.PGET_TIME _temp
+		THIS._logaug.PUSH "#$Statistics:"
+		THIS._logaug.PUSH "#$ - auto augmentation ended at <&_temp&>"
+		DELETE _temp
+		THIS._logaug.PUSH "#$ - auto augmentation duration <&THIS.TObj.LELAPSED&>"
+		THIS._logaug.PUSH "#$ - item augmented <&THIS.AUG_TIMES&> times"
+		THIS._logaug.PUSH "#$ - <&THIS.AUG_TIMES&> x '<&THIS.WRK_LS.NAME&>' were used"
+		DEFINE INT _tempint 0
+		_tempint = THIS.AUG_TIMES * THIS.GEMS_REQ
+		THIS._logaug.PUSH "#$ - <&_tempint&> x '<&THIS.WRK_GEM.NAME&>' were used"
+		DELETE _tempint
+		DEFINE INT _tempint 0
+		_tempint = THIS.AUG_TIMES * THIS.ADENA_REQ
+		THIS._logaug.PUSH "#$ - ~<&_tempint&> x 'Adena' were used"
+	RETURN VOID
+	
+	PUBLIC ADD_ITEM
+		THIS.S_RAND_100
+		DEFINE BYTEBUFFER _inj_buffer 256
+		_inj_buffer.WRITE_BYTE #i208
+		_inj_buffer.WRITE_INT16 #i38
+		_inj_buffer.WRITE_INT32 THIS.WRK_ITEM.ID
+		_inj_buffer.TRIM_TO_INDEX
+		THIS.S_RAND_500
+		INJECTBB _inj_buffer
+	RETURN VOID
+	
+	PUBLIC ADD_LS
+		THIS.S_RAND_100
+		DEFINE BYTEBUFFER _inj_buffer 256
+		_inj_buffer.WRITE_BYTE #i208
+		_inj_buffer.WRITE_INT16 #i39
+		_inj_buffer.WRITE_INT32 THIS.WRK_ITEM.ID
+		_inj_buffer.WRITE_INT32 THIS.WRK_LS.ID
+		_inj_buffer.TRIM_TO_INDEX
+		THIS.S_RAND_500
+		INJECTBB _inj_buffer
+	RETURN VOID
+
+	PUBLIC ADD_GEMS
+		THIS.S_RAND_100
+		DEFINE BYTEBUFFER _inj_buffer 256
+		_inj_buffer.WRITE_BYTE #i208
+		_inj_buffer.WRITE_INT16 #i40
+		_inj_buffer.WRITE_INT32 THIS.WRK_ITEM.ID
+		_inj_buffer.WRITE_INT32 THIS.WRK_LS.ID
+		_inj_buffer.WRITE_INT32 THIS.WRK_GEM.ID
+		_inj_buffer.WRITE_INT64 THIS.GEMS_REQ
+		_inj_buffer.TRIM_TO_INDEX
+		THIS.S_RAND_500
+		INJECTBB _inj_buffer
+	RETURN VOID
+
+	PUBLIC CONFIRM_AUG
+		THIS.S_RAND_100
+		DEFINE BYTEBUFFER _inj_buffer 256
+		_inj_buffer.WRITE_BYTE #i208
+		_inj_buffer.WRITE_INT16 #i65
+		_inj_buffer.WRITE_INT32 THIS.WRK_ITEM.ID
+		_inj_buffer.WRITE_INT32 THIS.WRK_LS.ID
+		_inj_buffer.WRITE_INT32 THIS.WRK_GEM.ID
+		_inj_buffer.WRITE_INT64 THIS.GEMS_REQ
+		_inj_buffer.TRIM_TO_INDEX
+		IF THIS.PROTECT_DELAY == TRUE
+			THIS.S_RAND_2400
+		ELSE
+			THIS.S_RAND_500
+		ENDIF
+		INJECTBB _inj_buffer
+	RETURN VOID
+
+	PUBLIC ARM_ITEM
+		THIS.S_RAND_100
+		DEFINE BYTEBUFFER _inj_buffer 256
+		_inj_buffer.WRITE_BYTE #i208
+		_inj_buffer.WRITE_INT16 #i66
+		_inj_buffer.WRITE_INT32 THIS.WRK_ITEM.ID
+		_inj_buffer.TRIM_TO_INDEX
+		THIS.S_RAND_500
+		INJECTBB _inj_buffer	
+	RETURN VOID
+
+	PUBLIC ARM_CONFIRM
+		THIS.S_RAND_100
+		DEFINE BYTEBUFFER _inj_buffer 256
+		_inj_buffer.WRITE_BYTE #i208
+		_inj_buffer.WRITE_INT16 #i67
+		_inj_buffer.WRITE_INT32 THIS.WRK_ITEM.ID
+		_inj_buffer.TRIM_TO_INDEX
+		IF THIS.PROTECT_DELAY == TRUE
+			THIS.S_RAND_2400
+		ELSE
+			THIS.S_RAND_500
+		ENDIF
+		INJECTBB _inj_buffer 
+	RETURN VOID
+
+	PUBLIC FWLOG_END
+		PRINT_TEXT "writing augment logs to file..."
+		THIS.TObj.SFN_DateTime THIS._logfname
+		THIS._logfname = "#$ALogAug_<&CHAR_NAME&>_z_<&THIS._logfname&>"
+		CALL_EXTERN "Include/Utils.l2s" WRITE_FILE VOID 3 THIS._logfname AA_ScrObj._logaug #$w
+		PRINT_TEXT "logs saved under <&THIS._logfname&>.txt"
+		THIS.EVT_LOGS_WR
+	RETURN VOID
+	
+	PUBLIC ADD_LMEM 4 _sname _mtype _msg _lch
+		DEFINE STRING _crtime 0
+		THIS.TObj.PGET_TIME _crtime
+		
+		SWITCH _mtype
+			CASE #i0
+				THIS._chatlogs.PUSH "#$    [<&_crtime&>]:(Normal) <&_sname&>: <&_msg&>"
+				BREAK 1
+			CASE #i1
+				THIS._chatlogs.PUSH "#$    [<&_crtime&>]:(Shout) <&_sname&>: <&_msg&>"
+				BREAK 1
+			CASE #i2
+				THIS._chatplogs.PUSH "#$    [<&_crtime&>]: <&_sname&>: <&_msg&>"
+				BREAK 1
+			CASE #i8
+				THIS._chatlogs.PUSH "#$    [<&_crtime&>]:(Trade) <&_sname&>: <&_msg&>"
+				BREAK 1
+			CASE #i17
+				THIS._chatlogs.PUSH "#$    [<&_crtime&>]:(Hero) <&_sname&>: <&_msg&>"
+				BREAK 1
+			CASE #i9
+				THIS._chatlogs.PUSH "#$    [<&_crtime&>]:(Alliance) <&_sname&>: <&_msg&>"
+				BREAK 1
+			CASE #i4
+				THIS._chatlogs.PUSH "#$    [<&_crtime&>]:(Clan) <&_sname&>: <&_msg&>"
+				BREAK 1
+			CASE #i3
+				THIS._chatlogs.PUSH "#$    [<&_crtime&>]:(Party) <&_sname&>: <&_msg&>"
+				BREAK 1
+			CASE #i10
+				THIS._chatlogs.PUSH "#$    [<&_crtime&>]:(Announce) <&_sname&>: <&_msg&>"
+				BREAK 1
+			DEFAULT
+				THIS._chatlogs.PUSH "#$    [<&_crtime&>]:(<&_mtype&>) <&_sname&>: <&_msg&>"
+		ENDSWITCH
+		
+		IF ( _lch != NULL ) && ( _mtype == TWO)
+			THIS._chatlogs.PUSH "#$    [<&_crtime&>]:(Private) <&_sname&>: <&_msg&>"
+		ENDIF
+	RETURN VOID
+	
+	PUBLIC EVT_LOGS_WR
+		IF THIS._evtlogs.COUNT != ZERO
+			CALL_EXTERN "Include/Utils.l2s" APPEND_TO_SECTION VOID 3 THIS._evtlogfn THIS._evtlogs #$Unwanted
+		ENDIF
+		IF THIS._chatlogs.COUNT != ZERO
+			CALL_EXTERN "Include/Utils.l2s" APPEND_TO_SECTION VOID 3 THIS._evtlogfn THIS._chatlogs #$Chat
+		ENDIF
+		IF THIS._chatplogs.COUNT != ZERO
+			CALL_EXTERN "Include/Utils.l2s" APPEND_TO_SECTION VOID 3 THIS._evtlogfn THIS._chatplogs #$Private
+		ENDIF
+	RETURN VOID
+
+	PUBLIC LOG_WRITER
+		WHILE ONE == ONE
+			SLEEP 300000
+			THIS.EVT_LOGS_WR
+		WEND
+	RETURN VOID
+
+END_CLASS

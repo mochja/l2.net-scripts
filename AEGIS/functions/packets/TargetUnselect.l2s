@@ -1,0 +1,12 @@
+// Handle TargetUnselect packets.
+
+
+FUNCTION Packet::TargetUnselect
+
+  WHILE AEGIS.OPTIONS.DATADECAY.Enabled == ZERO
+    SLEEP 100
+  WEND
+
+  AEGIS.PIPELINE.NETWORK.TARGETUNSELECT.ADD PACKET
+
+RETURN VOID

@@ -1,0 +1,41 @@
+// Kratky popis
+// Server: 
+// Autor: mochitto
+// Date: 
+// Special thanks for L2.NET contributors
+// rev.: 0
+PRINT_TEXT "SCRIPT STARTED!]"
+
+// Main section
+// ===============================
+DEFINE INT N1
+	DEFINE INT N2
+	DEFINE INT N3	
+				ITEM_COUNT N1 728
+				ITEM_COUNT N2 3952
+				ITEM_COUNT N3 1467
+				
+				IF N1 < 500
+					N1 = 1			
+					PRINT_TEXT "<&N1&>"	
+					//MANA
+					INJECT "B0 A9 23 00 00 E0 FD 1C 00 <&N1.GET_HEX32&>00 00 00 00 00 00 00 00 00 00 00 00 00 00 FE FF 00 00 00 00 00 00 00 00 00 00 00 00 00 00"
+				ENDIF
+				SLEEP 1000
+				IF N2 < 1000
+					N2 = 1
+					PRINT_TEXT "<&N2&>"
+					//SBPS
+					INJECT "B0 A9 23 00 00 40 77 1B 00 <&N2.GET_HEX32&>00 00 00 00 00 00 00 00 00 00 00 00 00 00 FE FF 00 00 00 00 00 00 00 00 00 00 00 00 00 00" 
+				ENDIF
+				SLEEP 1000
+				IF N3 < 15000
+					N3 = 15000 - N3
+					N3 = N3 / 1000
+					PRINT_TEXT "<&N3&>"
+					//SS
+					INJECT "B0 A9 23 00 00 C0 27 09 00 <&N3.GET_HEX32&>00 00 00 00 00 00 00 00 00 00 00 00 00 00 FE FF 00 00 00 00 00 00 00 00 00 00 00 00 00 00"
+				ENDIF
+
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT

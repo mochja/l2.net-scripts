@@ -1,0 +1,41 @@
+
+//-------------------------------------------------------------------------------------
+CLASS ENGINEX_SYSTEM_LISTS NULL
+//-------------------------------------------------------------------------------------
+
+   PUBLIC RANDSORT 1 OLDARRAY
+		DEFINE ARRAYLIST NEWARRAY 0
+		DEFINE ARRAYLIST INDEXES 0
+		DEFINE INT OLD_INDEX 0
+		DEFINE INT NEW_INDEX 0
+		FOR I 0 "<&OLDARRAY.COUNT&>" 1
+			INDEXES.ADD "#i<&I&>"
+		NEXT
+		WHILE ( INDEXES.COUNT > ZERO )
+			GET_RAND OLD_INDEX 1 "<&INDEXES.COUNT&>"
+			OLD_INDEX = OLD_INDEX - #i1
+			NEW_INDEX = INDEXES.OLD_INDEX
+			NEWARRAY.ADD OLDARRAY.NEW_INDEX
+			INDEXES.REMOVE "<&OLD_INDEX&>"
+         SLEEP 1
+		WEND
+      SLEEP 1
+   RETURN NEWARRAY
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONTAINS 2 LIST TOCONTAIN
+		DEFINE INT CONTAINS 0
+		FOREACH I "<&TOCONTAIN.CLASSNAME&>" LIST
+			IF ( LIST.I == TOCONTAIN )
+				CONTAINS = TRUE
+				BREAK 2
+			ENDIF
+         SLEEP 1
+		NEXTEACH
+      SLEEP 1
+   RETURN CONTAINS
+
+//-------------------------------------------------------------------------------------
+END_CLASS
+//-------------------------------------------------------------------------------------

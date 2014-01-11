@@ -1,0 +1,59 @@
+
+INCLUDE "Include/EngineX/Interface/PartyFrame/Window.l2c"
+INCLUDE "Include/EngineX/Interface/PartyFrame/Object.l2c"
+
+//-------------------------------------------------------------------------------------
+CLASS ENGINEX_INTERFACE_PARTYFRAME NULL
+//-------------------------------------------------------------------------------------
+
+   VAR_START
+      PUBLIC SORTEDLIST WINDOWS 0
+
+   VAR_END
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CREATE_WINDOW 1 WINDOWNAME
+      IF ( THIS.WINDOWS.CONTAINS_KEY "<&WINDOWNAME&>" == FALSE )
+         DEFINE ENGINEX_INTERFACE_PARTYFRAME_WINDOW NEW_WINDOW 0
+         NEW_WINDOW.WINDOW_NAME = "#$<&WINDOWNAME&>"
+         THIS.WINDOWS.ADD NEW_WINDOW "<&WINDOWNAME&>"
+      ENDIF
+   RETURN THIS.WINDOWS.WINDOWNAME
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC ADD_OBJECT 2 WINDOWNAME OBJECTKEY
+      IF ( THIS.WINDOWS.CONTAINS_KEY "<&WINDOWNAME&>" == FALSE )
+         RETURN NULL
+      ENDIF
+      DEFINE ENGINEX_INTERFACE_PARTYFRAME_OBJECT WINDOWOBJECT 0
+      THIS.WINDOWS.WINDOWNAME.MEMBERS.ADD WINDOWMEMBER "<&OBJECTKEY&>"
+   RETURN WINDOWOBJECT
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC DELETE_OBJECT 2 WINDOWNAME OBJECTKEY
+      IF ( THIS.WINDOWS.CONTAINS_KEY "<&WINDOWNAME&>" == FALSE )
+         RETURN FALSE
+      ENDIF
+      THIS.WINDOWS.WINDOWNAME.MEMBERS.REMOVE "<&OBJECTKEY&>"
+   RETURN TRUE
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC ONCLICK 1 OBJECT_ID
+      TARGET "<&OBJECT_ID&>"
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+//-------------------------------------------------------------------------------------
+END_CLASS
+//-------------------------------------------------------------------------------------

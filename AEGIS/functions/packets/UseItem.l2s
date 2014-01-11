@@ -1,0 +1,18 @@
+// Handle UseItem packets.
+
+
+FUNCTION Packet::UseItem 1 _bUseItem
+
+  /*    
+  DEFINE INT OBJECT_ID
+
+
+  _bUseItem.READ_BYTE NULL
+  _bUseItem.READ_INT32 OBJECT_ID
+
+  PRINT_TEXT "Injecting _bUseItem"
+  */
+
+  INJECTBB _bUseItem
+  
+RETURN VOID

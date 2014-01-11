@@ -1,0 +1,61 @@
+// DLIB::Packets::WriteItemList v1.3 for Gracia Plus
+// by d00d [12/08/08]
+//
+// Creates a ItemList packet based on a sorted list
+// template of values.
+//
+// REQUIRES - ItemList.l2c - placed in calling script
+//
+// Version 1.0 - Initial Release
+// Version 1.1 - Updated to use new ItemList.l2c
+// Version 1.2 - Updated packet information and general cleanup.
+// Version 1.3 - Updated for Gracia Plus
+
+FUNCTION DLIB::Packets::WriteItemList 1 _oItemList
+
+  DEFINE BYTEBUFFER _bOutBuffer 1024
+  
+  IF _oItemList.CLASSNAME == "#$SORTEDLIST"
+    
+    _bOutBuffer.WRITE_BYTE #I17        
+    _bOutBuffer.WRITE_INT16 ZERO
+    _bOutBuffer.WRITE_INT16 "_oItemList.COUNT" // Inventory Count
+    
+    FOREACH ITEM ItemList _oItemList
+    
+      _bOutBuffer.WRITE_INT16 "_oItemList.ITEM.BASE_TYPE1"
+      _bOutBuffer.WRITE_INT32 "_oItemList.ITEM.OBJECT_ID"           
+      _bOutBuffer.WRITE_INT32 "_oItemList.ITEM.TEMPLATE_ID"
+      _bOutBuffer.WRITE_INT32 "_oItemList.ITEM.LOCATION_SLOT"
+      _bOutBuffer.WRITE_INT32 "_oItemList.ITEM.QUANTITY"
+      _bOutBuffer.WRITE_INT16 "_oItemList.ITEM.BASE_TYPE2"
+      _bOutBuffer.WRITE_INT16 "_oItemList.ITEM.CUSTOM_TYPE1"
+      _bOutBuffer.WRITE_INT16 "_oItemList.ITEM.IS_EQUIPPED"
+      _bOutBuffer.WRITE_INT32 "_oItemList.ITEM.EQUIPPED_LOCATION"
+      _bOutBuffer.WRITE_INT16 "_oItemList.ITEM.ENCHANT_LEVEL"
+      _bOutBuffer.WRITE_INT16 "_oItemList.ITEM.CUSTOM_TYPE2"
+      _bOutBuffer.WRITE_INT32 "_oItemList.ITEM.AUGMENT_ID1"
+      _bOutBuffer.WRITE_INT32 "_oItemList.ITEM.MANA"
+      _bOutBuffer.WRITE_INT32 "_oItemList.ITEM.ATTACK_ELEMENT"
+      _bOutBuffer.WRITE_INT32 "_oItemList.ITEM.ELEMENT_MAGNITUDE"
+      _bOutBuffer.WRITE_INT32 "_oItemList.ITEM.FIRE_DEFENSE"
+      _bOutBuffer.WRITE_INT32 "_oItemList.ITEM.WATER_DEFENSE"
+      _bOutBuffer.WRITE_INT32 "_oItemList.ITEM.WIND_DEFENSE"
+      _bOutBuffer.WRITE_INT32 "_oItemList.ITEM.EARTH_DEFENSE"
+      _bOutBuffer.WRITE_INT32 "_oItemList.ITEM.HOLY_DEFENSE"
+      _bOutBuffer.WRITE_INT32 "_oItemList.ITEM.DARK_DEFENSE"
+	  _bOutBuffer.WRITE_INT32 "_oItemList.ITEM.LEASE_TIME"
+      _bOutBuffer.READ_INT16 "_oItemList.ITEM.ENCHANT_EFFECT_A"
+	  _bOutBuffer.READ_INT16 "_oItemList.ITEM.ENCHANT_EFFECT_B"
+	  _bOutBuffer.READ_INT16 "_oItemList.ITEM.ENCHANT_EFFECT_C"	  
+
+    NEXTEACH
+
+  _bOutBuffer.TRIM_TO_INDEX
+  _bOutBuffer.RESET_INDEX
+    
+  ELSE
+    PRINT_TEXT "_oItemList is not a Sorted List"
+  ENDIF
+
+RETURN _bOutBuffer

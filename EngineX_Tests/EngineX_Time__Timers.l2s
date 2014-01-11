@@ -1,0 +1,70 @@
+
+	INCLUDE Include/EngineX.l2c
+	DEFINE_GLOBAL ENGINEX ENGINEX 0
+
+	PRINT_TEXT ""
+	PRINT_TEXT "-------------------------------------------------"
+
+
+	ENGINEX.TIME.TIMER_CREATE VOID 1 #$MyTimer
+
+
+
+	// start, stop, update
+	ENGINEX.TIME.TIMER_START VOID 1 #$MyTimer
+	SLEEP 1000
+	ENGINEX.TIME.TIMER_STOP VOID 1 #$MyTimer
+	ENGINEX.TIME.TIMER_UPDATE VOID 1 #$MyTimer
+
+	// print ticks (access-version)
+	PRINT_TEXT "---> <&ENGINEX.TIME.TIMERS.#$MyTimer.TICKS&>"
+
+	// print ticks (call-version)
+	// DEFINE INT TICKS 0
+	// ENGINEX.TIME.TIMER_TICKS TICKS 1 #$MyTimer
+	// PRINT_TEXT "---> <&TICKS&>"
+
+
+
+	// start, stop, update
+	ENGINEX.TIME.TIMER_START VOID 1 #$MyTimer
+	SLEEP 1000
+	ENGINEX.TIME.TIMER_STOP VOID 1 #$MyTimer
+	ENGINEX.TIME.TIMER_UPDATE VOID 1 #$MyTimer
+
+	// print ticks (access-version)
+	PRINT_TEXT "---> <&ENGINEX.TIME.TIMERS.#$MyTimer.TICKS&>"
+
+
+
+	// start, stop, update
+	ENGINEX.TIME.TIMER_START VOID 1 #$MyTimer
+	SLEEP 1000
+	ENGINEX.TIME.TIMER_STOP VOID 1 #$MyTimer
+	ENGINEX.TIME.TIMER_UPDATE VOID 1 #$MyTimer
+
+	// print ticks (access-version)
+	PRINT_TEXT "---> <&ENGINEX.TIME.TIMERS.#$MyTimer.TICKS&>"
+
+
+
+	// reset ticks value (access-version)
+	ENGINEX.TIME.TIMERS.#$MyTimer.TICKS = ZERO
+
+	// reset ticks value (call-version)
+	// ENGINEX.TIME.TIMER_RESET VOID 1 #$MyTimer
+
+	// start, stop, update
+	ENGINEX.TIME.TIMER_START VOID 1 #$MyTimer
+	SLEEP 1000
+	ENGINEX.TIME.TIMER_STOP VOID 1 #$MyTimer
+	ENGINEX.TIME.TIMER_UPDATE VOID 1 #$MyTimer
+
+	// print ticks (access-version)
+	PRINT_TEXT "---> <&ENGINEX.TIME.TIMERS.#$MyTimer.TICKS&>"
+
+
+	PRINT_TEXT "-------------------------------------------------"
+	PRINT_TEXT ""
+
+END_SCRIPT

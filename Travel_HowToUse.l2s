@@ -1,0 +1,27 @@
+    INCLUDE Include/EngineX.l2c
+    DEFINE_GLOBAL ENGINEX ENGINEX 0
+ 
+    INCLUDE Include/Travel.l2c
+    DEFINE_GLOBAL TRAVEL TRAVEL 0
+ 
+    DEFINE ARRAYLIST PATH 0
+ 
+    // points at human start area
+    // create a new human character and start this script
+    // and you'll see...
+    PATH.ADD "#$-89943|248393|-3579"
+    PATH.ADD "#$-89990|248680|-3579"
+    PATH.ADD "#$-90258|248879|-3579"
+    PATH.ADD "#$-90994|248054|-3569"
+ 
+    // run the path 3 times
+    FOR I 0 3 1
+ 
+        TRAVEL.WALKER.START_PATH VOID 1 PATH
+        WHILE (TRAVEL.WALKER.IS_WALKING == TRUE)
+            SLEEP 100
+        WEND
+ 
+    NEXT
+ 
+END_SCRIPT

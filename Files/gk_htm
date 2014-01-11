@@ -1,0 +1,14 @@
+<html><body><center><img src="L2UI_CH3.herotower_deco" width=256 height=32><br><br>
+<img src="L2UI.SquareGray" width=250 height=1><br>                                     
+<table width=260 border=0 bgcolor=444444>
+<tr><td><br></td></tr>
+<tr><td align="center">You will be teleported to:<br1><font color="FF0000">Farm & Level<br></font></td></tr>
+<tr><td align="center"><font color="FF0000">Price: <font color="LEVEL">15000 Adena<br></td></tr> 
+<tr><td align="center"><br1><font color="LEVEL">Do you wish to continue?</td></tr>
+<tr><td></td></tr></table><br>
+<img src="L2UI.SquareGray" width=250 height=1><br><br>
+<button value="Confirm" action="bypass -h Quest 958_DeluxGatekeeper confteleport[57][15000] 9951 -112472 -2465" width=80 height=25 back="L2UI_ct1.button_df_down" fore="L2UI_ct1.button_df">
+<button value="Cancel" action="bypass -h npc_1_Link servnews.htm" width=80 height=25 back="L2UI_ct1.button_df_down" fore="L2UI_ct1.button_df">	
+</center></body></html>
+
+

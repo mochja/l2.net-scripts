@@ -1,0 +1,202 @@
+// Data Decay for Npc and Char info packets.
+
+FUNCTION DataDecay
+
+  AEGIS.OPTIONS.DATADECAY.ObjectAge            = #I600
+  AEGIS.OPTIONS.DATADECAY.ObjectPruneDistance  = #I4000
+  AEGIS.OPTIONS.DATADECAY.NpcInfoRefresh       = #I60000
+  AEGIS.OPTIONS.DATADECAY.CharInfoRefresh      = #I600000
+  AEGIS.OPTIONS.DATADECAY.PartySpelledDecay    = #D500.0
+  AEGIS.OPTIONS.DATADECAY.AbnormalStatusDecay  = #D500.0
+  AEGIS.OPTIONS.DATADECAY.ShortBuffDecay       = #D500.0
+  AEGIS.OPTIONS.DATADECAY.Enabled              = #I1
+  
+  THREAD DataDecay::CharInfo
+  THREAD DataDecay::NpcInfo
+  //THREAD DataDecay::PartySpelled
+  THREAD DataDecay::AbnormalStatusUpdate
+  
+RETURN VOID
+
+FUNCTION DataDecay::CharInfo
+
+  DEFINE INT _iDistance 0
+  DEFINE INT _iCurrentTime 0
+  DEFINE INT _iPrune 0
+  DEFINE DOUBLE _iElapsedTime 0
+  DEFINE SORTEDLIST PruneList 0
+
+  WHILE ONE == ONE  
+    FOREACH Object CharList AEGIS.ENTITYTRACKING.PLAYERS
+      _iPrune = #I0
+      
+      DISTANCE _iDistance CHAR_X CHAR_Y CHAR_Z AEGIS.ENTITYTRACKING.PLAYERS.OBJECT.CHARINFO.#$X AEGIS.ENTITYTRACKING.PLAYERS.OBJECT.CHARINFO.#$Y AEGIS.ENTITYTRACKING.PLAYERS.OBJECT.CHARINFO.#$Z
+      IF _iDistance >= AEGIS.OPTIONS.DATADECAY.ObjectPruneDistance
+        _iPrune = #I1
+      ENDIF
+      
+      GET_TIME _iCurrentTime
+      _iElapsedTime = _iCurrentTime - AEGIS.ENTITYTRACKING.PLAYERS.Object.AGE
+      _iElapsedTime = _iElapsedTime / #I10000000
+      
+      IF _iElapsedTime >= AEGIS.OPTIONS.DATADECAY.ObjectAge
+        _iPrune = #I1
+      ENDIF
+      
+      IF _iPrune == #I1
+        PruneList.ADD ZERO "<&AEGIS.ENTITYTRACKING.PLAYERS.OBJECT.CHARINFO.#$OBJECT_ID&>"
+      ENDIF
+    NEXTEACH
+    
+    IF PruneList.COUNT != #I0
+      LOCK AEGIS.MUTEX.ENTITYTRACKING.PLAYERS
+        FOREACH Index INT PruneList
+          AEGIS.ENTITYTRACKING.PLAYERS.REMOVE "<&PruneList.GET_KEY Index&>"
+        NEXTEACH
+      UNLOCK AEGIS.MUTEX.ENTITYTRACKING.PLAYERS
+    ENDIF
+    
+    _iDistance = #I0
+    _iPrune = #I0
+    _iCurrentTime = #I0
+    _iElapsedTime = #I0
+    PruneList.CLEAR
+    
+    SLEEP "<&AEGIS.OPTIONS.DATADECAY.CharInfoRefresh&>"
+  WEND
+  
+RETURN VOID
+
+FUNCTION DataDecay::NpcInfo
+
+  DEFINE INT _iDistance 0
+  DEFINE INT _iCurrentTime 0
+  DEFINE INT _iPrune 0
+  DEFINE DOUBLE _iElapsedTime 0
+  DEFINE SORTEDLIST PruneList 0
+
+  WHILE ONE == ONE  
+    FOREACH Object CharList AEGIS.ENTITYTRACKING.NPCS
+      _iPrune = #I0
+      
+      DISTANCE _iDistance CHAR_X CHAR_Y CHAR_Z AEGIS.ENTITYTRACKING.NPCS.Object.X AEGIS.ENTITYTRACKING.NPCS.Object.Y AEGIS.ENTITYTRACKING.NPCS.Object.Z
+      IF _iDistance >= AEGIS.OPTIONS.DATADECAY.ObjectPruneDistance
+        _iPrune = #I1
+      ENDIF
+      
+      GET_TIME _iCurrentTime
+      _iElapsedTime = _iCurrentTime - AEGIS.ENTITYTRACKING.NPCS.Object.AGE
+      _iElapsedTime = _iElapsedTime / #I10000000
+      
+      IF _iElapsedTime >= AEGIS.OPTIONS.DATADECAY.ObjectAge
+        _iPrune = #I1
+      ENDIF
+      
+      IF _iPrune == #I1
+        PruneList.ADD ZERO "<&AEGIS.ENTITYTRACKING.NPCS.Object.OBJECT_ID&>"
+      ENDIF
+    NEXTEACH
+    
+    IF PruneList.COUNT != #I0
+      LOCK AEGIS.MUTEX.NETWORK.NPCINFO
+        FOREACH Index INT PruneList
+          PRINT_TEXT "Deleting <&PruneList.GET_KEY Index&>"
+          AEGIS.ENTITYTRACKING.NPCS.REMOVE "<&PruneList.GET_KEY Index&>"
+        NEXTEACH
+      UNLOCK AEGIS.MUTEX.NETWORK.NPCINFO
+    ENDIF
+    
+    _iDistance = #I0
+    _iPrune = #I0
+    _iCurrentTime = #I0
+    _iElapsedTime = #I0
+    PruneList.CLEAR
+    
+    SLEEP "<&AEGIS.OPTIONS.DATADECAY.NpcInfoRefresh&>"
+  WEND
+  
+RETURN VOID
+
+FUNCTION DataDecay::PartySpelled
+
+  DEFINE INT _iCurrentTime 0
+  DEFINE INT _iStartTime 0
+  DEFINE DOUBLE _iDecayTime 0
+  DEFINE DOUBLE _iElapsedTime 0
+  DEFINE SORTEDLIST PruneList 0
+
+  WHILE ONE == ONE
+    GET_TIME _iStartTime
+    FOREACH Member SORTEDLIST AEGIS.EFFECTTRACKING.PARTYEFFECTS
+    
+      FOREACH Effect PartySpelled AEGIS.EFFECTTRACKING.PARTYEFFECTS.Member
+        
+        IF AEGIS.EFFECTTRACKING.PARTYEFFECTS.Member.Effect.IS_DIRTY == #I1
+          PruneList.ADD ZERO "<&AEGIS.EFFECTTRACKING.PARTYEFFECTS.Member.Effect.SKILL_ID&>"
+        ELSE
+          GET_TIME _iCurrentTime
+          IF _iCurrentTime >= AEGIS.EFFECTTRACKING.PARTYEFFECTS.Member.Effect.AGE
+            AEGIS.EFFECTTRACKING.PARTYEFFECTS.Member.Effect.IS_DIRTY = #I1
+          ENDIF
+        ENDIF
+        
+        // XXX: This Has the potential to be slow 
+        IF PruneList.COUNT != #I0  
+          LOCK AEGIS.MUTEX.NETWORK.PARTYSPELLED
+            FOREACH Index INT PruneList
+              //PRINT_TEXT "Removing stale effect <&PruneList.GET_KEY Index&>"
+              AEGIS.EFFECTTRACKING.PARTYEFFECTS.Member.REMOVE "<&PruneList.GET_KEY Index&>"
+            NEXTEACH
+          UNLOCK AEGIS.MUTEX.NETWORK.PARTYSPELLED
+        ENDIF
+        
+        _iCurrentTime = #I0
+        _iElapsedTime = #I0
+        _iDecayTime = #I0
+        PruneList.CLEAR        
+      NEXTEACH
+    NEXTEACH
+    SLEEP "<&AEGIS.OPTIONS.DATADECAY.PartySpelledDecay&>"
+  WEND
+  
+RETURN VOID
+
+FUNCTION DataDecay::AbnormalStatusUpdate
+
+  DEFINE INT _iCurrentTime 0
+  DEFINE INT _iStartTime 0
+  DEFINE DOUBLE _iDecayTime 0
+  DEFINE DOUBLE _iElapsedTime 0
+  DEFINE SORTEDLIST PruneList 0
+
+  WHILE ONE == ONE
+    GET_TIME _iStartTime
+    FOREACH Effect AbnormalStatusUpdate AEGIS.EFFECTTRACKING.ABNORMALEFFECTS
+      
+      IF AEGIS.EFFECTTRACKING.ABNORMALEFFECTS.Effect.IS_DIRTY == #I1
+        PruneList.ADD ZERO "<&AEGIS.EFFECTTRACKING.ABNORMALEFFECTS.Effect.EFFECT_ID&>"
+      ELSE
+        GET_TIME _iCurrentTime
+        IF _iCurrentTime >= AEGIS.EFFECTTRACKING.ABNORMALEFFECTS.Effect.AGE
+          AEGIS.EFFECTTRACKING.ABNORMALEFFECTS.Effect.IS_DIRTY = #I1
+        ENDIF
+      ENDIF
+    NEXTEACH
+    
+    IF PruneList.COUNT != #I0  
+      LOCK AEGIS.MUTEX.EFFECTTRACKING.ABNORMALEFFECTS
+        FOREACH Index INT PruneList
+          //PRINT_TEXT "Removing stale effect <&PruneList.GET_KEY Index&>"
+          AEGIS.EFFECTTRACKING.ABNORMALEFFECTS.REMOVE "<&PruneList.GET_KEY Index&>"
+        NEXTEACH
+      UNLOCK AEGIS.MUTEX.EFFECTTRACKING.ABNORMALEFFECTS
+    ENDIF
+    
+    _iCurrentTime = #I0
+    _iElapsedTime = #I0
+    _iDecayTime = #I0
+    PruneList.CLEAR
+    SLEEP "<&AEGIS.OPTIONS.DATADECAY.AbnormalStatusDecay&>"
+  WEND
+  
+RETURN VOID

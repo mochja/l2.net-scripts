@@ -1,0 +1,22 @@
+<table bgcolor=333333 cellpadding=3><tr><td width=256>
+<table><tr>
+<td width=240>Send a message to <font color=FFCC00><&THIS.WRITINGS.WRITE_TO&></font></td>
+<td width=20><font color=7E7E7E>[<a action="bypass -h <&THIS.MENUKEY&>_CloseWrite">x</a>]</font></td>
+</tr></table>
+<center>
+<multiedit
+ var=text
+ width=250
+ height=50
+ >
+<button
+ value="Send"
+ action="bypass -h <&THIS.MENUKEY&>_Write $text"
+ back="l2ui_ct1.button_df"
+ width=65
+ height=20
+ fore="l2ui_ct1.button_df"
+ >
+</center>
+</td></tr></table>
+__EOF

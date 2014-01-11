@@ -1,0 +1,88 @@
+// Init Global Variables
+
+FUNCTION Init::GlobalVariables
+
+  DEFINE_GLOBAL SuperStructure AEGIS
+
+  Init::Events VOID 0
+  
+RETURN VOID
+
+FUNCTION Init::Events
+
+  // Event Declarations
+  SET_EVENT "<&SCRIPTEVENT_CLIENTPACKET&>"   "AEGIS\functions\packets\EnterWorld.l2s"       Packet::EnterWorld        11  // EnterWorld
+  SET_EVENT "<&SCRIPTEVENT_CLIENTPACKET&>"   "AEGIS\functions\init_globals.l2s"             ClientNetworkQueue        25  // UseItem
+  SET_EVENT "<&SCRIPTEVENT_CLIENTPACKET&>"   "AEGIS\functions\init_globals.l2s"             ClientNetworkQueue        31  // Action
+  SET_EVENT "<&SCRIPTEVENT_CLIENTPACKET&>"   "AEGIS\functions\init_globals.l2s"             ClientNetworkQueue        35  // RequestBypassToServer
+  SET_EVENT "<&SCRIPTEVENT_CLIENTPACKET&>"   "AEGIS\functions\init_globals.l2s"             ClientNetworkQueue        57  // RequestMagicSkillUsed
+  SET_EVENT "<&SCRIPTEVENT_CLIENTPACKET&>"   "AEGIS\functions\init_globals.l2s"             ClientNetworkQueue        72  // RequestTargetCanceld
+  SET_EVENT "<&SCRIPTEVENT_CLIENTPACKET&>"   "AEGIS\functions\packets\RequestRestart.l2s"   Packet::RequestRestart    87  // RequestRestart
+  SET_EVENT "<&SCRIPTEVENT_CLIENTPACKET&>"   "AEGIS\functions\init_globals.l2s"             ClientNetworkQueue       107  // RequestSendL2FriendSay
+  SET_EVENT "<&SCRIPTEVENT_CLIENTPACKET&>"   "AEGIS\functions\init_globals.l2s"             ClientNetworkQueue       133  // RequestTutorialLinkHtml
+  SET_EVENT "<&SCRIPTEVENT_CLIENTPACKET&>"   "AEGIS\functions\init_globals.l2s"             ClientNetworkQueue       134  // RequestTutorialPassCmdToServer
+  
+  SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>"   "AEGIS\functions\init_globals.l2s"             ServerNetworkQueue         0  // Die
+  SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>"   "AEGIS\functions\init_globals.l2s"             ServerNetworkQueue         1  // Revive
+  SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>"   "AEGIS\functions\init_globals.l2s"             ServerNetworkQueue         8  // DeleteObject
+  SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>"   "AEGIS\functions\init_globals.l2s"             ServerNetworkQueue        12  // NpcInfo
+  SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>"   "AEGIS\functions\init_globals.l2s"             LowLatencyQueue           24  // StatusUpdate
+//SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>"   "AEGIS\functions\init_globals.l2s"             ServerNetworkQueue        34  // TeleportToLocation
+  SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>"   "AEGIS\functions\init_globals.l2s"             ServerNetworkQueue        35  // TargetSelected
+  SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>"   "AEGIS\functions\init_globals.l2s"             ServerNetworkQueue        36  // TargetUnselected
+  SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>"   "AEGIS\functions\init_globals.l2s"             ServerNetworkQueue        49  // CharInfo
+  SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>"   "AEGIS\functions\init_globals.l2s"             LowLatencyQueue           50  // UserInfo
+  SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>"   "AEGIS\functions\init_globals.l2s"             ServerNetworkQueue        72  // MagicSkillUse
+  SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>"   "AEGIS\functions\init_globals.l2s"             ServerNetworkQueue        73  // MagicSkillCanceld
+  SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>"   "AEGIS\functions\init_globals.l2s"             ServerNetworkQueue        95  // SkillList
+  SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>"   "AEGIS\functions\init_globals.l2s"             LowLatencyQueue           98  // SystemMessage
+  SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>"   "AEGIS\functions\packets\RestartResponse.l2s"  Packet::RestartResponse   113 // RestartResponse
+  SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>"   "AEGIS\functions\packets\SSQInfoPacket.l2s"    Packet::SSQInfoPacket     115 // SSQInfoPacket
+  SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>"   "AEGIS\functions\init_globals.l2s"             ServerNetworkQueue        133 // AbnormalStatusUpdate
+  SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>"   "AEGIS\functions\init_globals.l2s"             ServerNetworkQueue        162 // PrivateStoreSellMsg
+  SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>"   "AEGIS\functions\init_globals.l2s"             ServerNetworkQueue        185 // MyTargetSelected
+  SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>"   "AEGIS\functions\init_globals.l2s"             ServerNetworkQueue        191 // PrivateStoreBuyMsg
+  SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>"   "AEGIS\functions\init_globals.l2s"             ServerNetworkQueue        206 // RelationChanged 
+  
+  SET_EVENT "<&SCRIPTEVENT_SERVERPACKETEX&>" "AEGIS\functions\init_globals.l2s"             ServerNetworkQueue        51  // ExSetCompassZoneCode
+  SET_EVENT "<&SCRIPTEVENT_SERVERPACKETEX&>" "AEGIS\functions\init_globals.l2s"             ServerNetworkQueue        128 // ExPrivateStoreSetWholeMsg
+  // CODEX Events disabled for now
+  //  
+  //SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "AEGIS\functions\init_globals.l2s" ServerNetworkQueue 250
+  //SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "AEGIS\functions\init_globals.l2s" ServerNetworkQueue 244
+  //SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "AEGIS\functions\init_globals.l2s" ServerNetworkQueue 51
+  
+RETURN VOID
+
+FUNCTION ServerNetworkQueue
+
+  WHILE AEGIS.OPTIONS.DATADECAY.Enabled == ZERO
+    SLEEP 100
+  WEND
+
+  AEGIS.PIPELINE.NETWORK.SERVER.ADD PACKET
+  AEGIS.THREADS.#$Pipeline::SQ.START
+  
+RETURN VOID
+
+FUNCTION ClientNetworkQueue
+
+  WHILE AEGIS.OPTIONS.DATADECAY.Enabled == ZERO
+    SLEEP 100
+  WEND
+
+  AEGIS.PIPELINE.NETWORK.CLIENT.ADD PACKET
+  AEGIS.THREADS.#$Pipeline::CQ.START
+  
+RETURN VOID
+  
+FUNCTION LowLatencyQueue
+
+  WHILE AEGIS.OPTIONS.DATADECAY.Enabled == ZERO
+    SLEEP 100
+  WEND
+
+  AEGIS.PIPELINE.NETWORK.LOWLATENCY.ADD PACKET
+  AEGIS.THREADS.#$PIPELINE::LL.START
+  
+RETURN VOID

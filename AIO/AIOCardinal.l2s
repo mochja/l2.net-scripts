@@ -1,0 +1,351 @@
+// Kratky popis
+// Server: 
+// Autor: mochitto
+// Date: 
+// Special thanks for L2.NET contributors
+// rev.: 0
+PRINT_TEXT "SCRIPT STARTED!]"
+INCLUDE "DLIB\Packets\Classes\SystemMessage.l2c"
+INCLUDE "DLIB\Packets\Classes\AbnormalStatusUpdate.l2c"
+
+//SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" SystemMessage 98 
+//SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" TeleportToLocation 34         
+SET_EVENT "<&SCRIPTEVENT_CLIENTPACKET&>" "<&SYSTEM_CURRENTFILE&>" RequestMagicSkillUse 57
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" AbnormalStatusUpdate 133
+
+
+BLOCK_CLIENT 57
+
+// Main section
+// ===============================
+ExShowScreenMessage VOID 2 "#$AIO Script for Cardinal v0.1" 2
+DEFINE_GLOBAL QUEUE Pots
+DEFINE_GLOBAL INT PROTECT 0
+DEFINE_GLOBAL INT SKILL_BLOCKED
+DEFINE_GLOBAL ARRAYLIST EFFECTS  
+
+Pots.ADD "#$MP"
+Pots.ADD #i728
+Pots.ADD #i24
+Pots.ADD #i95
+Pots.ADD #i444
+THREAD Potion
+
+Pots.ADD "#$CP"
+Pots.ADD #i5592
+Pots.ADD #i50
+Pots.ADD #i95
+Pots.ADD #i300
+THREAD Potion     
+
+Pots.ADD "#$CP"
+Pots.ADD #i5591
+Pots.ADD #i30
+Pots.ADD #i95
+Pots.ADD #i500
+THREAD Potion
+
+THREAD NOTICE
+//THREAD BUFFS
+
+SLEEP 98123423423	
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT
+
+FUNCTION BUFFS
+	DO
+		GET_EFFECT EFFECTS 
+	LOOP ONE==ONE
+RETURN VOID
+
+FUNCTION Potion 
+	DEFINE INT COUNT
+	DEFINE INT RAND
+	DEFINE INT RANDa
+	DEFINE INT RANDb
+    
+	DEFINE STRING _type       "<&Pots.POP&>" 
+	DEFINE INT    _item       "<&Pots.POP&>"
+	DEFINE INT _percentStart  "<&Pots.POP&>"
+	DEFINE INT _percentEnd    "<&Pots.POP&>"
+	DEFINE DOUBLE _delay      "<&Pots.POP&>"
+	
+	DEFINE INT CUR
+	
+	WHILE ZERO == ZERO  
+		SWITCH _type
+			CASE "#$MP"
+				CUR = CHAR_PER_MP							
+				BREAK 1  
+			CASE "#$CP"
+				CUR = CHAR_PER_CP
+				BREAK 1
+			CASE "#$HP"
+				CUR = CHAR_PER_HP							
+		ENDSWITCH			
+				
+		ITEM_COUNT COUNT "<&_item&>"
+		IF ( ( PROTECT == 0 ) && ( COUNT > #i1 ) && ( ZONE != 12 ) && ( IS_DISABLED CHAR_ID == FALSE ) && ( IS_INVINCIBLE CHAR_ID == FALSE ) )                    
+			IF ( ( CUR < _percentStart ) && ( CHAR_CUR_HP > 0 ) )
+				WHILE ( CUR < _percentEnd )
+					SWITCH _type
+						CASE "#$MP"
+							CUR = CHAR_PER_MP							
+							BREAK 1  
+						CASE "#$CP"
+							CUR = CHAR_PER_CP
+							BREAK 1
+						CASE "#$HP"
+							CUR = CHAR_PER_HP							
+					ENDSWITCH
+					ITEM_COUNT COUNT "<&_item&>"
+ 					IF ( ( PROTECT == 0 ) && ( COUNT > #i1 ) && ( ZONE != 12 ) && ( IS_DISABLED CHAR_ID == FALSE ) && ( IS_INVINCIBLE CHAR_ID == FALSE ) )   
+						USE_ITEM "<&_item&>"
+					ELSE
+						BREAK 3
+					ENDIF
+					RANDa = _delay - 100
+					RANDb = _delay + 100
+					GET_RAND RAND "<&RANDa&>" "<&RANDb&>"
+					SLEEP "<&RAND&>"
+				WEND
+			ENDIF
+		ENDIF
+		SLEEP 25
+	WEND
+RETURN VOID
+
+FUNCTION SystemMessage
+	
+	DEFINE INT MESSAGE_ID
+    DEFINE INT MESSAGE_SIZE
+    DEFINE INT MESSAGE_TYPE
+    
+	PACKET.READ_BYTE NULL
+    PACKET.READ_INT32 MESSAGE_ID
+    PACKET.READ_INT32 MESSAGE_SIZE
+    
+	SWITCH MESSAGE_ID
+		CASE #i35
+		CASE #i2261
+		CASE #i1987
+            BREAK 1
+        DEFAULT
+        	RETURN VOID
+    ENDSWITCH
+	
+    DEFINE SORTEDLIST RSystemMessage
+    DEFINE ARRAYLIST Data
+    DEFINE INT TYPE_TEXT        0
+    DEFINE INT TYPE_NUMBER      1
+    DEFINE INT TYPE_NPC_NAME    2
+    DEFINE INT TYPE_ITEM_NAME   3
+    DEFINE INT TYPE_SKILL_NAME  4
+    DEFINE INT TYPE_FORTRESS    5
+    DEFINE INT TYPE_ITEM_NUMBER 6
+    DEFINE INT TYPE_ZONE_NAME   7
+    DEFINE INT TYPE_AUGMENT     8
+    DEFINE INT TYPE_PLAYER_NAME 12
+    DEFINE INT INT_BUFFER0
+    DEFINE INT INT_BUFFER1
+    DEFINE INT INT_BUFFER2
+    DEFINE STRING STRING_BUFFER     
+
+    FOR Z 0 "<&MESSAGE_SIZE&>" 1      
+        DEFINE SystemMessage Message
+        PACKET.READ_INT32 Message.MESSAGE_TYPE
+      
+        SWITCH Message.MESSAGE_TYPE
+          CASE TYPE_TEXT
+          CASE TYPE_PLAYER_NAME
+            PACKET.READ_STRING Message.STRING_BUFFER
+            BREAK 1
+          CASE TYPE_ITEM_NUMBER
+            PACKET.READ_INT64 Message.INT_BUFFER0
+            BREAK 1
+          CASE TYPE_ITEM_NAME
+          CASE TYPE_FORTRESS
+          CASE TYPE_NUMBER
+          CASE TYPE_NPC_NAME
+            PACKET.READ_INT32 Message.INT_BUFFER0
+            BREAK 1
+          CASE TYPE_SKILL_NAME
+            PACKET.READ_INT32 Message.INT_BUFFER0
+            PACKET.READ_INT32 Message.INT_BUFFER1
+            BREAK 1
+          CASE TYPE_ZONE_NAME
+            PACKET.READ_INT32 Message.INT_BUFFER0
+            PACKET.READ_INT32 Message.INT_BUFFER1
+            PACKET.READ_INT32 Message.INT_BUFFER2
+            BREAK 1
+          CASE TYPE_AUGMENT
+            PACKET.READ_INT32 Message.INT_BUFFER0
+            BREAK 1
+          DEFAULT
+            PACKET.READ_INT32 Message.INT_BUFFER0
+        ENDSWITCH
+        
+        Data.ADD Message
+        DELETE Message
+    NEXT
+    
+    RSystemMessage.ADD MESSAGE_ID "MESSAGE_ID"
+    RSystemMessage.ADD MESSAGE_SIZE "MESSAGE_SIZE"
+    RSystemMessage.ADD Data "DATA"
+     
+    SWITCH "RSystemMessage.#$MESSAGE_ID"
+    	CASE #i35
+			ExShowScreenMessage VOID 2 "#$~<&RSystemMessage.#$DATA.0.INT_BUFFER0&>~" 2
+			BREAK 1
+		CASE #i2261
+			ExShowScreenMessage VOID 2 "#$~<&RSystemMessage.#$DATA.2.INT_BUFFER0&>~" 2 
+			BREAK 1
+		CASE #i1987
+			SWITCH "RSystemMessage.#$DATA.0.STRING_BUFFER"
+				CASE "#$You are now protected by spawn." 
+					PROTECT = 1
+					BREAK 1
+				CASE "#$You are no longer protected by spawn." 
+				CASE "#$Teleport spawn protection ended."
+               		PROTECT = 0
+               		BREAK 1
+            ENDSWITCH
+            IF "RSystemMessage.#$DATA.0.STRING_BUFFER.CONTAINS" "#$pwned"
+            	ExShowScreenMessage VOID 2 "#$<&RSystemMessage.#$DATA.0.STRING_BUFFER&>." 6
+            ENDIF
+    ENDSWITCH
+
+RETURN VOID
+
+FUNCTION TeleportToLocation
+     DEFINE INT ObjId
+     
+     PACKET.READ_BYTE NULL
+     PACKET.READ_INT32 ObjId 
+     
+     IF ObjId == CHAR_ID
+          PROTECT = 1
+     ENDIF
+RETURN VOID
+
+FUNCTION AbnormalStatusUpdate 
+    DEFINE INT EFFECT_COUNT
+    
+    PACKET.READ_BYTE NULL
+    PACKET.READ_INT16 EFFECT_COUNT
+    
+    SKILL_BLOCKED = FALSE
+  
+	FOR Z 0 "<&EFFECT_COUNT&>" 1        
+		DEFINE AbnormalStatusUpdate Effect
+      
+		PACKET.READ_INT32 EFFECT.EFFECT_ID
+		PACKET.READ_INT16 EFFECT.EFFECT_LEVEL
+		PACKET.READ_INT32 EFFECT.EFFECT_DURATION
+		EFFECT.EFFECT_ORDER = "#i<&Z&>"
+		
+		//MESSAGE VOID 1 "#$<&EFFECT.EFFECT_ID&> <&EFFECT.EFFECT_DURATION&>"
+
+		SWITCH EFFECT.EFFECT_ID
+			CASE #i6059  // CC TRIGGER   [6059]
+			CASE #i5428  // Counter Dash [5428]
+			CASE #i789   // SOS           [789]
+			CASE #i785   // FLAME ICON    [785]
+          //CASE #i5576  // Bariera      [5576]
+				RequestDispel VOID 2 EFFECT.EFFECT_ID EFFECT.EFFECT_LEVEL
+				BREAK 1
+			CASE #i28    //greater group heal
+				SKILL_BLOCKED = TRUE
+				BREAK 1
+		ENDSWITCH  
+				
+		DELETE Effect         
+    NEXT
+RETURN VOID
+
+FUNCTION RequestDispel 2 _iSkill _iLevel
+    DEFINE BYTEBUFFER _bInject 256
+    _bInject.WRITE_BYTE #I208 // Request Dispel
+    _bInject.WRITE_BYTE #I75  // Unknown
+    _bInject.WRITE_BYTE #I0   // Unknown
+    _bInject.WRITE_INT32 _iSkill // Skill ID
+    _bInject.WRITE_INT32 _iLevel // Skill Level
+    _bInject.TRIM_TO_INDEX
+    SLEEP 100
+    INJECTBB _bInject
+    DELETE _bInject 
+RETURN VOID
+
+FUNCTION RequestMagicSkillUse
+	DEFINE INT SKILL_ID
+	DEFINE INT CTRL
+	DEFINE INT SHIFT
+	DEFINE STRING SKILL_NAME
+	 
+	PACKET.READ_BYTE NULL
+	PACKET.READ_INT32 SKILL_ID
+	PACKET.READ_INT32 CTRL
+	PACKET.READ_BYTE SHIFT
+	
+	IF SKILL_BLOCKED == TRUE
+	
+	SWITCH SKILL_ID
+		CASE #i1218 // Greater Battle Heal
+			MESSAGE VOID 1 "#$You can't use this skill!!"
+			RETURN VOID
+		BREAK 1
+	ENDSWITCH
+	
+	ENDIF
+	
+	DEFINE BYTEBUFFER RMagicSkillUse 512
+	RMagicSkillUse.WRITE_BYTE 57
+	RMagicSkillUse.WRITE_INT32 SKILL_ID
+	RMagicSkillUse.WRITE_INT32 CTRL
+	RMagicSkillUse.WRITE_BYTE SHIFT
+	RMagicSkillUse.TRIM_TO_INDEX
+	INJECTBB RMagicSkillUse
+	DELETE RMagicSkillUse	
+RETURN VOID
+
+FUNCTION ExShowScreenMessage 2 TEXT POSITION
+     DEFINE BYTEBUFFER ExShowScreenMessage 256
+     ExShowScreenMessage.WRITE_BYTE #i254
+     ExShowScreenMessage.WRITE_INT16 #i57
+     ExShowScreenMessage.WRITE_INT32 #i1 // 1 inan wiad --- 0 sys mas
+     ExShowScreenMessage.WRITE_INT32 #i2 // System ssg id
+     ExShowScreenMessage.WRITE_INT32 POSITION // Dest
+     ExShowScreenMessage.WRITE_INT32 #i0
+     ExShowScreenMessage.WRITE_INT32 #i1 // Font size
+     ExShowScreenMessage.WRITE_INT32 #i1
+     ExShowScreenMessage.WRITE_INT32 #i1
+     ExShowScreenMessage.WRITE_INT32 #i0 // Effect
+     ExShowScreenMessage.WRITE_INT32 #i2500 // TIME
+     ExShowScreenMessage.WRITE_INT32 #i0
+     ExShowScreenMessage.WRITE_INT32 #i0
+     ExShowScreenMessage.WRITE_STRING "#$<&TEXT&>"
+     ExShowScreenMessage.TRIM_TO_INDEX
+     INJECTBB_CLIENT ExShowScreenMessage
+     DELETE ExShowScreenMessage
+RETURN VOID
+
+FUNCTION MESSAGE 1 TEXT
+		PRINT_TEXT "<&TEXT&>" 
+		DEFINE BYTEBUFFER SAY 2048
+		SAY.WRITE_BYTE 0x4A
+		SAY.WRITE_INT32 NULL
+		SAY.WRITE_INT32 18
+		SAY.WRITE_STRING "#$"
+		SAY.WRITE_STRING TEXT
+		SAY.TRIM_TO_INDEX
+		INJECTBB_CLIENT SAY
+		DELETE SAY
+RETURN VOID
+
+FUNCTION NOTICE
+	WHILE ZERO == ZERO
+		ExShowScreenMessage VOID 2 "#$Zatopit!" 2
+		MESSAGE VOID 1 "#$Zatopit!"
+		SLEEP 1800000
+	WEND
+RETURN VOID

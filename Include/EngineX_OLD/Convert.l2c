@@ -1,0 +1,60 @@
+
+CLASS ENGINEX_CONVERT NULL
+
+//-------------------------------------------------------------------------------------
+
+   VAR_START
+      PUBLIC SORTEDLIST ASCII 0
+   VAR_END
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT 0
+      DEFINE ARRAYLIST ASCII_STRINGS 0
+      DEFINE STRING ASCIISYMBOL ""
+      DEFINE STRING ASCIINUMBER ""
+      DEFINE INT LASTLETTERS ""
+      ENGINEX.FILES.READ_FILE ASCII_STRINGS 2 "#$../Include/EngineX/Convert/Ascii.txt" "#$__EOF"
+      FOREACH I STRING ASCII_STRINGS
+         ASCIISYMBOL = ASCII_STRINGS.I.SUBSTRING #i0 #i1
+         LASTLETTERS = ASCII_STRINGS.I.LENGTH - #i1
+         ASCIINUMBER = ASCII_STRINGS.I.SUBSTRING #i1 "#i<&LASTLETTERS&>"
+         ENGINEX.CONVERT.ASCII.ADD "#$<&ASCIISYMBOL&>" "<&ASCIINUMBER&>"
+      NEXTEACH
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC DEC2ASCII 1 DECVALUE
+      DEFINE STRING RETURNSTRING ""
+      IF DECVALUE.CLASSNAME == #$INT
+         IF "ENGINEX.CONVERT.ASCII.CONTAINS_KEY <&DECVALUE&>" == TRUE
+            RETURNSTRING = "#$<&ENGINEX.CONVERT.ASCII.#$<&DECVALUE&>&>"
+         ENDIF
+      ELSE
+         IF DECVALUE.CLASSNAME == #$ARRAYLIST
+            FOREACH I INT DECVALUE
+               IF "ENGINEX.CONVERT.ASCII.CONTAINS_KEY <&DECVALUE.I&>" == TRUE
+                  RETURNSTRING = "#$<&RETURNSTRING&><&ENGINEX.CONVERT.ASCII.#$<&DECVALUE.I&>&>"
+               ENDIF
+            NEXTEACH
+         ENDIF
+      ENDIF
+   RETURN RETURNSTRING
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC DEC2BIN 1 DECVALUE
+      DEFINE STRING RETURNSTRING ""
+      DEFINE INT LAST_REST 0
+      WHILE DECVALUE > #i0
+         LAST_REST = DECVALUE % #i2
+         DECVALUE = DECVALUE - LAST_REST
+         DECVALUE = DECVALUE / #i2
+         RETURNSTRING = "#$<&LAST_REST&><&RETURNSTRING&>"
+      WEND
+   RETURN RETURNSTRING
+
+//-------------------------------------------------------------------------------------
+
+END_CLASS

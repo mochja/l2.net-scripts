@@ -1,0 +1,11 @@
+// RequestRestart Packet handler
+
+
+FUNCTION Packet::RequestRestart
+
+  IF AEGIS.MUTEX.PIPELINE.NETWORK IS_LOCKED
+  ELSE
+    LOCK AEGIS.MUTEX.PIPELINE.NETWORK
+  ENDIF
+
+RETURN VOID

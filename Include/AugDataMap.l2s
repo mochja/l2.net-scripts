@@ -1,0 +1,8314 @@
+FUNCTION AUG_DATA_BIND 0
+	DEFINE ARRAYLIST _augmdata 0
+	DEFINE ARRAYLIST _sdata 0
+	DEFINE ARRAYLIST _augstat 0
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d15.45
+	_bms.ADD #d16.39
+	_bms.ADD #d17.33
+	_bms.ADD #d17.52
+	_bms.ADD #d18.33
+	_bms.ADD #d18.17
+	_bms.ADD #d18.83
+	_bms.ADD #d18.18
+	_bms.ADD #d18.72
+	_bms.ADD #d20.77
+	_bms.ADD #d20.6
+	_bms.ADD #d21.47
+	_bms.ADD #d22.9
+	_bms.ADD #d23.59
+	_bms.ADD #d24.19
+	_bms.ADD #d24.49
+	_bms.ADD #d24.82
+	_bms.ADD #d24.54
+	_bms.ADD #d24.63
+	_bms.ADD #d26.23
+	_bms.ADD #d25.75
+	_bms.ADD #d27.12
+	_bms.ADD #d28.47
+	_bms.ADD #d28.98
+	_bms.ADD #d30.05
+	_bms.ADD #d30.81
+	_bms.ADD #d30.82
+	_bms.ADD #d30.91
+	_bms.ADD #d30.54
+	_bms.ADD #d31.7
+	_bms.ADD #d30.9
+	_bms.ADD #d32.21
+	_bms.ADD #d34.05
+	_bms.ADD #d35.05
+	_bms.ADD #d35.92
+	_bms.ADD #d36.34
+	_bms.ADD #d36.81
+	_bms.ADD #d36.36
+	_bms.ADD #d36.45
+	_bms.ADD #d38.26
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d7.73
+	_bms.ADD #d8.48
+	_bms.ADD #d8.67
+	_bms.ADD #d8.76
+	_bms.ADD #d9.53
+	_bms.ADD #d9.48
+	_bms.ADD #d9.42
+	_bms.ADD #d9.09
+	_bms.ADD #d9.85
+	_bms.ADD #d10.93
+	_bms.ADD #d10.3
+	_bms.ADD #d10.74
+	_bms.ADD #d11.76
+	_bms.ADD #d12.13
+	_bms.ADD #d12.46
+	_bms.ADD #d12.64
+	_bms.ADD #d12.84
+	_bms.ADD #d12.73
+	_bms.ADD #d12.81
+	_bms.ADD #d12.02
+	_bms.ADD #d12.88
+	_bms.ADD #d13.56
+	_bms.ADD #d14.24
+	_bms.ADD #d14.83
+	_bms.ADD #d15.39
+	_bms.ADD #d15.8
+	_bms.ADD #d15.41
+	_bms.ADD #d15.45
+	_bms.ADD #d15.76
+	_bms.ADD #d16.4
+	_bms.ADD #d15.45
+	_bms.ADD #d16.39
+	_bms.ADD #d17.33
+	_bms.ADD #d17.52
+	_bms.ADD #d18.33
+	_bms.ADD #d18.17
+	_bms.ADD #d18.83
+	_bms.ADD #d18.18
+	_bms.ADD #d18.72
+	_bms.ADD #d19.67
+	_augstat.ADD _bms
+	DELETE _bms
+	_sdata.ADD _augstat
+	DELETE _augstat
+	DEFINE ARRAYLIST _augstat 0
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d12.33
+	_bms.ADD #d13.17
+	_bms.ADD #d13.94
+	_bms.ADD #d13.96
+	_bms.ADD #d14.73
+	_bms.ADD #d14.63
+	_bms.ADD #d15.14
+	_bms.ADD #d14.66
+	_bms.ADD #d15.05
+	_bms.ADD #d16.72
+	_bms.ADD #d16.44
+	_bms.ADD #d17.25
+	_bms.ADD #d18.43
+	_bms.ADD #d18.8
+	_bms.ADD #d19.44
+	_bms.ADD #d19.72
+	_bms.ADD #d19.95
+	_bms.ADD #d19.79
+	_bms.ADD #d19.8
+	_bms.ADD #d21.12
+	_bms.ADD #d20.55
+	_bms.ADD #d21.79
+	_bms.ADD #d22.91
+	_bms.ADD #d23.09
+	_bms.ADD #d24.15
+	_bms.ADD #d24.8
+	_bms.ADD #d24.77
+	_bms.ADD #d24.92
+	_bms.ADD #d24.55
+	_bms.ADD #d25.52
+	_bms.ADD #d24.66
+	_bms.ADD #d25.88
+	_bms.ADD #d27.39
+	_bms.ADD #d27.92
+	_bms.ADD #d28.86
+	_bms.ADD #d29.26
+	_bms.ADD #d29.58
+	_bms.ADD #d29.32
+	_bms.ADD #d29.3
+	_bms.ADD #d30.8
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d6.17
+	_bms.ADD #d6.81
+	_bms.ADD #d6.97
+	_bms.ADD #d6.98
+	_bms.ADD #d7.66
+	_bms.ADD #d7.63
+	_bms.ADD #d7.57
+	_bms.ADD #d7.33
+	_bms.ADD #d7.92
+	_bms.ADD #d8.8
+	_bms.ADD #d8.22
+	_bms.ADD #d8.63
+	_bms.ADD #d9.46
+	_bms.ADD #d9.67
+	_bms.ADD #d10.01
+	_bms.ADD #d10.18
+	_bms.ADD #d10.32
+	_bms.ADD #d10.26
+	_bms.ADD #d10.3
+	_bms.ADD #d10.56
+	_bms.ADD #d10.28
+	_bms.ADD #d10.9
+	_bms.ADD #d11.45
+	_bms.ADD #d11.81
+	_bms.ADD #d12.37
+	_bms.ADD #d12.72
+	_bms.ADD #d12.38
+	_bms.ADD #d12.46
+	_bms.ADD #d12.67
+	_bms.ADD #d13.2
+	_bms.ADD #d12.33
+	_bms.ADD #d13.17
+	_bms.ADD #d13.94
+	_bms.ADD #d13.96
+	_bms.ADD #d14.73
+	_bms.ADD #d14.63
+	_bms.ADD #d15.14
+	_bms.ADD #d14.66
+	_bms.ADD #d15.05
+	_bms.ADD #d15.84
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d6.17
+	_bms.ADD #d6.36
+	_bms.ADD #d6.97
+	_bms.ADD #d6.98
+	_bms.ADD #d7.07
+	_bms.ADD #d7
+	_bms.ADD #d7.57
+	_bms.ADD #d7.33
+	_bms.ADD #d7.13
+	_bms.ADD #d7.92
+	_bms.ADD #d8.22
+	_bms.ADD #d8.63
+	_bms.ADD #d8.96
+	_bms.ADD #d9.13
+	_bms.ADD #d9.42
+	_bms.ADD #d9.54
+	_bms.ADD #d9.63
+	_bms.ADD #d9.53
+	_bms.ADD #d9.5
+	_bms.ADD #d10.56
+	_bms.ADD #d10.28
+	_bms.ADD #d10.9
+	_bms.ADD #d11.45
+	_bms.ADD #d11.28
+	_bms.ADD #d11.78
+	_bms.ADD #d12.08
+	_bms.ADD #d12.38
+	_bms.ADD #d12.46
+	_bms.ADD #d11.88
+	_bms.ADD #d12.32
+	_bms.ADD #d12.33
+	_bms.ADD #d12.71
+	_bms.ADD #d13.45
+	_bms.ADD #d13.96
+	_bms.ADD #d14.14
+	_bms.ADD #d14.63
+	_bms.ADD #d14.45
+	_bms.ADD #d14.66
+	_bms.ADD #d14.26
+	_bms.ADD #d14.96
+	_augstat.ADD _bms
+	DELETE _bms
+	_sdata.ADD _augstat
+	DELETE _augstat
+	DEFINE ARRAYLIST _augstat 0
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d59.46
+	_bms.ADD #d64.24
+	_bms.ADD #d68.68
+	_bms.ADD #d70.1
+	_bms.ADD #d73.6
+	_bms.ADD #d73.55
+	_bms.ADD #d76.03
+	_bms.ADD #d74.4
+	_bms.ADD #d75.79
+	_bms.ADD #d84.51
+	_bms.ADD #d79.28
+	_bms.ADD #d84.17
+	_bms.ADD #d90.76
+	_bms.ADD #d94.36
+	_bms.ADD #d97.15
+	_bms.ADD #d99.14
+	_bms.ADD #d100.22
+	_bms.ADD #d100.44
+	_bms.ADD #d99.73
+	_bms.ADD #d106.75
+	_bms.ADD #d99.1
+	_bms.ADD #d106.32
+	_bms.ADD #d112.84
+	_bms.ADD #d115.93
+	_bms.ADD #d120.7
+	_bms.ADD #d124.72
+	_bms.ADD #d124.42
+	_bms.ADD #d126.48
+	_bms.ADD #d123.66
+	_bms.ADD #d128.99
+	_bms.ADD #d118.92
+	_bms.ADD #d126.26
+	_bms.ADD #d134.92
+	_bms.ADD #d140.19
+	_bms.ADD #d144.26
+	_bms.ADD #d147.11
+	_bms.ADD #d148.61
+	_bms.ADD #d148.8
+	_bms.ADD #d147.59
+	_bms.ADD #d155.68
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d29.73
+	_bms.ADD #d33.23
+	_bms.ADD #d34.34
+	_bms.ADD #d35.05
+	_bms.ADD #d38.27
+	_bms.ADD #d38.38
+	_bms.ADD #d38.02
+	_bms.ADD #d37.2
+	_bms.ADD #d39.89
+	_bms.ADD #d44.48
+	_bms.ADD #d39.64
+	_bms.ADD #d42.09
+	_bms.ADD #d46.61
+	_bms.ADD #d48.53
+	_bms.ADD #d50.05
+	_bms.ADD #d51.17
+	_bms.ADD #d51.84
+	_bms.ADD #d52.08
+	_bms.ADD #d51.86
+	_bms.ADD #d53.38
+	_bms.ADD #d49.55
+	_bms.ADD #d53.16
+	_bms.ADD #d56.42
+	_bms.ADD #d59.31
+	_bms.ADD #d61.82
+	_bms.ADD #d63.96
+	_bms.ADD #d62.21
+	_bms.ADD #d63.24
+	_bms.ADD #d63.82
+	_bms.ADD #d66.72
+	_bms.ADD #d59.46
+	_bms.ADD #d64.24
+	_bms.ADD #d68.68
+	_bms.ADD #d70.1
+	_bms.ADD #d73.6
+	_bms.ADD #d73.55
+	_bms.ADD #d76.03
+	_bms.ADD #d74.4
+	_bms.ADD #d75.79
+	_bms.ADD #d80.06
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d29.73
+	_bms.ADD #d31.01
+	_bms.ADD #d34.34
+	_bms.ADD #d35.05
+	_bms.ADD #d35.33
+	_bms.ADD #d35.18
+	_bms.ADD #d38.02
+	_bms.ADD #d37.2
+	_bms.ADD #d35.9
+	_bms.ADD #d40.03
+	_bms.ADD #d39.64
+	_bms.ADD #d42.09
+	_bms.ADD #d44.15
+	_bms.ADD #d45.83
+	_bms.ADD #d47.1
+	_bms.ADD #d47.97
+	_bms.ADD #d48.38
+	_bms.ADD #d48.36
+	_bms.ADD #d47.87
+	_bms.ADD #d53.38
+	_bms.ADD #d49.55
+	_bms.ADD #d53.16
+	_bms.ADD #d56.42
+	_bms.ADD #d56.62
+	_bms.ADD #d58.88
+	_bms.ADD #d60.76
+	_bms.ADD #d62.21
+	_bms.ADD #d63.24
+	_bms.ADD #d59.84
+	_bms.ADD #d62.27
+	_bms.ADD #d59.46
+	_bms.ADD #d62.02
+	_bms.ADD #d66.23
+	_bms.ADD #d70.1
+	_bms.ADD #d70.66
+	_bms.ADD #d73.55
+	_bms.ADD #d72.58
+	_bms.ADD #d74.4
+	_bms.ADD #d71.8
+	_bms.ADD #d75.62
+	_augstat.ADD _bms
+	DELETE _bms
+	_sdata.ADD _augstat
+	DELETE _augstat
+	DEFINE ARRAYLIST _augstat 0
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d18.39
+	_bms.ADD #d20.07
+	_bms.ADD #d21.64
+	_bms.ADD #d22.26
+	_bms.ADD #d23.5
+	_bms.ADD #d23.6
+	_bms.ADD #d24.51
+	_bms.ADD #d24.06
+	_bms.ADD #d24.61
+	_bms.ADD #d27.57
+	_bms.ADD #d24.52
+	_bms.ADD #d26.3
+	_bms.ADD #d28.6
+	_bms.ADD #d29.96
+	_bms.ADD #d31.02
+	_bms.ADD #d31.81
+	_bms.ADD #d32.31
+	_bms.ADD #d32.48
+	_bms.ADD #d32.38
+	_bms.ADD #d34.82
+	_bms.ADD #d30.65
+	_bms.ADD #d33.22
+	_bms.ADD #d35.56
+	_bms.ADD #d36.81
+	_bms.ADD #d38.54
+	_bms.ADD #d40.01
+	_bms.ADD #d40.1
+	_bms.ADD #d40.9
+	_bms.ADD #d40.15
+	_bms.ADD #d42.08
+	_bms.ADD #d36.78
+	_bms.ADD #d39.44
+	_bms.ADD #d42.52
+	_bms.ADD #d44.51
+	_bms.ADD #d46.06
+	_bms.ADD #d47.2
+	_bms.ADD #d47.9
+	_bms.ADD #d48.12
+	_bms.ADD #d47.92
+	_bms.ADD #d50.79
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d9.2
+	_bms.ADD #d10.38
+	_bms.ADD #d10.82
+	_bms.ADD #d11.13
+	_bms.ADD #d12.22
+	_bms.ADD #d12.31
+	_bms.ADD #d12.25
+	_bms.ADD #d12.03
+	_bms.ADD #d12.95
+	_bms.ADD #d14.51
+	_bms.ADD #d12.26
+	_bms.ADD #d13.15
+	_bms.ADD #d14.69
+	_bms.ADD #d15.41
+	_bms.ADD #d15.98
+	_bms.ADD #d16.42
+	_bms.ADD #d16.71
+	_bms.ADD #d16.84
+	_bms.ADD #d16.84
+	_bms.ADD #d17.41
+	_bms.ADD #d15.33
+	_bms.ADD #d16.61
+	_bms.ADD #d17.78
+	_bms.ADD #d18.83
+	_bms.ADD #d19.74
+	_bms.ADD #d20.52
+	_bms.ADD #d20.05
+	_bms.ADD #d20.45
+	_bms.ADD #d20.72
+	_bms.ADD #d21.77
+	_bms.ADD #d18.39
+	_bms.ADD #d20.07
+	_bms.ADD #d21.64
+	_bms.ADD #d22.26
+	_bms.ADD #d23.5
+	_bms.ADD #d23.6
+	_bms.ADD #d24.51
+	_bms.ADD #d24.06
+	_bms.ADD #d24.61
+	_bms.ADD #d26.12
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d9.2
+	_bms.ADD #d9.69
+	_bms.ADD #d10.82
+	_bms.ADD #d11.13
+	_bms.ADD #d11.28
+	_bms.ADD #d11.29
+	_bms.ADD #d12.25
+	_bms.ADD #d12.03
+	_bms.ADD #d11.66
+	_bms.ADD #d13.06
+	_bms.ADD #d12.26
+	_bms.ADD #d13.15
+	_bms.ADD #d13.91
+	_bms.ADD #d14.55
+	_bms.ADD #d15.04
+	_bms.ADD #d15.39
+	_bms.ADD #d15.6
+	_bms.ADD #d15.64
+	_bms.ADD #d15.54
+	_bms.ADD #d17.41
+	_bms.ADD #d15.33
+	_bms.ADD #d16.61
+	_bms.ADD #d17.78
+	_bms.ADD #d17.98
+	_bms.ADD #d18.8
+	_bms.ADD #d19.49
+	_bms.ADD #d20.05
+	_bms.ADD #d20.45
+	_bms.ADD #d19.43
+	_bms.ADD #d20.31
+	_bms.ADD #d18.39
+	_bms.ADD #d19.38
+	_bms.ADD #d20.87
+	_bms.ADD #d22.26
+	_bms.ADD #d22.56
+	_bms.ADD #d23.6
+	_bms.ADD #d23.39
+	_bms.ADD #d24.06
+	_bms.ADD #d23.31
+	_bms.ADD #d24.67
+	_augstat.ADD _bms
+	DELETE _bms
+	_sdata.ADD _augstat
+	DELETE _augstat
+	DEFINE ARRAYLIST _augstat 0
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d82.11
+	_bms.ADD #d88.68
+	_bms.ADD #d94.85
+	_bms.ADD #d96.8
+	_bms.ADD #d101.63
+	_bms.ADD #d101.58
+	_bms.ADD #d105
+	_bms.ADD #d102.75
+	_bms.ADD #d104.67
+	_bms.ADD #d116.71
+	_bms.ADD #d109.48
+	_bms.ADD #d116.2
+	_bms.ADD #d125.34
+	_bms.ADD #d130.31
+	_bms.ADD #d134.15
+	_bms.ADD #d136.91
+	_bms.ADD #d138.41
+	_bms.ADD #d138.71
+	_bms.ADD #d137.72
+	_bms.ADD #d147.42
+	_bms.ADD #d136.86
+	_bms.ADD #d146.78
+	_bms.ADD #d155.83
+	_bms.ADD #d160.1
+	_bms.ADD #d166.67
+	_bms.ADD #d172.24
+	_bms.ADD #d171.82
+	_bms.ADD #d174.67
+	_bms.ADD #d170.77
+	_bms.ADD #d178.14
+	_bms.ADD #d164.23
+	_bms.ADD #d174.31
+	_bms.ADD #d186.31
+	_bms.ADD #d193.61
+	_bms.ADD #d199.19
+	_bms.ADD #d203.15
+	_bms.ADD #d205.23
+	_bms.ADD #d205.49
+	_bms.ADD #d203.82
+	_bms.ADD #d214.99
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d41.06
+	_bms.ADD #d45.87
+	_bms.ADD #d47.43
+	_bms.ADD #d48.4
+	_bms.ADD #d52.85
+	_bms.ADD #d53
+	_bms.ADD #d52.5
+	_bms.ADD #d51.37
+	_bms.ADD #d55.09
+	_bms.ADD #d61.43
+	_bms.ADD #d54.74
+	_bms.ADD #d58.1
+	_bms.ADD #d64.36
+	_bms.ADD #d67.02
+	_bms.ADD #d69.11
+	_bms.ADD #d70.66
+	_bms.ADD #d71.59
+	_bms.ADD #d71.92
+	_bms.ADD #d71.61
+	_bms.ADD #d73.71
+	_bms.ADD #d68.43
+	_bms.ADD #d73.39
+	_bms.ADD #d77.91
+	_bms.ADD #d81.91
+	_bms.ADD #d85.37
+	_bms.ADD #d88.33
+	_bms.ADD #d85.91
+	_bms.ADD #d87.33
+	_bms.ADD #d88.14
+	_bms.ADD #d92.14
+	_bms.ADD #d82.11
+	_bms.ADD #d88.68
+	_bms.ADD #d94.85
+	_bms.ADD #d96.8
+	_bms.ADD #d101.63
+	_bms.ADD #d101.58
+	_bms.ADD #d105
+	_bms.ADD #d102.75
+	_bms.ADD #d104.67
+	_bms.ADD #d110.57
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d41.06
+	_bms.ADD #d42.81
+	_bms.ADD #d47.43
+	_bms.ADD #d48.4
+	_bms.ADD #d48.78
+	_bms.ADD #d48.58
+	_bms.ADD #d52.5
+	_bms.ADD #d51.37
+	_bms.ADD #d49.58
+	_bms.ADD #d55.28
+	_bms.ADD #d54.74
+	_bms.ADD #d58.1
+	_bms.ADD #d60.98
+	_bms.ADD #d63.29
+	_bms.ADD #d65.04
+	_bms.ADD #d66.25
+	_bms.ADD #d66.82
+	_bms.ADD #d66.78
+	_bms.ADD #d66.1
+	_bms.ADD #d73.71
+	_bms.ADD #d68.43
+	_bms.ADD #d73.39
+	_bms.ADD #d77.91
+	_bms.ADD #d78.19
+	_bms.ADD #d81.3
+	_bms.ADD #d83.91
+	_bms.ADD #d85.91
+	_bms.ADD #d87.33
+	_bms.ADD #d82.63
+	_bms.ADD #d86
+	_bms.ADD #d82.11
+	_bms.ADD #d85.62
+	_bms.ADD #d91.46
+	_bms.ADD #d96.8
+	_bms.ADD #d97.56
+	_bms.ADD #d101.58
+	_bms.ADD #d100.23
+	_bms.ADD #d102.75
+	_bms.ADD #d99.16
+	_bms.ADD #d104.43
+	_augstat.ADD _bms
+	DELETE _bms
+	_sdata.ADD _augstat
+	DELETE _augstat
+	DEFINE ARRAYLIST _augstat 0
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d6.6
+	_bms.ADD #d7.45
+	_bms.ADD #d8.34
+	_bms.ADD #d8.92
+	_bms.ADD #d9.78
+	_bms.ADD #d10.12
+	_bms.ADD #d10.87
+	_bms.ADD #d10.84
+	_bms.ADD #d11.48
+	_bms.ADD #d13.15
+	_bms.ADD #d8.8
+	_bms.ADD #d9.77
+	_bms.ADD #d11.03
+	_bms.ADD #d12.01
+	_bms.ADD #d12.9
+	_bms.ADD #d13.64
+	_bms.ADD #d14.33
+	_bms.ADD #d14.63
+	_bms.ADD #d15.1
+	_bms.ADD #d16.61
+	_bms.ADD #d11
+	_bms.ADD #d12.34
+	_bms.ADD #d13.71
+	_bms.ADD #d14.75
+	_bms.ADD #d16.03
+	_bms.ADD #d17.16
+	_bms.ADD #d17.78
+	_bms.ADD #d18.43
+	_bms.ADD #d18.72
+	_bms.ADD #d20.07
+	_bms.ADD #d13.2
+	_bms.ADD #d14.65
+	_bms.ADD #d16.39
+	_bms.ADD #d17.84
+	_bms.ADD #d19.16
+	_bms.ADD #d20.24
+	_bms.ADD #d21.24
+	_bms.ADD #d21.68
+	_bms.ADD #d22.35
+	_bms.ADD #d24.22
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d3.3
+	_bms.ADD #d3.86
+	_bms.ADD #d4.17
+	_bms.ADD #d4.46
+	_bms.ADD #d5.08
+	_bms.ADD #d5.28
+	_bms.ADD #d5.43
+	_bms.ADD #d5.42
+	_bms.ADD #d6.04
+	_bms.ADD #d6.92
+	_bms.ADD #d4.4
+	_bms.ADD #d4.88
+	_bms.ADD #d5.66
+	_bms.ADD #d6.17
+	_bms.ADD #d6.65
+	_bms.ADD #d7.04
+	_bms.ADD #d7.41
+	_bms.ADD #d7.59
+	_bms.ADD #d7.85
+	_bms.ADD #d8.3
+	_bms.ADD #d5.5
+	_bms.ADD #d6.17
+	_bms.ADD #d6.85
+	_bms.ADD #d7.55
+	_bms.ADD #d8.21
+	_bms.ADD #d8.8
+	_bms.ADD #d8.89
+	_bms.ADD #d9.21
+	_bms.ADD #d9.66
+	_bms.ADD #d10.38
+	_bms.ADD #d6.6
+	_bms.ADD #d7.45
+	_bms.ADD #d8.34
+	_bms.ADD #d8.92
+	_bms.ADD #d9.78
+	_bms.ADD #d10.12
+	_bms.ADD #d10.87
+	_bms.ADD #d10.84
+	_bms.ADD #d11.48
+	_bms.ADD #d12.46
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d3.3
+	_bms.ADD #d3.6
+	_bms.ADD #d4.17
+	_bms.ADD #d4.46
+	_bms.ADD #d4.69
+	_bms.ADD #d4.84
+	_bms.ADD #d5.43
+	_bms.ADD #d5.42
+	_bms.ADD #d5.44
+	_bms.ADD #d6.23
+	_bms.ADD #d4.4
+	_bms.ADD #d4.88
+	_bms.ADD #d5.36
+	_bms.ADD #d5.83
+	_bms.ADD #d6.26
+	_bms.ADD #d6.6
+	_bms.ADD #d6.92
+	_bms.ADD #d7.05
+	_bms.ADD #d7.25
+	_bms.ADD #d8.3
+	_bms.ADD #d5.5
+	_bms.ADD #d6.17
+	_bms.ADD #d6.85
+	_bms.ADD #d7.2
+	_bms.ADD #d7.82
+	_bms.ADD #d8.36
+	_bms.ADD #d8.89
+	_bms.ADD #d9.21
+	_bms.ADD #d9.06
+	_bms.ADD #d9.69
+	_bms.ADD #d6.6
+	_bms.ADD #d7.2
+	_bms.ADD #d8.05
+	_bms.ADD #d8.92
+	_bms.ADD #d9.38
+	_bms.ADD #d10.12
+	_bms.ADD #d10.37
+	_bms.ADD #d10.84
+	_bms.ADD #d10.87
+	_bms.ADD #d11.76
+	_augstat.ADD _bms
+	DELETE _bms
+	_sdata.ADD _augstat
+	DELETE _augstat
+	DEFINE ARRAYLIST _augstat 0
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d7.56
+	_bms.ADD #d8.56
+	_bms.ADD #d9.58
+	_bms.ADD #d10.24
+	_bms.ADD #d11.25
+	_bms.ADD #d11.71
+	_bms.ADD #d12.56
+	_bms.ADD #d12.7
+	_bms.ADD #d13.3
+	_bms.ADD #d15.35
+	_bms.ADD #d10.08
+	_bms.ADD #d11.21
+	_bms.ADD #d12.65
+	_bms.ADD #d13.79
+	_bms.ADD #d14.85
+	_bms.ADD #d15.78
+	_bms.ADD #d16.56
+	_bms.ADD #d17.15
+	_bms.ADD #d17.5
+	_bms.ADD #d19.39
+	_bms.ADD #d12.6
+	_bms.ADD #d14.16
+	_bms.ADD #d15.73
+	_bms.ADD #d16.94
+	_bms.ADD #d18.45
+	_bms.ADD #d19.85
+	_bms.ADD #d20.56
+	_bms.ADD #d21.59
+	_bms.ADD #d21.7
+	_bms.ADD #d23.43
+	_bms.ADD #d15.12
+	_bms.ADD #d16.82
+	_bms.ADD #d18.81
+	_bms.ADD #d20.49
+	_bms.ADD #d22.05
+	_bms.ADD #d23.41
+	_bms.ADD #d24.55
+	_bms.ADD #d25.4
+	_bms.ADD #d25.9
+	_bms.ADD #d28.28
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d3.78
+	_bms.ADD #d4.43
+	_bms.ADD #d4.79
+	_bms.ADD #d5.12
+	_bms.ADD #d5.85
+	_bms.ADD #d6.11
+	_bms.ADD #d6.28
+	_bms.ADD #d6.35
+	_bms.ADD #d7
+	_bms.ADD #d8.08
+	_bms.ADD #d5.04
+	_bms.ADD #d5.61
+	_bms.ADD #d6.5
+	_bms.ADD #d7.09
+	_bms.ADD #d7.65
+	_bms.ADD #d8.14
+	_bms.ADD #d8.57
+	_bms.ADD #d8.89
+	_bms.ADD #d9.1
+	_bms.ADD #d9.7
+	_bms.ADD #d6.3
+	_bms.ADD #d7.08
+	_bms.ADD #d7.87
+	_bms.ADD #d8.67
+	_bms.ADD #d9.45
+	_bms.ADD #d10.18
+	_bms.ADD #d10.28
+	_bms.ADD #d10.8
+	_bms.ADD #d11.2
+	_bms.ADD #d12.12
+	_bms.ADD #d7.56
+	_bms.ADD #d8.56
+	_bms.ADD #d9.58
+	_bms.ADD #d10.24
+	_bms.ADD #d11.25
+	_bms.ADD #d11.71
+	_bms.ADD #d12.56
+	_bms.ADD #d12.7
+	_bms.ADD #d13.3
+	_bms.ADD #d14.54
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d3.78
+	_bms.ADD #d4.13
+	_bms.ADD #d4.79
+	_bms.ADD #d5.12
+	_bms.ADD #d5.4
+	_bms.ADD #d5.6
+	_bms.ADD #d6.28
+	_bms.ADD #d6.35
+	_bms.ADD #d6.3
+	_bms.ADD #d7.27
+	_bms.ADD #d5.04
+	_bms.ADD #d5.61
+	_bms.ADD #d6.16
+	_bms.ADD #d6.7
+	_bms.ADD #d7.2
+	_bms.ADD #d7.64
+	_bms.ADD #d7.99
+	_bms.ADD #d8.26
+	_bms.ADD #d8.4
+	_bms.ADD #d9.7
+	_bms.ADD #d6.3
+	_bms.ADD #d7.08
+	_bms.ADD #d7.87
+	_bms.ADD #d8.27
+	_bms.ADD #d9
+	_bms.ADD #d9.67
+	_bms.ADD #d10.28
+	_bms.ADD #d10.8
+	_bms.ADD #d10.5
+	_bms.ADD #d11.31
+	_bms.ADD #d7.56
+	_bms.ADD #d8.26
+	_bms.ADD #d9.23
+	_bms.ADD #d10.24
+	_bms.ADD #d10.8
+	_bms.ADD #d11.71
+	_bms.ADD #d11.99
+	_bms.ADD #d12.7
+	_bms.ADD #d12.6
+	_bms.ADD #d13.74
+	_augstat.ADD _bms
+	DELETE _bms
+	_sdata.ADD _augstat
+	DELETE _augstat
+	DEFINE ARRAYLIST _augstat 0
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d0.35
+	_bms.ADD #d0.35
+	_bms.ADD #d0.4
+	_bms.ADD #d0.38
+	_bms.ADD #d0.38
+	_bms.ADD #d0.41
+	_bms.ADD #d0.4
+	_bms.ADD #d0.37
+	_bms.ADD #d0.36
+	_bms.ADD #d0.42
+	_bms.ADD #d0.47
+	_bms.ADD #d0.45
+	_bms.ADD #d0.53
+	_bms.ADD #d0.52
+	_bms.ADD #d0.5
+	_bms.ADD #d0.55
+	_bms.ADD #d0.52
+	_bms.ADD #d0.5
+	_bms.ADD #d0.47
+	_bms.ADD #d0.53
+	_bms.ADD #d0.58
+	_bms.ADD #d0.57
+	_bms.ADD #d0.66
+	_bms.ADD #d0.63
+	_bms.ADD #d0.62
+	_bms.ADD #d0.69
+	_bms.ADD #d0.65
+	_bms.ADD #d0.63
+	_bms.ADD #d0.58
+	_bms.ADD #d0.64
+	_bms.ADD #d0.7
+	_bms.ADD #d0.68
+	_bms.ADD #d0.79
+	_bms.ADD #d0.77
+	_bms.ADD #d0.74
+	_bms.ADD #d0.81
+	_bms.ADD #d0.78
+	_bms.ADD #d0.74
+	_bms.ADD #d0.69
+	_bms.ADD #d0.77
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d0.18
+	_bms.ADD #d0.18
+	_bms.ADD #d0.2
+	_bms.ADD #d0.19
+	_bms.ADD #d0.2
+	_bms.ADD #d0.21
+	_bms.ADD #d0.2
+	_bms.ADD #d0.18
+	_bms.ADD #d0.19
+	_bms.ADD #d0.22
+	_bms.ADD #d0.23
+	_bms.ADD #d0.23
+	_bms.ADD #d0.27
+	_bms.ADD #d0.27
+	_bms.ADD #d0.26
+	_bms.ADD #d0.28
+	_bms.ADD #d0.27
+	_bms.ADD #d0.26
+	_bms.ADD #d0.24
+	_bms.ADD #d0.26
+	_bms.ADD #d0.29
+	_bms.ADD #d0.29
+	_bms.ADD #d0.33
+	_bms.ADD #d0.32
+	_bms.ADD #d0.32
+	_bms.ADD #d0.35
+	_bms.ADD #d0.33
+	_bms.ADD #d0.31
+	_bms.ADD #d0.3
+	_bms.ADD #d0.33
+	_bms.ADD #d0.35
+	_bms.ADD #d0.35
+	_bms.ADD #d0.4
+	_bms.ADD #d0.38
+	_bms.ADD #d0.38
+	_bms.ADD #d0.41
+	_bms.ADD #d0.4
+	_bms.ADD #d0.37
+	_bms.ADD #d0.36
+	_bms.ADD #d0.4
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d0.18
+	_bms.ADD #d0.17
+	_bms.ADD #d0.2
+	_bms.ADD #d0.19
+	_bms.ADD #d0.18
+	_bms.ADD #d0.19
+	_bms.ADD #d0.2
+	_bms.ADD #d0.18
+	_bms.ADD #d0.17
+	_bms.ADD #d0.2
+	_bms.ADD #d0.23
+	_bms.ADD #d0.23
+	_bms.ADD #d0.26
+	_bms.ADD #d0.25
+	_bms.ADD #d0.24
+	_bms.ADD #d0.27
+	_bms.ADD #d0.25
+	_bms.ADD #d0.24
+	_bms.ADD #d0.23
+	_bms.ADD #d0.26
+	_bms.ADD #d0.29
+	_bms.ADD #d0.29
+	_bms.ADD #d0.33
+	_bms.ADD #d0.31
+	_bms.ADD #d0.3
+	_bms.ADD #d0.34
+	_bms.ADD #d0.33
+	_bms.ADD #d0.31
+	_bms.ADD #d0.28
+	_bms.ADD #d0.31
+	_bms.ADD #d0.35
+	_bms.ADD #d0.33
+	_bms.ADD #d0.39
+	_bms.ADD #d0.38
+	_bms.ADD #d0.36
+	_bms.ADD #d0.41
+	_bms.ADD #d0.38
+	_bms.ADD #d0.37
+	_bms.ADD #d0.34
+	_bms.ADD #d0.37
+	_augstat.ADD _bms
+	DELETE _bms
+	_sdata.ADD _augstat
+	DELETE _augstat
+	DEFINE ARRAYLIST _augstat 0
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d0.15
+	_bms.ADD #d0.16
+	_bms.ADD #d0.17
+	_bms.ADD #d0.18
+	_bms.ADD #d0.17
+	_bms.ADD #d0.17
+	_bms.ADD #d0.18
+	_bms.ADD #d0.16
+	_bms.ADD #d0.16
+	_bms.ADD #d0.18
+	_bms.ADD #d0.21
+	_bms.ADD #d0.21
+	_bms.ADD #d0.23
+	_bms.ADD #d0.24
+	_bms.ADD #d0.23
+	_bms.ADD #d0.23
+	_bms.ADD #d0.23
+	_bms.ADD #d0.22
+	_bms.ADD #d0.21
+	_bms.ADD #d0.23
+	_bms.ADD #d0.26
+	_bms.ADD #d0.27
+	_bms.ADD #d0.29
+	_bms.ADD #d0.29
+	_bms.ADD #d0.28
+	_bms.ADD #d0.29
+	_bms.ADD #d0.29
+	_bms.ADD #d0.28
+	_bms.ADD #d0.25
+	_bms.ADD #d0.27
+	_bms.ADD #d0.31
+	_bms.ADD #d0.32
+	_bms.ADD #d0.34
+	_bms.ADD #d0.35
+	_bms.ADD #d0.33
+	_bms.ADD #d0.34
+	_bms.ADD #d0.34
+	_bms.ADD #d0.32
+	_bms.ADD #d0.3
+	_bms.ADD #d0.33
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d0.08
+	_bms.ADD #d0.08
+	_bms.ADD #d0.09
+	_bms.ADD #d0.09
+	_bms.ADD #d0.09
+	_bms.ADD #d0.09
+	_bms.ADD #d0.09
+	_bms.ADD #d0.08
+	_bms.ADD #d0.08
+	_bms.ADD #d0.09
+	_bms.ADD #d0.1
+	_bms.ADD #d0.11
+	_bms.ADD #d0.12
+	_bms.ADD #d0.12
+	_bms.ADD #d0.12
+	_bms.ADD #d0.12
+	_bms.ADD #d0.12
+	_bms.ADD #d0.11
+	_bms.ADD #d0.11
+	_bms.ADD #d0.11
+	_bms.ADD #d0.13
+	_bms.ADD #d0.13
+	_bms.ADD #d0.14
+	_bms.ADD #d0.15
+	_bms.ADD #d0.14
+	_bms.ADD #d0.15
+	_bms.ADD #d0.14
+	_bms.ADD #d0.14
+	_bms.ADD #d0.13
+	_bms.ADD #d0.14
+	_bms.ADD #d0.15
+	_bms.ADD #d0.16
+	_bms.ADD #d0.17
+	_bms.ADD #d0.18
+	_bms.ADD #d0.17
+	_bms.ADD #d0.17
+	_bms.ADD #d0.18
+	_bms.ADD #d0.16
+	_bms.ADD #d0.16
+	_bms.ADD #d0.17
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d0.08
+	_bms.ADD #d0.08
+	_bms.ADD #d0.09
+	_bms.ADD #d0.09
+	_bms.ADD #d0.08
+	_bms.ADD #d0.08
+	_bms.ADD #d0.09
+	_bms.ADD #d0.08
+	_bms.ADD #d0.07
+	_bms.ADD #d0.08
+	_bms.ADD #d0.1
+	_bms.ADD #d0.11
+	_bms.ADD #d0.11
+	_bms.ADD #d0.11
+	_bms.ADD #d0.11
+	_bms.ADD #d0.11
+	_bms.ADD #d0.11
+	_bms.ADD #d0.11
+	_bms.ADD #d0.1
+	_bms.ADD #d0.11
+	_bms.ADD #d0.13
+	_bms.ADD #d0.13
+	_bms.ADD #d0.14
+	_bms.ADD #d0.14
+	_bms.ADD #d0.14
+	_bms.ADD #d0.14
+	_bms.ADD #d0.14
+	_bms.ADD #d0.14
+	_bms.ADD #d0.12
+	_bms.ADD #d0.13
+	_bms.ADD #d0.15
+	_bms.ADD #d0.16
+	_bms.ADD #d0.17
+	_bms.ADD #d0.18
+	_bms.ADD #d0.16
+	_bms.ADD #d0.17
+	_bms.ADD #d0.17
+	_bms.ADD #d0.16
+	_bms.ADD #d0.15
+	_bms.ADD #d0.16
+	_augstat.ADD _bms
+	DELETE _bms
+	_sdata.ADD _augstat
+	DELETE _augstat
+	DEFINE ARRAYLIST _augstat 0
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d0.35
+	_bms.ADD #d0.35
+	_bms.ADD #d0.4
+	_bms.ADD #d0.38
+	_bms.ADD #d0.38
+	_bms.ADD #d0.41
+	_bms.ADD #d0.4
+	_bms.ADD #d0.37
+	_bms.ADD #d0.36
+	_bms.ADD #d0.42
+	_bms.ADD #d0.47
+	_bms.ADD #d0.45
+	_bms.ADD #d0.53
+	_bms.ADD #d0.52
+	_bms.ADD #d0.5
+	_bms.ADD #d0.55
+	_bms.ADD #d0.52
+	_bms.ADD #d0.5
+	_bms.ADD #d0.47
+	_bms.ADD #d0.53
+	_bms.ADD #d0.58
+	_bms.ADD #d0.57
+	_bms.ADD #d0.66
+	_bms.ADD #d0.63
+	_bms.ADD #d0.62
+	_bms.ADD #d0.69
+	_bms.ADD #d0.65
+	_bms.ADD #d0.63
+	_bms.ADD #d0.58
+	_bms.ADD #d0.64
+	_bms.ADD #d0.7
+	_bms.ADD #d0.68
+	_bms.ADD #d0.79
+	_bms.ADD #d0.77
+	_bms.ADD #d0.74
+	_bms.ADD #d0.81
+	_bms.ADD #d0.78
+	_bms.ADD #d0.74
+	_bms.ADD #d0.69
+	_bms.ADD #d0.77
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d0.18
+	_bms.ADD #d0.18
+	_bms.ADD #d0.2
+	_bms.ADD #d0.19
+	_bms.ADD #d0.2
+	_bms.ADD #d0.21
+	_bms.ADD #d0.2
+	_bms.ADD #d0.18
+	_bms.ADD #d0.19
+	_bms.ADD #d0.22
+	_bms.ADD #d0.23
+	_bms.ADD #d0.23
+	_bms.ADD #d0.27
+	_bms.ADD #d0.27
+	_bms.ADD #d0.26
+	_bms.ADD #d0.28
+	_bms.ADD #d0.27
+	_bms.ADD #d0.26
+	_bms.ADD #d0.24
+	_bms.ADD #d0.26
+	_bms.ADD #d0.29
+	_bms.ADD #d0.29
+	_bms.ADD #d0.33
+	_bms.ADD #d0.32
+	_bms.ADD #d0.32
+	_bms.ADD #d0.35
+	_bms.ADD #d0.33
+	_bms.ADD #d0.31
+	_bms.ADD #d0.3
+	_bms.ADD #d0.33
+	_bms.ADD #d0.35
+	_bms.ADD #d0.35
+	_bms.ADD #d0.4
+	_bms.ADD #d0.38
+	_bms.ADD #d0.38
+	_bms.ADD #d0.41
+	_bms.ADD #d0.4
+	_bms.ADD #d0.37
+	_bms.ADD #d0.36
+	_bms.ADD #d0.4
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d0.18
+	_bms.ADD #d0.17
+	_bms.ADD #d0.2
+	_bms.ADD #d0.19
+	_bms.ADD #d0.18
+	_bms.ADD #d0.19
+	_bms.ADD #d0.2
+	_bms.ADD #d0.18
+	_bms.ADD #d0.17
+	_bms.ADD #d0.2
+	_bms.ADD #d0.23
+	_bms.ADD #d0.23
+	_bms.ADD #d0.26
+	_bms.ADD #d0.25
+	_bms.ADD #d0.24
+	_bms.ADD #d0.27
+	_bms.ADD #d0.25
+	_bms.ADD #d0.24
+	_bms.ADD #d0.23
+	_bms.ADD #d0.26
+	_bms.ADD #d0.29
+	_bms.ADD #d0.29
+	_bms.ADD #d0.33
+	_bms.ADD #d0.31
+	_bms.ADD #d0.3
+	_bms.ADD #d0.34
+	_bms.ADD #d0.33
+	_bms.ADD #d0.31
+	_bms.ADD #d0.28
+	_bms.ADD #d0.31
+	_bms.ADD #d0.35
+	_bms.ADD #d0.33
+	_bms.ADD #d0.39
+	_bms.ADD #d0.38
+	_bms.ADD #d0.36
+	_bms.ADD #d0.41
+	_bms.ADD #d0.38
+	_bms.ADD #d0.37
+	_bms.ADD #d0.34
+	_bms.ADD #d0.37
+	_augstat.ADD _bms
+	DELETE _bms
+	_sdata.ADD _augstat
+	DELETE _augstat
+	DEFINE ARRAYLIST _augstat 0
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d1.55
+	_bms.ADD #d1.55
+	_bms.ADD #d1.55
+	_bms.ADD #d1.55
+	_bms.ADD #d1.74
+	_bms.ADD #d1.74
+	_bms.ADD #d1.74
+	_bms.ADD #d1.91
+	_bms.ADD #d1.91
+	_bms.ADD #d2.1
+	_bms.ADD #d1.81
+	_bms.ADD #d1.81
+	_bms.ADD #d1.81
+	_bms.ADD #d1.81
+	_bms.ADD #d2.02
+	_bms.ADD #d2.02
+	_bms.ADD #d2.02
+	_bms.ADD #d2.23
+	_bms.ADD #d2.23
+	_bms.ADD #d2.44
+	_bms.ADD #d2.06
+	_bms.ADD #d2.06
+	_bms.ADD #d2.06
+	_bms.ADD #d2.06
+	_bms.ADD #d2.3
+	_bms.ADD #d2.3
+	_bms.ADD #d2.3
+	_bms.ADD #d2.54
+	_bms.ADD #d2.54
+	_bms.ADD #d2.78
+	_bms.ADD #d2.24
+	_bms.ADD #d2.24
+	_bms.ADD #d2.24
+	_bms.ADD #d2.24
+	_bms.ADD #d2.5
+	_bms.ADD #d2.5
+	_bms.ADD #d2.5
+	_bms.ADD #d2.76
+	_bms.ADD #d2.76
+	_bms.ADD #d3.02
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d0.78
+	_bms.ADD #d0.82
+	_bms.ADD #d0.78
+	_bms.ADD #d0.78
+	_bms.ADD #d0.91
+	_bms.ADD #d0.91
+	_bms.ADD #d0.85
+	_bms.ADD #d0.96
+	_bms.ADD #d1.01
+	_bms.ADD #d1.1
+	_bms.ADD #d0.9
+	_bms.ADD #d0.9
+	_bms.ADD #d0.95
+	_bms.ADD #d0.95
+	_bms.ADD #d1.06
+	_bms.ADD #d1.06
+	_bms.ADD #d1.06
+	_bms.ADD #d1.17
+	_bms.ADD #d1.17
+	_bms.ADD #d1.22
+	_bms.ADD #d1.03
+	_bms.ADD #d1.03
+	_bms.ADD #d1.03
+	_bms.ADD #d1.08
+	_bms.ADD #d1.21
+	_bms.ADD #d1.21
+	_bms.ADD #d1.15
+	_bms.ADD #d1.27
+	_bms.ADD #d1.33
+	_bms.ADD #d1.46
+	_bms.ADD #d1.12
+	_bms.ADD #d1.18
+	_bms.ADD #d1.18
+	_bms.ADD #d1.12
+	_bms.ADD #d1.13
+	_bms.ADD #d1.25
+	_bms.ADD #d1.13
+	_bms.ADD #d1.38
+	_bms.ADD #d1.45
+	_bms.ADD #d1.59
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d0.78
+	_bms.ADD #d0.74
+	_bms.ADD #d0.78
+	_bms.ADD #d0.78
+	_bms.ADD #d0.82
+	_bms.ADD #d0.82
+	_bms.ADD #d0.85
+	_bms.ADD #d0.96
+	_bms.ADD #d0.91
+	_bms.ADD #d1
+	_bms.ADD #d0.9
+	_bms.ADD #d0.9
+	_bms.ADD #d0.86
+	_bms.ADD #d0.86
+	_bms.ADD #d0.96
+	_bms.ADD #d0.96
+	_bms.ADD #d0.96
+	_bms.ADD #d1.06
+	_bms.ADD #d1.06
+	_bms.ADD #d1.22
+	_bms.ADD #d1.03
+	_bms.ADD #d1.03
+	_bms.ADD #d1.03
+	_bms.ADD #d0.98
+	_bms.ADD #d1.09
+	_bms.ADD #d1.09
+	_bms.ADD #d1.15
+	_bms.ADD #d1.27
+	_bms.ADD #d1.21
+	_bms.ADD #d1.32
+	_bms.ADD #d1.12
+	_bms.ADD #d1.06
+	_bms.ADD #d1.06
+	_bms.ADD #d1.12
+	_bms.ADD #d1.19
+	_bms.ADD #d1.25
+	_bms.ADD #d1.19
+	_bms.ADD #d1.38
+	_bms.ADD #d1.31
+	_bms.ADD #d1.44
+	_augstat.ADD _bms
+	DELETE _bms
+	_sdata.ADD _augstat
+	DELETE _augstat
+	DEFINE ARRAYLIST _augstat 0
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d1.55
+	_bms.ADD #d1.55
+	_bms.ADD #d1.55
+	_bms.ADD #d1.55
+	_bms.ADD #d1.74
+	_bms.ADD #d1.74
+	_bms.ADD #d1.74
+	_bms.ADD #d1.91
+	_bms.ADD #d1.91
+	_bms.ADD #d2.1
+	_bms.ADD #d1.81
+	_bms.ADD #d1.81
+	_bms.ADD #d1.81
+	_bms.ADD #d1.81
+	_bms.ADD #d2.02
+	_bms.ADD #d2.02
+	_bms.ADD #d2.02
+	_bms.ADD #d2.23
+	_bms.ADD #d2.23
+	_bms.ADD #d2.44
+	_bms.ADD #d2.06
+	_bms.ADD #d2.06
+	_bms.ADD #d2.06
+	_bms.ADD #d2.06
+	_bms.ADD #d2.3
+	_bms.ADD #d2.3
+	_bms.ADD #d2.3
+	_bms.ADD #d2.54
+	_bms.ADD #d2.54
+	_bms.ADD #d2.78
+	_bms.ADD #d2.24
+	_bms.ADD #d2.24
+	_bms.ADD #d2.24
+	_bms.ADD #d2.24
+	_bms.ADD #d2.5
+	_bms.ADD #d2.5
+	_bms.ADD #d2.5
+	_bms.ADD #d2.76
+	_bms.ADD #d2.76
+	_bms.ADD #d3.02
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d0.78
+	_bms.ADD #d0.82
+	_bms.ADD #d0.78
+	_bms.ADD #d0.78
+	_bms.ADD #d0.91
+	_bms.ADD #d0.91
+	_bms.ADD #d0.85
+	_bms.ADD #d0.96
+	_bms.ADD #d1.01
+	_bms.ADD #d1.1
+	_bms.ADD #d0.9
+	_bms.ADD #d0.9
+	_bms.ADD #d0.95
+	_bms.ADD #d0.95
+	_bms.ADD #d1.06
+	_bms.ADD #d1.06
+	_bms.ADD #d1.06
+	_bms.ADD #d1.17
+	_bms.ADD #d1.17
+	_bms.ADD #d1.22
+	_bms.ADD #d1.03
+	_bms.ADD #d1.03
+	_bms.ADD #d1.03
+	_bms.ADD #d1.08
+	_bms.ADD #d1.21
+	_bms.ADD #d1.21
+	_bms.ADD #d1.15
+	_bms.ADD #d1.27
+	_bms.ADD #d1.33
+	_bms.ADD #d1.46
+	_bms.ADD #d1.12
+	_bms.ADD #d1.18
+	_bms.ADD #d1.18
+	_bms.ADD #d1.12
+	_bms.ADD #d1.13
+	_bms.ADD #d1.25
+	_bms.ADD #d1.13
+	_bms.ADD #d1.38
+	_bms.ADD #d1.45
+	_bms.ADD #d1.59
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d0.78
+	_bms.ADD #d0.74
+	_bms.ADD #d0.78
+	_bms.ADD #d0.78
+	_bms.ADD #d0.82
+	_bms.ADD #d0.82
+	_bms.ADD #d0.85
+	_bms.ADD #d0.96
+	_bms.ADD #d0.91
+	_bms.ADD #d1
+	_bms.ADD #d0.9
+	_bms.ADD #d0.9
+	_bms.ADD #d0.86
+	_bms.ADD #d0.86
+	_bms.ADD #d0.96
+	_bms.ADD #d0.96
+	_bms.ADD #d0.96
+	_bms.ADD #d1.06
+	_bms.ADD #d1.06
+	_bms.ADD #d1.22
+	_bms.ADD #d1.03
+	_bms.ADD #d1.03
+	_bms.ADD #d1.03
+	_bms.ADD #d0.98
+	_bms.ADD #d1.09
+	_bms.ADD #d1.09
+	_bms.ADD #d1.15
+	_bms.ADD #d1.27
+	_bms.ADD #d1.21
+	_bms.ADD #d1.32
+	_bms.ADD #d1.12
+	_bms.ADD #d1.06
+	_bms.ADD #d1.06
+	_bms.ADD #d1.12
+	_bms.ADD #d1.19
+	_bms.ADD #d1.25
+	_bms.ADD #d1.19
+	_bms.ADD #d1.38
+	_bms.ADD #d1.31
+	_bms.ADD #d1.44
+	_augstat.ADD _bms
+	DELETE _bms
+	_sdata.ADD _augstat
+	DELETE _augstat
+	DEFINE ARRAYLIST _augstat 0
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d16.84
+	_bms.ADD #d16.84
+	_bms.ADD #d16.84
+	_bms.ADD #d16.84
+	_bms.ADD #d18.79
+	_bms.ADD #d18.79
+	_bms.ADD #d18.79
+	_bms.ADD #d20.64
+	_bms.ADD #d20.64
+	_bms.ADD #d22.7
+	_bms.ADD #d19.58
+	_bms.ADD #d19.58
+	_bms.ADD #d19.58
+	_bms.ADD #d19.58
+	_bms.ADD #d21.85
+	_bms.ADD #d21.85
+	_bms.ADD #d21.85
+	_bms.ADD #d24.13
+	_bms.ADD #d24.13
+	_bms.ADD #d26.4
+	_bms.ADD #d22.32
+	_bms.ADD #d22.32
+	_bms.ADD #d22.32
+	_bms.ADD #d22.32
+	_bms.ADD #d24.91
+	_bms.ADD #d24.91
+	_bms.ADD #d24.91
+	_bms.ADD #d27.5
+	_bms.ADD #d27.5
+	_bms.ADD #d30.1
+	_bms.ADD #d24.28
+	_bms.ADD #d24.28
+	_bms.ADD #d24.28
+	_bms.ADD #d24.28
+	_bms.ADD #d27.1
+	_bms.ADD #d27.1
+	_bms.ADD #d27.1
+	_bms.ADD #d29.92
+	_bms.ADD #d29.92
+	_bms.ADD #d32.74
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d8.42
+	_bms.ADD #d8
+	_bms.ADD #d8.42
+	_bms.ADD #d8.42
+	_bms.ADD #d8.93
+	_bms.ADD #d8.93
+	_bms.ADD #d9.18
+	_bms.ADD #d10.37
+	_bms.ADD #d9.86
+	_bms.ADD #d10.78
+	_bms.ADD #d9.79
+	_bms.ADD #d9.79
+	_bms.ADD #d9.3
+	_bms.ADD #d9.3
+	_bms.ADD #d10.38
+	_bms.ADD #d10.38
+	_bms.ADD #d10.38
+	_bms.ADD #d11.46
+	_bms.ADD #d11.46
+	_bms.ADD #d13.2
+	_bms.ADD #d11.16
+	_bms.ADD #d11.16
+	_bms.ADD #d11.16
+	_bms.ADD #d10.6
+	_bms.ADD #d11.83
+	_bms.ADD #d11.83
+	_bms.ADD #d12.46
+	_bms.ADD #d13.75
+	_bms.ADD #d13.06
+	_bms.ADD #d14.3
+	_bms.ADD #d12.14
+	_bms.ADD #d11.53
+	_bms.ADD #d11.53
+	_bms.ADD #d12.14
+	_bms.ADD #d12.87
+	_bms.ADD #d13.55
+	_bms.ADD #d12.87
+	_bms.ADD #d14.96
+	_bms.ADD #d14.21
+	_bms.ADD #d15.55
+	_augstat.ADD _bms
+	DELETE _bms
+	_sdata.ADD _augstat
+	DELETE _augstat
+	_augmdata.ADD _sdata
+	DELETE _sdata
+	DEFINE ARRAYLIST _sdata 0
+	DEFINE ARRAYLIST _augstat 0
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d15.45
+	_bms.ADD #d16.39
+	_bms.ADD #d17.33
+	_bms.ADD #d17.52
+	_bms.ADD #d18.33
+	_bms.ADD #d18.17
+	_bms.ADD #d18.83
+	_bms.ADD #d18.18
+	_bms.ADD #d18.72
+	_bms.ADD #d20.77
+	_bms.ADD #d20.6
+	_bms.ADD #d21.47
+	_bms.ADD #d22.9
+	_bms.ADD #d23.59
+	_bms.ADD #d24.19
+	_bms.ADD #d24.49
+	_bms.ADD #d24.82
+	_bms.ADD #d24.54
+	_bms.ADD #d24.63
+	_bms.ADD #d26.23
+	_bms.ADD #d25.75
+	_bms.ADD #d27.12
+	_bms.ADD #d28.47
+	_bms.ADD #d28.98
+	_bms.ADD #d30.05
+	_bms.ADD #d30.81
+	_bms.ADD #d30.82
+	_bms.ADD #d30.91
+	_bms.ADD #d30.54
+	_bms.ADD #d31.7
+	_bms.ADD #d30.9
+	_bms.ADD #d32.21
+	_bms.ADD #d34.05
+	_bms.ADD #d35.05
+	_bms.ADD #d35.92
+	_bms.ADD #d36.34
+	_bms.ADD #d36.81
+	_bms.ADD #d36.36
+	_bms.ADD #d36.45
+	_bms.ADD #d38.26
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d7.73
+	_bms.ADD #d8.48
+	_bms.ADD #d8.67
+	_bms.ADD #d8.76
+	_bms.ADD #d9.53
+	_bms.ADD #d9.48
+	_bms.ADD #d9.42
+	_bms.ADD #d9.09
+	_bms.ADD #d9.85
+	_bms.ADD #d10.93
+	_bms.ADD #d10.3
+	_bms.ADD #d10.74
+	_bms.ADD #d11.76
+	_bms.ADD #d12.13
+	_bms.ADD #d12.46
+	_bms.ADD #d12.64
+	_bms.ADD #d12.84
+	_bms.ADD #d12.73
+	_bms.ADD #d12.81
+	_bms.ADD #d12.02
+	_bms.ADD #d12.88
+	_bms.ADD #d13.56
+	_bms.ADD #d14.24
+	_bms.ADD #d14.83
+	_bms.ADD #d15.39
+	_bms.ADD #d15.8
+	_bms.ADD #d15.41
+	_bms.ADD #d15.45
+	_bms.ADD #d15.76
+	_bms.ADD #d16.4
+	_bms.ADD #d15.45
+	_bms.ADD #d16.39
+	_bms.ADD #d17.33
+	_bms.ADD #d17.52
+	_bms.ADD #d18.33
+	_bms.ADD #d18.17
+	_bms.ADD #d18.83
+	_bms.ADD #d18.18
+	_bms.ADD #d18.72
+	_bms.ADD #d19.67
+	_augstat.ADD _bms
+	DELETE _bms
+	_sdata.ADD _augstat
+	DELETE _augstat
+	DEFINE ARRAYLIST _augstat 0
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d12.33
+	_bms.ADD #d13.17
+	_bms.ADD #d13.94
+	_bms.ADD #d13.96
+	_bms.ADD #d14.73
+	_bms.ADD #d14.63
+	_bms.ADD #d15.14
+	_bms.ADD #d14.66
+	_bms.ADD #d15.05
+	_bms.ADD #d16.72
+	_bms.ADD #d16.44
+	_bms.ADD #d17.25
+	_bms.ADD #d18.43
+	_bms.ADD #d18.8
+	_bms.ADD #d19.44
+	_bms.ADD #d19.72
+	_bms.ADD #d19.95
+	_bms.ADD #d19.79
+	_bms.ADD #d19.8
+	_bms.ADD #d21.12
+	_bms.ADD #d20.55
+	_bms.ADD #d21.79
+	_bms.ADD #d22.91
+	_bms.ADD #d23.09
+	_bms.ADD #d24.15
+	_bms.ADD #d24.8
+	_bms.ADD #d24.77
+	_bms.ADD #d24.92
+	_bms.ADD #d24.55
+	_bms.ADD #d25.52
+	_bms.ADD #d24.66
+	_bms.ADD #d25.88
+	_bms.ADD #d27.39
+	_bms.ADD #d27.92
+	_bms.ADD #d28.86
+	_bms.ADD #d29.26
+	_bms.ADD #d29.58
+	_bms.ADD #d29.32
+	_bms.ADD #d29.3
+	_bms.ADD #d30.8
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d6.17
+	_bms.ADD #d6.81
+	_bms.ADD #d6.97
+	_bms.ADD #d6.98
+	_bms.ADD #d7.66
+	_bms.ADD #d7.63
+	_bms.ADD #d7.57
+	_bms.ADD #d7.33
+	_bms.ADD #d7.92
+	_bms.ADD #d8.8
+	_bms.ADD #d8.22
+	_bms.ADD #d8.63
+	_bms.ADD #d9.46
+	_bms.ADD #d9.67
+	_bms.ADD #d10.01
+	_bms.ADD #d10.18
+	_bms.ADD #d10.32
+	_bms.ADD #d10.26
+	_bms.ADD #d10.3
+	_bms.ADD #d10.56
+	_bms.ADD #d10.28
+	_bms.ADD #d10.9
+	_bms.ADD #d11.45
+	_bms.ADD #d11.81
+	_bms.ADD #d12.37
+	_bms.ADD #d12.72
+	_bms.ADD #d12.38
+	_bms.ADD #d12.46
+	_bms.ADD #d12.67
+	_bms.ADD #d13.2
+	_bms.ADD #d12.33
+	_bms.ADD #d13.17
+	_bms.ADD #d13.94
+	_bms.ADD #d13.96
+	_bms.ADD #d14.73
+	_bms.ADD #d14.63
+	_bms.ADD #d15.14
+	_bms.ADD #d14.66
+	_bms.ADD #d15.05
+	_bms.ADD #d15.84
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d6.17
+	_bms.ADD #d6.36
+	_bms.ADD #d6.97
+	_bms.ADD #d6.98
+	_bms.ADD #d7.07
+	_bms.ADD #d7
+	_bms.ADD #d7.57
+	_bms.ADD #d7.33
+	_bms.ADD #d7.13
+	_bms.ADD #d7.92
+	_bms.ADD #d8.22
+	_bms.ADD #d8.63
+	_bms.ADD #d8.96
+	_bms.ADD #d9.13
+	_bms.ADD #d9.42
+	_bms.ADD #d9.54
+	_bms.ADD #d9.63
+	_bms.ADD #d9.53
+	_bms.ADD #d9.5
+	_bms.ADD #d10.56
+	_bms.ADD #d10.28
+	_bms.ADD #d10.9
+	_bms.ADD #d11.45
+	_bms.ADD #d11.28
+	_bms.ADD #d11.78
+	_bms.ADD #d12.08
+	_bms.ADD #d12.38
+	_bms.ADD #d12.46
+	_bms.ADD #d11.88
+	_bms.ADD #d12.32
+	_bms.ADD #d12.33
+	_bms.ADD #d12.71
+	_bms.ADD #d13.45
+	_bms.ADD #d13.96
+	_bms.ADD #d14.14
+	_bms.ADD #d14.63
+	_bms.ADD #d14.45
+	_bms.ADD #d14.66
+	_bms.ADD #d14.26
+	_bms.ADD #d14.96
+	_augstat.ADD _bms
+	DELETE _bms
+	_sdata.ADD _augstat
+	DELETE _augstat
+	DEFINE ARRAYLIST _augstat 0
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d38.25
+	_bms.ADD #d41.06
+	_bms.ADD #d43.71
+	_bms.ADD #d44.41
+	_bms.ADD #d46.45
+	_bms.ADD #d46.28
+	_bms.ADD #d47.72
+	_bms.ADD #d46.56
+	_bms.ADD #d47.33
+	_bms.ADD #d52.63
+	_bms.ADD #d51
+	_bms.ADD #d53.81
+	_bms.ADD #d57.76
+	_bms.ADD #d59.78
+	_bms.ADD #d61.31
+	_bms.ADD #d62.37
+	_bms.ADD #d62.9
+	_bms.ADD #d62.86
+	_bms.ADD #d62.28
+	_bms.ADD #d66.48
+	_bms.ADD #d63.75
+	_bms.ADD #d67.97
+	_bms.ADD #d71.81
+	_bms.ADD #d73.44
+	_bms.ADD #d76.18
+	_bms.ADD #d78.47
+	_bms.ADD #d78.08
+	_bms.ADD #d79.15
+	_bms.ADD #d77.22
+	_bms.ADD #d80.33
+	_bms.ADD #d76.5
+	_bms.ADD #d80.71
+	_bms.ADD #d85.86
+	_bms.ADD #d88.82
+	_bms.ADD #d91.04
+	_bms.ADD #d92.55
+	_bms.ADD #d93.27
+	_bms.ADD #d93.12
+	_bms.ADD #d92.17
+	_bms.ADD #d96.95
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d19.13
+	_bms.ADD #d21.24
+	_bms.ADD #d21.85
+	_bms.ADD #d22.2
+	_bms.ADD #d24.15
+	_bms.ADD #d24.14
+	_bms.ADD #d23.86
+	_bms.ADD #d23.28
+	_bms.ADD #d24.91
+	_bms.ADD #d27.7
+	_bms.ADD #d25.5
+	_bms.ADD #d26.9
+	_bms.ADD #d29.66
+	_bms.ADD #d30.74
+	_bms.ADD #d31.59
+	_bms.ADD #d32.19
+	_bms.ADD #d32.54
+	_bms.ADD #d32.59
+	_bms.ADD #d32.38
+	_bms.ADD #d33.24
+	_bms.ADD #d31.88
+	_bms.ADD #d33.98
+	_bms.ADD #d35.9
+	_bms.ADD #d37.58
+	_bms.ADD #d39.02
+	_bms.ADD #d40.24
+	_bms.ADD #d39.04
+	_bms.ADD #d39.58
+	_bms.ADD #d39.86
+	_bms.ADD #d41.55
+	_bms.ADD #d38.25
+	_bms.ADD #d41.06
+	_bms.ADD #d43.71
+	_bms.ADD #d44.41
+	_bms.ADD #d46.45
+	_bms.ADD #d46.28
+	_bms.ADD #d47.72
+	_bms.ADD #d46.56
+	_bms.ADD #d47.33
+	_bms.ADD #d49.86
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d19.13
+	_bms.ADD #d19.82
+	_bms.ADD #d21.85
+	_bms.ADD #d22.2
+	_bms.ADD #d22.3
+	_bms.ADD #d22.13
+	_bms.ADD #d23.86
+	_bms.ADD #d23.28
+	_bms.ADD #d22.42
+	_bms.ADD #d24.93
+	_bms.ADD #d25.5
+	_bms.ADD #d26.9
+	_bms.ADD #d28.1
+	_bms.ADD #d29.04
+	_bms.ADD #d29.73
+	_bms.ADD #d30.18
+	_bms.ADD #d30.37
+	_bms.ADD #d30.26
+	_bms.ADD #d29.89
+	_bms.ADD #d33.24
+	_bms.ADD #d31.88
+	_bms.ADD #d33.98
+	_bms.ADD #d35.9
+	_bms.ADD #d35.87
+	_bms.ADD #d37.16
+	_bms.ADD #d38.23
+	_bms.ADD #d39.04
+	_bms.ADD #d39.58
+	_bms.ADD #d37.37
+	_bms.ADD #d38.78
+	_bms.ADD #d38.25
+	_bms.ADD #d39.65
+	_bms.ADD #d42.15
+	_bms.ADD #d44.41
+	_bms.ADD #d44.59
+	_bms.ADD #d46.28
+	_bms.ADD #d45.55
+	_bms.ADD #d46.56
+	_bms.ADD #d44.84
+	_bms.ADD #d47.09
+	_augstat.ADD _bms
+	DELETE _bms
+	_sdata.ADD _augstat
+	DELETE _augstat
+	DEFINE ARRAYLIST _augstat 0
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d41.28
+	_bms.ADD #d45.68
+	_bms.ADD #d48.89
+	_bms.ADD #d49.97
+	_bms.ADD #d53.55
+	_bms.ADD #d53.77
+	_bms.ADD #d55.55
+	_bms.ADD #d54.3
+	_bms.ADD #d55.29
+	_bms.ADD #d62.51
+	_bms.ADD #d55.04
+	_bms.ADD #d59.85
+	_bms.ADD #d64.6
+	_bms.ADD #d67.27
+	_bms.ADD #d70.69
+	_bms.ADD #d72.48
+	_bms.ADD #d73.23
+	_bms.ADD #d73.31
+	_bms.ADD #d72.75
+	_bms.ADD #d78.96
+	_bms.ADD #d68.8
+	_bms.ADD #d75.6
+	_bms.ADD #d80.32
+	_bms.ADD #d82.65
+	_bms.ADD #d87.82
+	_bms.ADD #d91.18
+	_bms.ADD #d90.9
+	_bms.ADD #d92.31
+	_bms.ADD #d90.21
+	_bms.ADD #d95.41
+	_bms.ADD #d82.56
+	_bms.ADD #d89.78
+	_bms.ADD #d96.03
+	_bms.ADD #d99.94
+	_bms.ADD #d104.96
+	_bms.ADD #d107.55
+	_bms.ADD #d108.58
+	_bms.ADD #d108.6
+	_bms.ADD #d107.67
+	_bms.ADD #d115.15
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d20.64
+	_bms.ADD #d23.63
+	_bms.ADD #d24.44
+	_bms.ADD #d24.99
+	_bms.ADD #d27.85
+	_bms.ADD #d28.06
+	_bms.ADD #d27.78
+	_bms.ADD #d27.15
+	_bms.ADD #d29.1
+	_bms.ADD #d32.9
+	_bms.ADD #d27.52
+	_bms.ADD #d29.93
+	_bms.ADD #d33.17
+	_bms.ADD #d34.6
+	_bms.ADD #d36.41
+	_bms.ADD #d37.41
+	_bms.ADD #d37.88
+	_bms.ADD #d38.01
+	_bms.ADD #d37.83
+	_bms.ADD #d39.48
+	_bms.ADD #d34.4
+	_bms.ADD #d37.8
+	_bms.ADD #d40.16
+	_bms.ADD #d42.28
+	_bms.ADD #d44.98
+	_bms.ADD #d46.76
+	_bms.ADD #d45.45
+	_bms.ADD #d46.16
+	_bms.ADD #d46.56
+	_bms.ADD #d49.35
+	_bms.ADD #d41.28
+	_bms.ADD #d45.68
+	_bms.ADD #d48.89
+	_bms.ADD #d49.97
+	_bms.ADD #d53.55
+	_bms.ADD #d53.77
+	_bms.ADD #d55.55
+	_bms.ADD #d54.3
+	_bms.ADD #d55.29
+	_bms.ADD #d59.22
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d20.64
+	_bms.ADD #d22.05
+	_bms.ADD #d24.44
+	_bms.ADD #d24.99
+	_bms.ADD #d25.7
+	_bms.ADD #d25.72
+	_bms.ADD #d27.78
+	_bms.ADD #d27.15
+	_bms.ADD #d26.19
+	_bms.ADD #d29.61
+	_bms.ADD #d27.52
+	_bms.ADD #d29.93
+	_bms.ADD #d31.43
+	_bms.ADD #d32.67
+	_bms.ADD #d34.27
+	_bms.ADD #d35.07
+	_bms.ADD #d35.35
+	_bms.ADD #d35.3
+	_bms.ADD #d34.92
+	_bms.ADD #d39.48
+	_bms.ADD #d34.4
+	_bms.ADD #d37.8
+	_bms.ADD #d40.16
+	_bms.ADD #d40.36
+	_bms.ADD #d42.84
+	_bms.ADD #d44.42
+	_bms.ADD #d45.45
+	_bms.ADD #d46.16
+	_bms.ADD #d43.65
+	_bms.ADD #d46.06
+	_bms.ADD #d41.28
+	_bms.ADD #d44.1
+	_bms.ADD #d47.14
+	_bms.ADD #d49.97
+	_bms.ADD #d51.41
+	_bms.ADD #d53.77
+	_bms.ADD #d53.03
+	_bms.ADD #d54.3
+	_bms.ADD #d52.38
+	_bms.ADD #d55.93
+	_augstat.ADD _bms
+	DELETE _bms
+	_sdata.ADD _augstat
+	DELETE _augstat
+	DEFINE ARRAYLIST _augstat 0
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d57.74
+	_bms.ADD #d62
+	_bms.ADD #d65.98
+	_bms.ADD #d67.04
+	_bms.ADD #d70.13
+	_bms.ADD #d69.86
+	_bms.ADD #d72.03
+	_bms.ADD #d70.29
+	_bms.ADD #d71.45
+	_bms.ADD #d79.44
+	_bms.ADD #d76.99
+	_bms.ADD #d81.24
+	_bms.ADD #d87.18
+	_bms.ADD #d90.24
+	_bms.ADD #d92.57
+	_bms.ADD #d94.15
+	_bms.ADD #d94.95
+	_bms.ADD #d94.89
+	_bms.ADD #d94.01
+	_bms.ADD #d100.35
+	_bms.ADD #d96.24
+	_bms.ADD #d102.61
+	_bms.ADD #d108.39
+	_bms.ADD #d110.87
+	_bms.ADD #d115.01
+	_bms.ADD #d118.45
+	_bms.ADD #d117.86
+	_bms.ADD #d119.49
+	_bms.ADD #d116.57
+	_bms.ADD #d121.25
+	_bms.ADD #d115.49
+	_bms.ADD #d121.85
+	_bms.ADD #d129.6
+	_bms.ADD #d134.07
+	_bms.ADD #d137.45
+	_bms.ADD #d139.71
+	_bms.ADD #d140.78
+	_bms.ADD #d140.58
+	_bms.ADD #d139.13
+	_bms.ADD #d146.34
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d28.87
+	_bms.ADD #d32.07
+	_bms.ADD #d32.99
+	_bms.ADD #d33.52
+	_bms.ADD #d36.47
+	_bms.ADD #d36.45
+	_bms.ADD #d36.01
+	_bms.ADD #d35.14
+	_bms.ADD #d37.6
+	_bms.ADD #d41.81
+	_bms.ADD #d38.5
+	_bms.ADD #d40.62
+	_bms.ADD #d44.77
+	_bms.ADD #d46.41
+	_bms.ADD #d47.69
+	_bms.ADD #d48.6
+	_bms.ADD #d49.11
+	_bms.ADD #d49.2
+	_bms.ADD #d48.88
+	_bms.ADD #d50.17
+	_bms.ADD #d48.12
+	_bms.ADD #d51.31
+	_bms.ADD #d54.19
+	_bms.ADD #d56.72
+	_bms.ADD #d58.91
+	_bms.ADD #d60.74
+	_bms.ADD #d58.93
+	_bms.ADD #d59.74
+	_bms.ADD #d60.16
+	_bms.ADD #d62.72
+	_bms.ADD #d57.74
+	_bms.ADD #d62
+	_bms.ADD #d65.98
+	_bms.ADD #d67.04
+	_bms.ADD #d70.13
+	_bms.ADD #d69.86
+	_bms.ADD #d72.03
+	_bms.ADD #d70.29
+	_bms.ADD #d71.45
+	_bms.ADD #d75.26
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d28.87
+	_bms.ADD #d29.93
+	_bms.ADD #d32.99
+	_bms.ADD #d33.52
+	_bms.ADD #d33.66
+	_bms.ADD #d33.41
+	_bms.ADD #d36.01
+	_bms.ADD #d35.14
+	_bms.ADD #d33.84
+	_bms.ADD #d37.63
+	_bms.ADD #d38.5
+	_bms.ADD #d40.62
+	_bms.ADD #d42.41
+	_bms.ADD #d43.83
+	_bms.ADD #d44.88
+	_bms.ADD #d45.56
+	_bms.ADD #d45.84
+	_bms.ADD #d45.69
+	_bms.ADD #d45.12
+	_bms.ADD #d50.17
+	_bms.ADD #d48.12
+	_bms.ADD #d51.31
+	_bms.ADD #d54.19
+	_bms.ADD #d54.14
+	_bms.ADD #d56.1
+	_bms.ADD #d57.71
+	_bms.ADD #d58.93
+	_bms.ADD #d59.74
+	_bms.ADD #d56.4
+	_bms.ADD #d58.54
+	_bms.ADD #d57.74
+	_bms.ADD #d59.86
+	_bms.ADD #d63.62
+	_bms.ADD #d67.04
+	_bms.ADD #d67.32
+	_bms.ADD #d69.86
+	_bms.ADD #d68.75
+	_bms.ADD #d70.29
+	_bms.ADD #d67.69
+	_bms.ADD #d71.08
+	_augstat.ADD _bms
+	DELETE _bms
+	_sdata.ADD _augstat
+	DELETE _augstat
+	DEFINE ARRAYLIST _augstat 0
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d6.6
+	_bms.ADD #d7.45
+	_bms.ADD #d8.34
+	_bms.ADD #d8.92
+	_bms.ADD #d9.78
+	_bms.ADD #d10.12
+	_bms.ADD #d10.87
+	_bms.ADD #d10.84
+	_bms.ADD #d11.48
+	_bms.ADD #d13.15
+	_bms.ADD #d8.8
+	_bms.ADD #d9.77
+	_bms.ADD #d11.03
+	_bms.ADD #d12.01
+	_bms.ADD #d12.9
+	_bms.ADD #d13.64
+	_bms.ADD #d14.33
+	_bms.ADD #d14.63
+	_bms.ADD #d15.1
+	_bms.ADD #d16.61
+	_bms.ADD #d11
+	_bms.ADD #d12.34
+	_bms.ADD #d13.71
+	_bms.ADD #d14.75
+	_bms.ADD #d16.03
+	_bms.ADD #d17.16
+	_bms.ADD #d17.78
+	_bms.ADD #d18.43
+	_bms.ADD #d18.72
+	_bms.ADD #d20.07
+	_bms.ADD #d13.2
+	_bms.ADD #d14.65
+	_bms.ADD #d16.39
+	_bms.ADD #d17.84
+	_bms.ADD #d19.16
+	_bms.ADD #d20.24
+	_bms.ADD #d21.24
+	_bms.ADD #d21.68
+	_bms.ADD #d22.35
+	_bms.ADD #d24.22
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d3.3
+	_bms.ADD #d3.86
+	_bms.ADD #d4.17
+	_bms.ADD #d4.46
+	_bms.ADD #d5.08
+	_bms.ADD #d5.28
+	_bms.ADD #d5.43
+	_bms.ADD #d5.42
+	_bms.ADD #d6.04
+	_bms.ADD #d6.92
+	_bms.ADD #d4.4
+	_bms.ADD #d4.88
+	_bms.ADD #d5.66
+	_bms.ADD #d6.17
+	_bms.ADD #d6.65
+	_bms.ADD #d7.04
+	_bms.ADD #d7.41
+	_bms.ADD #d7.59
+	_bms.ADD #d7.85
+	_bms.ADD #d8.3
+	_bms.ADD #d5.5
+	_bms.ADD #d6.17
+	_bms.ADD #d6.85
+	_bms.ADD #d7.55
+	_bms.ADD #d8.21
+	_bms.ADD #d8.8
+	_bms.ADD #d8.89
+	_bms.ADD #d9.21
+	_bms.ADD #d9.66
+	_bms.ADD #d10.38
+	_bms.ADD #d6.6
+	_bms.ADD #d7.45
+	_bms.ADD #d8.34
+	_bms.ADD #d8.92
+	_bms.ADD #d9.78
+	_bms.ADD #d10.12
+	_bms.ADD #d10.87
+	_bms.ADD #d10.84
+	_bms.ADD #d11.48
+	_bms.ADD #d12.46
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d3.3
+	_bms.ADD #d3.6
+	_bms.ADD #d4.17
+	_bms.ADD #d4.46
+	_bms.ADD #d4.69
+	_bms.ADD #d4.84
+	_bms.ADD #d5.43
+	_bms.ADD #d5.42
+	_bms.ADD #d5.44
+	_bms.ADD #d6.23
+	_bms.ADD #d4.4
+	_bms.ADD #d4.88
+	_bms.ADD #d5.36
+	_bms.ADD #d5.83
+	_bms.ADD #d6.26
+	_bms.ADD #d6.6
+	_bms.ADD #d6.92
+	_bms.ADD #d7.05
+	_bms.ADD #d7.25
+	_bms.ADD #d8.3
+	_bms.ADD #d5.5
+	_bms.ADD #d6.17
+	_bms.ADD #d6.85
+	_bms.ADD #d7.2
+	_bms.ADD #d7.82
+	_bms.ADD #d8.36
+	_bms.ADD #d8.89
+	_bms.ADD #d9.21
+	_bms.ADD #d9.06
+	_bms.ADD #d9.69
+	_bms.ADD #d6.6
+	_bms.ADD #d7.2
+	_bms.ADD #d8.05
+	_bms.ADD #d8.92
+	_bms.ADD #d9.38
+	_bms.ADD #d10.12
+	_bms.ADD #d10.37
+	_bms.ADD #d10.84
+	_bms.ADD #d10.87
+	_bms.ADD #d11.76
+	_augstat.ADD _bms
+	DELETE _bms
+	_sdata.ADD _augstat
+	DELETE _augstat
+	DEFINE ARRAYLIST _augstat 0
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d7.56
+	_bms.ADD #d8.56
+	_bms.ADD #d9.58
+	_bms.ADD #d10.24
+	_bms.ADD #d11.25
+	_bms.ADD #d11.71
+	_bms.ADD #d12.56
+	_bms.ADD #d12.7
+	_bms.ADD #d13.3
+	_bms.ADD #d15.35
+	_bms.ADD #d10.08
+	_bms.ADD #d11.21
+	_bms.ADD #d12.65
+	_bms.ADD #d13.79
+	_bms.ADD #d14.85
+	_bms.ADD #d15.78
+	_bms.ADD #d16.56
+	_bms.ADD #d17.15
+	_bms.ADD #d17.5
+	_bms.ADD #d19.39
+	_bms.ADD #d12.6
+	_bms.ADD #d14.16
+	_bms.ADD #d15.73
+	_bms.ADD #d16.94
+	_bms.ADD #d18.45
+	_bms.ADD #d19.85
+	_bms.ADD #d20.56
+	_bms.ADD #d21.59
+	_bms.ADD #d21.7
+	_bms.ADD #d23.43
+	_bms.ADD #d15.12
+	_bms.ADD #d16.82
+	_bms.ADD #d18.81
+	_bms.ADD #d20.49
+	_bms.ADD #d22.05
+	_bms.ADD #d23.41
+	_bms.ADD #d24.55
+	_bms.ADD #d25.4
+	_bms.ADD #d25.9
+	_bms.ADD #d28.28
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d3.78
+	_bms.ADD #d4.43
+	_bms.ADD #d4.79
+	_bms.ADD #d5.12
+	_bms.ADD #d5.85
+	_bms.ADD #d6.11
+	_bms.ADD #d6.28
+	_bms.ADD #d6.35
+	_bms.ADD #d7
+	_bms.ADD #d8.08
+	_bms.ADD #d5.04
+	_bms.ADD #d5.61
+	_bms.ADD #d6.5
+	_bms.ADD #d7.09
+	_bms.ADD #d7.65
+	_bms.ADD #d8.14
+	_bms.ADD #d8.57
+	_bms.ADD #d8.89
+	_bms.ADD #d9.1
+	_bms.ADD #d9.7
+	_bms.ADD #d6.3
+	_bms.ADD #d7.08
+	_bms.ADD #d7.87
+	_bms.ADD #d8.67
+	_bms.ADD #d9.45
+	_bms.ADD #d10.18
+	_bms.ADD #d10.28
+	_bms.ADD #d10.8
+	_bms.ADD #d11.2
+	_bms.ADD #d12.12
+	_bms.ADD #d7.56
+	_bms.ADD #d8.56
+	_bms.ADD #d9.58
+	_bms.ADD #d10.24
+	_bms.ADD #d11.25
+	_bms.ADD #d11.71
+	_bms.ADD #d12.56
+	_bms.ADD #d12.7
+	_bms.ADD #d13.3
+	_bms.ADD #d14.54
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d3.78
+	_bms.ADD #d4.13
+	_bms.ADD #d4.79
+	_bms.ADD #d5.12
+	_bms.ADD #d5.4
+	_bms.ADD #d5.6
+	_bms.ADD #d6.28
+	_bms.ADD #d6.35
+	_bms.ADD #d6.3
+	_bms.ADD #d7.27
+	_bms.ADD #d5.04
+	_bms.ADD #d5.61
+	_bms.ADD #d6.16
+	_bms.ADD #d6.7
+	_bms.ADD #d7.2
+	_bms.ADD #d7.64
+	_bms.ADD #d7.99
+	_bms.ADD #d8.26
+	_bms.ADD #d8.4
+	_bms.ADD #d9.7
+	_bms.ADD #d6.3
+	_bms.ADD #d7.08
+	_bms.ADD #d7.87
+	_bms.ADD #d8.27
+	_bms.ADD #d9
+	_bms.ADD #d9.67
+	_bms.ADD #d10.28
+	_bms.ADD #d10.8
+	_bms.ADD #d10.5
+	_bms.ADD #d11.31
+	_bms.ADD #d7.56
+	_bms.ADD #d8.26
+	_bms.ADD #d9.23
+	_bms.ADD #d10.24
+	_bms.ADD #d10.8
+	_bms.ADD #d11.71
+	_bms.ADD #d11.99
+	_bms.ADD #d12.7
+	_bms.ADD #d12.6
+	_bms.ADD #d13.74
+	_augstat.ADD _bms
+	DELETE _bms
+	_sdata.ADD _augstat
+	DELETE _augstat
+	DEFINE ARRAYLIST _augstat 0
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d0.27
+	_bms.ADD #d0.26
+	_bms.ADD #d0.3
+	_bms.ADD #d0.28
+	_bms.ADD #d0.29
+	_bms.ADD #d0.3
+	_bms.ADD #d0.3
+	_bms.ADD #d0.28
+	_bms.ADD #d0.27
+	_bms.ADD #d0.31
+	_bms.ADD #d0.36
+	_bms.ADD #d0.34
+	_bms.ADD #d0.4
+	_bms.ADD #d0.38
+	_bms.ADD #d0.38
+	_bms.ADD #d0.41
+	_bms.ADD #d0.4
+	_bms.ADD #d0.38
+	_bms.ADD #d0.36
+	_bms.ADD #d0.39
+	_bms.ADD #d0.44
+	_bms.ADD #d0.43
+	_bms.ADD #d0.49
+	_bms.ADD #d0.47
+	_bms.ADD #d0.47
+	_bms.ADD #d0.51
+	_bms.ADD #d0.5
+	_bms.ADD #d0.48
+	_bms.ADD #d0.44
+	_bms.ADD #d0.48
+	_bms.ADD #d0.53
+	_bms.ADD #d0.52
+	_bms.ADD #d0.59
+	_bms.ADD #d0.57
+	_bms.ADD #d0.56
+	_bms.ADD #d0.6
+	_bms.ADD #d0.6
+	_bms.ADD #d0.56
+	_bms.ADD #d0.53
+	_bms.ADD #d0.57
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d0.13
+	_bms.ADD #d0.14
+	_bms.ADD #d0.15
+	_bms.ADD #d0.14
+	_bms.ADD #d0.15
+	_bms.ADD #d0.16
+	_bms.ADD #d0.15
+	_bms.ADD #d0.14
+	_bms.ADD #d0.14
+	_bms.ADD #d0.16
+	_bms.ADD #d0.18
+	_bms.ADD #d0.17
+	_bms.ADD #d0.2
+	_bms.ADD #d0.2
+	_bms.ADD #d0.19
+	_bms.ADD #d0.21
+	_bms.ADD #d0.21
+	_bms.ADD #d0.2
+	_bms.ADD #d0.19
+	_bms.ADD #d0.2
+	_bms.ADD #d0.22
+	_bms.ADD #d0.22
+	_bms.ADD #d0.25
+	_bms.ADD #d0.24
+	_bms.ADD #d0.24
+	_bms.ADD #d0.26
+	_bms.ADD #d0.25
+	_bms.ADD #d0.24
+	_bms.ADD #d0.23
+	_bms.ADD #d0.25
+	_bms.ADD #d0.27
+	_bms.ADD #d0.26
+	_bms.ADD #d0.3
+	_bms.ADD #d0.28
+	_bms.ADD #d0.29
+	_bms.ADD #d0.3
+	_bms.ADD #d0.3
+	_bms.ADD #d0.28
+	_bms.ADD #d0.27
+	_bms.ADD #d0.29
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d0.13
+	_bms.ADD #d0.13
+	_bms.ADD #d0.15
+	_bms.ADD #d0.14
+	_bms.ADD #d0.14
+	_bms.ADD #d0.14
+	_bms.ADD #d0.15
+	_bms.ADD #d0.14
+	_bms.ADD #d0.13
+	_bms.ADD #d0.15
+	_bms.ADD #d0.18
+	_bms.ADD #d0.17
+	_bms.ADD #d0.19
+	_bms.ADD #d0.18
+	_bms.ADD #d0.18
+	_bms.ADD #d0.2
+	_bms.ADD #d0.19
+	_bms.ADD #d0.18
+	_bms.ADD #d0.17
+	_bms.ADD #d0.2
+	_bms.ADD #d0.22
+	_bms.ADD #d0.22
+	_bms.ADD #d0.25
+	_bms.ADD #d0.23
+	_bms.ADD #d0.23
+	_bms.ADD #d0.25
+	_bms.ADD #d0.25
+	_bms.ADD #d0.24
+	_bms.ADD #d0.21
+	_bms.ADD #d0.23
+	_bms.ADD #d0.27
+	_bms.ADD #d0.25
+	_bms.ADD #d0.29
+	_bms.ADD #d0.28
+	_bms.ADD #d0.28
+	_bms.ADD #d0.3
+	_bms.ADD #d0.29
+	_bms.ADD #d0.28
+	_bms.ADD #d0.26
+	_bms.ADD #d0.28
+	_augstat.ADD _bms
+	DELETE _bms
+	_sdata.ADD _augstat
+	DELETE _augstat
+	DEFINE ARRAYLIST _augstat 0
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d0.18
+	_bms.ADD #d0.18
+	_bms.ADD #d0.2
+	_bms.ADD #d0.19
+	_bms.ADD #d0.19
+	_bms.ADD #d0.2
+	_bms.ADD #d0.19
+	_bms.ADD #d0.18
+	_bms.ADD #d0.18
+	_bms.ADD #d0.2
+	_bms.ADD #d0.24
+	_bms.ADD #d0.23
+	_bms.ADD #d0.27
+	_bms.ADD #d0.26
+	_bms.ADD #d0.25
+	_bms.ADD #d0.27
+	_bms.ADD #d0.25
+	_bms.ADD #d0.24
+	_bms.ADD #d0.24
+	_bms.ADD #d0.26
+	_bms.ADD #d0.3
+	_bms.ADD #d0.3
+	_bms.ADD #d0.34
+	_bms.ADD #d0.32
+	_bms.ADD #d0.31
+	_bms.ADD #d0.34
+	_bms.ADD #d0.32
+	_bms.ADD #d0.3
+	_bms.ADD #d0.29
+	_bms.ADD #d0.31
+	_bms.ADD #d0.36
+	_bms.ADD #d0.35
+	_bms.ADD #d0.4
+	_bms.ADD #d0.38
+	_bms.ADD #d0.37
+	_bms.ADD #d0.4
+	_bms.ADD #d0.38
+	_bms.ADD #d0.36
+	_bms.ADD #d0.35
+	_bms.ADD #d0.37
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d0.09
+	_bms.ADD #d0.09
+	_bms.ADD #d0.1
+	_bms.ADD #d0.1
+	_bms.ADD #d0.1
+	_bms.ADD #d0.1
+	_bms.ADD #d0.1
+	_bms.ADD #d0.09
+	_bms.ADD #d0.09
+	_bms.ADD #d0.11
+	_bms.ADD #d0.12
+	_bms.ADD #d0.12
+	_bms.ADD #d0.14
+	_bms.ADD #d0.13
+	_bms.ADD #d0.13
+	_bms.ADD #d0.14
+	_bms.ADD #d0.13
+	_bms.ADD #d0.12
+	_bms.ADD #d0.12
+	_bms.ADD #d0.13
+	_bms.ADD #d0.15
+	_bms.ADD #d0.15
+	_bms.ADD #d0.17
+	_bms.ADD #d0.16
+	_bms.ADD #d0.16
+	_bms.ADD #d0.17
+	_bms.ADD #d0.16
+	_bms.ADD #d0.15
+	_bms.ADD #d0.15
+	_bms.ADD #d0.16
+	_bms.ADD #d0.18
+	_bms.ADD #d0.18
+	_bms.ADD #d0.2
+	_bms.ADD #d0.19
+	_bms.ADD #d0.19
+	_bms.ADD #d0.2
+	_bms.ADD #d0.19
+	_bms.ADD #d0.18
+	_bms.ADD #d0.18
+	_bms.ADD #d0.19
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d0.09
+	_bms.ADD #d0.09
+	_bms.ADD #d0.1
+	_bms.ADD #d0.1
+	_bms.ADD #d0.09
+	_bms.ADD #d0.1
+	_bms.ADD #d0.1
+	_bms.ADD #d0.09
+	_bms.ADD #d0.08
+	_bms.ADD #d0.1
+	_bms.ADD #d0.12
+	_bms.ADD #d0.12
+	_bms.ADD #d0.13
+	_bms.ADD #d0.13
+	_bms.ADD #d0.12
+	_bms.ADD #d0.13
+	_bms.ADD #d0.12
+	_bms.ADD #d0.12
+	_bms.ADD #d0.11
+	_bms.ADD #d0.13
+	_bms.ADD #d0.15
+	_bms.ADD #d0.15
+	_bms.ADD #d0.17
+	_bms.ADD #d0.16
+	_bms.ADD #d0.15
+	_bms.ADD #d0.16
+	_bms.ADD #d0.16
+	_bms.ADD #d0.15
+	_bms.ADD #d0.14
+	_bms.ADD #d0.15
+	_bms.ADD #d0.18
+	_bms.ADD #d0.17
+	_bms.ADD #d0.2
+	_bms.ADD #d0.19
+	_bms.ADD #d0.18
+	_bms.ADD #d0.2
+	_bms.ADD #d0.18
+	_bms.ADD #d0.18
+	_bms.ADD #d0.17
+	_bms.ADD #d0.18
+	_augstat.ADD _bms
+	DELETE _bms
+	_sdata.ADD _augstat
+	DELETE _augstat
+	DEFINE ARRAYLIST _augstat 0
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d0.27
+	_bms.ADD #d0.26
+	_bms.ADD #d0.3
+	_bms.ADD #d0.28
+	_bms.ADD #d0.29
+	_bms.ADD #d0.3
+	_bms.ADD #d0.3
+	_bms.ADD #d0.28
+	_bms.ADD #d0.27
+	_bms.ADD #d0.31
+	_bms.ADD #d0.36
+	_bms.ADD #d0.34
+	_bms.ADD #d0.4
+	_bms.ADD #d0.38
+	_bms.ADD #d0.38
+	_bms.ADD #d0.41
+	_bms.ADD #d0.4
+	_bms.ADD #d0.38
+	_bms.ADD #d0.36
+	_bms.ADD #d0.39
+	_bms.ADD #d0.44
+	_bms.ADD #d0.43
+	_bms.ADD #d0.49
+	_bms.ADD #d0.47
+	_bms.ADD #d0.47
+	_bms.ADD #d0.51
+	_bms.ADD #d0.5
+	_bms.ADD #d0.48
+	_bms.ADD #d0.44
+	_bms.ADD #d0.48
+	_bms.ADD #d0.53
+	_bms.ADD #d0.52
+	_bms.ADD #d0.59
+	_bms.ADD #d0.57
+	_bms.ADD #d0.56
+	_bms.ADD #d0.6
+	_bms.ADD #d0.6
+	_bms.ADD #d0.56
+	_bms.ADD #d0.53
+	_bms.ADD #d0.57
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d0.13
+	_bms.ADD #d0.14
+	_bms.ADD #d0.15
+	_bms.ADD #d0.14
+	_bms.ADD #d0.15
+	_bms.ADD #d0.16
+	_bms.ADD #d0.15
+	_bms.ADD #d0.14
+	_bms.ADD #d0.14
+	_bms.ADD #d0.16
+	_bms.ADD #d0.18
+	_bms.ADD #d0.17
+	_bms.ADD #d0.2
+	_bms.ADD #d0.2
+	_bms.ADD #d0.19
+	_bms.ADD #d0.21
+	_bms.ADD #d0.21
+	_bms.ADD #d0.2
+	_bms.ADD #d0.19
+	_bms.ADD #d0.2
+	_bms.ADD #d0.22
+	_bms.ADD #d0.22
+	_bms.ADD #d0.25
+	_bms.ADD #d0.24
+	_bms.ADD #d0.24
+	_bms.ADD #d0.26
+	_bms.ADD #d0.25
+	_bms.ADD #d0.24
+	_bms.ADD #d0.23
+	_bms.ADD #d0.25
+	_bms.ADD #d0.27
+	_bms.ADD #d0.26
+	_bms.ADD #d0.3
+	_bms.ADD #d0.28
+	_bms.ADD #d0.29
+	_bms.ADD #d0.3
+	_bms.ADD #d0.3
+	_bms.ADD #d0.28
+	_bms.ADD #d0.27
+	_bms.ADD #d0.29
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d0.13
+	_bms.ADD #d0.13
+	_bms.ADD #d0.15
+	_bms.ADD #d0.14
+	_bms.ADD #d0.14
+	_bms.ADD #d0.14
+	_bms.ADD #d0.15
+	_bms.ADD #d0.14
+	_bms.ADD #d0.13
+	_bms.ADD #d0.15
+	_bms.ADD #d0.18
+	_bms.ADD #d0.17
+	_bms.ADD #d0.19
+	_bms.ADD #d0.18
+	_bms.ADD #d0.18
+	_bms.ADD #d0.2
+	_bms.ADD #d0.19
+	_bms.ADD #d0.18
+	_bms.ADD #d0.17
+	_bms.ADD #d0.2
+	_bms.ADD #d0.22
+	_bms.ADD #d0.22
+	_bms.ADD #d0.25
+	_bms.ADD #d0.23
+	_bms.ADD #d0.23
+	_bms.ADD #d0.25
+	_bms.ADD #d0.25
+	_bms.ADD #d0.24
+	_bms.ADD #d0.21
+	_bms.ADD #d0.23
+	_bms.ADD #d0.27
+	_bms.ADD #d0.25
+	_bms.ADD #d0.29
+	_bms.ADD #d0.28
+	_bms.ADD #d0.28
+	_bms.ADD #d0.3
+	_bms.ADD #d0.29
+	_bms.ADD #d0.28
+	_bms.ADD #d0.26
+	_bms.ADD #d0.28
+	_augstat.ADD _bms
+	DELETE _bms
+	_sdata.ADD _augstat
+	DELETE _augstat
+	DEFINE ARRAYLIST _augstat 0
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d1.55
+	_bms.ADD #d1.55
+	_bms.ADD #d1.55
+	_bms.ADD #d1.55
+	_bms.ADD #d1.74
+	_bms.ADD #d1.74
+	_bms.ADD #d1.74
+	_bms.ADD #d1.91
+	_bms.ADD #d1.91
+	_bms.ADD #d2.1
+	_bms.ADD #d1.81
+	_bms.ADD #d1.81
+	_bms.ADD #d1.81
+	_bms.ADD #d1.81
+	_bms.ADD #d2.02
+	_bms.ADD #d2.02
+	_bms.ADD #d2.02
+	_bms.ADD #d2.23
+	_bms.ADD #d2.23
+	_bms.ADD #d2.44
+	_bms.ADD #d2.06
+	_bms.ADD #d2.06
+	_bms.ADD #d2.06
+	_bms.ADD #d2.06
+	_bms.ADD #d2.3
+	_bms.ADD #d2.3
+	_bms.ADD #d2.3
+	_bms.ADD #d2.54
+	_bms.ADD #d2.54
+	_bms.ADD #d2.78
+	_bms.ADD #d2.24
+	_bms.ADD #d2.24
+	_bms.ADD #d2.24
+	_bms.ADD #d2.24
+	_bms.ADD #d2.5
+	_bms.ADD #d2.5
+	_bms.ADD #d2.5
+	_bms.ADD #d2.76
+	_bms.ADD #d2.76
+	_bms.ADD #d3.02
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d0.78
+	_bms.ADD #d0.82
+	_bms.ADD #d0.78
+	_bms.ADD #d0.78
+	_bms.ADD #d0.91
+	_bms.ADD #d0.91
+	_bms.ADD #d0.85
+	_bms.ADD #d0.96
+	_bms.ADD #d1.01
+	_bms.ADD #d1.1
+	_bms.ADD #d0.9
+	_bms.ADD #d0.9
+	_bms.ADD #d0.95
+	_bms.ADD #d0.95
+	_bms.ADD #d1.06
+	_bms.ADD #d1.06
+	_bms.ADD #d1.06
+	_bms.ADD #d1.17
+	_bms.ADD #d1.17
+	_bms.ADD #d1.22
+	_bms.ADD #d1.03
+	_bms.ADD #d1.03
+	_bms.ADD #d1.03
+	_bms.ADD #d1.08
+	_bms.ADD #d1.21
+	_bms.ADD #d1.21
+	_bms.ADD #d1.15
+	_bms.ADD #d1.27
+	_bms.ADD #d1.33
+	_bms.ADD #d1.46
+	_bms.ADD #d1.12
+	_bms.ADD #d1.18
+	_bms.ADD #d1.18
+	_bms.ADD #d1.12
+	_bms.ADD #d1.13
+	_bms.ADD #d1.25
+	_bms.ADD #d1.13
+	_bms.ADD #d1.38
+	_bms.ADD #d1.45
+	_bms.ADD #d1.59
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d0.78
+	_bms.ADD #d0.74
+	_bms.ADD #d0.78
+	_bms.ADD #d0.78
+	_bms.ADD #d0.82
+	_bms.ADD #d0.82
+	_bms.ADD #d0.85
+	_bms.ADD #d0.96
+	_bms.ADD #d0.91
+	_bms.ADD #d1
+	_bms.ADD #d0.9
+	_bms.ADD #d0.9
+	_bms.ADD #d0.86
+	_bms.ADD #d0.86
+	_bms.ADD #d0.96
+	_bms.ADD #d0.96
+	_bms.ADD #d0.96
+	_bms.ADD #d1.06
+	_bms.ADD #d1.06
+	_bms.ADD #d1.22
+	_bms.ADD #d1.03
+	_bms.ADD #d1.03
+	_bms.ADD #d1.03
+	_bms.ADD #d0.98
+	_bms.ADD #d1.09
+	_bms.ADD #d1.09
+	_bms.ADD #d1.15
+	_bms.ADD #d1.27
+	_bms.ADD #d1.21
+	_bms.ADD #d1.32
+	_bms.ADD #d1.12
+	_bms.ADD #d1.06
+	_bms.ADD #d1.06
+	_bms.ADD #d1.12
+	_bms.ADD #d1.19
+	_bms.ADD #d1.25
+	_bms.ADD #d1.19
+	_bms.ADD #d1.38
+	_bms.ADD #d1.31
+	_bms.ADD #d1.44
+	_augstat.ADD _bms
+	DELETE _bms
+	_sdata.ADD _augstat
+	DELETE _augstat
+	DEFINE ARRAYLIST _augstat 0
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d1.55
+	_bms.ADD #d1.55
+	_bms.ADD #d1.55
+	_bms.ADD #d1.55
+	_bms.ADD #d1.74
+	_bms.ADD #d1.74
+	_bms.ADD #d1.74
+	_bms.ADD #d1.91
+	_bms.ADD #d1.91
+	_bms.ADD #d2.1
+	_bms.ADD #d1.81
+	_bms.ADD #d1.81
+	_bms.ADD #d1.81
+	_bms.ADD #d1.81
+	_bms.ADD #d2.02
+	_bms.ADD #d2.02
+	_bms.ADD #d2.02
+	_bms.ADD #d2.23
+	_bms.ADD #d2.23
+	_bms.ADD #d2.44
+	_bms.ADD #d2.06
+	_bms.ADD #d2.06
+	_bms.ADD #d2.06
+	_bms.ADD #d2.06
+	_bms.ADD #d2.3
+	_bms.ADD #d2.3
+	_bms.ADD #d2.3
+	_bms.ADD #d2.54
+	_bms.ADD #d2.54
+	_bms.ADD #d2.78
+	_bms.ADD #d2.24
+	_bms.ADD #d2.24
+	_bms.ADD #d2.24
+	_bms.ADD #d2.24
+	_bms.ADD #d2.5
+	_bms.ADD #d2.5
+	_bms.ADD #d2.5
+	_bms.ADD #d2.76
+	_bms.ADD #d2.76
+	_bms.ADD #d3.02
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d0.78
+	_bms.ADD #d0.82
+	_bms.ADD #d0.78
+	_bms.ADD #d0.78
+	_bms.ADD #d0.91
+	_bms.ADD #d0.91
+	_bms.ADD #d0.85
+	_bms.ADD #d0.96
+	_bms.ADD #d1.01
+	_bms.ADD #d1.1
+	_bms.ADD #d0.9
+	_bms.ADD #d0.9
+	_bms.ADD #d0.95
+	_bms.ADD #d0.95
+	_bms.ADD #d1.06
+	_bms.ADD #d1.06
+	_bms.ADD #d1.06
+	_bms.ADD #d1.17
+	_bms.ADD #d1.17
+	_bms.ADD #d1.22
+	_bms.ADD #d1.03
+	_bms.ADD #d1.03
+	_bms.ADD #d1.03
+	_bms.ADD #d1.08
+	_bms.ADD #d1.21
+	_bms.ADD #d1.21
+	_bms.ADD #d1.15
+	_bms.ADD #d1.27
+	_bms.ADD #d1.33
+	_bms.ADD #d1.46
+	_bms.ADD #d1.12
+	_bms.ADD #d1.18
+	_bms.ADD #d1.18
+	_bms.ADD #d1.12
+	_bms.ADD #d1.13
+	_bms.ADD #d1.25
+	_bms.ADD #d1.13
+	_bms.ADD #d1.38
+	_bms.ADD #d1.45
+	_bms.ADD #d1.59
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d0.78
+	_bms.ADD #d0.74
+	_bms.ADD #d0.78
+	_bms.ADD #d0.78
+	_bms.ADD #d0.82
+	_bms.ADD #d0.82
+	_bms.ADD #d0.85
+	_bms.ADD #d0.96
+	_bms.ADD #d0.91
+	_bms.ADD #d1
+	_bms.ADD #d0.9
+	_bms.ADD #d0.9
+	_bms.ADD #d0.86
+	_bms.ADD #d0.86
+	_bms.ADD #d0.96
+	_bms.ADD #d0.96
+	_bms.ADD #d0.96
+	_bms.ADD #d1.06
+	_bms.ADD #d1.06
+	_bms.ADD #d1.22
+	_bms.ADD #d1.03
+	_bms.ADD #d1.03
+	_bms.ADD #d1.03
+	_bms.ADD #d0.98
+	_bms.ADD #d1.09
+	_bms.ADD #d1.09
+	_bms.ADD #d1.15
+	_bms.ADD #d1.27
+	_bms.ADD #d1.21
+	_bms.ADD #d1.32
+	_bms.ADD #d1.12
+	_bms.ADD #d1.06
+	_bms.ADD #d1.06
+	_bms.ADD #d1.12
+	_bms.ADD #d1.19
+	_bms.ADD #d1.25
+	_bms.ADD #d1.19
+	_bms.ADD #d1.38
+	_bms.ADD #d1.31
+	_bms.ADD #d1.44
+	_augstat.ADD _bms
+	DELETE _bms
+	_sdata.ADD _augstat
+	DELETE _augstat
+	DEFINE ARRAYLIST _augstat 0
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d16.84
+	_bms.ADD #d16.84
+	_bms.ADD #d16.84
+	_bms.ADD #d16.84
+	_bms.ADD #d18.79
+	_bms.ADD #d18.79
+	_bms.ADD #d18.79
+	_bms.ADD #d20.64
+	_bms.ADD #d20.64
+	_bms.ADD #d22.7
+	_bms.ADD #d19.58
+	_bms.ADD #d19.58
+	_bms.ADD #d19.58
+	_bms.ADD #d19.58
+	_bms.ADD #d21.85
+	_bms.ADD #d21.85
+	_bms.ADD #d21.85
+	_bms.ADD #d24.13
+	_bms.ADD #d24.13
+	_bms.ADD #d26.4
+	_bms.ADD #d22.32
+	_bms.ADD #d22.32
+	_bms.ADD #d22.32
+	_bms.ADD #d22.32
+	_bms.ADD #d24.91
+	_bms.ADD #d24.91
+	_bms.ADD #d24.91
+	_bms.ADD #d27.5
+	_bms.ADD #d27.5
+	_bms.ADD #d30.1
+	_bms.ADD #d24.28
+	_bms.ADD #d24.28
+	_bms.ADD #d24.28
+	_bms.ADD #d24.28
+	_bms.ADD #d27.1
+	_bms.ADD #d27.1
+	_bms.ADD #d27.1
+	_bms.ADD #d29.92
+	_bms.ADD #d29.92
+	_bms.ADD #d32.74
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d8.42
+	_bms.ADD #d8
+	_bms.ADD #d8.42
+	_bms.ADD #d8.42
+	_bms.ADD #d8.93
+	_bms.ADD #d8.93
+	_bms.ADD #d9.18
+	_bms.ADD #d10.37
+	_bms.ADD #d9.86
+	_bms.ADD #d10.78
+	_bms.ADD #d9.79
+	_bms.ADD #d9.79
+	_bms.ADD #d9.3
+	_bms.ADD #d9.3
+	_bms.ADD #d10.38
+	_bms.ADD #d10.38
+	_bms.ADD #d10.38
+	_bms.ADD #d11.46
+	_bms.ADD #d11.46
+	_bms.ADD #d13.2
+	_bms.ADD #d11.16
+	_bms.ADD #d11.16
+	_bms.ADD #d11.16
+	_bms.ADD #d10.6
+	_bms.ADD #d11.83
+	_bms.ADD #d11.83
+	_bms.ADD #d12.46
+	_bms.ADD #d13.75
+	_bms.ADD #d13.06
+	_bms.ADD #d14.3
+	_bms.ADD #d12.14
+	_bms.ADD #d11.53
+	_bms.ADD #d11.53
+	_bms.ADD #d12.14
+	_bms.ADD #d12.87
+	_bms.ADD #d13.55
+	_bms.ADD #d12.87
+	_bms.ADD #d14.96
+	_bms.ADD #d14.21
+	_bms.ADD #d15.55
+	_augstat.ADD _bms
+	DELETE _bms
+	_sdata.ADD _augstat
+	DELETE _augstat
+	_augmdata.ADD _sdata
+	DELETE _sdata
+	DEFINE ARRAYLIST _sdata 0
+	DEFINE ARRAYLIST _augstat 0
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d10.3
+	_bms.ADD #d10.74
+	_bms.ADD #d11.14
+	_bms.ADD #d11.46
+	_bms.ADD #d12.46
+	_bms.ADD #d12.64
+	_bms.ADD #d12.84
+	_bms.ADD #d12.73
+	_bms.ADD #d12.81
+	_bms.ADD #d14.21
+	_bms.ADD #d13.91
+	_bms.ADD #d14.69
+	_bms.ADD #d14.86
+	_bms.ADD #d15.5
+	_bms.ADD #d16.13
+	_bms.ADD #d16.59
+	_bms.ADD #d16.26
+	_bms.ADD #d16.36
+	_bms.ADD #d16.75
+	_bms.ADD #d17.49
+	_bms.ADD #d17
+	_bms.ADD #d18.08
+	_bms.ADD #d18.57
+	_bms.ADD #d19.55
+	_bms.ADD #d19.79
+	_bms.ADD #d20.54
+	_bms.ADD #d20.54
+	_bms.ADD #d20
+	_bms.ADD #d20.69
+	_bms.ADD #d21.86
+	_bms.ADD #d20.6
+	_bms.ADD #d21.47
+	_bms.ADD #d22.28
+	_bms.ADD #d23.59
+	_bms.ADD #d24.19
+	_bms.ADD #d24.49
+	_bms.ADD #d24.82
+	_bms.ADD #d24.54
+	_bms.ADD #d24.63
+	_bms.ADD #d25.14
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d5.15
+	_bms.ADD #d5.65
+	_bms.ADD #d5.57
+	_bms.ADD #d6.07
+	_bms.ADD #d6.6
+	_bms.ADD #d6.32
+	_bms.ADD #d5.99
+	_bms.ADD #d6.36
+	_bms.ADD #d6.9
+	_bms.ADD #d7.65
+	_bms.ADD #d7.21
+	_bms.ADD #d7.35
+	_bms.ADD #d7.43
+	_bms.ADD #d8.09
+	_bms.ADD #d8.06
+	_bms.ADD #d8.69
+	_bms.ADD #d8.56
+	_bms.ADD #d8.18
+	_bms.ADD #d8.87
+	_bms.ADD #d8.74
+	_bms.ADD #d8.76
+	_bms.ADD #d9.04
+	_bms.ADD #d9.29
+	_bms.ADD #d10.11
+	_bms.ADD #d10.26
+	_bms.ADD #d10.27
+	_bms.ADD #d10.27
+	_bms.ADD #d10
+	_bms.ADD #d10.84
+	_bms.ADD #d10.93
+	_bms.ADD #d10.3
+	_bms.ADD #d10.74
+	_bms.ADD #d11.14
+	_bms.ADD #d12.13
+	_bms.ADD #d12.46
+	_bms.ADD #d12.64
+	_bms.ADD #d12.84
+	_bms.ADD #d12.73
+	_bms.ADD #d12.81
+	_bms.ADD #d13.12
+	_augstat.ADD _bms
+	DELETE _bms
+	_sdata.ADD _augstat
+	DELETE _augstat
+	DEFINE ARRAYLIST _augstat 0
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d8.22
+	_bms.ADD #d8.63
+	_bms.ADD #d8.96
+	_bms.ADD #d9.13
+	_bms.ADD #d10.01
+	_bms.ADD #d10.18
+	_bms.ADD #d10.32
+	_bms.ADD #d10.26
+	_bms.ADD #d10.3
+	_bms.ADD #d11.44
+	_bms.ADD #d11.1
+	_bms.ADD #d11.8
+	_bms.ADD #d11.95
+	_bms.ADD #d12.35
+	_bms.ADD #d12.96
+	_bms.ADD #d13.36
+	_bms.ADD #d13.07
+	_bms.ADD #d13.19
+	_bms.ADD #d13.46
+	_bms.ADD #d14.08
+	_bms.ADD #d13.56
+	_bms.ADD #d14.53
+	_bms.ADD #d14.94
+	_bms.ADD #d15.57
+	_bms.ADD #d15.9
+	_bms.ADD #d16.54
+	_bms.ADD #d16.51
+	_bms.ADD #d16.13
+	_bms.ADD #d16.63
+	_bms.ADD #d17.6
+	_bms.ADD #d16.44
+	_bms.ADD #d17.25
+	_bms.ADD #d17.93
+	_bms.ADD #d18.8
+	_bms.ADD #d19.44
+	_bms.ADD #d19.72
+	_bms.ADD #d19.95
+	_bms.ADD #d19.79
+	_bms.ADD #d19.8
+	_bms.ADD #d20.24
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d4.11
+	_bms.ADD #d4.54
+	_bms.ADD #d4.48
+	_bms.ADD #d4.83
+	_bms.ADD #d5.3
+	_bms.ADD #d5.09
+	_bms.ADD #d4.82
+	_bms.ADD #d5.13
+	_bms.ADD #d5.54
+	_bms.ADD #d6.16
+	_bms.ADD #d5.75
+	_bms.ADD #d5.9
+	_bms.ADD #d5.98
+	_bms.ADD #d6.44
+	_bms.ADD #d6.48
+	_bms.ADD #d7
+	_bms.ADD #d6.88
+	_bms.ADD #d6.6
+	_bms.ADD #d7.13
+	_bms.ADD #d7.04
+	_bms.ADD #d6.99
+	_bms.ADD #d7.26
+	_bms.ADD #d7.47
+	_bms.ADD #d8.06
+	_bms.ADD #d8.25
+	_bms.ADD #d8.27
+	_bms.ADD #d8.26
+	_bms.ADD #d8.06
+	_bms.ADD #d8.71
+	_bms.ADD #d8.8
+	_bms.ADD #d8.22
+	_bms.ADD #d8.63
+	_bms.ADD #d8.96
+	_bms.ADD #d9.67
+	_bms.ADD #d10.01
+	_bms.ADD #d10.18
+	_bms.ADD #d10.32
+	_bms.ADD #d10.26
+	_bms.ADD #d10.3
+	_bms.ADD #d10.56
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d4.11
+	_bms.ADD #d4.09
+	_bms.ADD #d4.48
+	_bms.ADD #d4.3
+	_bms.ADD #d4.71
+	_bms.ADD #d5.09
+	_bms.ADD #d5.5
+	_bms.ADD #d5.13
+	_bms.ADD #d4.75
+	_bms.ADD #d5.28
+	_bms.ADD #d5.34
+	_bms.ADD #d5.9
+	_bms.ADD #d5.98
+	_bms.ADD #d5.91
+	_bms.ADD #d6.48
+	_bms.ADD #d6.36
+	_bms.ADD #d6.19
+	_bms.ADD #d6.6
+	_bms.ADD #d6.34
+	_bms.ADD #d7.04
+	_bms.ADD #d6.58
+	_bms.ADD #d7.26
+	_bms.ADD #d7.47
+	_bms.ADD #d7.52
+	_bms.ADD #d7.66
+	_bms.ADD #d8.27
+	_bms.ADD #d8.26
+	_bms.ADD #d8.06
+	_bms.ADD #d7.92
+	_bms.ADD #d8.8
+	_bms.ADD #d8.22
+	_bms.ADD #d8.63
+	_bms.ADD #d8.96
+	_bms.ADD #d9.13
+	_bms.ADD #d9.42
+	_bms.ADD #d9.54
+	_bms.ADD #d9.63
+	_bms.ADD #d9.53
+	_bms.ADD #d9.5
+	_bms.ADD #d9.68
+	_augstat.ADD _bms
+	DELETE _bms
+	_sdata.ADD _augstat
+	DELETE _augstat
+	DEFINE ARRAYLIST _augstat 0
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d39.64
+	_bms.ADD #d42.09
+	_bms.ADD #d44.15
+	_bms.ADD #d45.83
+	_bms.ADD #d50.05
+	_bms.ADD #d51.17
+	_bms.ADD #d51.84
+	_bms.ADD #d52.08
+	_bms.ADD #d51.86
+	_bms.ADD #d57.82
+	_bms.ADD #d53.51
+	_bms.ADD #d57.59
+	_bms.ADD #d58.87
+	_bms.ADD #d62.01
+	_bms.ADD #d64.77
+	_bms.ADD #d67.16
+	_bms.ADD #d65.66
+	_bms.ADD #d66.96
+	_bms.ADD #d67.81
+	_bms.ADD #d71.17
+	_bms.ADD #d65.41
+	_bms.ADD #d70.88
+	_bms.ADD #d73.59
+	_bms.ADD #d78.18
+	_bms.ADD #d79.49
+	_bms.ADD #d83.15
+	_bms.ADD #d82.94
+	_bms.ADD #d81.84
+	_bms.ADD #d83.77
+	_bms.ADD #d88.96
+	_bms.ADD #d79.28
+	_bms.ADD #d84.17
+	_bms.ADD #d88.31
+	_bms.ADD #d94.36
+	_bms.ADD #d97.15
+	_bms.ADD #d99.14
+	_bms.ADD #d100.22
+	_bms.ADD #d100.44
+	_bms.ADD #d99.73
+	_bms.ADD #d102.3
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d19.82
+	_bms.ADD #d22.15
+	_bms.ADD #d22.08
+	_bms.ADD #d24.26
+	_bms.ADD #d26.5
+	_bms.ADD #d25.58
+	_bms.ADD #d24.19
+	_bms.ADD #d26.04
+	_bms.ADD #d27.92
+	_bms.ADD #d31.14
+	_bms.ADD #d27.75
+	_bms.ADD #d28.8
+	_bms.ADD #d29.44
+	_bms.ADD #d32.35
+	_bms.ADD #d32.38
+	_bms.ADD #d35.18
+	_bms.ADD #d34.56
+	_bms.ADD #d33.48
+	_bms.ADD #d35.9
+	_bms.ADD #d35.58
+	_bms.ADD #d33.69
+	_bms.ADD #d35.44
+	_bms.ADD #d36.8
+	_bms.ADD #d40.44
+	_bms.ADD #d41.22
+	_bms.ADD #d41.57
+	_bms.ADD #d41.47
+	_bms.ADD #d40.92
+	_bms.ADD #d43.88
+	_bms.ADD #d44.48
+	_bms.ADD #d39.64
+	_bms.ADD #d42.09
+	_bms.ADD #d44.15
+	_bms.ADD #d48.53
+	_bms.ADD #d50.05
+	_bms.ADD #d51.17
+	_bms.ADD #d51.84
+	_bms.ADD #d52.08
+	_bms.ADD #d51.86
+	_bms.ADD #d53.38
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d19.82
+	_bms.ADD #d19.94
+	_bms.ADD #d22.08
+	_bms.ADD #d21.57
+	_bms.ADD #d23.55
+	_bms.ADD #d25.58
+	_bms.ADD #d27.65
+	_bms.ADD #d26.04
+	_bms.ADD #d23.93
+	_bms.ADD #d26.69
+	_bms.ADD #d25.77
+	_bms.ADD #d28.8
+	_bms.ADD #d29.44
+	_bms.ADD #d29.66
+	_bms.ADD #d32.38
+	_bms.ADD #d31.98
+	_bms.ADD #d31.1
+	_bms.ADD #d33.48
+	_bms.ADD #d31.91
+	_bms.ADD #d35.58
+	_bms.ADD #d31.71
+	_bms.ADD #d35.44
+	_bms.ADD #d36.8
+	_bms.ADD #d37.74
+	_bms.ADD #d38.27
+	_bms.ADD #d41.57
+	_bms.ADD #d41.47
+	_bms.ADD #d40.92
+	_bms.ADD #d39.89
+	_bms.ADD #d44.48
+	_bms.ADD #d39.64
+	_bms.ADD #d42.09
+	_bms.ADD #d44.15
+	_bms.ADD #d45.83
+	_bms.ADD #d47.1
+	_bms.ADD #d47.97
+	_bms.ADD #d48.38
+	_bms.ADD #d48.36
+	_bms.ADD #d47.87
+	_bms.ADD #d48.93
+	_augstat.ADD _bms
+	DELETE _bms
+	_sdata.ADD _augstat
+	DELETE _augstat
+	DEFINE ARRAYLIST _augstat 0
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d12.26
+	_bms.ADD #d13.15
+	_bms.ADD #d13.91
+	_bms.ADD #d14.55
+	_bms.ADD #d15.98
+	_bms.ADD #d16.42
+	_bms.ADD #d16.71
+	_bms.ADD #d16.84
+	_bms.ADD #d16.84
+	_bms.ADD #d18.86
+	_bms.ADD #d16.55
+	_bms.ADD #d17.99
+	_bms.ADD #d18.55
+	_bms.ADD #d19.69
+	_bms.ADD #d20.68
+	_bms.ADD #d21.55
+	_bms.ADD #d21.17
+	_bms.ADD #d21.65
+	_bms.ADD #d22.02
+	_bms.ADD #d23.22
+	_bms.ADD #d20.23
+	_bms.ADD #d22.14
+	_bms.ADD #d23.19
+	_bms.ADD #d24.82
+	_bms.ADD #d25.38
+	_bms.ADD #d26.68
+	_bms.ADD #d26.74
+	_bms.ADD #d26.47
+	_bms.ADD #d27.2
+	_bms.ADD #d29.02
+	_bms.ADD #d24.52
+	_bms.ADD #d26.3
+	_bms.ADD #d27.83
+	_bms.ADD #d29.96
+	_bms.ADD #d31.02
+	_bms.ADD #d31.81
+	_bms.ADD #d32.31
+	_bms.ADD #d32.48
+	_bms.ADD #d32.38
+	_bms.ADD #d33.37
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d6.13
+	_bms.ADD #d6.92
+	_bms.ADD #d6.96
+	_bms.ADD #d7.7
+	_bms.ADD #d8.46
+	_bms.ADD #d8.21
+	_bms.ADD #d7.8
+	_bms.ADD #d8.42
+	_bms.ADD #d9.07
+	_bms.ADD #d10.16
+	_bms.ADD #d8.58
+	_bms.ADD #d9
+	_bms.ADD #d9.28
+	_bms.ADD #d10.27
+	_bms.ADD #d10.34
+	_bms.ADD #d11.29
+	_bms.ADD #d11.14
+	_bms.ADD #d10.83
+	_bms.ADD #d11.66
+	_bms.ADD #d11.61
+	_bms.ADD #d10.42
+	_bms.ADD #d11.07
+	_bms.ADD #d11.6
+	_bms.ADD #d12.84
+	_bms.ADD #d13.16
+	_bms.ADD #d13.34
+	_bms.ADD #d13.37
+	_bms.ADD #d13.23
+	_bms.ADD #d14.25
+	_bms.ADD #d14.51
+	_bms.ADD #d12.26
+	_bms.ADD #d13.15
+	_bms.ADD #d13.91
+	_bms.ADD #d15.41
+	_bms.ADD #d15.98
+	_bms.ADD #d16.42
+	_bms.ADD #d16.71
+	_bms.ADD #d16.84
+	_bms.ADD #d16.84
+	_bms.ADD #d17.41
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d6.13
+	_bms.ADD #d6.23
+	_bms.ADD #d6.96
+	_bms.ADD #d6.85
+	_bms.ADD #d7.52
+	_bms.ADD #d8.21
+	_bms.ADD #d8.91
+	_bms.ADD #d8.42
+	_bms.ADD #d7.77
+	_bms.ADD #d8.71
+	_bms.ADD #d7.97
+	_bms.ADD #d9
+	_bms.ADD #d9.28
+	_bms.ADD #d9.42
+	_bms.ADD #d10.34
+	_bms.ADD #d10.26
+	_bms.ADD #d10.03
+	_bms.ADD #d10.83
+	_bms.ADD #d10.36
+	_bms.ADD #d11.61
+	_bms.ADD #d9.81
+	_bms.ADD #d11.07
+	_bms.ADD #d11.6
+	_bms.ADD #d11.98
+	_bms.ADD #d12.22
+	_bms.ADD #d13.34
+	_bms.ADD #d13.37
+	_bms.ADD #d13.23
+	_bms.ADD #d12.95
+	_bms.ADD #d14.51
+	_bms.ADD #d12.26
+	_bms.ADD #d13.15
+	_bms.ADD #d13.91
+	_bms.ADD #d14.55
+	_bms.ADD #d15.04
+	_bms.ADD #d15.39
+	_bms.ADD #d15.6
+	_bms.ADD #d15.64
+	_bms.ADD #d15.54
+	_bms.ADD #d15.96
+	_augstat.ADD _bms
+	DELETE _bms
+	_sdata.ADD _augstat
+	DELETE _augstat
+	DEFINE ARRAYLIST _augstat 0
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d54.74
+	_bms.ADD #d58.1
+	_bms.ADD #d60.98
+	_bms.ADD #d63.29
+	_bms.ADD #d69.11
+	_bms.ADD #d70.66
+	_bms.ADD #d71.59
+	_bms.ADD #d71.92
+	_bms.ADD #d71.61
+	_bms.ADD #d79.86
+	_bms.ADD #d73.9
+	_bms.ADD #d79.51
+	_bms.ADD #d81.3
+	_bms.ADD #d85.63
+	_bms.ADD #d89.43
+	_bms.ADD #d92.74
+	_bms.ADD #d90.69
+	_bms.ADD #d92.47
+	_bms.ADD #d93.65
+	_bms.ADD #d98.28
+	_bms.ADD #d90.32
+	_bms.ADD #d97.86
+	_bms.ADD #d101.63
+	_bms.ADD #d107.97
+	_bms.ADD #d109.76
+	_bms.ADD #d114.83
+	_bms.ADD #d114.55
+	_bms.ADD #d113.02
+	_bms.ADD #d115.68
+	_bms.ADD #d122.85
+	_bms.ADD #d109.48
+	_bms.ADD #d116.2
+	_bms.ADD #d121.95
+	_bms.ADD #d130.31
+	_bms.ADD #d134.15
+	_bms.ADD #d136.91
+	_bms.ADD #d138.41
+	_bms.ADD #d138.71
+	_bms.ADD #d137.72
+	_bms.ADD #d141.28
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d27.37
+	_bms.ADD #d30.58
+	_bms.ADD #d30.49
+	_bms.ADD #d33.51
+	_bms.ADD #d36.59
+	_bms.ADD #d35.33
+	_bms.ADD #d33.41
+	_bms.ADD #d35.96
+	_bms.ADD #d38.56
+	_bms.ADD #d43
+	_bms.ADD #d38.32
+	_bms.ADD #d39.75
+	_bms.ADD #d40.65
+	_bms.ADD #d44.68
+	_bms.ADD #d44.72
+	_bms.ADD #d48.58
+	_bms.ADD #d47.73
+	_bms.ADD #d46.24
+	_bms.ADD #d49.58
+	_bms.ADD #d49.14
+	_bms.ADD #d46.53
+	_bms.ADD #d48.93
+	_bms.ADD #d50.81
+	_bms.ADD #d55.85
+	_bms.ADD #d56.91
+	_bms.ADD #d57.41
+	_bms.ADD #d57.27
+	_bms.ADD #d56.51
+	_bms.ADD #d60.6
+	_bms.ADD #d61.43
+	_bms.ADD #d54.74
+	_bms.ADD #d58.1
+	_bms.ADD #d60.98
+	_bms.ADD #d67.02
+	_bms.ADD #d69.11
+	_bms.ADD #d70.66
+	_bms.ADD #d71.59
+	_bms.ADD #d71.92
+	_bms.ADD #d71.61
+	_bms.ADD #d73.71
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d27.37
+	_bms.ADD #d27.52
+	_bms.ADD #d30.49
+	_bms.ADD #d29.79
+	_bms.ADD #d32.52
+	_bms.ADD #d35.33
+	_bms.ADD #d38.18
+	_bms.ADD #d35.96
+	_bms.ADD #d33.05
+	_bms.ADD #d36.86
+	_bms.ADD #d35.58
+	_bms.ADD #d39.75
+	_bms.ADD #d40.65
+	_bms.ADD #d40.96
+	_bms.ADD #d44.72
+	_bms.ADD #d44.16
+	_bms.ADD #d42.96
+	_bms.ADD #d46.24
+	_bms.ADD #d44.07
+	_bms.ADD #d49.14
+	_bms.ADD #d43.79
+	_bms.ADD #d48.93
+	_bms.ADD #d50.81
+	_bms.ADD #d52.12
+	_bms.ADD #d52.85
+	_bms.ADD #d57.41
+	_bms.ADD #d57.27
+	_bms.ADD #d56.51
+	_bms.ADD #d55.09
+	_bms.ADD #d61.43
+	_bms.ADD #d54.74
+	_bms.ADD #d58.1
+	_bms.ADD #d60.98
+	_bms.ADD #d63.29
+	_bms.ADD #d65.04
+	_bms.ADD #d66.25
+	_bms.ADD #d66.82
+	_bms.ADD #d66.78
+	_bms.ADD #d66.1
+	_bms.ADD #d67.57
+	_augstat.ADD _bms
+	DELETE _bms
+	_sdata.ADD _augstat
+	DELETE _augstat
+	DEFINE ARRAYLIST _augstat 0
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d4.4
+	_bms.ADD #d4.88
+	_bms.ADD #d5.36
+	_bms.ADD #d5.83
+	_bms.ADD #d6.65
+	_bms.ADD #d7.04
+	_bms.ADD #d7.41
+	_bms.ADD #d7.59
+	_bms.ADD #d7.85
+	_bms.ADD #d9
+	_bms.ADD #d5.94
+	_bms.ADD #d6.68
+	_bms.ADD #d7.15
+	_bms.ADD #d7.89
+	_bms.ADD #d8.6
+	_bms.ADD #d9.24
+	_bms.ADD #d9.39
+	_bms.ADD #d9.76
+	_bms.ADD #d10.27
+	_bms.ADD #d11.07
+	_bms.ADD #d7.26
+	_bms.ADD #d8.22
+	_bms.ADD #d8.94
+	_bms.ADD #d9.95
+	_bms.ADD #d10.56
+	_bms.ADD #d11.44
+	_bms.ADD #d11.86
+	_bms.ADD #d11.92
+	_bms.ADD #d12.68
+	_bms.ADD #d13.84
+	_bms.ADD #d8.8
+	_bms.ADD #d9.77
+	_bms.ADD #d10.73
+	_bms.ADD #d12.01
+	_bms.ADD #d12.9
+	_bms.ADD #d13.64
+	_bms.ADD #d14.33
+	_bms.ADD #d14.63
+	_bms.ADD #d15.1
+	_bms.ADD #d15.92
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d2.2
+	_bms.ADD #d2.57
+	_bms.ADD #d2.68
+	_bms.ADD #d3.09
+	_bms.ADD #d3.52
+	_bms.ADD #d3.52
+	_bms.ADD #d3.46
+	_bms.ADD #d3.79
+	_bms.ADD #d4.23
+	_bms.ADD #d4.84
+	_bms.ADD #d3.08
+	_bms.ADD #d3.34
+	_bms.ADD #d3.58
+	_bms.ADD #d4.12
+	_bms.ADD #d4.3
+	_bms.ADD #d4.84
+	_bms.ADD #d4.94
+	_bms.ADD #d4.88
+	_bms.ADD #d5.44
+	_bms.ADD #d5.54
+	_bms.ADD #d3.74
+	_bms.ADD #d4.11
+	_bms.ADD #d4.47
+	_bms.ADD #d5.15
+	_bms.ADD #d5.47
+	_bms.ADD #d5.72
+	_bms.ADD #d5.93
+	_bms.ADD #d5.96
+	_bms.ADD #d6.64
+	_bms.ADD #d6.92
+	_bms.ADD #d4.4
+	_bms.ADD #d4.88
+	_bms.ADD #d5.36
+	_bms.ADD #d6.17
+	_bms.ADD #d6.65
+	
+	_bms.ADD #d7.04
+	_bms.ADD #d7.41
+	_bms.ADD #d7.59
+	_bms.ADD #d7.85
+	_bms.ADD #d8.3
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d2.2
+	_bms.ADD #d2.31
+	_bms.ADD #d2.68
+	_bms.ADD #d2.74
+	_bms.ADD #d3.13
+	_bms.ADD #d3.52
+	_bms.ADD #d3.95
+	_bms.ADD #d3.79
+	_bms.ADD #d3.62
+	_bms.ADD #d4.15
+	_bms.ADD #d2.86
+	_bms.ADD #d3.34
+	_bms.ADD #d3.58
+	_bms.ADD #d3.77
+	_bms.ADD #d4.3
+	_bms.ADD #d4.4
+	_bms.ADD #d4.45
+	_bms.ADD #d4.88
+	_bms.ADD #d4.83
+	_bms.ADD #d5.54
+	_bms.ADD #d3.52
+	_bms.ADD #d4.11
+	_bms.ADD #d4.47
+	_bms.ADD #d4.8
+	_bms.ADD #d5.08
+	_bms.ADD #d5.72
+	_bms.ADD #d5.93
+	_bms.ADD #d5.96
+	_bms.ADD #d6.04
+	_bms.ADD #d6.92
+	_bms.ADD #d4.4
+	_bms.ADD #d4.88
+	_bms.ADD #d5.36
+	_bms.ADD #d5.83
+	_bms.ADD #d6.26
+	_bms.ADD #d6.6
+	_bms.ADD #d6.92
+	_bms.ADD #d7.05
+	_bms.ADD #d7.25
+	_bms.ADD #d7.61
+	_augstat.ADD _bms
+	DELETE _bms
+	_sdata.ADD _augstat
+	DELETE _augstat
+	DEFINE ARRAYLIST _augstat 0
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d5.04
+	_bms.ADD #d5.61
+	_bms.ADD #d6.16
+	_bms.ADD #d6.7
+	_bms.ADD #d7.65
+	_bms.ADD #d8.14
+	_bms.ADD #d8.57
+	_bms.ADD #d8.89
+	_bms.ADD #d9.1
+	_bms.ADD #d10.5
+	_bms.ADD #d6.8
+	_bms.ADD #d7.67
+	_bms.ADD #d8.21
+	_bms.ADD #d9.06
+	_bms.ADD #d9.9
+	_bms.ADD #d10.69
+	_bms.ADD #d10.85
+	_bms.ADD #d11.43
+	_bms.ADD #d11.9
+	_bms.ADD #d12.93
+	_bms.ADD #d8.32
+	_bms.ADD #d9.44
+	_bms.ADD #d10.26
+	_bms.ADD #d11.43
+	_bms.ADD #d12.15
+	_bms.ADD #d13.23
+	_bms.ADD #d13.7
+	_bms.ADD #d13.97
+	_bms.ADD #d14.7
+	_bms.ADD #d16.16
+	_bms.ADD #d10.08
+	_bms.ADD #d11.21
+	_bms.ADD #d12.31
+	_bms.ADD #d13.79
+	_bms.ADD #d14.85
+	_bms.ADD #d15.78
+	_bms.ADD #d16.56
+	_bms.ADD #d17.15
+	_bms.ADD #d17.5
+	_bms.ADD #d18.58
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d2.52
+	_bms.ADD #d2.95
+	_bms.ADD #d3.08
+	_bms.ADD #d3.55
+	_bms.ADD #d4.05
+	_bms.ADD #d4.07
+	_bms.ADD #d4
+	_bms.ADD #d4.45
+	_bms.ADD #d4.9
+	_bms.ADD #d5.66
+	_bms.ADD #d3.53
+	_bms.ADD #d3.84
+	_bms.ADD #d4.1
+	_bms.ADD #d4.73
+	_bms.ADD #d4.95
+	_bms.ADD #d5.6
+	_bms.ADD #d5.71
+	_bms.ADD #d5.72
+	_bms.ADD #d6.3
+	_bms.ADD #d6.46
+	_bms.ADD #d4.28
+	_bms.ADD #d4.72
+	_bms.ADD #d5.13
+	_bms.ADD #d5.91
+	_bms.ADD #d6.3
+	_bms.ADD #d6.62
+	_bms.ADD #d6.85
+	_bms.ADD #d6.99
+	_bms.ADD #d7.7
+	_bms.ADD #d8.08
+	_bms.ADD #d5.04
+	_bms.ADD #d5.61
+	_bms.ADD #d6.16
+	_bms.ADD #d7.09
+	_bms.ADD #d7.65
+	_bms.ADD #d8.14
+	_bms.ADD #d8.57
+	_bms.ADD #d8.89
+	_bms.ADD #d9.1
+	_bms.ADD #d9.7
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d2.52
+	_bms.ADD #d2.66
+	_bms.ADD #d3.08
+	_bms.ADD #d3.15
+	_bms.ADD #d3.6
+	_bms.ADD #d4.07
+	_bms.ADD #d4.57
+	_bms.ADD #d4.45
+	_bms.ADD #d4.2
+	_bms.ADD #d4.85
+	_bms.ADD #d3.28
+	_bms.ADD #d3.84
+	_bms.ADD #d4.1
+	_bms.ADD #d4.33
+	_bms.ADD #d4.95
+	_bms.ADD #d5.09
+	_bms.ADD #d5.14
+	_bms.ADD #d5.72
+	_bms.ADD #d5.6
+	_bms.ADD #d6.46
+	_bms.ADD #d4.03
+	_bms.ADD #d4.72
+	_bms.ADD #d5.13
+	_bms.ADD #d5.52
+	_bms.ADD #d5.85
+	_bms.ADD #d6.62
+	_bms.ADD #d6.85
+	_bms.ADD #d6.99
+	_bms.ADD #d7
+	_bms.ADD #d8.08
+	_bms.ADD #d5.04
+	_bms.ADD #d5.61
+	_bms.ADD #d6.16
+	_bms.ADD #d6.7
+	_bms.ADD #d7.2
+	_bms.ADD #d7.64
+	_bms.ADD #d7.99
+	_bms.ADD #d8.26
+	_bms.ADD #d8.4
+	_bms.ADD #d8.89
+	_augstat.ADD _bms
+	DELETE _bms
+	_sdata.ADD _augstat
+	DELETE _augstat
+	DEFINE ARRAYLIST _augstat 0
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d0.23
+	_bms.ADD #d0.23
+	_bms.ADD #d0.26
+	_bms.ADD #d0.25
+	_bms.ADD #d0.26
+	_bms.ADD #d0.28
+	_bms.ADD #d0.27
+	_bms.ADD #d0.26
+	_bms.ADD #d0.24
+	_bms.ADD #d0.29
+	_bms.ADD #d0.32
+	_bms.ADD #d0.31
+	_bms.ADD #d0.35
+	_bms.ADD #d0.34
+	_bms.ADD #d0.33
+	_bms.ADD #d0.37
+	_bms.ADD #d0.34
+	_bms.ADD #d0.33
+	_bms.ADD #d0.32
+	_bms.ADD #d0.35
+	_bms.ADD #d0.39
+	_bms.ADD #d0.38
+	_bms.ADD #d0.43
+	_bms.ADD #d0.43
+	_bms.ADD #d0.41
+	_bms.ADD #d0.46
+	_bms.ADD #d0.43
+	_bms.ADD #d0.41
+	_bms.ADD #d0.39
+	_bms.ADD #d0.44
+	_bms.ADD #d0.47
+	_bms.ADD #d0.45
+	_bms.ADD #d0.52
+	_bms.ADD #d0.52
+	_bms.ADD #d0.5
+	_bms.ADD #d0.55
+	_bms.ADD #d0.52
+	_bms.ADD #d0.5
+	_bms.ADD #d0.47
+	_bms.ADD #d0.5
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d0.12
+	_bms.ADD #d0.12
+	_bms.ADD #d0.13
+	_bms.ADD #d0.13
+	_bms.ADD #d0.14
+	_bms.ADD #d0.14
+	_bms.ADD #d0.13
+	_bms.ADD #d0.13
+	_bms.ADD #d0.13
+	_bms.ADD #d0.15
+	_bms.ADD #d0.16
+	_bms.ADD #d0.16
+	_bms.ADD #d0.17
+	_bms.ADD #d0.18
+	_bms.ADD #d0.17
+	_bms.ADD #d0.19
+	_bms.ADD #d0.18
+	_bms.ADD #d0.17
+	_bms.ADD #d0.17
+	_bms.ADD #d0.18
+	_bms.ADD #d0.2
+	_bms.ADD #d0.19
+	_bms.ADD #d0.22
+	_bms.ADD #d0.22
+	_bms.ADD #d0.21
+	_bms.ADD #d0.23
+	_bms.ADD #d0.22
+	_bms.ADD #d0.2
+	_bms.ADD #d0.21
+	_bms.ADD #d0.22
+	_bms.ADD #d0.23
+	_bms.ADD #d0.23
+	_bms.ADD #d0.26
+	_bms.ADD #d0.27
+	_bms.ADD #d0.26
+	_bms.ADD #d0.28
+	_bms.ADD #d0.27
+	_bms.ADD #d0.26
+	_bms.ADD #d0.24
+	_bms.ADD #d0.26
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d0.12
+	_bms.ADD #d0.11
+	_bms.ADD #d0.13
+	_bms.ADD #d0.12
+	_bms.ADD #d0.12
+	_bms.ADD #d0.14
+	_bms.ADD #d0.14
+	_bms.ADD #d0.13
+	_bms.ADD #d0.11
+	_bms.ADD #d0.13
+	_bms.ADD #d0.15
+	_bms.ADD #d0.16
+	_bms.ADD #d0.17
+	_bms.ADD #d0.16
+	_bms.ADD #d0.17
+	_bms.ADD #d0.18
+	_bms.ADD #d0.16
+	_bms.ADD #d0.17
+	_bms.ADD #d0.15
+	_bms.ADD #d0.18
+	_bms.ADD #d0.19
+	_bms.ADD #d0.19
+	_bms.ADD #d0.22
+	_bms.ADD #d0.21
+	_bms.ADD #d0.2
+	_bms.ADD #d0.23
+	_bms.ADD #d0.22
+	_bms.ADD #d0.2
+	_bms.ADD #d0.19
+	_bms.ADD #d0.22
+	_bms.ADD #d0.23
+	_bms.ADD #d0.23
+	_bms.ADD #d0.26
+	_bms.ADD #d0.25
+	_bms.ADD #d0.24
+	_bms.ADD #d0.27
+	_bms.ADD #d0.25
+	_bms.ADD #d0.24
+	_bms.ADD #d0.23
+	_bms.ADD #d0.24
+	_augstat.ADD _bms
+	DELETE _bms
+	_sdata.ADD _augstat
+	DELETE _augstat
+	DEFINE ARRAYLIST _augstat 0
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d0.1
+	_bms.ADD #d0.11
+	_bms.ADD #d0.11
+	_bms.ADD #d0.11
+	_bms.ADD #d0.12
+	_bms.ADD #d0.12
+	_bms.ADD #d0.12
+	_bms.ADD #d0.11
+	_bms.ADD #d0.11
+	_bms.ADD #d0.12
+	_bms.ADD #d0.14
+	_bms.ADD #d0.15
+	_bms.ADD #d0.15
+	_bms.ADD #d0.15
+	_bms.ADD #d0.15
+	_bms.ADD #d0.16
+	_bms.ADD #d0.15
+	_bms.ADD #d0.15
+	_bms.ADD #d0.14
+	_bms.ADD #d0.15
+	_bms.ADD #d0.17
+	_bms.ADD #d0.18
+	_bms.ADD #d0.19
+	_bms.ADD #d0.2
+	_bms.ADD #d0.18
+	_bms.ADD #d0.19
+	_bms.ADD #d0.19
+	_bms.ADD #d0.18
+	_bms.ADD #d0.17
+	_bms.ADD #d0.19
+	_bms.ADD #d0.21
+	_bms.ADD #d0.21
+	_bms.ADD #d0.22
+	_bms.ADD #d0.24
+	_bms.ADD #d0.23
+	_bms.ADD #d0.23
+	_bms.ADD #d0.23
+	_bms.ADD #d0.22
+	_bms.ADD #d0.21
+	_bms.ADD #d0.22
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d0.05
+	_bms.ADD #d0.06
+	_bms.ADD #d0.06
+	_bms.ADD #d0.06
+	_bms.ADD #d0.06
+	_bms.ADD #d0.06
+	_bms.ADD #d0.06
+	_bms.ADD #d0.06
+	_bms.ADD #d0.06
+	_bms.ADD #d0.07
+	_bms.ADD #d0.07
+	_bms.ADD #d0.07
+	_bms.ADD #d0.07
+	_bms.ADD #d0.08
+	_bms.ADD #d0.08
+	_bms.ADD #d0.08
+	_bms.ADD #d0.08
+	_bms.ADD #d0.07
+	_bms.ADD #d0.07
+	_bms.ADD #d0.08
+	_bms.ADD #d0.09
+	_bms.ADD #d0.09
+	_bms.ADD #d0.09
+	_bms.ADD #d0.1
+	_bms.ADD #d0.1
+	_bms.ADD #d0.1
+	_bms.ADD #d0.1
+	_bms.ADD #d0.09
+	_bms.ADD #d0.09
+	_bms.ADD #d0.09
+	_bms.ADD #d0.1
+	_bms.ADD #d0.11
+	_bms.ADD #d0.11
+	_bms.ADD #d0.12
+	_bms.ADD #d0.12
+	_bms.ADD #d0.12
+	_bms.ADD #d0.12
+	_bms.ADD #d0.11
+	_bms.ADD #d0.11
+	_bms.ADD #d0.11
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d0.05
+	_bms.ADD #d0.05
+	_bms.ADD #d0.06
+	_bms.ADD #d0.05
+	_bms.ADD #d0.05
+	_bms.ADD #d0.06
+	_bms.ADD #d0.06
+	_bms.ADD #d0.06
+	_bms.ADD #d0.05
+	_bms.ADD #d0.06
+	_bms.ADD #d0.07
+	_bms.ADD #d0.07
+	_bms.ADD #d0.07
+	_bms.ADD #d0.07
+	_bms.ADD #d0.08
+	_bms.ADD #d0.07
+	_bms.ADD #d0.07
+	_bms.ADD #d0.07
+	_bms.ADD #d0.07
+	_bms.ADD #d0.08
+	_bms.ADD #d0.08
+	_bms.ADD #d0.09
+	_bms.ADD #d0.09
+	_bms.ADD #d0.09
+	_bms.ADD #d0.09
+	_bms.ADD #d0.1
+	_bms.ADD #d0.1
+	_bms.ADD #d0.09
+	_bms.ADD #d0.08
+	_bms.ADD #d0.09
+	_bms.ADD #d0.1
+	_bms.ADD #d0.11
+	_bms.ADD #d0.11
+	_bms.ADD #d0.11
+	_bms.ADD #d0.11
+	_bms.ADD #d0.11
+	_bms.ADD #d0.11
+	_bms.ADD #d0.11
+	_bms.ADD #d0.1
+	_bms.ADD #d0.1
+	_augstat.ADD _bms
+	DELETE _bms
+	_sdata.ADD _augstat
+	DELETE _augstat
+	DEFINE ARRAYLIST _augstat 0
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d0.23
+	_bms.ADD #d0.23
+	_bms.ADD #d0.26
+	_bms.ADD #d0.25
+	_bms.ADD #d0.26
+	_bms.ADD #d0.28
+	_bms.ADD #d0.27
+	_bms.ADD #d0.26
+	_bms.ADD #d0.24
+	_bms.ADD #d0.29
+	_bms.ADD #d0.32
+	_bms.ADD #d0.31
+	_bms.ADD #d0.35
+	_bms.ADD #d0.34
+	_bms.ADD #d0.33
+	_bms.ADD #d0.37
+	_bms.ADD #d0.34
+	_bms.ADD #d0.33
+	_bms.ADD #d0.32
+	_bms.ADD #d0.35
+	_bms.ADD #d0.39
+	_bms.ADD #d0.38
+	_bms.ADD #d0.43
+	_bms.ADD #d0.43
+	_bms.ADD #d0.41
+	_bms.ADD #d0.46
+	_bms.ADD #d0.43
+	_bms.ADD #d0.41
+	_bms.ADD #d0.39
+	_bms.ADD #d0.44
+	_bms.ADD #d0.47
+	_bms.ADD #d0.45
+	_bms.ADD #d0.52
+	_bms.ADD #d0.52
+	_bms.ADD #d0.5
+	_bms.ADD #d0.55
+	_bms.ADD #d0.52
+	_bms.ADD #d0.5
+	_bms.ADD #d0.47
+	_bms.ADD #d0.5
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d0.12
+	_bms.ADD #d0.12
+	_bms.ADD #d0.13
+	_bms.ADD #d0.13
+	_bms.ADD #d0.14
+	_bms.ADD #d0.14
+	_bms.ADD #d0.13
+	_bms.ADD #d0.13
+	_bms.ADD #d0.13
+	_bms.ADD #d0.15
+	_bms.ADD #d0.16
+	_bms.ADD #d0.16
+	_bms.ADD #d0.17
+	_bms.ADD #d0.18
+	_bms.ADD #d0.17
+	_bms.ADD #d0.19
+	_bms.ADD #d0.18
+	_bms.ADD #d0.17
+	_bms.ADD #d0.17
+	_bms.ADD #d0.18
+	_bms.ADD #d0.2
+	_bms.ADD #d0.19
+	_bms.ADD #d0.22
+	_bms.ADD #d0.22
+	_bms.ADD #d0.21
+	_bms.ADD #d0.23
+	_bms.ADD #d0.22
+	_bms.ADD #d0.2
+	_bms.ADD #d0.21
+	_bms.ADD #d0.22
+	_bms.ADD #d0.23
+	_bms.ADD #d0.23
+	_bms.ADD #d0.26
+	_bms.ADD #d0.27
+	_bms.ADD #d0.26
+	_bms.ADD #d0.28
+	_bms.ADD #d0.27
+	_bms.ADD #d0.26
+	_bms.ADD #d0.24
+	_bms.ADD #d0.26
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d0.12
+	_bms.ADD #d0.11
+	_bms.ADD #d0.13
+	_bms.ADD #d0.12
+	_bms.ADD #d0.12
+	_bms.ADD #d0.14
+	_bms.ADD #d0.14
+	_bms.ADD #d0.13
+	_bms.ADD #d0.11
+	_bms.ADD #d0.13
+	_bms.ADD #d0.15
+	_bms.ADD #d0.16
+	_bms.ADD #d0.17
+	_bms.ADD #d0.16
+	_bms.ADD #d0.17
+	_bms.ADD #d0.18
+	_bms.ADD #d0.16
+	_bms.ADD #d0.17
+	_bms.ADD #d0.15
+	_bms.ADD #d0.18
+	_bms.ADD #d0.19
+	_bms.ADD #d0.19
+	_bms.ADD #d0.22
+	_bms.ADD #d0.21
+	_bms.ADD #d0.2
+	_bms.ADD #d0.23
+	_bms.ADD #d0.22
+	_bms.ADD #d0.2
+	_bms.ADD #d0.19
+	_bms.ADD #d0.22
+	_bms.ADD #d0.23
+	_bms.ADD #d0.23
+	_bms.ADD #d0.26
+	_bms.ADD #d0.25
+	_bms.ADD #d0.24
+	_bms.ADD #d0.27
+	_bms.ADD #d0.25
+	_bms.ADD #d0.24
+	_bms.ADD #d0.23
+	_bms.ADD #d0.24
+	_augstat.ADD _bms
+	DELETE _bms
+	_sdata.ADD _augstat
+	DELETE _augstat
+	DEFINE ARRAYLIST _augstat 0
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d1.04
+	_bms.ADD #d1.04
+	_bms.ADD #d1.04
+	_bms.ADD #d1.04
+	_bms.ADD #d1.16
+	_bms.ADD #d1.16
+	_bms.ADD #d1.16
+	_bms.ADD #d1.28
+	_bms.ADD #d1.28
+	_bms.ADD #d1.4
+	_bms.ADD #d1.21
+	_bms.ADD #d1.21
+	_bms.ADD #d1.21
+	_bms.ADD #d1.21
+	_bms.ADD #d1.35
+	_bms.ADD #d1.35
+	_bms.ADD #d1.35
+	_bms.ADD #d1.49
+	_bms.ADD #d1.49
+	_bms.ADD #d1.63
+	_bms.ADD #d1.67
+	_bms.ADD #d1.67
+	_bms.ADD #d1.67
+	_bms.ADD #d1.67
+	_bms.ADD #d1.53
+	_bms.ADD #d1.53
+	_bms.ADD #d1.53
+	_bms.ADD #d1.69
+	_bms.ADD #d1.69
+	_bms.ADD #d1.85
+	_bms.ADD #d1.49
+	_bms.ADD #d1.49
+	_bms.ADD #d1.49
+	_bms.ADD #d1.49
+	_bms.ADD #d1.67
+	_bms.ADD #d1.67
+	_bms.ADD #d1.67
+	_bms.ADD #d1.84
+	_bms.ADD #d1.84
+	_bms.ADD #d2.02
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d0.52
+	_bms.ADD #d0.54
+	_bms.ADD #d0.52
+	_bms.ADD #d0.54
+	_bms.ADD #d0.61
+	_bms.ADD #d0.58
+	_bms.ADD #d0.61
+	_bms.ADD #d0.64
+	_bms.ADD #d0.67
+	_bms.ADD #d0.73
+	_bms.ADD #d0.63
+	_bms.ADD #d0.6
+	_bms.ADD #d0.6
+	_bms.ADD #d0.63
+	_bms.ADD #d0.67
+	_bms.ADD #d0.71
+	_bms.ADD #d0.71
+	_bms.ADD #d0.74
+	_bms.ADD #d0.78
+	_bms.ADD #d0.81
+	_bms.ADD #d0.72
+	_bms.ADD #d0.69
+	_bms.ADD #d0.69
+	_bms.ADD #d0.72
+	_bms.ADD #d0.81
+	_bms.ADD #d0.77
+	_bms.ADD #d0.77
+	_bms.ADD #d0.85
+	_bms.ADD #d0.89
+	_bms.ADD #d0.93
+	_bms.ADD #d0.75
+	_bms.ADD #d0.75
+	_bms.ADD #d0.75
+	_bms.ADD #d0.78
+	_bms.ADD #d0.88
+	_bms.ADD #d0.88
+	_bms.ADD #d0.88
+	_bms.ADD #d0.97
+	_bms.ADD #d0.97
+	_bms.ADD #d1.06
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d0.52
+	_bms.ADD #d0.49
+	_bms.ADD #d0.52
+	_bms.ADD #d0.49
+	_bms.ADD #d0.46
+	_bms.ADD #d0.58
+	_bms.ADD #d0.46
+	_bms.ADD #d0.64
+	_bms.ADD #d0.61
+	_bms.ADD #d0.66
+	_bms.ADD #d0.75
+	_bms.ADD #d0.6
+	_bms.ADD #d0.6
+	_bms.ADD #d0.75
+	_bms.ADD #d0.67
+	_bms.ADD #d0.64
+	_bms.ADD #d0.64
+	_bms.ADD #d0.74
+	_bms.ADD #d0.71
+	_bms.ADD #d0.81
+	_bms.ADD #d0.65
+	_bms.ADD #d0.69
+	_bms.ADD #d0.69
+	_bms.ADD #d0.65
+	_bms.ADD #d0.73
+	_bms.ADD #d0.77
+	_bms.ADD #d0.77
+	_bms.ADD #d0.85
+	_bms.ADD #d0.8
+	_bms.ADD #d0.93
+	_bms.ADD #d0.75
+	_bms.ADD #d0.75
+	_bms.ADD #d0.75
+	_bms.ADD #d0.71
+	_bms.ADD #d0.79
+	_bms.ADD #d0.79
+	_bms.ADD #d0.79
+	_bms.ADD #d0.87
+	_bms.ADD #d0.87
+	_bms.ADD #d0.96
+	_augstat.ADD _bms
+	DELETE _bms
+	_sdata.ADD _augstat
+	DELETE _augstat
+	DEFINE ARRAYLIST _augstat 0
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d1.04
+	_bms.ADD #d1.04
+	_bms.ADD #d1.04
+	_bms.ADD #d1.04
+	_bms.ADD #d1.16
+	_bms.ADD #d1.16
+	_bms.ADD #d1.16
+	_bms.ADD #d1.28
+	_bms.ADD #d1.28
+	_bms.ADD #d1.4
+	_bms.ADD #d1.21
+	_bms.ADD #d1.21
+	_bms.ADD #d1.21
+	_bms.ADD #d1.21
+	_bms.ADD #d1.35
+	_bms.ADD #d1.35
+	_bms.ADD #d1.35
+	_bms.ADD #d1.49
+	_bms.ADD #d1.49
+	_bms.ADD #d1.63
+	_bms.ADD #d1.67
+	_bms.ADD #d1.67
+	_bms.ADD #d1.67
+	_bms.ADD #d1.67
+	_bms.ADD #d1.53
+	_bms.ADD #d1.53
+	_bms.ADD #d1.53
+	_bms.ADD #d1.69
+	_bms.ADD #d1.69
+	_bms.ADD #d1.85
+	_bms.ADD #d1.49
+	_bms.ADD #d1.49
+	_bms.ADD #d1.49
+	_bms.ADD #d1.49
+	_bms.ADD #d1.67
+	_bms.ADD #d1.67
+	_bms.ADD #d1.67
+	_bms.ADD #d1.84
+	_bms.ADD #d1.84
+	_bms.ADD #d2.02
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d0.52
+	_bms.ADD #d0.54
+	_bms.ADD #d0.52
+	_bms.ADD #d0.54
+	_bms.ADD #d0.61
+	_bms.ADD #d0.58
+	_bms.ADD #d0.61
+	_bms.ADD #d0.64
+	_bms.ADD #d0.67
+	_bms.ADD #d0.73
+	_bms.ADD #d0.63
+	_bms.ADD #d0.6
+	_bms.ADD #d0.6
+	_bms.ADD #d0.63
+	_bms.ADD #d0.67
+	_bms.ADD #d0.71
+	_bms.ADD #d0.71
+	_bms.ADD #d0.74
+	_bms.ADD #d0.78
+	_bms.ADD #d0.81
+	_bms.ADD #d0.72
+	_bms.ADD #d0.69
+	_bms.ADD #d0.69
+	_bms.ADD #d0.72
+	_bms.ADD #d0.81
+	_bms.ADD #d0.77
+	_bms.ADD #d0.77
+	_bms.ADD #d0.85
+	_bms.ADD #d0.89
+	_bms.ADD #d0.93
+	_bms.ADD #d0.75
+	_bms.ADD #d0.75
+	_bms.ADD #d0.75
+	_bms.ADD #d0.78
+	_bms.ADD #d0.88
+	_bms.ADD #d0.88
+	_bms.ADD #d0.88
+	_bms.ADD #d0.97
+	_bms.ADD #d0.97
+	_bms.ADD #d1.06
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d0.52
+	_bms.ADD #d0.49
+	_bms.ADD #d0.52
+	_bms.ADD #d0.49
+	_bms.ADD #d0.46
+	_bms.ADD #d0.58
+	_bms.ADD #d0.46
+	_bms.ADD #d0.64
+	_bms.ADD #d0.61
+	_bms.ADD #d0.66
+	_bms.ADD #d0.75
+	_bms.ADD #d0.6
+	_bms.ADD #d0.6
+	_bms.ADD #d0.75
+	_bms.ADD #d0.67
+	_bms.ADD #d0.64
+	_bms.ADD #d0.64
+	_bms.ADD #d0.74
+	_bms.ADD #d0.71
+	_bms.ADD #d0.81
+	_bms.ADD #d0.65
+	_bms.ADD #d0.69
+	_bms.ADD #d0.69
+	_bms.ADD #d0.65
+	_bms.ADD #d0.73
+	_bms.ADD #d0.77
+	_bms.ADD #d0.77
+	_bms.ADD #d0.85
+	_bms.ADD #d0.8
+	_bms.ADD #d0.93
+	_bms.ADD #d0.75
+	_bms.ADD #d0.75
+	_bms.ADD #d0.75
+	_bms.ADD #d0.71
+	_bms.ADD #d0.79
+	_bms.ADD #d0.79
+	_bms.ADD #d0.79
+	_bms.ADD #d0.87
+	_bms.ADD #d0.87
+	_bms.ADD #d0.96
+	_augstat.ADD _bms
+	DELETE _bms
+	_sdata.ADD _augstat
+	DELETE _augstat
+	DEFINE ARRAYLIST _augstat 0
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d11.22
+	_bms.ADD #d11.22
+	_bms.ADD #d11.22
+	_bms.ADD #d11.22
+	_bms.ADD #d12.53
+	_bms.ADD #d12.53
+	_bms.ADD #d12.53
+	_bms.ADD #d13.83
+	_bms.ADD #d13.83
+	_bms.ADD #d15.14
+	_bms.ADD #d13.05
+	_bms.ADD #d13.05
+	_bms.ADD #d13.05
+	_bms.ADD #d13.05
+	_bms.ADD #d14.57
+	_bms.ADD #d14.57
+	_bms.ADD #d14.57
+	_bms.ADD #d16.08
+	_bms.ADD #d16.08
+	_bms.ADD #d17.6
+	_bms.ADD #d18.13
+	_bms.ADD #d18.13
+	_bms.ADD #d18.13
+	_bms.ADD #d18.13
+	_bms.ADD #d16.61
+	_bms.ADD #d16.61
+	_bms.ADD #d16.61
+	_bms.ADD #d18.34
+	_bms.ADD #d18.34
+	_bms.ADD #d20.06
+	_bms.ADD #d16.18
+	_bms.ADD #d16.18
+	_bms.ADD #d16.18
+	_bms.ADD #d16.18
+	_bms.ADD #d18.06
+	_bms.ADD #d18.06
+	_bms.ADD #d18.06
+	_bms.ADD #d19.94
+	_bms.ADD #d19.94
+	_bms.ADD #d21.82
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d5.61
+	_bms.ADD #d5.33
+	_bms.ADD #d5.61
+	_bms.ADD #d5.33
+	_bms.ADD #d4.98
+	_bms.ADD #d6.26
+	_bms.ADD #d4.98
+	_bms.ADD #d6.92
+	_bms.ADD #d6.57
+	_bms.ADD #d7.19
+	_bms.ADD #d8.15
+	_bms.ADD #d6.53
+	_bms.ADD #d6.53
+	_bms.ADD #d8.15
+	_bms.ADD #d7.28
+	_bms.ADD #d6.92
+	_bms.ADD #d6.92
+	_bms.ADD #d8.04
+	_bms.ADD #d7.64
+	_bms.ADD #d8.8
+	_bms.ADD #d7.07
+	_bms.ADD #d7.44
+	_bms.ADD #d7.44
+	_bms.ADD #d7.07
+	_bms.ADD #d7.89
+	_bms.ADD #d8.3
+	_bms.ADD #d8.3
+	_bms.ADD #d9.17
+	_bms.ADD #d8.71
+	_bms.ADD #d10.03
+	_bms.ADD #d8.09
+	_bms.ADD #d8.09
+	_bms.ADD #d8.09
+	_bms.ADD #d7.69
+	_bms.ADD #d8.58
+	_bms.ADD #d8.58
+	_bms.ADD #d8.58
+	_bms.ADD #d9.47
+	_bms.ADD #d9.47
+	_bms.ADD #d10.37
+	_augstat.ADD _bms
+	DELETE _bms
+	_sdata.ADD _augstat
+	DELETE _augstat
+	_augmdata.ADD _sdata
+	DELETE _sdata
+	DEFINE ARRAYLIST _sdata 0
+	DEFINE ARRAYLIST _augstat 0
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d10.3
+	_bms.ADD #d10.74
+	_bms.ADD #d11.14
+	_bms.ADD #d11.46
+	_bms.ADD #d12.46
+	_bms.ADD #d12.64
+	_bms.ADD #d12.84
+	_bms.ADD #d12.73
+	_bms.ADD #d12.81
+	_bms.ADD #d14.21
+	_bms.ADD #d13.91
+	_bms.ADD #d14.69
+	_bms.ADD #d14.86
+	_bms.ADD #d15.5
+	_bms.ADD #d16.13
+	_bms.ADD #d16.59
+	_bms.ADD #d16.26
+	_bms.ADD #d16.36
+	_bms.ADD #d16.75
+	_bms.ADD #d17.49
+	_bms.ADD #d17
+	_bms.ADD #d18.08
+	_bms.ADD #d18.57
+	_bms.ADD #d19.55
+	_bms.ADD #d19.79
+	_bms.ADD #d20.54
+	_bms.ADD #d20.54
+	_bms.ADD #d20
+	_bms.ADD #d20.69
+	_bms.ADD #d21.86
+	_bms.ADD #d20.6
+	_bms.ADD #d21.47
+	_bms.ADD #d22.28
+	_bms.ADD #d23.59
+	_bms.ADD #d24.19
+	_bms.ADD #d24.49
+	_bms.ADD #d24.82
+	_bms.ADD #d24.54
+	_bms.ADD #d24.63
+	_bms.ADD #d25.14
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d5.15
+	_bms.ADD #d5.65
+	_bms.ADD #d5.57
+	_bms.ADD #d6.07
+	_bms.ADD #d6.6
+	_bms.ADD #d6.32
+	_bms.ADD #d5.99
+	_bms.ADD #d6.36
+	_bms.ADD #d6.9
+	_bms.ADD #d7.65
+	_bms.ADD #d7.21
+	_bms.ADD #d7.35
+	_bms.ADD #d7.43
+	_bms.ADD #d8.09
+	_bms.ADD #d8.06
+	_bms.ADD #d8.69
+	_bms.ADD #d8.56
+	_bms.ADD #d8.18
+	_bms.ADD #d8.87
+	_bms.ADD #d8.74
+	_bms.ADD #d8.76
+	_bms.ADD #d9.04
+	_bms.ADD #d9.29
+	_bms.ADD #d10.11
+	_bms.ADD #d10.26
+	_bms.ADD #d10.27
+	_bms.ADD #d10.27
+	_bms.ADD #d10
+	_bms.ADD #d10.84
+	_bms.ADD #d10.93
+	_bms.ADD #d10.3
+	_bms.ADD #d10.74
+	_bms.ADD #d11.14
+	_bms.ADD #d12.13
+	_bms.ADD #d12.46
+	_bms.ADD #d12.64
+	_bms.ADD #d12.84
+	_bms.ADD #d12.73
+	_bms.ADD #d12.81
+	_bms.ADD #d13.12
+	_augstat.ADD _bms
+	DELETE _bms
+	_sdata.ADD _augstat
+	DELETE _augstat
+	DEFINE ARRAYLIST _augstat 0
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d8.22
+	_bms.ADD #d8.63
+	_bms.ADD #d8.96
+	_bms.ADD #d9.13
+	_bms.ADD #d10.01
+	_bms.ADD #d10.18
+	_bms.ADD #d10.32
+	_bms.ADD #d10.26
+	_bms.ADD #d10.3
+	_bms.ADD #d11.44
+	_bms.ADD #d11.1
+	_bms.ADD #d11.8
+	_bms.ADD #d11.95
+	_bms.ADD #d12.35
+	_bms.ADD #d12.96
+	_bms.ADD #d13.36
+	_bms.ADD #d13.07
+	_bms.ADD #d13.19
+	_bms.ADD #d13.46
+	_bms.ADD #d14.08
+	_bms.ADD #d13.56
+	_bms.ADD #d14.53
+	_bms.ADD #d14.94
+	_bms.ADD #d15.57
+	_bms.ADD #d15.9
+	_bms.ADD #d16.54
+	_bms.ADD #d16.51
+	_bms.ADD #d16.13
+	_bms.ADD #d16.63
+	_bms.ADD #d17.6
+	_bms.ADD #d16.44
+	_bms.ADD #d17.25
+	_bms.ADD #d17.93
+	_bms.ADD #d18.8
+	_bms.ADD #d19.44
+	_bms.ADD #d19.72
+	_bms.ADD #d19.95
+	_bms.ADD #d19.79
+	_bms.ADD #d19.8
+	_bms.ADD #d20.24
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d4.11
+	_bms.ADD #d4.54
+	_bms.ADD #d4.48
+	_bms.ADD #d4.83
+	_bms.ADD #d5.3
+	_bms.ADD #d5.09
+	_bms.ADD #d4.82
+	_bms.ADD #d5.13
+	_bms.ADD #d5.54
+	_bms.ADD #d6.16
+	_bms.ADD #d5.75
+	_bms.ADD #d5.9
+	_bms.ADD #d5.98
+	_bms.ADD #d6.44
+	_bms.ADD #d6.48
+	_bms.ADD #d7
+	_bms.ADD #d6.88
+	_bms.ADD #d6.6
+	_bms.ADD #d7.13
+	_bms.ADD #d7.04
+	_bms.ADD #d6.99
+	_bms.ADD #d7.26
+	_bms.ADD #d7.47
+	_bms.ADD #d8.06
+	_bms.ADD #d8.25
+	_bms.ADD #d8.27
+	_bms.ADD #d8.26
+	_bms.ADD #d8.06
+	_bms.ADD #d8.71
+	_bms.ADD #d8.8
+	_bms.ADD #d8.22
+	_bms.ADD #d8.63
+	_bms.ADD #d8.96
+	_bms.ADD #d9.67
+	_bms.ADD #d10.01
+	_bms.ADD #d10.18
+	_bms.ADD #d10.32
+	_bms.ADD #d10.26
+	_bms.ADD #d10.3
+	_bms.ADD #d10.56
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d4.11
+	_bms.ADD #d4.09
+	_bms.ADD #d4.48
+	_bms.ADD #d4.3
+	_bms.ADD #d4.71
+	_bms.ADD #d5.09
+	_bms.ADD #d5.5
+	_bms.ADD #d5.13
+	_bms.ADD #d4.75
+	_bms.ADD #d5.28
+	_bms.ADD #d5.34
+	_bms.ADD #d5.9
+	_bms.ADD #d5.98
+	_bms.ADD #d5.91
+	_bms.ADD #d6.48
+	_bms.ADD #d6.36
+	_bms.ADD #d6.19
+	_bms.ADD #d6.6
+	_bms.ADD #d6.34
+	_bms.ADD #d7.04
+	_bms.ADD #d6.58
+	_bms.ADD #d7.26
+	_bms.ADD #d7.47
+	_bms.ADD #d7.52
+	_bms.ADD #d7.66
+	_bms.ADD #d8.27
+	_bms.ADD #d8.26
+	_bms.ADD #d8.06
+	_bms.ADD #d7.92
+	_bms.ADD #d8.8
+	_bms.ADD #d8.22
+	_bms.ADD #d8.63
+	_bms.ADD #d8.96
+	_bms.ADD #d9.13
+	_bms.ADD #d9.42
+	_bms.ADD #d9.54
+	_bms.ADD #d9.63
+	_bms.ADD #d9.53
+	_bms.ADD #d9.5
+	_bms.ADD #d9.68
+	_augstat.ADD _bms
+	DELETE _bms
+	_sdata.ADD _augstat
+	DELETE _augstat
+	DEFINE ARRAYLIST _augstat 0
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d25.5
+	_bms.ADD #d26.9
+	_bms.ADD #d28.1
+	_bms.ADD #d29.04
+	_bms.ADD #d31.59
+	_bms.ADD #d32.19
+	_bms.ADD #d32.54
+	_bms.ADD #d32.59
+	_bms.ADD #d32.38
+	_bms.ADD #d36.01
+	_bms.ADD #d34.43
+	_bms.ADD #d36.82
+	_bms.ADD #d37.46
+	_bms.ADD #d39.28
+	_bms.ADD #d40.88
+	_bms.ADD #d42.25
+	_bms.ADD #d41.21
+	_bms.ADD #d41.9
+	_bms.ADD #d42.35
+	_bms.ADD #d44.32
+	_bms.ADD #d42.08
+	_bms.ADD #d45.31
+	_bms.ADD #d46.83
+	_bms.ADD #d49.53
+	_bms.ADD #d50.17
+	_bms.ADD #d52.31
+	_bms.ADD #d52.06
+	_bms.ADD #d51.22
+	_bms.ADD #d52.31
+	_bms.ADD #d55.4
+	_bms.ADD #d51
+	_bms.ADD #d53.81
+	_bms.ADD #d56.2
+	_bms.ADD #d59.78
+	_bms.ADD #d61.31
+	_bms.ADD #d62.37
+	_bms.ADD #d62.9
+	_bms.ADD #d62.86
+	_bms.ADD #d62.28
+	_bms.ADD #d63.71
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d12.75
+	_bms.ADD #d14.16
+	_bms.ADD #d14.05
+	_bms.ADD #d15.37
+	_bms.ADD #d16.72
+	_bms.ADD #d16.1
+	_bms.ADD #d15.18
+	_bms.ADD #d16.3
+	_bms.ADD #d17.44
+	_bms.ADD #d19.39
+	_bms.ADD #d17.85
+	_bms.ADD #d18.41
+	_bms.ADD #d18.73
+	_bms.ADD #d20.5
+	_bms.ADD #d20.44
+	_bms.ADD #d22.13
+	_bms.ADD #d21.69
+	_bms.ADD #d20.95
+	_bms.ADD #d22.42
+	_bms.ADD #d22.16
+	_bms.ADD #d21.68
+	_bms.ADD #d22.66
+	_bms.ADD #d23.42
+	_bms.ADD #d25.62
+	_bms.ADD #d26.01
+	_bms.ADD #d26.16
+	_bms.ADD #d26.03
+	_bms.ADD #d25.61
+	_bms.ADD #d27.4
+	_bms.ADD #d27.7
+	_bms.ADD #d25.5
+	_bms.ADD #d26.9
+	_bms.ADD #d28.1
+	_bms.ADD #d30.74
+	_bms.ADD #d31.59
+	_bms.ADD #d32.19
+	_bms.ADD #d32.54
+	_bms.ADD #d32.59
+	_bms.ADD #d32.38
+	_bms.ADD #d33.24
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d12.75
+	_bms.ADD #d12.74
+	_bms.ADD #d14.05
+	_bms.ADD #d13.66
+	_bms.ADD #d14.86
+	_bms.ADD #d16.1
+	_bms.ADD #d17.35
+	_bms.ADD #d16.3
+	_bms.ADD #d14.95
+	_bms.ADD #d16.62
+	_bms.ADD #d16.58
+	_bms.ADD #d18.41
+	_bms.ADD #d18.73
+	_bms.ADD #d18.79
+	_bms.ADD #d20.44
+	_bms.ADD #d20.12
+	_bms.ADD #d19.52
+	_bms.ADD #d20.95
+	_bms.ADD #d19.93
+	_bms.ADD #d22.16
+	_bms.ADD #d20.4
+	_bms.ADD #d22.66
+	_bms.ADD #d23.42
+	_bms.ADD #d23.91
+	_bms.ADD #d24.15
+	_bms.ADD #d26.16
+	_bms.ADD #d26.03
+	_bms.ADD #d25.61
+	_bms.ADD #d24.91
+	_bms.ADD #d27.7
+	_bms.ADD #d25.5
+	_bms.ADD #d26.9
+	_bms.ADD #d28.1
+	_bms.ADD #d29.04
+	_bms.ADD #d29.73
+	_bms.ADD #d30.18
+	_bms.ADD #d30.37
+	_bms.ADD #d30.26
+	_bms.ADD #d29.89
+	_bms.ADD #d30.47
+	_augstat.ADD _bms
+	DELETE _bms
+	_sdata.ADD _augstat
+	DELETE _augstat
+	DEFINE ARRAYLIST _augstat 0
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d27.52
+	_bms.ADD #d29.93
+	_bms.ADD #d31.43
+	_bms.ADD #d32.67
+	_bms.ADD #d36.41
+	_bms.ADD #d37.41
+	_bms.ADD #d37.88
+	_bms.ADD #d38.01
+	_bms.ADD #d37.83
+	_bms.ADD #d42.77
+	_bms.ADD #d37.15
+	_bms.ADD #d40.95
+	_bms.ADD #d41.9
+	_bms.ADD #d44.21
+	_bms.ADD #d47.12
+	_bms.ADD #d49.1
+	_bms.ADD #d47.98
+	_bms.ADD #d48.87
+	_bms.ADD #d49.47
+	_bms.ADD #d52.64
+	_bms.ADD #d45.41
+	_bms.ADD #d50.4
+	_bms.ADD #d52.38
+	_bms.ADD #d55.74
+	_bms.ADD #d57.83
+	_bms.ADD #d60.79
+	_bms.ADD #d60.6
+	_bms.ADD #d59.73
+	_bms.ADD #d61.11
+	_bms.ADD #d65.8
+	_bms.ADD #d55.04
+	_bms.ADD #d59.85
+	_bms.ADD #d62.86
+	_bms.ADD #d67.27
+
+	_bms.ADD #d70.69
+	_bms.ADD #d72.48
+	_bms.ADD #d73.23
+	_bms.ADD #d73.31
+	_bms.ADD #d72.75
+	_bms.ADD #d75.67
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d13.76
+	_bms.ADD #d15.75
+	_bms.ADD #d15.71
+	_bms.ADD #d17.3
+	_bms.ADD #d19.28
+	_bms.ADD #d18.7
+	_bms.ADD #d17.68
+	_bms.ADD #d19.01
+	_bms.ADD #d20.37
+	_bms.ADD #d23.03
+	_bms.ADD #d19.26
+	_bms.ADD #d20.48
+	_bms.ADD #d20.95
+	_bms.ADD #d23.06
+	_bms.ADD #d23.56
+	_bms.ADD #d25.72
+	_bms.ADD #d25.25
+	_bms.ADD #d24.44
+	_bms.ADD #d26.19
+	_bms.ADD #d26.32
+	_bms.ADD #d23.39
+	_bms.ADD #d25.2
+	_bms.ADD #d26.19
+	_bms.ADD #d28.83
+	_bms.ADD #d29.99
+	_bms.ADD #d30.39
+	_bms.ADD #d30.3
+	_bms.ADD #d29.87
+	_bms.ADD #d32.01
+	_bms.ADD #d32.9
+	_bms.ADD #d27.52
+	_bms.ADD #d29.93
+	_bms.ADD #d31.43
+	_bms.ADD #d34.6
+	_bms.ADD #d36.41
+	_bms.ADD #d37.41
+	_bms.ADD #d37.88
+	_bms.ADD #d38.01
+	_bms.ADD #d37.83
+	_bms.ADD #d39.48
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d13.76
+	_bms.ADD #d14.18
+	_bms.ADD #d15.71
+	_bms.ADD #d15.38
+	_bms.ADD #d17.14
+	_bms.ADD #d18.7
+	_bms.ADD #d20.2
+	_bms.ADD #d19.01
+	_bms.ADD #d17.46
+	_bms.ADD #d19.74
+	_bms.ADD #d17.89
+	_bms.ADD #d20.48
+	_bms.ADD #d20.95
+	_bms.ADD #d21.14
+	_bms.ADD #d23.56
+	_bms.ADD #d23.38
+	_bms.ADD #d22.73
+	_bms.ADD #d24.44
+	_bms.ADD #d23.28
+	_bms.ADD #d26.32
+	_bms.ADD #d22.02
+	_bms.ADD #d25.2
+	_bms.ADD #d26.19
+	_bms.ADD #d26.91
+	_bms.ADD #d27.85
+	_bms.ADD #d30.39
+	_bms.ADD #d30.3
+	_bms.ADD #d29.87
+	_bms.ADD #d29.1
+	_bms.ADD #d32.9
+	_bms.ADD #d27.52
+	_bms.ADD #d29.93
+	_bms.ADD #d31.43
+	_bms.ADD #d32.67
+	_bms.ADD #d34.27
+	_bms.ADD #d35.07
+	_bms.ADD #d35.35
+	_bms.ADD #d35.3
+	_bms.ADD #d34.92
+	_bms.ADD #d36.19
+	_augstat.ADD _bms
+	DELETE _bms
+	_sdata.ADD _augstat
+	DELETE _augstat
+	DEFINE ARRAYLIST _augstat 0
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d38.5
+	_bms.ADD #d40.62
+	_bms.ADD #d42.41
+	_bms.ADD #d43.83
+	_bms.ADD #d47.69
+	_bms.ADD #d48.6
+	_bms.ADD #d49.11
+	_bms.ADD #d49.2
+	_bms.ADD #d48.88
+	_bms.ADD #d54.35
+	_bms.ADD #d51.97
+	_bms.ADD #d55.58
+	_bms.ADD #d56.55
+	_bms.ADD #d59.3
+	_bms.ADD #d61.71
+	_bms.ADD #d63.78
+	_bms.ADD #d62.21
+	_bms.ADD #d63.26
+	_bms.ADD #d63.93
+	_bms.ADD #d66.9
+	_bms.ADD #d63.52
+	_bms.ADD #d68.41
+	_bms.ADD #d70.69
+	_bms.ADD #d74.77
+	_bms.ADD #d75.74
+	_bms.ADD #d78.97
+	_bms.ADD #d78.58
+	_bms.ADD #d77.32
+	_bms.ADD #d78.97
+	_bms.ADD #d83.62
+	_bms.ADD #d76.99
+	_bms.ADD #d81.24
+	_bms.ADD #d84.83
+	_bms.ADD #d90.24
+	_bms.ADD #d92.57
+	_bms.ADD #d94.15
+	_bms.ADD #d94.95
+	_bms.ADD #d94.89
+	_bms.ADD #d94.01
+	_bms.ADD #d96.17
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d19.25
+	_bms.ADD #d21.38
+	_bms.ADD #d21.21
+	_bms.ADD #d23.2
+	_bms.ADD #d25.25
+	_bms.ADD #d24.3
+	_bms.ADD #d22.92
+	_bms.ADD #d24.6
+	_bms.ADD #d26.32
+	_bms.ADD #d29.27
+	_bms.ADD #d26.95
+	_bms.ADD #d27.79
+	_bms.ADD #d28.28
+	_bms.ADD #d30.94
+	_bms.ADD #d30.86
+	_bms.ADD #d33.41
+	_bms.ADD #d32.74
+	_bms.ADD #d31.63
+	_bms.ADD #d33.84
+	_bms.ADD #d33.45
+	_bms.ADD #d32.72
+	_bms.ADD #d34.2
+	_bms.ADD #d35.34
+	_bms.ADD #d38.67
+	_bms.ADD #d39.27
+	_bms.ADD #d39.48
+	_bms.ADD #d39.29
+	_bms.ADD #d38.66
+	_bms.ADD #d41.36
+	_bms.ADD #d41.81
+	_bms.ADD #d38.5
+	_bms.ADD #d40.62
+	_bms.ADD #d42.41
+	_bms.ADD #d46.41
+	_bms.ADD #d47.69
+	_bms.ADD #d48.6
+	_bms.ADD #d49.11
+	_bms.ADD #d49.2
+	_bms.ADD #d48.88
+	_bms.ADD #d50.17
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d19.25
+	_bms.ADD #d19.24
+	_bms.ADD #d21.21
+	_bms.ADD #d20.63
+	_bms.ADD #d22.44
+	_bms.ADD #d24.3
+	_bms.ADD #d26.19
+	_bms.ADD #d24.6
+	_bms.ADD #d22.56
+	_bms.ADD #d25.09
+	_bms.ADD #d25.02
+	_bms.ADD #d27.79
+	_bms.ADD #d28.28
+	_bms.ADD #d28.36
+	_bms.ADD #d30.86
+	_bms.ADD #d30.37
+	_bms.ADD #d29.47
+	_bms.ADD #d31.63
+	_bms.ADD #d30.08
+	_bms.ADD #d33.45
+	_bms.ADD #d30.8
+	_bms.ADD #d34.2
+	_bms.ADD #d35.34
+	_bms.ADD #d36.1
+	_bms.ADD #d36.47
+	_bms.ADD #d39.48
+	_bms.ADD #d39.29
+	_bms.ADD #d38.66
+	_bms.ADD #d37.6
+	_bms.ADD #d41.81
+	_bms.ADD #d38.5
+	_bms.ADD #d40.62
+	_bms.ADD #d42.41
+	_bms.ADD #d43.83
+	_bms.ADD #d44.88
+	_bms.ADD #d45.56
+	_bms.ADD #d45.84
+	_bms.ADD #d45.69
+	_bms.ADD #d45.12
+	_bms.ADD #d45.99
+	_augstat.ADD _bms
+	DELETE _bms
+	_sdata.ADD _augstat
+	DELETE _augstat
+	DEFINE ARRAYLIST _augstat 0
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d4.4
+	_bms.ADD #d4.88
+	_bms.ADD #d5.36
+	_bms.ADD #d5.83
+	_bms.ADD #d6.65
+	_bms.ADD #d7.04
+	_bms.ADD #d7.41
+	_bms.ADD #d7.59
+	_bms.ADD #d7.85
+	_bms.ADD #d9
+	_bms.ADD #d5.94
+	_bms.ADD #d6.68
+	_bms.ADD #d7.15
+	_bms.ADD #d7.89
+	_bms.ADD #d8.6
+	_bms.ADD #d9.24
+	_bms.ADD #d9.39
+	_bms.ADD #d9.76
+	_bms.ADD #d10.27
+	_bms.ADD #d11.07
+	_bms.ADD #d7.26
+	_bms.ADD #d8.22
+	_bms.ADD #d8.94
+	_bms.ADD #d9.95
+	_bms.ADD #d10.56
+	_bms.ADD #d11.44
+	_bms.ADD #d11.86
+	_bms.ADD #d11.92
+	_bms.ADD #d12.68
+	_bms.ADD #d13.84
+	_bms.ADD #d8.8
+	_bms.ADD #d9.77
+	_bms.ADD #d10.73
+	_bms.ADD #d12.01
+	_bms.ADD #d12.9
+	_bms.ADD #d13.64
+	_bms.ADD #d14.33
+	_bms.ADD #d14.63
+	_bms.ADD #d15.1
+	_bms.ADD #d15.92
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d2.2
+	_bms.ADD #d2.57
+	_bms.ADD #d2.68
+	_bms.ADD #d3.09
+	_bms.ADD #d3.52
+	_bms.ADD #d3.52
+	_bms.ADD #d3.46
+	_bms.ADD #d3.79
+	_bms.ADD #d4.23
+	_bms.ADD #d4.84
+	_bms.ADD #d3.08
+	_bms.ADD #d3.34
+	_bms.ADD #d3.58
+	_bms.ADD #d4.12
+	_bms.ADD #d4.3
+	_bms.ADD #d4.84
+	_bms.ADD #d4.94
+	_bms.ADD #d4.88
+	_bms.ADD #d5.44
+	_bms.ADD #d5.54
+	_bms.ADD #d3.74
+	_bms.ADD #d4.11
+	_bms.ADD #d4.47
+	_bms.ADD #d5.15
+	_bms.ADD #d5.47
+	_bms.ADD #d5.72
+	_bms.ADD #d5.93
+	_bms.ADD #d5.96
+	_bms.ADD #d6.64
+	_bms.ADD #d6.92
+	_bms.ADD #d4.4
+	_bms.ADD #d4.88
+	_bms.ADD #d5.36
+	_bms.ADD #d6.17
+	_bms.ADD #d6.65
+	_bms.ADD #d7.04
+	_bms.ADD #d7.41
+	_bms.ADD #d7.59
+	_bms.ADD #d7.85
+	_bms.ADD #d8.3
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d2.2
+	_bms.ADD #d2.31
+	_bms.ADD #d2.68
+	_bms.ADD #d2.74
+	_bms.ADD #d3.13
+	_bms.ADD #d3.52
+	_bms.ADD #d3.95
+	_bms.ADD #d3.79
+	_bms.ADD #d3.62
+	_bms.ADD #d4.15
+	_bms.ADD #d2.86
+	_bms.ADD #d3.34
+	_bms.ADD #d3.58
+	_bms.ADD #d3.77
+	_bms.ADD #d4.3
+	_bms.ADD #d4.4
+	_bms.ADD #d4.45
+	_bms.ADD #d4.88
+	_bms.ADD #d4.83
+	_bms.ADD #d5.54
+	_bms.ADD #d3.52
+	_bms.ADD #d4.11
+	_bms.ADD #d4.47
+	_bms.ADD #d4.8
+	_bms.ADD #d5.08
+	_bms.ADD #d5.72
+	_bms.ADD #d5.93
+	_bms.ADD #d5.96
+	_bms.ADD #d6.04
+	_bms.ADD #d6.92
+	_bms.ADD #d4.4
+	_bms.ADD #d4.88
+	_bms.ADD #d5.36
+	_bms.ADD #d5.83
+	_bms.ADD #d6.26
+	_bms.ADD #d6.6
+	_bms.ADD #d6.92
+	_bms.ADD #d7.05
+	_bms.ADD #d7.25
+	_bms.ADD #d7.61
+	_augstat.ADD _bms
+	DELETE _bms
+	_sdata.ADD _augstat
+	DELETE _augstat
+	DEFINE ARRAYLIST _augstat 0
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d5.04
+	_bms.ADD #d5.61
+	_bms.ADD #d6.16
+	_bms.ADD #d6.7
+	_bms.ADD #d7.65
+	_bms.ADD #d8.14
+	_bms.ADD #d8.57
+	_bms.ADD #d8.89
+	_bms.ADD #d9.1
+	_bms.ADD #d10.5
+	_bms.ADD #d6.8
+	_bms.ADD #d7.67
+	_bms.ADD #d8.21
+	_bms.ADD #d9.06
+	_bms.ADD #d9.9
+	_bms.ADD #d10.69
+	_bms.ADD #d10.85
+	_bms.ADD #d11.43
+	_bms.ADD #d11.9
+	_bms.ADD #d12.93
+	_bms.ADD #d8.32
+	_bms.ADD #d9.44
+	_bms.ADD #d10.26
+	_bms.ADD #d11.43
+	_bms.ADD #d12.15
+	_bms.ADD #d13.23
+	_bms.ADD #d13.7
+	_bms.ADD #d13.97
+	_bms.ADD #d14.7
+	_bms.ADD #d16.16
+	_bms.ADD #d10.08
+	_bms.ADD #d11.21
+	_bms.ADD #d12.31
+	_bms.ADD #d13.79
+	_bms.ADD #d14.85
+	_bms.ADD #d15.78
+	_bms.ADD #d16.56
+	_bms.ADD #d17.15
+	_bms.ADD #d17.5
+	_bms.ADD #d18.58
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d2.52
+	_bms.ADD #d2.95
+	_bms.ADD #d3.08
+	_bms.ADD #d3.55
+	_bms.ADD #d4.05
+	_bms.ADD #d4.07
+	_bms.ADD #d4
+	_bms.ADD #d4.45
+	_bms.ADD #d4.9
+	_bms.ADD #d5.66
+	_bms.ADD #d3.53
+	_bms.ADD #d3.84
+	_bms.ADD #d4.1
+	_bms.ADD #d4.73
+	_bms.ADD #d4.95
+	_bms.ADD #d5.6
+	_bms.ADD #d5.71
+	_bms.ADD #d5.72
+	_bms.ADD #d6.3
+	_bms.ADD #d6.46
+	_bms.ADD #d4.28
+	_bms.ADD #d4.72
+	_bms.ADD #d5.13
+	_bms.ADD #d5.91
+	_bms.ADD #d6.3
+	_bms.ADD #d6.62
+	_bms.ADD #d6.85
+	_bms.ADD #d6.99
+	_bms.ADD #d7.7
+	_bms.ADD #d8.08
+	_bms.ADD #d5.04
+	_bms.ADD #d5.61
+	_bms.ADD #d6.16
+	_bms.ADD #d7.09
+	_bms.ADD #d7.65
+	_bms.ADD #d8.14
+	_bms.ADD #d8.57
+	_bms.ADD #d8.89
+	_bms.ADD #d9.1
+	_bms.ADD #d9.7
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d2.52
+	_bms.ADD #d2.66
+	_bms.ADD #d3.08
+	_bms.ADD #d3.15
+	_bms.ADD #d3.6
+	_bms.ADD #d4.07
+	_bms.ADD #d4.57
+	_bms.ADD #d4.45
+	_bms.ADD #d4.2
+	_bms.ADD #d4.85
+	_bms.ADD #d3.28
+	_bms.ADD #d3.84
+	_bms.ADD #d4.1
+	_bms.ADD #d4.33
+	_bms.ADD #d4.95
+	_bms.ADD #d5.09
+	_bms.ADD #d5.14
+	_bms.ADD #d5.72
+	_bms.ADD #d5.6
+	_bms.ADD #d6.46
+	_bms.ADD #d4.03
+	_bms.ADD #d4.72
+	_bms.ADD #d5.13
+	_bms.ADD #d5.52
+	_bms.ADD #d5.85
+	_bms.ADD #d6.62
+	_bms.ADD #d6.85
+	_bms.ADD #d6.99
+	_bms.ADD #d7
+	_bms.ADD #d8.08
+	_bms.ADD #d5.04
+	_bms.ADD #d5.61
+	_bms.ADD #d6.16
+	_bms.ADD #d6.7
+	_bms.ADD #d7.2
+	_bms.ADD #d7.64
+	_bms.ADD #d7.99
+	_bms.ADD #d8.26
+	_bms.ADD #d8.4
+	_bms.ADD #d8.89
+	_augstat.ADD _bms
+	DELETE _bms
+	_sdata.ADD _augstat
+	DELETE _augstat
+	DEFINE ARRAYLIST _augstat 0
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d0.18
+	_bms.ADD #d0.17
+	_bms.ADD #d0.19
+	_bms.ADD #d0.18
+	_bms.ADD #d0.19
+	_bms.ADD #d0.21
+	_bms.ADD #d0.21
+	_bms.ADD #d0.2
+	_bms.ADD #d0.19
+	_bms.ADD #d0.21
+	_bms.ADD #d0.24
+	_bms.ADD #d0.24
+	_bms.ADD #d0.26
+	_bms.ADD #d0.25
+	_bms.ADD #d0.25
+	_bms.ADD #d0.28
+	_bms.ADD #d0.26
+	_bms.ADD #d0.25
+	_bms.ADD #d0.24
+	_bms.ADD #d0.26
+	_bms.ADD #d0.29
+	_bms.ADD #d0.29
+	_bms.ADD #d0.32
+	_bms.ADD #d0.32
+	_bms.ADD #d0.31
+	_bms.ADD #d0.34
+	_bms.ADD #d0.33
+	_bms.ADD #d0.31
+	_bms.ADD #d0.3
+	_bms.ADD #d0.33
+	_bms.ADD #d0.36
+	_bms.ADD #d0.34
+	_bms.ADD #d0.38
+	_bms.ADD #d0.38
+	_bms.ADD #d0.38
+	_bms.ADD #d0.41
+	_bms.ADD #d0.4
+	_bms.ADD #d0.38
+	_bms.ADD #d0.36
+	_bms.ADD #d0.38
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d0.09
+	_bms.ADD #d0.09
+	_bms.ADD #d0.1
+	_bms.ADD #d0.1
+	_bms.ADD #d0.1
+	_bms.ADD #d0.11
+	_bms.ADD #d0.1
+	_bms.ADD #d0.1
+	_bms.ADD #d0.1
+	_bms.ADD #d0.11
+	_bms.ADD #d0.12
+	_bms.ADD #d0.12
+	_bms.ADD #d0.13
+	_bms.ADD #d0.13
+	_bms.ADD #d0.13
+	_bms.ADD #d0.14
+	_bms.ADD #d0.14
+	_bms.ADD #d0.13
+	_bms.ADD #d0.13
+	_bms.ADD #d0.13
+	_bms.ADD #d0.15
+	_bms.ADD #d0.14
+	_bms.ADD #d0.16
+	_bms.ADD #d0.16
+	_bms.ADD #d0.16
+	_bms.ADD #d0.17
+	_bms.ADD #d0.17
+	_bms.ADD #d0.15
+	_bms.ADD #d0.16
+	_bms.ADD #d0.16
+	_bms.ADD #d0.18
+	_bms.ADD #d0.17
+	_bms.ADD #d0.19
+	_bms.ADD #d0.2
+	_bms.ADD #d0.19
+	_bms.ADD #d0.21
+	_bms.ADD #d0.21
+	_bms.ADD #d0.2
+	_bms.ADD #d0.19
+	_bms.ADD #d0.2
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d0.09
+	_bms.ADD #d0.08
+	_bms.ADD #d0.1
+	_bms.ADD #d0.09
+	_bms.ADD #d0.09
+	_bms.ADD #d0.11
+	_bms.ADD #d0.11
+	_bms.ADD #d0.1
+	_bms.ADD #d0.09
+	_bms.ADD #d0.1
+	_bms.ADD #d0.12
+	_bms.ADD #d0.12
+	_bms.ADD #d0.13
+	_bms.ADD #d0.12
+	_bms.ADD #d0.13
+	_bms.ADD #d0.13
+	_bms.ADD #d0.12
+	_bms.ADD #d0.13
+	_bms.ADD #d0.11
+	_bms.ADD #d0.13
+	_bms.ADD #d0.14
+	_bms.ADD #d0.14
+	_bms.ADD #d0.16
+	_bms.ADD #d0.15
+	_bms.ADD #d0.15
+	_bms.ADD #d0.17
+	_bms.ADD #d0.17
+	_bms.ADD #d0.15
+	_bms.ADD #d0.14
+	_bms.ADD #d0.16
+	_bms.ADD #d0.18
+	_bms.ADD #d0.17
+	_bms.ADD #d0.19
+	_bms.ADD #d0.18
+	_bms.ADD #d0.18
+	_bms.ADD #d0.2
+	_bms.ADD #d0.19
+	_bms.ADD #d0.18
+	_bms.ADD #d0.17
+	_bms.ADD #d0.18
+	_augstat.ADD _bms
+	DELETE _bms
+	_sdata.ADD _augstat
+	DELETE _augstat
+	DEFINE ARRAYLIST _augstat 0
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d0.12
+	_bms.ADD #d0.12
+	_bms.ADD #d0.13
+	_bms.ADD #d0.13
+	_bms.ADD #d0.13
+	_bms.ADD #d0.14
+	_bms.ADD #d0.13
+	_bms.ADD #d0.12
+	_bms.ADD #d0.12
+	_bms.ADD #d0.14
+	_bms.ADD #d0.16
+	_bms.ADD #d0.16
+	_bms.ADD #d0.17
+	_bms.ADD #d0.17
+	_bms.ADD #d0.17
+	_bms.ADD #d0.18
+	_bms.ADD #d0.17
+	_bms.ADD #d0.16
+	_bms.ADD #d0.16
+	_bms.ADD #d0.17
+	_bms.ADD #d0.2
+	_bms.ADD #d0.2
+	_bms.ADD #d0.22
+	_bms.ADD #d0.21
+	_bms.ADD #d0.2
+	_bms.ADD #d0.23
+	_bms.ADD #d0.21
+	_bms.ADD #d0.2
+	_bms.ADD #d0.2
+	_bms.ADD #d0.21
+	_bms.ADD #d0.24
+	_bms.ADD #d0.23
+	_bms.ADD #d0.26
+	_bms.ADD #d0.26
+	_bms.ADD #d0.25
+	_bms.ADD #d0.27
+	_bms.ADD #d0.25
+	_bms.ADD #d0.24
+	_bms.ADD #d0.24
+	_bms.ADD #d0.24
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d0.06
+	_bms.ADD #d0.06
+	_bms.ADD #d0.07
+	_bms.ADD #d0.07
+	_bms.ADD #d0.07
+	_bms.ADD #d0.07
+	_bms.ADD #d0.06
+	_bms.ADD #d0.06
+	_bms.ADD #d0.07
+	_bms.ADD #d0.07
+	_bms.ADD #d0.09
+	_bms.ADD #d0.08
+	_bms.ADD #d0.09
+	_bms.ADD #d0.09
+	_bms.ADD #d0.08
+	_bms.ADD #d0.1
+	_bms.ADD #d0.09
+	_bms.ADD #d0.08
+	_bms.ADD #d0.08
+	_bms.ADD #d0.09
+	_bms.ADD #d0.1
+	_bms.ADD #d0.1
+	_bms.ADD #d0.11
+	_bms.ADD #d0.11
+	_bms.ADD #d0.11
+	_bms.ADD #d0.11
+	_bms.ADD #d0.11
+	_bms.ADD #d0.1
+	_bms.ADD #d0.1
+	_bms.ADD #d0.11
+	_bms.ADD #d0.12
+	_bms.ADD #d0.12
+	_bms.ADD #d0.13
+	_bms.ADD #d0.13
+	_bms.ADD #d0.13
+	_bms.ADD #d0.14
+	_bms.ADD #d0.13
+	_bms.ADD #d0.12
+	_bms.ADD #d0.12
+	_bms.ADD #d0.13
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d0.06
+	_bms.ADD #d0.06
+	_bms.ADD #d0.07
+	_bms.ADD #d0.06
+	_bms.ADD #d0.06
+	_bms.ADD #d0.07
+	_bms.ADD #d0.07
+	_bms.ADD #d0.06
+	_bms.ADD #d0.06
+	_bms.ADD #d0.06
+	_bms.ADD #d0.08
+	_bms.ADD #d0.08
+	_bms.ADD #d0.09
+	_bms.ADD #d0.08
+	_bms.ADD #d0.08
+	_bms.ADD #d0.09
+	_bms.ADD #d0.08
+	_bms.ADD #d0.08
+	_bms.ADD #d0.08
+	_bms.ADD #d0.09
+	_bms.ADD #d0.1
+	_bms.ADD #d0.1
+	_bms.ADD #d0.11
+	_bms.ADD #d0.1
+	_bms.ADD #d0.1
+	_bms.ADD #d0.11
+	_bms.ADD #d0.11
+	_bms.ADD #d0.1
+	_bms.ADD #d0.09
+	_bms.ADD #d0.11
+	_bms.ADD #d0.12
+	_bms.ADD #d0.12
+	_bms.ADD #d0.13
+	_bms.ADD #d0.13
+	_bms.ADD #d0.12
+	_bms.ADD #d0.13
+	_bms.ADD #d0.12
+	_bms.ADD #d0.12
+	_bms.ADD #d0.11
+	_bms.ADD #d0.12
+	_augstat.ADD _bms
+	DELETE _bms
+	_sdata.ADD _augstat
+	DELETE _augstat
+	DEFINE ARRAYLIST _augstat 0
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d0.18
+	_bms.ADD #d0.17
+	_bms.ADD #d0.19
+	_bms.ADD #d0.18
+	_bms.ADD #d0.19
+	_bms.ADD #d0.21
+	_bms.ADD #d0.21
+	_bms.ADD #d0.2
+	_bms.ADD #d0.19
+	_bms.ADD #d0.21
+	_bms.ADD #d0.24
+	_bms.ADD #d0.24
+	_bms.ADD #d0.26
+	_bms.ADD #d0.25
+	_bms.ADD #d0.25
+	_bms.ADD #d0.28
+	_bms.ADD #d0.26
+	_bms.ADD #d0.25
+	_bms.ADD #d0.24
+	_bms.ADD #d0.26
+	_bms.ADD #d0.29
+	_bms.ADD #d0.29
+	_bms.ADD #d0.32
+	_bms.ADD #d0.32
+	_bms.ADD #d0.31
+	_bms.ADD #d0.34
+	_bms.ADD #d0.33
+	_bms.ADD #d0.31
+	_bms.ADD #d0.3
+	_bms.ADD #d0.33
+	_bms.ADD #d0.36
+	_bms.ADD #d0.34
+	_bms.ADD #d0.38
+	_bms.ADD #d0.38
+	_bms.ADD #d0.38
+	_bms.ADD #d0.41
+	_bms.ADD #d0.4
+	_bms.ADD #d0.38
+	_bms.ADD #d0.36
+	_bms.ADD #d0.38
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d0.09
+	_bms.ADD #d0.09
+	_bms.ADD #d0.1
+	_bms.ADD #d0.1
+	_bms.ADD #d0.1
+	_bms.ADD #d0.11
+	_bms.ADD #d0.1
+	_bms.ADD #d0.1
+	_bms.ADD #d0.1
+	_bms.ADD #d0.11
+	_bms.ADD #d0.12
+	_bms.ADD #d0.12
+	_bms.ADD #d0.13
+	_bms.ADD #d0.13
+	_bms.ADD #d0.13
+	_bms.ADD #d0.14
+	_bms.ADD #d0.14
+	_bms.ADD #d0.13
+	_bms.ADD #d0.13
+	_bms.ADD #d0.13
+	_bms.ADD #d0.15
+	_bms.ADD #d0.14
+	_bms.ADD #d0.16
+	_bms.ADD #d0.16
+	_bms.ADD #d0.16
+	_bms.ADD #d0.17
+	_bms.ADD #d0.17
+	_bms.ADD #d0.15
+	_bms.ADD #d0.16
+	_bms.ADD #d0.16
+	_bms.ADD #d0.18
+	_bms.ADD #d0.17
+	_bms.ADD #d0.19
+	_bms.ADD #d0.2
+	_bms.ADD #d0.19
+	_bms.ADD #d0.21
+	_bms.ADD #d0.21
+	_bms.ADD #d0.2
+	_bms.ADD #d0.19
+	_bms.ADD #d0.2
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d0.09
+	_bms.ADD #d0.08
+	_bms.ADD #d0.1
+	_bms.ADD #d0.09
+	_bms.ADD #d0.09
+	_bms.ADD #d0.11
+	_bms.ADD #d0.11
+	_bms.ADD #d0.1
+	_bms.ADD #d0.09
+	_bms.ADD #d0.1
+	_bms.ADD #d0.12
+	_bms.ADD #d0.12
+	_bms.ADD #d0.13
+	_bms.ADD #d0.12
+	_bms.ADD #d0.13
+	_bms.ADD #d0.13
+	_bms.ADD #d0.12
+	_bms.ADD #d0.13
+	_bms.ADD #d0.11
+	_bms.ADD #d0.13
+	_bms.ADD #d0.14
+	_bms.ADD #d0.14
+	_bms.ADD #d0.16
+	_bms.ADD #d0.15
+	_bms.ADD #d0.15
+	_bms.ADD #d0.17
+	_bms.ADD #d0.17
+	_bms.ADD #d0.15
+	_bms.ADD #d0.14
+	_bms.ADD #d0.16
+	_bms.ADD #d0.18
+	_bms.ADD #d0.17
+	_bms.ADD #d0.19
+	_bms.ADD #d0.18
+	_bms.ADD #d0.18
+	_bms.ADD #d0.2
+	_bms.ADD #d0.19
+	_bms.ADD #d0.18
+	_bms.ADD #d0.17
+	_bms.ADD #d0.18
+	_augstat.ADD _bms
+	DELETE _bms
+	_sdata.ADD _augstat
+	DELETE _augstat
+	DEFINE ARRAYLIST _augstat 0
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d1.04
+	_bms.ADD #d1.04
+	_bms.ADD #d1.04
+	_bms.ADD #d1.04
+	_bms.ADD #d1.16
+	_bms.ADD #d1.16
+	_bms.ADD #d1.16
+	_bms.ADD #d1.28
+	_bms.ADD #d1.28
+	_bms.ADD #d1.4
+	_bms.ADD #d1.21
+	_bms.ADD #d1.21
+	_bms.ADD #d1.21
+	_bms.ADD #d1.21
+	_bms.ADD #d1.35
+	_bms.ADD #d1.35
+	_bms.ADD #d1.35
+	_bms.ADD #d1.49
+	_bms.ADD #d1.49
+	_bms.ADD #d1.63
+	_bms.ADD #d1.67
+	_bms.ADD #d1.67
+	_bms.ADD #d1.67
+	_bms.ADD #d1.67
+	_bms.ADD #d1.53
+	_bms.ADD #d1.53
+	_bms.ADD #d1.53
+	_bms.ADD #d1.69
+	_bms.ADD #d1.69
+	_bms.ADD #d1.85
+	_bms.ADD #d1.49
+	_bms.ADD #d1.49
+	_bms.ADD #d1.49
+	_bms.ADD #d1.49
+	_bms.ADD #d1.67
+	_bms.ADD #d1.67
+	_bms.ADD #d1.67
+	_bms.ADD #d1.84
+	_bms.ADD #d1.84
+	_bms.ADD #d2.02
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d0.52
+	_bms.ADD #d0.54
+	_bms.ADD #d0.52
+	_bms.ADD #d0.54
+	_bms.ADD #d0.61
+	_bms.ADD #d0.58
+	_bms.ADD #d0.61
+	_bms.ADD #d0.64
+	_bms.ADD #d0.67
+	_bms.ADD #d0.73
+	_bms.ADD #d0.63
+	_bms.ADD #d0.6
+	_bms.ADD #d0.6
+	_bms.ADD #d0.63
+	_bms.ADD #d0.67
+	_bms.ADD #d0.71
+	_bms.ADD #d0.71
+	_bms.ADD #d0.74
+	_bms.ADD #d0.78
+	_bms.ADD #d0.81
+	_bms.ADD #d0.72
+	_bms.ADD #d0.69
+	_bms.ADD #d0.69
+	_bms.ADD #d0.72
+	_bms.ADD #d0.81
+	_bms.ADD #d0.77
+	_bms.ADD #d0.77
+	_bms.ADD #d0.85
+	_bms.ADD #d0.89
+	_bms.ADD #d0.93
+	_bms.ADD #d0.75
+	_bms.ADD #d0.75
+	_bms.ADD #d0.75
+	_bms.ADD #d0.78
+	_bms.ADD #d0.88
+	_bms.ADD #d0.88
+	_bms.ADD #d0.88
+	_bms.ADD #d0.97
+	_bms.ADD #d0.97
+	_bms.ADD #d1.06
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d0.52
+	_bms.ADD #d0.49
+	_bms.ADD #d0.52
+	_bms.ADD #d0.49
+	_bms.ADD #d0.46
+	_bms.ADD #d0.58
+	_bms.ADD #d0.46
+	_bms.ADD #d0.64
+	_bms.ADD #d0.61
+	_bms.ADD #d0.66
+	_bms.ADD #d0.75
+	_bms.ADD #d0.6
+	_bms.ADD #d0.6
+	_bms.ADD #d0.75
+	_bms.ADD #d0.67
+	_bms.ADD #d0.64
+	_bms.ADD #d0.64
+	_bms.ADD #d0.74
+	_bms.ADD #d0.71
+	_bms.ADD #d0.81
+	_bms.ADD #d0.65
+	_bms.ADD #d0.69
+	_bms.ADD #d0.69
+	_bms.ADD #d0.65
+	_bms.ADD #d0.73
+	_bms.ADD #d0.77
+	_bms.ADD #d0.77
+	_bms.ADD #d0.85
+	_bms.ADD #d0.8
+	_bms.ADD #d0.93
+	_bms.ADD #d0.75
+	_bms.ADD #d0.75
+	_bms.ADD #d0.75
+	_bms.ADD #d0.71
+	_bms.ADD #d0.79
+	_bms.ADD #d0.79
+	_bms.ADD #d0.79
+	_bms.ADD #d0.87
+	_bms.ADD #d0.87
+	_bms.ADD #d0.96
+	_augstat.ADD _bms
+	DELETE _bms
+	_sdata.ADD _augstat
+	DELETE _augstat
+	DEFINE ARRAYLIST _augstat 0
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d1.04
+	_bms.ADD #d1.04
+	_bms.ADD #d1.04
+	_bms.ADD #d1.04
+	_bms.ADD #d1.16
+	_bms.ADD #d1.16
+	_bms.ADD #d1.16
+	_bms.ADD #d1.28
+	_bms.ADD #d1.28
+	_bms.ADD #d1.4
+	_bms.ADD #d1.21
+	_bms.ADD #d1.21
+	_bms.ADD #d1.21
+	_bms.ADD #d1.21
+	_bms.ADD #d1.35
+	_bms.ADD #d1.35
+	_bms.ADD #d1.35
+	_bms.ADD #d1.49
+	_bms.ADD #d1.49
+	_bms.ADD #d1.63
+	_bms.ADD #d1.67
+	_bms.ADD #d1.67
+	_bms.ADD #d1.67
+	_bms.ADD #d1.67
+	_bms.ADD #d1.53
+	_bms.ADD #d1.53
+	_bms.ADD #d1.53
+	_bms.ADD #d1.69
+	_bms.ADD #d1.69
+	_bms.ADD #d1.85
+	_bms.ADD #d1.49
+	_bms.ADD #d1.49
+	_bms.ADD #d1.49
+	_bms.ADD #d1.49
+	_bms.ADD #d1.67
+	_bms.ADD #d1.67
+	_bms.ADD #d1.67
+	_bms.ADD #d1.84
+	_bms.ADD #d1.84
+	_bms.ADD #d2.02
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d0.52
+	_bms.ADD #d0.54
+	_bms.ADD #d0.52
+	_bms.ADD #d0.54
+	_bms.ADD #d0.61
+	_bms.ADD #d0.58
+	_bms.ADD #d0.61
+	_bms.ADD #d0.64
+	_bms.ADD #d0.67
+	_bms.ADD #d0.73
+	_bms.ADD #d0.63
+	_bms.ADD #d0.6
+	_bms.ADD #d0.6
+	_bms.ADD #d0.63
+	_bms.ADD #d0.67
+	_bms.ADD #d0.71
+	_bms.ADD #d0.71
+	_bms.ADD #d0.74
+	_bms.ADD #d0.78
+	_bms.ADD #d0.81
+	_bms.ADD #d0.72
+	_bms.ADD #d0.69
+	_bms.ADD #d0.69
+	_bms.ADD #d0.72
+	_bms.ADD #d0.81
+	_bms.ADD #d0.77
+	_bms.ADD #d0.77
+	_bms.ADD #d0.85
+	_bms.ADD #d0.89
+	_bms.ADD #d0.93
+	_bms.ADD #d0.75
+	_bms.ADD #d0.75
+	_bms.ADD #d0.75
+	_bms.ADD #d0.78
+	_bms.ADD #d0.88
+	_bms.ADD #d0.88
+	_bms.ADD #d0.88
+	_bms.ADD #d0.97
+	_bms.ADD #d0.97
+	_bms.ADD #d1.06
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d0.52
+	_bms.ADD #d0.49
+	_bms.ADD #d0.52
+	_bms.ADD #d0.49
+	_bms.ADD #d0.46
+	_bms.ADD #d0.58
+	_bms.ADD #d0.46
+	_bms.ADD #d0.64
+	_bms.ADD #d0.61
+	_bms.ADD #d0.66
+	_bms.ADD #d0.75
+	_bms.ADD #d0.6
+	_bms.ADD #d0.6
+	_bms.ADD #d0.75
+	_bms.ADD #d0.67
+	_bms.ADD #d0.64
+	_bms.ADD #d0.64
+	_bms.ADD #d0.74
+	_bms.ADD #d0.71
+	_bms.ADD #d0.81
+	_bms.ADD #d0.65
+	_bms.ADD #d0.69
+	_bms.ADD #d0.69
+	_bms.ADD #d0.65
+	_bms.ADD #d0.73
+	_bms.ADD #d0.77
+	_bms.ADD #d0.77
+	_bms.ADD #d0.85
+	_bms.ADD #d0.8
+	_bms.ADD #d0.93
+	_bms.ADD #d0.75
+	_bms.ADD #d0.75
+	_bms.ADD #d0.75
+	_bms.ADD #d0.71
+	_bms.ADD #d0.79
+	_bms.ADD #d0.79
+	_bms.ADD #d0.79
+	_bms.ADD #d0.87
+	_bms.ADD #d0.87
+	_bms.ADD #d0.96
+	_augstat.ADD _bms
+	DELETE _bms
+	_sdata.ADD _augstat
+	DELETE _augstat
+	DEFINE ARRAYLIST _augstat 0
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d11.22
+	_bms.ADD #d11.22
+	_bms.ADD #d11.22
+	_bms.ADD #d11.22
+	_bms.ADD #d12.53
+	_bms.ADD #d12.53
+	_bms.ADD #d12.53
+	_bms.ADD #d13.83
+	_bms.ADD #d13.83
+	_bms.ADD #d15.14
+	_bms.ADD #d13.05
+	_bms.ADD #d13.05
+	_bms.ADD #d13.05
+	_bms.ADD #d13.05
+	_bms.ADD #d14.57
+	_bms.ADD #d14.57
+	_bms.ADD #d14.57
+	_bms.ADD #d16.08
+	_bms.ADD #d16.08
+	_bms.ADD #d17.6
+	_bms.ADD #d18.13
+	_bms.ADD #d18.13
+	_bms.ADD #d18.13
+	_bms.ADD #d18.13
+	_bms.ADD #d16.61
+	_bms.ADD #d16.61
+	_bms.ADD #d16.61
+	_bms.ADD #d18.34
+	_bms.ADD #d18.34
+	_bms.ADD #d20.06
+	_bms.ADD #d16.18
+	_bms.ADD #d16.18
+	_bms.ADD #d16.18
+	_bms.ADD #d16.18
+	_bms.ADD #d18.06
+	_bms.ADD #d18.06
+	_bms.ADD #d18.06
+	_bms.ADD #d19.94
+	_bms.ADD #d19.94
+	_bms.ADD #d21.82
+	_augstat.ADD _bms
+	DELETE _bms
+	DEFINE ARRAYLIST _bms 0
+	_bms.ADD #d5.61
+	_bms.ADD #d5.33
+	_bms.ADD #d5.61
+	_bms.ADD #d5.33
+	_bms.ADD #d4.98
+	_bms.ADD #d6.26
+	_bms.ADD #d4.98
+	_bms.ADD #d6.92
+	_bms.ADD #d6.57
+	_bms.ADD #d7.19
+	_bms.ADD #d8.15
+	_bms.ADD #d6.53
+	_bms.ADD #d6.53
+	_bms.ADD #d8.15
+	_bms.ADD #d7.28
+	_bms.ADD #d6.92
+	_bms.ADD #d6.92
+	_bms.ADD #d8.04
+	_bms.ADD #d7.64
+	_bms.ADD #d8.8
+	_bms.ADD #d7.07
+	_bms.ADD #d7.44
+	_bms.ADD #d7.44
+	_bms.ADD #d7.07
+	_bms.ADD #d7.89
+	_bms.ADD #d8.3
+	_bms.ADD #d8.3
+	_bms.ADD #d9.17
+	_bms.ADD #d8.71
+	_bms.ADD #d10.03
+	_bms.ADD #d8.09
+	_bms.ADD #d8.09
+	_bms.ADD #d8.09
+	_bms.ADD #d7.69
+	_bms.ADD #d8.58
+	_bms.ADD #d8.58
+	_bms.ADD #d8.58
+	_bms.ADD #d9.47
+	_bms.ADD #d9.47
+	_bms.ADD #d10.37
+	_augstat.ADD _bms
+	DELETE _bms
+	_sdata.ADD _augstat
+	DELETE _augstat
+	_augmdata.ADD _sdata
+	DELETE _sdata
+RETURN _augmdata
+FUNCTION AUG_SKILLG_BIND 0
+	DEFINE SORTEDLIST _augsids 0
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3143
+	_siddl.ADD "#$Active: Temporarily increases lung capacity."
+	_augsids.ADD _siddl 2
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3144
+	_siddl.ADD "#$Active: Temporarily becomes able to jump from a higher place without fall damage."
+	_augsids.ADD _siddl 3
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3145
+	_siddl.ADD "#$Active: Temporarily gains resistance to topography damage."
+	_augsids.ADD _siddl 4
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3156
+	_siddl.ADD "#$Active: Ignites a firecracker."
+	_augsids.ADD _siddl 5
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3206
+	_siddl.ADD "#$Active: Temporarily plays music."
+	_augsids.ADD _siddl 6
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3157
+	_siddl.ADD "#$Active: Ignites a large firecracker."
+	_augsids.ADD _siddl 7
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3081
+	_siddl.ADD "#$Chance: During a physical attack, decreases the target's attacking desire for oneself by a fixed rate."
+	_augsids.ADD _siddl 8
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3080
+	_siddl.ADD "#$Chance: During a physical attack, stimulates the target's attacking desire by a fixed rate."
+	_augsids.ADD _siddl 9
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3083
+	_siddl.ADD "#$Chance: During a physical attack, decreases the target's moving speed by a fixed rate."
+	_augsids.ADD _siddl 10
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3109
+	_siddl.ADD "#$Chance: During a critical attack, decreases the target's attacking desire for oneself by a fixed rate."
+	_augsids.ADD _siddl 11
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3108
+	_siddl.ADD "#$Chance: During a critical attack, stimulates the target's attacking desire by a fixed rate."
+	_augsids.ADD _siddl 12
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3111
+	_siddl.ADD "#$Chance: During a critical attack, decreases the target's moving speed by a fixed rate."
+	_augsids.ADD _siddl 13
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3096
+	_siddl.ADD "#$Chance: During a magic attack, decreases the target's moving speed by a fixed rate. Effect 3."
+	_augsids.ADD _siddl 14
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3252
+	_siddl.ADD "#$Passive: Increases lung capacity."
+	_augsids.ADD _siddl 15
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3253
+	_siddl.ADD "#$Passive: Becomes able to jump from a higher place without fall damage."
+	_augsids.ADD _siddl 16
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3254
+	_siddl.ADD "#$Passive: Gains resistance to topography damage."
+	_augsids.ADD _siddl 17
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3188
+	_siddl.ADD "#$Active: Decreases the target's Atk. Spd.by a fixed rate."
+	_augsids.ADD _siddl 18
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3139
+	_siddl.ADD "#$Active: Temporarily increase Evasion."
+	_augsids.ADD _siddl 19
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3196
+	_siddl.ADD "#$Active: Inflicts bleed on the target by a fixed rate."
+	_augsids.ADD _siddl 20
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3130
+	_siddl.ADD "#$Active: Restores your CP."
+	_augsids.ADD _siddl 21
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3169
+	_siddl.ADD "#$Active: Inflicts damage by throwing a boulder."
+	_augsids.ADD _siddl 22
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3194
+	_siddl.ADD "#$Active: Inflicts fear on the target by a fixed rate and causes him to flee."
+	_augsids.ADD _siddl 23
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3173
+	_siddl.ADD "#$Active: Condenses air to burst flames."
+	_augsids.ADD _siddl 24
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3150
+	_siddl.ADD "#$Active: Calms the enemy's heart and causes attacking desire to disappear."
+	_augsids.ADD _siddl 25
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3150
+	_siddl.ADD "#$Active: Decreases the target's attacking desire for oneself."
+	_augsids.ADD _siddl 26
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3149
+	_siddl.ADD "#$Active: Increases your target's will to attack."
+	_augsids.ADD _siddl 27
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3140
+	_siddl.ADD "#$Active: Temporarily increases accuracy."
+	_augsids.ADD _siddl 28
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3190
+	_siddl.ADD "#$Active: Inflicts hold on the target by a fixed rate. Additional Hold is not available while the effect lasts."
+	_augsids.ADD _siddl 29
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3170
+	_siddl.ADD "#$Active: Launches a sacred magic attack."
+	_augsids.ADD _siddl 30
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3138
+	_siddl.ADD "#$Active: Temporarily increases HP recovery magic power."
+	_augsids.ADD _siddl 31
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3126
+	_siddl.ADD "#$Active: Temporarily increases HP recovery magic effect."
+	_augsids.ADD _siddl 32
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3123
+	_siddl.ADD "#$Active: Regenerates your own HP immediately."
+	_augsids.ADD _siddl 33
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3133
+	_siddl.ADD "#$Active: Temporarily increases M. Atk.."
+	_augsids.ADD _siddl 34
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3131
+	_siddl.ADD "#$Active: Temporarily increases Max CP."
+	_augsids.ADD _siddl 35
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3125
+	_siddl.ADD "#$Active: Temporarily increases Max HP and recovers the amount of increased HP."
+	_augsids.ADD _siddl 36
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3124
+	_siddl.ADD "#$Active: Temporarily increases Max HP."
+	_augsids.ADD _siddl 37
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3128
+	_siddl.ADD "#$Active: Temporarily increases Max MP."
+	_augsids.ADD _siddl 38
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3136
+	_siddl.ADD "#$Active: Temporarily increases M. Def.."
+	_augsids.ADD _siddl 39
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3154
+	_siddl.ADD "#$Active: Burns up your enemy's MP."
+	_augsids.ADD _siddl 40
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3129
+	_siddl.ADD "#$Active: Increases the recovery rate when MP is being recovered by recharge."
+	_augsids.ADD _siddl 41
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3127
+	_siddl.ADD "#$Active: Restores the target's MP."
+	_augsids.ADD _siddl 42
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i0
+	_siddl.ADD "#$Active: Uses a non-attribute attack and momentarily decrease your attack magic power during PvP."
+	_augsids.ADD _siddl 43
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3132
+	_siddl.ADD "#$Active: Temporarily increases P. Atk.."
+	_augsids.ADD _siddl 44
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3192
+	_siddl.ADD "#$Active: Inflicts paralysis on the target by a fixed rate."
+	_augsids.ADD _siddl 45
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3135
+	_siddl.ADD "#$Active: Temporarily increases P. Def.."
+	_augsids.ADD _siddl 46
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3195
+	_siddl.ADD "#$Active: Inflicts poison on the target by a fixed rate."
+	_augsids.ADD _siddl 47
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3137
+	_siddl.ADD "#$Active: Temporarily decreases the PvP opponent's P. Atk."
+	_augsids.ADD _siddl 48
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3134
+	_siddl.ADD "#$Active: Temporarily increases PvP accuracy."
+	_augsids.ADD _siddl 49
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3146
+	_siddl.ADD "#$Active: Teleports to a town. Cannot be used in special areas such as the GM info center."
+	_augsids.ADD _siddl 50
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3160
+	_siddl.ADD "#$Active: Resurrects a corpse."
+	_augsids.ADD _siddl 51
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3183
+	_siddl.ADD "#$Active: Emits an area of effect earth attack."
+	_augsids.ADD _siddl 52
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3180
+	_siddl.ADD "#$Active: Emits an area of effect fire attack."
+	_augsids.ADD _siddl 53
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3184
+	_siddl.ADD "#$Active: Emits an area of effect sacred magic attack."
+	_augsids.ADD _siddl 54
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3186
+	_siddl.ADD "#$Active: Emits elemental damage over an area."
+	_augsids.ADD _siddl 55
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3185
+	_siddl.ADD "#$Active: Emits an area of effect dark attack."
+	_augsids.ADD _siddl 56
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3181
+	_siddl.ADD "#$Active: Emits an area of effect water attack."
+	_augsids.ADD _siddl 57
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3182
+	_siddl.ADD "#$Active: Emits an area of effect wind attack."
+	_augsids.ADD _siddl 58
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3191
+	_siddl.ADD "#$Active: Inflicts sleep on the target by a fixed rate. Additional Sleep is not available while the effect lasts."
+	_augsids.ADD _siddl 59
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3187
+	_siddl.ADD "#$Active: Decreases the target's moving speed by a fixed rate."
+	_augsids.ADD _siddl 60
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3189
+	_siddl.ADD "#$Active: Inflicts shock on the target by a fixed rate."
+	_augsids.ADD _siddl 61
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3169
+	_siddl.ADD "#$Active: Inflicts an earth attack."
+	_augsids.ADD _siddl 62
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3165
+	_siddl.ADD "#$Active: Inflicts a fire attack."
+	_augsids.ADD _siddl 63
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3170
+	_siddl.ADD "#$Active: Inflicts a sacred magic attack."
+	_augsids.ADD _siddl 64
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3172
+	_siddl.ADD "#$Active: Inflicts elemental damage."
+	_augsids.ADD _siddl 65
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3171
+	_siddl.ADD "#$Active: Inflicts a dark attack."
+	_augsids.ADD _siddl 66
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3167
+	_siddl.ADD "#$Active: Inflicts a water attack."
+	_augsids.ADD _siddl 67
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3168
+	_siddl.ADD "#$Active: Inflicts a wind attack."
+	_augsids.ADD _siddl 68
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3152
+	_siddl.ADD "#$Active: Cancels your enemy's target."
+	_augsids.ADD _siddl 69
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3193
+	_siddl.ADD "#$Active: Inflicts flint on the target by a fixed rate."
+	_augsids.ADD _siddl 70
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3171
+	_siddl.ADD "#$Active: Launches a dark attack."
+	_augsids.ADD _siddl 71
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3155
+	_siddl.ADD "#$Active: Opens doors and treasure chests by a fixed rate. Requires a Thief Key."
+	_augsids.ADD _siddl 72
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3153
+	_siddl.ADD "#$Active: Absorbs HP from your target."
+	_augsids.ADD _siddl 73
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3167
+	_siddl.ADD "#$Active: Inflicts a water attack."
+	_augsids.ADD _siddl 74
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3084
+	_siddl.ADD "#$Chance: During a physical attack, decreases the target's Atk. Spd. by a fixed rate."
+	_augsids.ADD _siddl 76
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3092
+	_siddl.ADD "#$Chance: During a physical attack, inflicts bleed on the target by a fixed rate."
+	_augsids.ADD _siddl 77
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3090
+	_siddl.ADD "#$Chance: During a physical attack, inflicts fear on the target by a fixed rate and causes him to flee."
+	_augsids.ADD _siddl 78
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3086
+	_siddl.ADD "#$Chance: During a physical attack, inflicts hold on the target by a fixed rate. Additional Hold is not available while the effect lasts."
+	_augsids.ADD _siddl 79
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3091
+	_siddl.ADD "#$Chance: During a physical attack, inflicts poison on the target by a fixed rate."
+	_augsids.ADD _siddl 80
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3089
+	_siddl.ADD "#$Chance: During a physical attack, inflicts flint on the target by a fixed rate."
+	_augsids.ADD _siddl 81
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3112
+	_siddl.ADD "#$Chance: During a critical attack, decreases the target's Atk. Spd. by a fixed rate."
+	_augsids.ADD _siddl 82
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3120
+	_siddl.ADD "#$Chance: During a critical attack, inflicts bleed on the target by a fixed rate."
+	_augsids.ADD _siddl 83
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3118
+	_siddl.ADD "#$Chance: During a critical attack, inflicts fear on the target by a fixed rate."
+	_augsids.ADD _siddl 84
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3114
+	_siddl.ADD "#$Chance: During a critical attack, inflicts hold on the target by a fixed rate. Additional Hold is not available while the effect lasts."
+	_augsids.ADD _siddl 85
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3119
+	_siddl.ADD "#$Chance: During a critical attack, inflicts poison on the target by a fixed rate."
+	_augsids.ADD _siddl 86
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3117
+	_siddl.ADD "#$Chance: During a critical attack, inflicts flint on the target by a fixed rate."
+	_augsids.ADD _siddl 87
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3227
+	_siddl.ADD "#$Chance: Decreases the Atk. Spd. of the target who attacks you by a fixed rate."
+	_augsids.ADD _siddl 88
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3221
+	_siddl.ADD "#$Chance: When damage is received, evasion increases by a fixed rate."
+	_augsids.ADD _siddl 89
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3235
+	_siddl.ADD "#$Chance: Inflicts bleed on the target who attacks you by a fixed rate."
+	_augsids.ADD _siddl 90
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3213
+	_siddl.ADD "#$Chance: When damage is received, recovers your own CP by a fixed rate."
+	_augsids.ADD _siddl 91
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3223
+	_siddl.ADD "#$Chance: When damage is received, increases Critical attack rate by a fixed rate."
+	_augsids.ADD _siddl 92
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3225
+	_siddl.ADD "#$Chance: Decreases the attacking desire of the the target who attacks you by a fixed rate."
+	_augsids.ADD _siddl 93
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3222
+	_siddl.ADD "#$Chance: When damage is received, increases one's own accuracy by a fixed rate."
+	_augsids.ADD _siddl 94
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3229
+	_siddl.ADD "#$Chance: Inflicts hold on the target who attacks you by a fixed rate. Additional Hold is not available while the effect lasts."
+	_augsids.ADD _siddl 95
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3209
+	_siddl.ADD "#$Chance: When damage is received, the amount of HP recovery magic received increases by a fixed rate."
+	_augsids.ADD _siddl 96
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3207
+	_siddl.ADD "#$Chance: When damage is received, recovers your own HP by a fixed rate."
+	_augsids.ADD _siddl 97
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3216
+	_siddl.ADD "#$Chance: When damage is received, increases one's own M. Atk. by a fixed rate."
+	_augsids.ADD _siddl 98
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3224
+	_siddl.ADD "#$Chance: When damage is received, increases the Critical rate of damage attack magic by a fixed rate."
+	_augsids.ADD _siddl 99
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3214
+	_siddl.ADD "#$Chance: When damage is received, Max CP increases by a fixed rate."
+	_augsids.ADD _siddl 100
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3208
+	_siddl.ADD "#$Chance: When damage is received, Max HP increases by a fixed rate."
+	_augsids.ADD _siddl 101
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3211
+	_siddl.ADD "#$Chance: When damage is received, Max MP increases by a fixed rate."
+	_augsids.ADD _siddl 102
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	
+	_siddl.ADD #i3219
+	_siddl.ADD "#$Chance: When damage is received, increases one's own M. Def. by a fixed rate."
+	_augsids.ADD _siddl 103
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3215
+	_siddl.ADD "#$Chance: When damage is received, increases one's own P. Atk. by a fixed rate."
+	_augsids.ADD _siddl 104
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3218
+	_siddl.ADD "#$Chance: When damage is received, increases one's own P. Def. by a fixed rate."
+	_augsids.ADD _siddl 105
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3234
+	_siddl.ADD "#$Chance: During a physical attack, inflicts poison on the target who attacks you by a fixed rate."
+	_augsids.ADD _siddl 106
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3220
+	_siddl.ADD "#$Chance: Decreases the PvP P. Atk. of the target who attacks you by a fixed rate."
+	_augsids.ADD _siddl 107
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3217
+	_siddl.ADD "#$Chance: When damage is received, increases one's own PvP P. Atk. by a fixed rate."
+	_augsids.ADD _siddl 108
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3230
+	_siddl.ADD "#$Chance: Inflicts sleep on the target who attacks you by a fixed rate. Additional sleep is not available while the effect lasts."
+	_augsids.ADD _siddl 109
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3226
+	_siddl.ADD "#$Chance: Decreases the moving speed of the target who attacks you by a fixed rate."
+	_augsids.ADD _siddl 110
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3097
+	_siddl.ADD "#$Chance: During a magic attack, decreases the target's Atk. Spd. by a fixed rate."
+	_augsids.ADD _siddl 111
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3105
+	_siddl.ADD "#$Chance: During a magic attack, inflicts bleed on the target by a fixed rate."
+	_augsids.ADD _siddl 112
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3103
+	_siddl.ADD "#$Chance: During a magic attack, inflicts fear on the target by a fixed rate and causes him to flee."
+	_augsids.ADD _siddl 113
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3099
+	_siddl.ADD "#$Chance: During a magic attack, inflicts hold on the target by a fixed rate. Additional Hold is not available while the effect lasts."
+	_augsids.ADD _siddl 114
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3104
+	_siddl.ADD "#$Chance: During a magic attack, inflicts poison on the target by a fixed rate."
+	_augsids.ADD _siddl 115
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3102
+	_siddl.ADD "#$Chance: During a magic attack, inflicts flint on the target by a fixed rate."
+	_augsids.ADD _siddl 116
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3246
+	_siddl.ADD "#$Passive: Increases HP recovery magic power."
+	_augsids.ADD _siddl 117
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3238
+	_siddl.ADD "#$Passive: Increases HP recovery magic effect."
+	_augsids.ADD _siddl 118
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3241
+	_siddl.ADD "#$Passive: Increases one's own M. Atk."
+	_augsids.ADD _siddl 119
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3245
+	_siddl.ADD "#$Passive: Increases one's own M. Def."
+	_augsids.ADD _siddl 120
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3240
+	_siddl.ADD "#$Passive: Increases one's own P. Atk."
+	_augsids.ADD _siddl 121
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3244
+	_siddl.ADD "#$Passive: Increases one's own P. Def."
+	_augsids.ADD _siddl 122
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3243
+	_siddl.ADD "#$Passive: Increases PvP P. Atk."
+	_augsids.ADD _siddl 123
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3251
+	_siddl.ADD "#$Passive: Increases the weight limit 2 times."
+	_augsids.ADD _siddl 124
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3141
+	_siddl.ADD "#$Active: Temporarily increases the probability of critical attack."
+	_augsids.ADD _siddl 127
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3198
+	_siddl.ADD "#$Active: Blocks all of the target's physical/magic skills by a fixed rate."
+	_augsids.ADD _siddl 129
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3147
+	_siddl.ADD "#$Active: Teleports to a town without any casting time. Cannot be used in special areas such as the GM info center."
+	_augsids.ADD _siddl 130
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3158
+	_siddl.ADD "#$Active: Becomes invincible by a fixed rate."
+	_augsids.ADD _siddl 131
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3142
+	_siddl.ADD "#$Active: Temporarily increases the critical rate of damage attack magic."
+	_augsids.ADD _siddl 132
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3197
+	_siddl.ADD "#$Active: Blocks the target's magic skills by a fixed rate."
+	_augsids.ADD _siddl 134
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3148
+	_siddl.ADD "#$Active: Temporarily bestows the ability to recover some of the damage inflicted on the enemy as HP. Excludes damage by skill and long-range attacks."
+	_augsids.ADD _siddl 142
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3094
+	_siddl.ADD "#$Chance: During a physical attack, blocks all of the target's physical/magic skills by a fixed rate."
+	_augsids.ADD _siddl 143
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3082
+	_siddl.ADD "#$Chance: During a physical attack, burns up the target's MP by a fixed rate."
+	_augsids.ADD _siddl 144
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3088
+	_siddl.ADD "#$Chance: During a physical attack, inflicts paralysis on the target by a fixed rate."
+	_augsids.ADD _siddl 145
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3093
+	_siddl.ADD "#$Chance: During a physical attack, blocks the target's magic skills by a fixed rate."
+	_augsids.ADD _siddl 146
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3087
+	_siddl.ADD "#$Chance: During a physical attack, inflicts sleep on the target by a fixed rate. Additional sleep is not available while the effect lasts."
+	_augsids.ADD _siddl 147
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3085
+	_siddl.ADD "#$Chance: During a physical attack, inflicts shock on the target by a fixed rate."
+	_augsids.ADD _siddl 148
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3122
+	_siddl.ADD "#$Chance: During a critical attack, blocks all of the target's physical/magic skills by a fixed rate."
+	_augsids.ADD _siddl 149
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3110
+	_siddl.ADD "#$Chance: During a critical attack, burns up the target's MP by a fixed rate."
+	_augsids.ADD _siddl 150
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3116
+	_siddl.ADD "#$Chance: During a critical attack, inflicts paralysis on the target by a fixed rate."
+	_augsids.ADD _siddl 151
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3121
+	_siddl.ADD "#$Chance: During a critical attack, blocks the target's magic skills by a fixed rate."
+	_augsids.ADD _siddl 152
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3115
+	_siddl.ADD "#$Chance: During a critical attack, inflicts sleep on the target by a fixed rate. Additional sleep is not available while the effect lasts."
+	_augsids.ADD _siddl 153
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3113
+	_siddl.ADD "#$Chance: During a critical attack, inflicts shock on the target by a fixed rate."
+	_augsids.ADD _siddl 154
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3237
+	_siddl.ADD "#$Chance: Blocks all the physical/magic skills of the target who attacks you by a fixed rate."
+	_augsids.ADD _siddl 155
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3233
+	_siddl.ADD "#$Chance: Inflicts fear on the target who attacks you by a fixed rate and causes him to flee."
+	_augsids.ADD _siddl 156
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3212
+	_siddl.ADD "#$Chance: When damage is received, the amount of MP recovery magic received increases by a fixed rate."
+	_augsids.ADD _siddl 157
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3210
+	_siddl.ADD "#$Chance: When damage is received, recovers your own MP by a fixed rate."
+	_augsids.ADD _siddl 158
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3231
+	_siddl.ADD "#$Chance: Inflicts paralysis on the target who attacks you by a fixed rate."
+	_augsids.ADD _siddl 159
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3236
+	_siddl.ADD "#$Chance: Blocks the magic skills of the target who attacks you by a fixed rate."
+	_augsids.ADD _siddl 160
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3228
+	_siddl.ADD "#$Chance: Inflicts shock on the target who attacks you by a fixed rate."
+	_augsids.ADD _siddl 161
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3232
+	_siddl.ADD "#$Chance: Inflicts flint on the target who attacks you by a fixed rate."
+	_augsids.ADD _siddl 162
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3107
+	_siddl.ADD "#$Chance: During a magic attack, blocks all of the target's physical/magic skills by a fixed rate."
+	_augsids.ADD _siddl 163
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3095
+	_siddl.ADD "#$Chance: During a magic attack, burns up the target's MP by a fixed rate."
+	_augsids.ADD _siddl 164
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3101
+	_siddl.ADD "#$Chance: During a magic attack, inflicts paralysis on the target by a fixed rate."
+	_augsids.ADD _siddl 165
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3106
+	_siddl.ADD "#$Chance: During a magic attack, blocks the target's magic skills by a fixed rate."
+	_augsids.ADD _siddl 166
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3100
+	_siddl.ADD "#$Chance: During a magic attack, inflicts sleep on the target by a fixed rate. Additional sleep is not available while the effect lasts."
+	_augsids.ADD _siddl 167
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3098
+	_siddl.ADD "#$Chance: During a magic attack, inflicts shock on the target by a fixed rate."
+	_augsids.ADD _siddl 168
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3247
+	_siddl.ADD "#$Passive: Increases evasion."
+	_augsids.ADD _siddl 170
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3249
+	_siddl.ADD "#$Passive: Increases the rate of critical attacks."
+	_augsids.ADD _siddl 171
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3248
+	_siddl.ADD "#$Passive: Increases one's own accuracy."
+	_augsids.ADD _siddl 173
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3250
+	_siddl.ADD "#$Passive: Increases the critical rate of damage attack magic."
+	_augsids.ADD _siddl 174
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3239
+	_siddl.ADD "#$Passive: Increases the recovery rate when MP is being recovered by recharge."
+	_augsids.ADD _siddl 175
+	DELETE _siddl
+RETURN _augsids
+FUNCTION AUG_SKILLB_BIND 0
+	DEFINE SORTEDLIST _augsids 0
+	DEFINE ARRAYLIST _sidl 0
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3203
+	_siddl.ADD "#$Active: Temporarily increases the size of your head."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3239
+	_siddl.ADD "#$Passive: Increases the recovery rate when MP is being recovered by recharge."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3239
+	_siddl.ADD "#$Passive: Increases the recovery rate when MP is being recovered by recharge."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3239
+	_siddl.ADD "#$Passive: Increases the recovery rate when MP is being recovered by recharge."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3256
+	_siddl.ADD "#$Passive: Decreases magic MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3256
+	_siddl.ADD "#$Passive: Decreases magic MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3256
+	_siddl.ADD "#$Passive: Decreases magic MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3256
+	_siddl.ADD "#$Passive: Decreases magic MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3256
+	_siddl.ADD "#$Passive: Decreases magic MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3256
+	_siddl.ADD "#$Passive: Decreases magic MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	_augsids.ADD _sidl 1
+	DELETE _sidl
+	DEFINE ARRAYLIST _sidl 0
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3165
+	_siddl.ADD "#$Active: Inflicts a fire attack."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3165
+	_siddl.ADD "#$Active: Inflicts a fire attack."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3165
+	_siddl.ADD "#$Active: Inflicts a fire attack."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3165
+	_siddl.ADD "#$Active: Inflicts a fire attack."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3168
+	_siddl.ADD "#$Active: Inflicts a wind attack."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3165
+	_siddl.ADD "#$Active: Inflicts a fire attack."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3165
+	_siddl.ADD "#$Active: Inflicts a fire attack."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3165
+	_siddl.ADD "#$Active: Inflicts a fire attack."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3168
+	_siddl.ADD "#$Active: Inflicts a wind attack."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3168
+	_siddl.ADD "#$Active: Inflicts a wind attack."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	_augsids.ADD _sidl 75
+	DELETE _sidl
+	DEFINE ARRAYLIST _sidl 0
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3141
+	_siddl.ADD "#$Active: Temporarily increases the probability of critical attack."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3141
+	_siddl.ADD "#$Active: Temporarily increases the probability of critical attack."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3141
+	_siddl.ADD "#$Active: Temporarily increases the probability of critical attack."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3202
+	_siddl.ADD "#$Active: Temporarily decreases all skill reuse time."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3202
+	_siddl.ADD "#$Active: Temporarily decreases all skill reuse time."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3202
+	_siddl.ADD "#$Active: Temporarily decreases all skill reuse time."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3202
+	_siddl.ADD "#$Active: Temporarily decreases all skill reuse time."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3202
+	_siddl.ADD "#$Active: Temporarily decreases all skill reuse time."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3202
+	_siddl.ADD "#$Active: Temporarily decreases all skill reuse time."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3202
+	_siddl.ADD "#$Active: Temporarily decreases all skill reuse time."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	_augsids.ADD _sidl 125
+	DELETE _sidl
+	DEFINE ARRAYLIST _sidl 0
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3141
+	_siddl.ADD "#$Active: Temporarily increases the probability of critical attack."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3141
+	_siddl.ADD "#$Active: Temporarily increases the probability of critical attack."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3141
+	_siddl.ADD "#$Active: Temporarily increases the probability of critical attack."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3164
+	_siddl.ADD "#$Active: Temporarily decreases all skill MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3164
+	_siddl.ADD "#$Active: Temporarily decreases all skill MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3164
+	_siddl.ADD "#$Active: Temporarily decreases all skill MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3164
+	_siddl.ADD "#$Active: Temporarily decreases all skill MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3164
+	_siddl.ADD "#$Active: Temporarily decreases all skill MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3164
+	_siddl.ADD "#$Active: Temporarily decreases all skill MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3164
+	_siddl.ADD "#$Active: Temporarily decreases all skill MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	_augsids.ADD _sidl 126
+	DELETE _sidl
+	DEFINE ARRAYLIST _sidl 0
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3141
+	_siddl.ADD "#$Active: Temporarily increases the probability of critical attack."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3141
+	_siddl.ADD "#$Active: Temporarily increases the probability of critical attack."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3141
+	_siddl.ADD "#$Active: Temporarily increases the probability of critical attack."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3204
+	_siddl.ADD "#$Active: Temporarily bestows on yourself the ability to reflect some of the damage back to the enemy. Excludes damage caused by skills and long-range attack."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3204
+	_siddl.ADD "#$Active: Temporarily bestows on yourself the ability to reflect some of the damage back to the enemy. Excludes damage caused by skills and long-range attack."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3204
+	_siddl.ADD "#$Active: Temporarily bestows on yourself the ability to reflect some of the damage back to the enemy. Excludes damage caused by skills and long-range attack."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3204
+	_siddl.ADD "#$Active: Temporarily bestows on yourself the ability to reflect some of the damage back to the enemy. Excludes damage caused by skills and long-range attack."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3204
+	_siddl.ADD "#$Active: Temporarily bestows on yourself the ability to reflect some of the damage back to the enemy. Excludes damage caused by skills and long-range attack."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3204
+	_siddl.ADD "#$Active: Temporarily bestows on yourself the ability to reflect some of the damage back to the enemy. Excludes damage caused by skills and long-range attack."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3204
+	_siddl.ADD "#$Active: Temporarily bestows on yourself the ability to reflect some of the damage back to the enemy. Excludes damage caused by skills and long-range attack."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	_augsids.ADD _sidl 128
+	DELETE _sidl
+	DEFINE ARRAYLIST _sidl 0
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3142
+	_siddl.ADD "#$Active: Temporarily increases the critical rate of damage attack magic."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3205
+	_siddl.ADD "#$Active: Teleports party members to a town. Cannot be used in special areas such as the GM info center."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3205
+	_siddl.ADD "#$Active: Teleports party members to a town. Cannot be used in special areas such as the GM info center."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3205
+	_siddl.ADD "#$Active: Teleports party members to a town. Cannot be used in special areas such as the GM info center."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3205
+	_siddl.ADD "#$Active: Teleports party members to a town. Cannot be used in special areas such as the GM info center."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3205
+	_siddl.ADD "#$Active: Teleports party members to a town. Cannot be used in special areas such as the GM info center."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3205
+	_siddl.ADD "#$Active: Teleports party members to a town. Cannot be used in special areas such as the GM info center."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3205
+	_siddl.ADD "#$Active: Teleports party members to a town. Cannot be used in special areas such as the GM info center."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3205
+	_siddl.ADD "#$Active: Teleports party members to a town. Cannot be used in special areas such as the GM info center."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3205
+	_siddl.ADD "#$Active: Teleports party members to a town. Cannot be used in special areas such as the GM info center."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	_augsids.ADD _sidl 133
+	DELETE _sidl
+	DEFINE ARRAYLIST _sidl 0
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3142
+	_siddl.ADD "#$Active: Temporarily increases the critical rate of damage attack magic."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3147
+	_siddl.ADD "#$Active: Teleports to a town without any casting time. Cannot be used in special areas such as the GM info center."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3205
+	_siddl.ADD "#$Active: Teleports party members to a town. Cannot be used in special areas such as the GM info center."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3199
+	_siddl.ADD "#$Active: Temporarily decreases skill reuse time."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3199
+	_siddl.ADD "#$Active: Temporarily decreases skill reuse time."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3199
+	_siddl.ADD "#$Active: Temporarily decreases skill reuse time."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3199
+	_siddl.ADD "#$Active: Temporarily decreases skill reuse time."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3199
+	_siddl.ADD "#$Active: Temporarily decreases skill reuse time."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3199
+	_siddl.ADD "#$Active: Temporarily decreases skill reuse time."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3199
+	_siddl.ADD "#$Active: Temporarily decreases skill reuse time."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	_augsids.ADD _sidl 135
+	DELETE _sidl
+	DEFINE ARRAYLIST _sidl 0
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3142
+	_siddl.ADD "#$Active: Temporarily increases the critical rate of damage attack magic."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3147
+	_siddl.ADD "#$Active: Teleports to a town without any casting time. Cannot be used in special areas such as the GM info center."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3205
+	_siddl.ADD "#$Active: Teleports party members to a town. Cannot be used in special areas such as the GM info center."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3161
+	_siddl.ADD "#$Active: Temporarily decreases skill MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3161
+	_siddl.ADD "#$Active: Temporarily decreases skill MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3161
+	_siddl.ADD "#$Active: Temporarily decreases skill MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3161
+	_siddl.ADD "#$Active: Temporarily decreases skill MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3161
+	_siddl.ADD "#$Active: Temporarily decreases skill MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3161
+	_siddl.ADD "#$Active: Temporarily decreases skill MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3161
+	_siddl.ADD "#$Active: Temporarily decreases skill MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	_augsids.ADD _sidl 136
+	DELETE _sidl
+	DEFINE ARRAYLIST _sidl 0
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3197
+	_siddl.ADD "#$Active: Blocks the target's magic skills by a fixed rate."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3197
+	_siddl.ADD "#$Active: Blocks the target's magic skills by a fixed rate."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3205
+	_siddl.ADD "#$Active: Teleports party members to a town. Cannot be used in special areas such as the GM info center."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3201
+	_siddl.ADD "#$Active: Temporarily decreases the reuse time of song/dance skills."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3201
+	_siddl.ADD "#$Active: Temporarily decreases the reuse time of song/dance skills."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3201
+	_siddl.ADD "#$Active: Temporarily decreases the reuse time of song/dance skills."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3201
+	_siddl.ADD "#$Active: Temporarily decreases the reuse time of song/dance skills."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3201
+	_siddl.ADD "#$Active: Temporarily decreases the reuse time of song/dance skills."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3201
+	_siddl.ADD "#$Active: Temporarily decreases the reuse time of song/dance skills."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3201
+	_siddl.ADD "#$Active: Temporarily decreases the reuse time of song/dance skills."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	_augsids.ADD _sidl 137
+	DELETE _sidl
+	DEFINE ARRAYLIST _sidl 0
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3197
+	_siddl.ADD "#$Active: Blocks the target's magic skills by a fixed rate."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3197
+	_siddl.ADD "#$Active: Blocks the target's magic skills by a fixed rate."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3197
+	_siddl.ADD "#$Active: Blocks the target's magic skills by a fixed rate."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3163
+	_siddl.ADD "#$Active: Temporarily decreases the MP consumption of song/dance skills."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3163
+	_siddl.ADD "#$Active: Temporarily decreases the MP consumption of song/dance skills."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3163
+	_siddl.ADD "#$Active: Temporarily decreases the MP consumption of song/dance skills."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3163
+	_siddl.ADD "#$Active: Temporarily decreases the MP consumption of song/dance skills."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3163
+	_siddl.ADD "#$Active: Temporarily decreases the MP consumption of song/dance skills."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3163
+	_siddl.ADD "#$Active: Temporarily decreases the MP consumption of song/dance skills."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3163
+	_siddl.ADD "#$Active: Temporarily decreases the MP consumption of song/dance skills."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	_augsids.ADD _sidl 138
+	DELETE _sidl
+	DEFINE ARRAYLIST _sidl 0
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3197
+	_siddl.ADD "#$Active: Blocks the target's magic skills by a fixed rate."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3197
+	_siddl.ADD "#$Active: Blocks the target's magic skills by a fixed rate."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3197
+	_siddl.ADD "#$Active: Blocks the target's magic skills by a fixed rate."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3200
+	_siddl.ADD "#$Active: Temporarily decreases magic reuse time."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3200
+	_siddl.ADD "#$Active: Temporarily decreases magic reuse time."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3200
+	_siddl.ADD "#$Active: Temporarily decreases magic reuse time."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3200
+	_siddl.ADD "#$Active: Temporarily decreases magic reuse time."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3200
+	_siddl.ADD "#$Active: Temporarily decreases magic reuse time."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3200
+	_siddl.ADD "#$Active: Temporarily decreases magic reuse time."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3200
+	_siddl.ADD "#$Active: Temporarily decreases magic reuse time."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	_augsids.ADD _sidl 139
+	DELETE _sidl
+	DEFINE ARRAYLIST _sidl 0
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3197
+	_siddl.ADD "#$Active: Blocks the target's magic skills by a fixed rate."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3197
+	_siddl.ADD "#$Active: Blocks the target's magic skills by a fixed rate."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3197
+	_siddl.ADD "#$Active: Blocks the target's magic skills by a fixed rate."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3162
+	_siddl.ADD "#$Active: Temporarily decreases magic MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3162
+	_siddl.ADD "#$Active: Temporarily decreases magic MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3162
+	_siddl.ADD "#$Active: Temporarily decreases magic MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3162
+	_siddl.ADD "#$Active: Temporarily decreases magic MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3162
+	_siddl.ADD "#$Active: Temporarily decreases magic MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3162
+	_siddl.ADD "#$Active: Temporarily decreases magic MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3162
+	_siddl.ADD "#$Active: Temporarily decreases magic MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	_augsids.ADD _sidl 140
+	DELETE _sidl
+	DEFINE ARRAYLIST _sidl 0
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3197
+	_siddl.ADD "#$Active: Blocks the target's magic skills by a fixed rate."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3197
+	_siddl.ADD "#$Active: Blocks the target's magic skills by a fixed rate."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3197
+	_siddl.ADD "#$Active: Blocks the target's magic skills by a fixed rate."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3162
+	_siddl.ADD "#$Active: Temporarily decreases magic MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3159
+	_siddl.ADD "#$Active: You can momentarily avoid a monster's preemptive attack. Your attack abilities are greatly decreased while the effect lasts."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3159
+	_siddl.ADD "#$Active: You can momentarily avoid a monster's preemptive attack. Your attack abilities are greatly decreased while the effect lasts."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3159
+	_siddl.ADD "#$Active: You can momentarily avoid a monster's preemptive attack. Your attack abilities are greatly decreased while the effect lasts."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3159
+	_siddl.ADD "#$Active: You can momentarily avoid a monster's preemptive attack. Your attack abilities are greatly decreased while the effect lasts."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3159
+	_siddl.ADD "#$Active: You can momentarily avoid a monster's preemptive attack. Your attack abilities are greatly decreased while the effect lasts."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3159
+	_siddl.ADD "#$Active: You can momentarily avoid a monster's preemptive attack. Your attack abilities are greatly decreased while the effect lasts."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	_augsids.ADD _sidl 141
+	DELETE _sidl
+	DEFINE ARRAYLIST _sidl 0
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3247
+	_siddl.ADD "#$Passive: Increases evasion."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3247
+	_siddl.ADD "#$Passive: Increases evasion."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3247
+	_siddl.ADD "#$Passive: Increases evasion."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3258
+	_siddl.ADD "#$Passive: Decreases all skill MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3258
+	_siddl.ADD "#$Passive: Decreases all skill MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3258
+	_siddl.ADD "#$Passive: Decreases all skill MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3258
+	_siddl.ADD "#$Passive: Decreases all skill MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3258
+	_siddl.ADD "#$Passive: Decreases all skill MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3258
+	_siddl.ADD "#$Passive: Decreases all skill MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3258
+	_siddl.ADD "#$Passive: Decreases all skill MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	_augsids.ADD _sidl 169
+	DELETE _sidl
+	DEFINE ARRAYLIST _sidl 0
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3249
+	_siddl.ADD "#$Passive: Increases the rate of critical attacks."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3249
+	_siddl.ADD "#$Passive: Increases the rate of critical attacks."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3249
+	_siddl.ADD "#$Passive: Increases the rate of critical attacks."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3259
+	_siddl.ADD "#$Passive: Bestows on yourself the ability to reflect some of the damage back to the enemy. Excludes damage caused by skills and long-range attack."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3259
+	_siddl.ADD "#$Passive: Bestows on yourself the ability to reflect some of the damage back to the enemy. Excludes damage caused by skills and long-range attack."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3259
+	_siddl.ADD "#$Passive: Bestows on yourself the ability to reflect some of the damage back to the enemy. Excludes damage caused by skills and long-range attack."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3259
+	_siddl.ADD "#$Passive: Bestows on yourself the ability to reflect some of the damage back to the enemy. Excludes damage caused by skills and long-range attack."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3259
+	_siddl.ADD "#$Passive: Bestows on yourself the ability to reflect some of the damage back to the enemy. Excludes damage caused by skills and long-range attack."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3259
+	_siddl.ADD "#$Passive: Bestows on yourself the ability to reflect some of the damage back to the enemy. Excludes damage caused by skills and long-range attack."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3259
+	_siddl.ADD "#$Passive: Bestows on yourself the ability to reflect some of the damage back to the enemy. Excludes damage caused by skills and long-range attack."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	_augsids.ADD _sidl 172
+	DELETE _sidl
+	DEFINE ARRAYLIST _sidl 0
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3239
+	_siddl.ADD "#$Passive: Increases the recovery rate when MP is being recovered by recharge."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3239
+	_siddl.ADD "#$Passive: Increases the recovery rate when MP is being recovered by recharge."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3239
+	_siddl.ADD "#$Passive: Increases the recovery rate when MP is being recovered by recharge."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3255
+	_siddl.ADD "#$Passive: Decreases skill MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3255
+	_siddl.ADD "#$Passive: Decreases skill MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3255
+	_siddl.ADD "#$Passive: Decreases skill MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3255
+	_siddl.ADD "#$Passive: Decreases skill MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3255
+	_siddl.ADD "#$Passive: Decreases skill MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3255
+	_siddl.ADD "#$Passive: Decreases skill MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3255
+	_siddl.ADD "#$Passive: Decreases skill MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	_augsids.ADD _sidl 176
+	DELETE _sidl
+	DEFINE ARRAYLIST _sidl 0
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3239
+	_siddl.ADD "#$Passive: Increases the recovery rate when MP is being recovered by recharge."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3239
+	_siddl.ADD "#$Passive: Increases the recovery rate when MP is being recovered by recharge."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3239
+	_siddl.ADD "#$Passive: Increases the recovery rate when MP is being recovered by recharge."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3257
+	_siddl.ADD "#$Passive: Decreases song/dance skill MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3257
+	_siddl.ADD "#$Passive: Decreases song/dance skill MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3257
+	_siddl.ADD "#$Passive: Decreases song/dance skill MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3257
+	_siddl.ADD "#$Passive: Decreases song/dance skill MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3257
+	_siddl.ADD "#$Passive: Decreases song/dance skill MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3257
+	_siddl.ADD "#$Passive: Decreases song/dance skill MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3257
+	_siddl.ADD "#$Passive: Decreases song/dance skill MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	_augsids.ADD _sidl 177
+	DELETE _sidl
+	DEFINE ARRAYLIST _sidl 0
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3239
+	_siddl.ADD "#$Passive: Increases the recovery rate when MP is being recovered by recharge."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3239
+	_siddl.ADD "#$Passive: Increases the recovery rate when MP is being recovered by recharge."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3239
+	_siddl.ADD "#$Passive: Increases the recovery rate when MP is being recovered by recharge."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3256
+	_siddl.ADD "#$Passive: Decreases magic MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3256
+	_siddl.ADD "#$Passive: Decreases magic MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3256
+	_siddl.ADD "#$Passive: Decreases magic MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3256
+	_siddl.ADD "#$Passive: Decreases magic MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3256
+	_siddl.ADD "#$Passive: Decreases magic MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3256
+	_siddl.ADD "#$Passive: Decreases magic MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	DEFINE ARRAYLIST _siddl 0
+	_siddl.ADD #i3256
+	_siddl.ADD "#$Passive: Decreases magic MP consumption."
+	_sidl.ADD _siddl
+	DELETE _siddl
+	_augsids.ADD _sidl 0
+	DELETE _sidl	
+RETURN _augsids
+FUNCTION AUG_STAT_NAME 0
+	DEFINE ARRAYLIST _stname 0
+	_stname.ADD "#$P. Def. increases by"
+	_stname.ADD "#$M. Def. increases by"
+	_stname.ADD "#$Increases Max HP by"
+	_stname.ADD "#$Max MP increases by"
+	_stname.ADD "#$Max CP increases by"
+	_stname.ADD "#$P. Atk. increases by"
+	_stname.ADD "#$M. Atk. increases by"
+	_stname.ADD "#$HP Regen increases by"
+	_stname.ADD "#$MP Regen increases by"
+	_stname.ADD "#$CP Regen increases by"
+	_stname.ADD "#$Increases evasion by"
+	_stname.ADD "#$Accuracy increases by"
+	_stname.ADD "#$Critical increases by"
+RETURN _stname

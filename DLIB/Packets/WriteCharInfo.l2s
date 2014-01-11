@@ -1,0 +1,150 @@
+// DLIB::Packets::WriteCharInfo - v3.0 for CT2: Freya
+// by d00d [06/06/09]
+//
+// Creates a CharInfo packet based on a sorted list
+// template of values.
+
+// Version 1.0 - Initial Release
+// Version 1.1 - Updated for v358
+// Version 2.0 - Reprototyped and updated for Gracia Final (CT2.3)
+// Version 2.1 - Added EXTENDED_VFX
+// Version 2.2 - Added TWAR_ID_00/01, IS_DISGUISED
+// Version 3.0 - Updated structure for Freya
+
+FUNCTION DLIB::Packets::WriteCharInfo 1 _oCharInfo
+
+  DEFINE BYTEBUFFER _bOutBuffer 1024
+
+  IF _oCharInfo.CLASSNAME == "#$SORTEDLIST"
+  
+    _bOutBuffer.WRITE_BYTE #I49 // CharInfo Packet Integer
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$X"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$Y"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$Z"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$CT23_UNKNOWN_00"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$OBJECT_ID"
+    _bOutBuffer.WRITE_STRING "_oCharInfo.#$VISIBLE_NAME"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$RACE"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$GENDER"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$ROOT_CLASS_ID"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$UNDERWEAR_SLOT_IID"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$HEAD_SLOT_IID"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$R_HAND_SLOT_IID"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$L_HAND_SLOT_IID"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$GLOVES_SLOT_IID"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$CHEST_SLOT_IID"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$LEGS_SLOT_IID"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$FEET_SLOT_IID"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$BACK_SLOT_IID"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$LRHAND_SLOT_IID"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$HAIR_SLOT_IID"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$HAIR2_SLOT_IID"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$R_BRACELET_SLOT_IID"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$L_BRACELET_SLOT_IID"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$TALISMAN1_SLOT_IID"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$TALISMAN2_SLOT_IID"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$TALISMAN3_SLOT_IID"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$TALISMAN4_SLOT_IID"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$TALISMAN5_SLOT_IID"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$TALISMAN6_SLOT_IID"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$BELT_IID"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$UNDERWEAR_SLOT_AID"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$HEAD_SLOT_AID"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$R_HAND_SLOT_AID"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$L_HAND_SLOT_AID"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$GLOVES_SLOT_AID"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$CHEST_SLOT_AID"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$LEGS_SLOT_AID"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$FEET_SLOT_AID"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$BACK_SLOT_AID"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$LRHAND_SLOT_AID"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$HAIR_SLOT_AID"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$HAIR2_SLOT_AID"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$R_BRACELET_SLOT_AID"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$L_BRACELET_SLOT_AID"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$TALISMAN1_SLOT_AID"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$TALISMAN2_SLOT_AID"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$TALISMAN3_SLOT_AID"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$TALISMAN4_SLOT_AID"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$TALISMAN5_SLOT_AID"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$TALISMAN6_SLOT_AID"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$BELT_AID"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$CT23_UNKNOWN_01"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$CT23_UNKNOWN_02"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$PVP_FLAG"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$KARMA"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$MATKSPD"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$PATKSPD"
+//    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$PVP_FLAG2"
+//    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$KARMA2"
+    _bOutBuffer.WRITE_INT32 ZERO  // Freya
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$RUNSPD"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$WALKSPD"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$SWIMRUNSPD"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$SWIMWALKSPD" 
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$FLRUNSPD"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$FLWALKSPD"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$FLYRUNSPD"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$FLYWALKSPD"
+    _bOutBuffer.WRITE_DOUBLE "_oCharInfo.#$MOVEMULTI"
+    _bOutBuffer.WRITE_DOUBLE "_oCharInfo.#$ATKSPDMULTI"
+    _bOutBuffer.WRITE_DOUBLE "_oCharInfo.#$COLLISON_RADIUS"
+    _bOutBuffer.WRITE_DOUBLE "_oCharInfo.#$COLLISON_HEIGHT"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$HAIRSTYLE"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$HAIRCOLOR"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$FACESTYLE"
+    _bOutBuffer.WRITE_STRING "_oCharInfo.#$VISIBLE_TITLE"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$CLAN_ID"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$CLAN_CREST_ID"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$ALLY_ID"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$ALLY_CREST_ID"
+    _bOutBuffer.WRITE_INT32 NULL // put something here 
+    _bOutBuffer.WRITE_BYTE "_oCharInfo.#$IS_SITTING"
+    _bOutBuffer.WRITE_BYTE "_oCharInfo.#$IS_RUNNING"
+    _bOutBuffer.WRITE_BYTE "_oCharInfo.#$IS_FIGHTING"
+    _bOutBuffer.WRITE_BYTE "_oCharInfo.#$IS_FAKING_DEATH"
+    _bOutBuffer.WRITE_BYTE "_oCharInfo.#$HIDE_MODE"
+    _bOutBuffer.WRITE_BYTE "_oCharInfo.#$MOUNT_TYPE"
+    _bOutBuffer.WRITE_BYTE "_oCharInfo.#$PRIVATE_STORE_TYPE"
+    _bOutBuffer.WRITE_INT16 "_oCharInfo.#$MAX_CUBICS"
+    IF "_oCharInfo.#$MAX_CUBICS" > #I0
+      _bOutBuffer.WRITE_INT16 "_oCharInfo.#$CURRENT_CUBICS"
+    ENDIF    
+    _bOutBuffer.WRITE_BYTE "_oCharInfo.#$LOOKING_FOR_PARTY"    
+    _bOutBuffer.WRITE_UINT32 "_oCharInfo.#$ABNORMAL_VFX"
+    _bOutBuffer.WRITE_BYTE "_oCharInfo.#$IS_FLYING"
+    _bOutBuffer.WRITE_INT16 "_oCharInfo.#$EVALUATIONS_RECEIVED"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$MOUNT_NPC_ID"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$CURRENT_CLASS_ID"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$CT23_UNKNOWN_07"
+    _bOutBuffer.WRITE_BYTE "_oCharInfo.#$IS_MOUNTED"
+    _bOutBuffer.WRITE_BYTE "_oCharInfo.#$TEAM_CIRCLE"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$LARGE_CLAN_CREST_ID"
+    _bOutBuffer.WRITE_BYTE "_oCharInfo.#$IS_NOBLE"
+    _bOutBuffer.WRITE_BYTE "_oCharInfo.#$IS_HERO"
+    _bOutBuffer.WRITE_BYTE "_oCharInfo.#$IS_FISHING"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$FISHING_X"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$FISHING_Y"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$FISHING_Z"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$NAME_COLOR"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$HEADING"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$PLEDGE_CLASS"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$PLEDGE_TYPE"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$TITLE_COLOR"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$CURSED_WEAPON"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$CLAN_REPUTATION"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$TRANSFORMATION_ID"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$AGATHION_ID"
+    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$CT23_UNKNOWN_03"
+    _bOutBuffer.WRITE_UINT32 "_oCharInfo.#$EXTENDED_VFX"
+//    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$TWAR_ID_00"
+//    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$IS_DISGUISED"
+//    _bOutBuffer.WRITE_INT32 "_oCharInfo.#$TWAR_ID_01"    
+    _bOutBuffer.TRIM_TO_INDEX
+    _bOutBuffer.RESET_INDEX
+    
+  ELSE
+    PRINT_TEXT "_bOutBuffer is not a Sorted List"
+  ENDIF
+
+RETURN _bOutBuffer

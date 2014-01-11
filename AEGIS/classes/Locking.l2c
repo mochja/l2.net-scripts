@@ -1,0 +1,8 @@
+CLASS Locking null
+VAR_START
+ 
+  PUBLIC NetLock Network
+  PUBLIC STRING Generic
+VAR_END
+ 
+END_CLASS

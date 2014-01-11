@@ -1,0 +1,4 @@
+<font color=FFCC00>
+[<a action="LINK <&THIS.MENUKEY&>_ReadFrom|<&THIS.READINGS.GET_KEY I1&>"><&THIS.READINGS.I1&></a> (<&THIS.CONVERSATIONS.#$<&THIS.READINGS.GET_KEY I1&>.NEW_COUNT&>)]
+</font>
+__EOF

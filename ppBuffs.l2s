@@ -1,0 +1,269 @@
+// Automatic propeth buffs
+// Server: l2-divinty.com
+// Autor: mochitto
+// Date: 28. 5. 2010
+// Special thanks for L2.NET contributors and Divinity Server :P
+// rev.: 14
+
+PRINT_TEXT "SCRIPT STARTED]"
+//0.3
+//Improved performance in highly loaded places for few times. Everyone using first realease, please update (important!).
+//Tnx for: mpj, obce, d00d, slothmo, oddi, toydolls0101 AND all the L2Net community. Infant.
+
+INCLUDE StdLib/Player.l2c
+DEFINE_GLOBAL ARRAYLIST PPL_AROUND 0
+DEFINE_GLOBAL ARRAYLIST FRIENDS 0
+DEFINE_GLOBAL ARRAYLIST CHAR_INFO 0
+DEFINE_GLOBAL ARRAYLIST Action_Triger 0
+DEFINE_GLOBAL INT Event_Lock 0
+DEFINE_GLOBAL INT D 0
+
+
+//==============SETTINGS===================
+Action_Triger.ADD #i2                        //calls function (buff set up) nr1 (socialHello)
+Action_Triger.ADD #i6                      //calls function (buff set up) nr2 (socialYes)
+//Action_Triger.ADD #i5                      //calls function (buff set up) nr3 (socialNo)
+
+DEFINE_GLOBAL INT Distance_Max "200"        //mximum distance to action sender
+DEFINE_GLOBAL INT By_Clan "0"               //0-friendlist, 1-clan, 2-both
+DEFINE_GLOBAL STRING Clan_Name "Warpers"    //clan name we will be tracking
+DEFINE_GLOBAL INT SLEEP_TIME 0
+
+FRIENDS.ADD "#$M8H6BN644N897JM"
+FRIENDS.ADD "#$Gamblerka"
+//==============SETTINGS===================
+
+
+
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" Social_Actions 39
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" SetupGauge 107
+//PRINT_TEXT "Social emotion driven buffer script. Found <&Action_Triger.COUNT&> buffing sets."
+WHILE ONE == ONE
+    SLEEP 1337
+WEND
+SCRIPT_END
+
+
+
+//=========================================
+
+FUNCTION Social_Actions
+
+
+IF Event_Lock == ONE
+    RETURN VOID
+ENDIF
+
+Event_Lock = ONE
+
+
+DEFINE INT PacketType 0
+DEFINE INT Sender_ID 0
+DEFINE INT Action_ID 0
+DEFINE INT Distance_To 0
+DEFINE INT Func_Call 0
+DEFINE STRING Sender_Name ""
+DEFINE STRING Clan_Name_Target ""
+
+
+PACKET.READ_BYTE PacketType
+PACKET.READ_INT32 Sender_ID
+PACKET.READ_INT32 Action_ID
+
+
+FOREACH D INT Action_Triger 
+
+    IF Action_ID == Action_Triger.D  //action 
+
+        CHAR_GET_NAME Sender_Name "<&Sender_ID&>" 
+        
+        IF Sender_Name != "#$-nobody-"  //if not NPC  
+        
+            IF By_Clan == ZERO        //clan setting
+            
+                FOREACH A STRING FRIENDS
+                
+                    IF FRIENDS.A == Sender_Name  //by name
+                    
+                        GET_PLAYERS PPL_AROUND
+                        
+                        FOREACH B PLAYER PPL_AROUND
+                        
+                            IF PPL_AROUND.B.ID == Sender_ID  //find it in array
+                            
+                                DISTANCE Distance_to CHAR_X CHAR_Y CHAR_Z PPL_AROUND.B.X PPL_AROUND.B.Y. PPL_AROUND.B.Z
+                                
+                                IF Distance_To  < Distance_Max
+                                
+                                    CHAR_INFO.CLEAR
+                                
+                                    CHAR_INFO.ADD PPL_AROUND.B.CLONE
+                                    
+                                    Func_Call = D + ONE
+                                    
+                                    CALL "BUFF_<&Func_Call&>" VOID 0
+                                    
+                                    BREAK 2                                
+                                    
+                                ENDIF
+                                
+                            ENDIF
+                            
+                        NEXTEACH
+                        
+                        BREAK 2
+                        
+                    ENDIF
+                    
+                NEXTEACH
+                
+            ENDIF
+            
+            IF By_Clan == ONE
+            
+                GET_PLAYERS PPL_AROUND
+                
+                FOREACH B PLAYER PPL_AROUND
+                
+                    IF (PPL_AROUND.B.ID == Sender_ID) && (PPL_AROUND.B.CLAN != ZERO)                
+                    
+                        CLAN_GET_NAME Clan_Name_Target "<&PPL_AROUND.B.CLAN&>"
+                            
+                        IF Clan_Name_Target == Clan_Name
+                            
+                            DISTANCE Distance_to CHAR_X CHAR_Y CHAR_Z PPL_AROUND.B.X PPL_AROUND.B.Y. PPL_AROUND.B.Z
+                                
+                            IF Distance_To  < Distance_Max
+                            
+                                CHAR_INFO.CLEAR
+                                
+                                CHAR_INFO.ADD PPL_AROUND.B.CLONE
+                                
+                                Func_Call = D + ONE
+                                
+                                CALL "BUFF_<&Func_Call&>" VOID 0
+    
+                                BREAK 2
+                            
+                            ENDIF
+                                
+                        ENDIF
+                        
+                    ENDIF
+                    
+                NEXTEACH
+                
+            ENDIF
+            
+            IF By_Clan == TWO
+            
+                GET_PLAYERS PPL_AROUND
+                
+                FOREACH A STRING FRIENDS
+                
+                    FOREACH B PLAYER PPL_AROUND
+                    
+                        IF PPL_AROUND.B.CLAN != ZERO
+                    
+                            CLAN_GET_NAME Clan_Name_Target "<&PPL_AROUND.B.CLAN&>"
+                        
+                        ELSE
+                            
+                            Clan_Name_Target = "#$********"
+                        
+                        ENDIF
+                    
+                        IF (PPL_AROUND.B.NAME == FRIENDS.A) || (Clan_Name_Target == Clan_Name)
+            
+                            DISTANCE Distance_to CHAR_X CHAR_Y CHAR_Z PPL_AROUND.B.X PPL_AROUND.B.Y. PPL_AROUND.B.Z
+            
+                            IF Distance_To  < Distance_Max
+                                
+                                CHAR_INFO.CLEAR
+                                
+                                CHAR_INFO.ADD PPL_AROUND.B.CLONE
+                                
+                                Func_Call = D + ONE
+                                
+                                CALL "BUFF_<&Func_Call&>" VOID 0
+                            
+                                BREAK 2
+                        
+                            ENDIF
+                        
+                        ENDIF
+                    
+                    NEXTEACH
+                    
+                    BREAK 2
+                    
+                NEXTEACH
+                
+                BREAK 2
+                
+            ENDIF
+            
+        ENDIF
+        
+    ENDIF
+
+NEXTEACH
+
+
+Event_Lock = ZERO
+
+
+RETURN VOID
+
+FUNCTION SetupGauge
+	PACKET.READ_BYTE null
+	PACKET.READ_INT32 null
+	PACKET.READ_INT32 null
+	PACKET.READ_INT32 SLEEP_TIME
+	print_text "<&SLEEP_TIME&>"
+RETURN VOID
+
+
+//=========================================
+
+FUNCTION BUFF_1   
+	FOREACH C PLAYER CHAR_INFO
+    
+    	//PRINT_TEXT "Function: 1"
+    	//PRINT_TEXT "Extend by ur needs.  Ex: <&CHAR_INFO.C.NAME&> || <&CHAR_INFO.C.ID&>"    
+    
+    	//in this array will always be one person who was selected by searching in prev function
+    	//and u will be able to access all info about him easily
+		//just do usual TARGET, SLEEP, USE_SKILL, SLEEP, TARGET.. inside here
+		COMMAND "/TARGET <&CHAR_INFO.C.NAME&>"    
+		SLEEP 3234
+		USE_SKILL 1542 // counter critical
+		SLEEP 100
+		SLEEP "<&SLEEP_TIME&>" // hkjasdhfajd
+		USE_SKILL 1393
+		SLEEP 100
+		SLEEP "<&SLEEP_TIME&>"
+		USE_SKILL 1191
+		SLEEP 5000
+		CANCEL_TARGET
+
+	NEXTEACH   
+RETURN VOID
+
+FUNCTION BUFF_2  
+	FOREACH C PLAYER CHAR_INFO
+    
+    	//PRINT_TEXT "Function: 1"
+    	//PRINT_TEXT "Extend by ur needs.  Ex: <&CHAR_INFO.C.NAME&> || <&CHAR_INFO.C.ID&>"    
+    
+    	//in this array will always be one person who was selected by searching in prev function
+    	//and u will be able to access all info about him easily
+		//just do usual TARGET, SLEEP, USE_SKILL, SLEEP, TARGET.. inside here
+		COMMAND "/TARGET <&CHAR_INFO.C.NAME&>"    
+		SLEEP 1000
+		USE_SKILL 1542 // counter critical
+		SLEEP 2000
+		CANCEL_TARGET
+
+	NEXTEACH   
+RETURN VOID

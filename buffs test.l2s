@@ -1,0 +1,28 @@
+// Kratky popis
+// Server: 
+// Autor: mochitto
+// Date: 
+// Special thanks for L2.NET contributors
+// rev.: 0
+PRINT_TEXT "SCRIPT STARTED!]"
+INCLUDE "StdLib\Player.l2c"
+INCLUDE "StdLib\Effect.l2c"
+
+DEFINE STRING NAME
+DEFINE ARRAYLIST PLAYERS
+
+// Main section
+// ===============================
+
+GET_PARTY PLAYERS
+FOREACH I PLAYER PLAYERS
+	PRINT_TEXT "Getting effect from player <&PLAYERS.I.NAME&>"
+	FOREACH U EFFECT "PLAYERS.I.EFFECTS"
+		SKILL_GET_NAME NAME "<&PLAYERS.I.EFFECTS.U.ID&>" "<&PLAYERS.I.EFFECTS.U.LEVEL&>"
+		PRINT_TEXT "== <&PLAYERS.I.NAME&> -> <&NAME&> Lv<&PLAYERS.I.EFFECTS.U.LEVEL&>"
+	NEXTEACH
+	PRINT_TEXT "====================================================="
+NEXTEACH
+	
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT

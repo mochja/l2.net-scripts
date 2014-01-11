@@ -1,0 +1,25 @@
+
+	INCLUDE Include/EngineX.l2c
+	DEFINE_GLOBAL ENGINEX ENGINEX 0
+
+	PRINT_TEXT ""
+	PRINT_TEXT "-------------------------------------------------"
+
+   DEFINE STRING RETURN_STRING ""
+   ENGINEX.CONVERT.DEC2ASCII RETURN_STRING 1 #i126
+   PRINT_TEXT "value '123' to ascii = <&RETURN_STRING&> (should be ~)"
+
+   DEFINE STRING RETURN_STRING2 ""
+   DEFINE ARRAYLIST MYARRAY 0
+   MYARRAY.ADD #i72
+   MYARRAY.ADD #i101
+   MYARRAY.ADD #i108
+   MYARRAY.ADD #i108
+   MYARRAY.ADD #i111
+   ENGINEX.CONVERT.DEC2ASCII RETURN_STRING2 1 MYARRAY
+   PRINT_TEXT "Array to ascii = <&RETURN_STRING2&> (should be Hello)"
+
+	PRINT_TEXT "-------------------------------------------------"
+	PRINT_TEXT ""
+
+END_SCRIPT

@@ -1,0 +1,16 @@
+// Handle Die packets.
+
+FUNCTION Packet::MagicSkillCanceld 1 _bMagicSkillCanceld
+
+  DEFINE INT OBJECT_ID
+  
+  _bMagicSkillCanceld.READ_BYTE NULL
+  _bMagicSkillCanceld.READ_INT32 OBJECT_ID
+  
+  // PRINT_TExT "<&OBJECT_ID&>'s cast was interrupted"
+  IF "AEGIS.OPTIONS.TEMP.#$SKILLCANCELD.CONTAINS_KEY <&OBJECT_ID&>" == TRUE
+    // PRINT_TEXT "matched <&OBJECT_ID&> to a tracked process, marking as interrupted"
+    "AEGIS.OPTIONS.TEMP.#$SKILLCANCELD.#$<&OBJECT_ID&>" = TRUE
+  ENDIF
+
+RETURN VOID

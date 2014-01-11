@@ -1,0 +1,47 @@
+
+CLASS LAZY_CASTING_CASTLIST_SKILL NULL
+
+//-------------------------------------------------------------------------------------
+
+	VAR_START
+
+      PUBLIC INT SKILL 0
+      PUBLIC STRING BREAK_PIECE ""
+      PUBLIC INT FAIL_COUNT 0
+
+	VAR_END
+
+//-------------------------------------------------------------------------------------
+
+	PUBLIC SET_VALUE 1 SKILL_ID
+      THIS._SET_VALUE THIS.SKILL 1 SKILL_ID
+	RETURN VOID
+
+	PUBLIC _SET_VALUE 1 SKILL_ID
+      DEFINE LAZY_CASTING_CASTLIST_SKILL_BYVALUE SKILL_BYID 0
+      SKILL_BYID.SKILL_ID = SKILL_ID
+	RETURN SKILL_BYID
+
+//-------------------------------------------------------------------------------------
+
+	PUBLIC SET_PIECE 1 PIECE_KEY
+      THIS._SET_PIECE THIS.SKILL 1 PIECE_KEY
+	RETURN VOID
+
+	PUBLIC _SET_PIECE 1 PIECE_KEY
+      DEFINE LAZY_CASTING_CASTLIST_SKILL_BYPIECE SKILL_BYPIECE 0
+      SKILL_BYPIECE.PIECE_KEY = PIECE_KEY
+	RETURN SKILL_BYPIECE
+
+//-------------------------------------------------------------------------------------
+
+	PUBLIC GET_ID 0
+      DEFINE INT SKILL_ID 0
+      IF (THIS.SKILL.CLASSNAME != #$INT)
+         THIS.SKILL.GET_ID SKILL_ID 0
+      ENDIF
+	RETURN SKILL_ID
+
+//-------------------------------------------------------------------------------------
+
+END_CLASS

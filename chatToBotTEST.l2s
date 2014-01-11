@@ -1,0 +1,18 @@
+// Kratky popis
+// Server: 
+// Autor: mochitto
+// Date: 
+// Special thanks for L2.NET contributors
+// rev.: 0
+PRINT_TEXT "SCRIPT STARTED!]"
+SET_EVENT "<&SCRIPTEVENT_CHATTOBOT&>" "<&SYSTEM_CURRENTFILE&>" MSG
+
+// Main section
+// ===============================
+
+FUNCTION MSG
+	PRINT_TEXT "<&MESSAGE&>"
+RETURN VOID
+	
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT

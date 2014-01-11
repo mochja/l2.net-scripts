@@ -1,0 +1,329 @@
+//  __________________________________________________
+//  0=Skip, 1=Adena, B=Blue(SSD), R=Red(SSB), G=Green(SSC)
+//  W=White(SSNG), G=Grey(SSA), Y=Yellow(SS-S), *=CR/LF
+//  __________________________________________________
+//  Now you can do more than 40*40 pixels/boxes (drop grid)
+//  Mover Function Added =)
+//  __________________________________________________
+
+
+DEFINE_GLOBAL INT Drop_Delay 1100    //Adena  Dropping Delay, Adjust up if misses
+DEFINE_GLOBAL INT Move_Delay 1500    //Move Delay, adjust up if script misses after move
+
+DEFINE String WordToDraw "11000000011111110100000000001011111*11000000010000010010000000010010000*11000000010000010001000000100011100*11000000010000010000100001000011100*11000000010000010000010010000010000*11111111011111110000001100000011111"
+
+DEFINE_GLOBAL INT LOOPER 1
+DEFINE_GLOBAL INT BEGIN_DIST 0
+DEFINE String CharToDraw "0"
+DEFINE INT TextLength 0
+DEFINE INT Current_X_Position 0
+DEFINE INT Current_Y_Position 0
+DEFINE INT Start_X_Position 0
+DEFINE INT Start_Y_Position 0
+DEFINE INT Start_Z_Position 0
+DEFINE INT Counter 0
+DEFINE INT LetterSpacing 2.5
+DEFINE INT LineSpacing 2.5
+DEFINE INT AdenaLetterSpacing 5
+DEFINE INT AdenaLineSpacing 5
+DEFINE INT Z_Add 0
+DEFINE_GLOBAL INT Dummy 0
+DEFINE INT ItemID 57
+DEFINE INT AdenaUID 0
+DEFINE INT NGSS_ID 0
+DEFINE INT DSS_ID 0
+DEFINE INT CSS_ID 0
+DEFINE INT BSS_ID 0
+DEFINE INT ASS_ID 0
+DEFINE INT SGSS_ID 0
+DEFINE INT NGSS_UID 0
+DEFINE INT DSS_UID 0
+DEFINE INT CSS_UID 0
+DEFINE INT BSS_UID 0
+DEFINE INT ASS_UID 0
+DEFINE INT SGSS_UID 0
+DEFINE_GLOBAL INT X 0
+DEFINE_GLOBAL INT Y 0
+DEFINE_GLOBAL INT Z 0
+DEFINE_GLOBAL INT HowFar 0
+DEFINE String Skip "0"
+DEFINE String Draw "1"
+DEFINE String DrawWhite "W"
+DEFINE String DrawRed "R"
+DEFINE String DrawBlue "B"
+DEFINE String DrawGreen "G"
+DEFINE String DrawYellow "Y"
+DEFINE String DrawGrey "G"
+DEFINE String CRLF "*"
+
+ITEM_GET_ID NGSS_ID "Soulshot: No Grade"
+ITEM_GET_ID DSS_ID "Soulshot: D-grade"
+ITEM_GET_ID CSS_ID "Soulshot: C-grade"
+ITEM_GET_ID BSS_ID "Soulshot: B-grade"
+ITEM_GET_ID ASS_ID "Soulshot: A-grade"
+ITEM_GET_ID SGSS_ID "Soulshot: S-grade"
+INVEN_GET_UID AdenaUID "<&ItemID&>"
+INVEN_GET_UID NGSS_UID "<&NGSS_ID&>"
+INVEN_GET_UID DSS_UID "<&DSS_ID&>"
+INVEN_GET_UID CSS_UID "<&CSS_ID&>"
+INVEN_GET_UID BSS_UID "<&BSS_ID&>"
+INVEN_GET_UID ASS_UID "<&ASS_ID&>"
+INVEN_GET_UID SGSS_UID "<&SGSS_ID&>"
+
+LABEL START
+
+Current_X_Position = CHAR_X - #i105
+Current_Y_Position = CHAR_Y - #i100
+Start_X_Position = CHAR_X
+Start_Y_Position = CHAR_Y
+Start_Z_Position = CHAR_Z
+TextLength = WordToDraw.LENGTH
+
+SLEEP 1000
+
+DO
+    CharToDraw = WordToDraw.SUBSTRING Counter #i1
+    SWITCH CharToDraw
+        CASE Skip
+            Current_X_Position = Current_X_Position + AdenaLetterSpacing
+            BREAK 1
+        CASE Draw
+            Current_X_Position = Current_X_Position + AdenaLetterSpacing
+            Callsub DropAdena
+            BREAK 1
+         CASE DrawWhite
+            Current_X_Position = Current_X_Position + LetterSpacing
+            Callsub DropWhite
+            Current_Y_Position = Current_Y_Position + LineSpacing
+            Callsub DropWhite
+            Current_Y_Position = Current_Y_Position - LineSpacing
+            Current_X_Position = Current_X_Position + LetterSpacing
+            Callsub DropWhite
+            Current_Y_Position = Current_Y_Position + LineSpacing
+            Callsub DropWhite
+            Current_Y_Position = Current_Y_Position - LineSpacing
+            BREAK 1
+        CASE DrawRed
+            Current_X_Position = Current_X_Position + LetterSpacing
+            Callsub DropRed
+            Current_Y_Position = Current_Y_Position + LineSpacing
+            Callsub DropRed
+            Current_Y_Position = Current_Y_Position - LineSpacing
+            Current_X_Position = Current_X_Position + LetterSpacing
+            Callsub DropRed
+            Current_Y_Position = Current_Y_Position + LineSpacing
+            Callsub DropRed
+            Current_Y_Position = Current_Y_Position - LineSpacing
+            BREAK 1
+        CASE DrawBlue
+            Current_X_Position = Current_X_Position + LetterSpacing
+            Callsub DropBlue
+            Current_Y_Position = Current_Y_Position + LineSpacing
+            Callsub DropBlue
+            Current_Y_Position = Current_Y_Position - LineSpacing
+            Current_X_Position = Current_X_Position + LetterSpacing
+            Callsub DropBlue
+            Current_Y_Position = Current_Y_Position + LineSpacing
+            Callsub DropBlue
+            Current_Y_Position = Current_Y_Position - LineSpacing
+            BREAK 1
+        CASE DrawGreen
+            Current_X_Position = Current_X_Position + LetterSpacing
+            Callsub DropGreen
+            Current_Y_Position = Current_Y_Position + LineSpacing
+            Callsub DropGreen
+            Current_Y_Position = Current_Y_Position - LineSpacing
+            Current_X_Position = Current_X_Position + LetterSpacing
+            Callsub DropGreen
+            Current_Y_Position = Current_Y_Position + LineSpacing
+            Callsub DropGreen
+            Current_Y_Position = Current_Y_Position - LineSpacing
+            BREAK 1
+        CASE DrawYellow
+            Current_X_Position = Current_X_Position + LetterSpacing
+            Callsub DropYellow
+            Current_Y_Position = Current_Y_Position + LineSpacing
+            Callsub DropYellow
+            Current_Y_Position = Current_Y_Position - LineSpacing
+            Current_X_Position = Current_X_Position + LetterSpacing
+            Callsub DropYellow
+            Current_Y_Position = Current_Y_Position + LineSpacing
+            Callsub DropYellow
+            Current_Y_Position = Current_Y_Position - LineSpacing
+            BREAK 1
+        CASE DrawGrey
+            Current_X_Position = Current_X_Position + LetterSpacing
+            Callsub DropGrey
+            Current_Y_Position = Current_Y_Position + LineSpacing
+            Callsub DropGrey
+            Current_Y_Position = Current_Y_Position - LineSpacing
+            Current_X_Position = Current_X_Position + LetterSpacing
+            Callsub DropGrey
+            Current_Y_Position = Current_Y_Position + LineSpacing
+            Callsub DropGrey
+            Current_Y_Position = Current_Y_Position - LineSpacing
+            BREAK 1
+
+        CASE CRLF
+            IF CHAR_X != "#i<&Start_X_Position&>"
+                IF CHAR_Y != "#i<&Start_Y_Position&>"
+                    X = "#i<&Start_X_Position&>"
+                    Y = "#i<&Start_Y_Position&>"
+                    Z = "#i<&Start_Z_Position&>"
+                    CALL MOVER VOID 3 X Y Z
+                    SLEEP "<&Move_Delay&>"
+                ENDIF
+            ENDIF
+
+            Current_Y_Position = Current_Y_Position + AdenaLineSpacing
+            Current_X_Position = CHAR_X - #i105
+    ENDSWITCH
+
+    Counter = Counter + ONE
+
+LOOP TextLength != Counter
+
+PRINT_TEXT "DONE"
+
+END_SCRIPT
+
+SUB DropAdena
+
+    DISTANCE HowFar Current_X_Position Current_Y_Position ZERO CHAR_X CHAR_Y ZERO
+    Dummy = Current_X_Position - CHAR_X
+    PRINT_TEXT "Distance <&Dummy&>"
+
+    IF Dummy >= #i106
+        X = "#i<&Current_X_Position&>"
+        Y = "#i<&Current_Y_Position&>"
+        Z = "#i<&Start_Z_Position&>"
+        CALL MOVER VOID 3 X Y Z
+    ENDIF
+
+ DROP_ITEM "<&AdenaUID&>" 1 "<&Current_X_Position&>" "<&Current_Y_Position&>" "<&CHAR_Z&>"
+    SLEEP "<&Drop_Delay&>"
+
+RETURNSUB
+
+
+SUB DropWhite
+
+            DISTANCE HowFar Current_X_Position Current_Y_Position ZERO CHAR_X CHAR_Y ZERO
+            Dummy = Current_X_Position - CHAR_X
+        IF Dummy >= #i106
+              X = "#i<&Current_X_Position&>"
+              Y = "#i<&Current_Y_Position&>"
+              Z = "#i<&Start_Z_Position&>"
+              CALL MOVER VOID 3 X Y Z
+        ENDIF
+            PRINT_TEXT "Distance <&Dummy&>"
+DROP_ITEM "<&NGSS_UID&>" 1 "<&Current_X_Position&>" "<&Current_Y_Position&>" "<&CHAR_Z&>"
+            SLEEP "<&Drop_Delay&>"
+
+RETURNSUB
+
+
+SUB DropRed
+
+            DISTANCE HowFar Current_X_Position Current_Y_Position ZERO CHAR_X CHAR_Y ZERO
+            Dummy = Current_X_Position - CHAR_X
+        IF Dummy >= #i106
+              X = "#i<&Current_X_Position&>"
+              Y = "#i<&Current_Y_Position&>"
+              Z = "#i<&Start_Z_Position&>"
+              CALL MOVER VOID 3 X Y Z
+        ENDIF
+            PRINT_TEXT "Distance <&Dummy&>"
+DROP_ITEM "<&BSS_UID&>" 1 "<&Current_X_Position&>" "<&Current_Y_Position&>" "<&CHAR_Z&>"
+            SLEEP "<&Drop_Delay&>"
+
+RETURNSUB
+
+
+SUB DropBlue
+
+            DISTANCE HowFar Current_X_Position Current_Y_Position ZERO CHAR_X CHAR_Y ZERO
+            Dummy = Current_X_Position - CHAR_X
+        IF Dummy >= #i106
+              X = "#i<&Current_X_Position&>"
+              Y = "#i<&Current_Y_Position&>"
+              Z = "#i<&Start_Z_Position&>"
+              CALL MOVER VOID 3 X Y Z
+        ENDIF
+            PRINT_TEXT "Distance <&Dummy&>"
+DROP_ITEM "<&DSS_UID&>" 1 "<&Current_X_Position&>" "<&Current_Y_Position&>" "<&CHAR_Z&>"
+            SLEEP "<&Drop_Delay&>"
+
+RETURNSUB
+
+
+SUB DropGreen
+
+            DISTANCE HowFar Current_X_Position Current_Y_Position ZERO CHAR_X CHAR_Y ZERO
+            Dummy = Current_X_Position - CHAR_X
+        IF Dummy >= #i106
+              X = "#i<&Current_X_Position&>"
+              Y = "#i<&Current_Y_Position&>"
+              Z = "#i<&Start_Z_Position&>"
+              CALL MOVER VOID 3 X Y Z
+        ENDIF
+            PRINT_TEXT "Distance <&Dummy&>"
+DROP_ITEM "<&CSS_UID&>" 1 "<&Current_X_Position&>" "<&Current_Y_Position&>" "<&CHAR_Z&>"
+            SLEEP "<&Drop_Delay&>"
+
+RETURNSUB
+
+
+SUB DropYellow
+
+            DISTANCE HowFar Current_X_Position Current_Y_Position ZERO CHAR_X CHAR_Y ZERO
+            Dummy = Current_X_Position - CHAR_X
+        IF Dummy >= #i106
+              X = "#i<&Current_X_Position&>"
+              Y = "#i<&Current_Y_Position&>"
+              Z = "#i<&Start_Z_Position&>"
+              CALL MOVER VOID 3 X Y Z
+        ENDIF
+            PRINT_TEXT "Distance <&Dummy&>"
+DROP_ITEM "<&SGSS_UID&>" 1 "<&Current_X_Position&>" "<&Current_Y_Position&>" "<&CHAR_Z&>"
+            SLEEP "<&Drop_Delay&>"
+
+RETURNSUB
+
+
+SUB DropGrey
+
+            DISTANCE HowFar Current_X_Position Current_Y_Position ZERO CHAR_X CHAR_Y ZERO
+            Dummy = Current_X_Position - CHAR_X
+        IF Dummy >= #i106
+              X = "#i<&Current_X_Position&>"
+              Y = "#i<&Current_Y_Position&>"
+              Z = "#i<&Start_Z_Position&>"
+              CALL MOVER VOID 3 X Y Z
+        ENDIF
+            PRINT_TEXT "Distance <&Dummy&>"
+DROP_ITEM "<&ASS_UID&>" 1 "<&Current_X_Position&>" "<&Current_Y_Position&>" "<&CHAR_Z&>"
+            SLEEP "<&Drop_Delay&>"
+
+RETURNSUB
+
+
+FUNCTION MOVER 3 X Y Z
+
+LOOPER = #i1
+
+DISTANCE BEGIN_DIST X Y Z CHAR_X CHAR_Y CHAR_Z
+PRINT_TEXT "Move Distance of <&BEGIN_DIST&>"
+
+WHILE LOOPER == #i1
+  MOVE_TO "<&X&>" "<&Y&>" "<&Z&>"
+  SLEEP 2000
+      IF CHAR_X == X
+          IF CHAR_Y == Y
+            LOOPER = #i0
+        ENDIF
+    ENDIF
+WEND
+
+SLEEP "<&Move_Delay&>"
+RETURN VOID

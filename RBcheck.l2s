@@ -1,0 +1,106 @@
+// RaidBoss Checker
+// Server: all
+// Autor: mochitto
+// Date: 6. 6. 2010 Last Edited: 22. 11. 2010
+// Special thanks to L2.NET contributors
+// Version: L2.NET 378
+// rev.: 28
+PRINT_TEXT "SCRIPT STARTED!]"
+INCLUDE "StdLib/NPC.l2c"
+
+// Define section
+// ===============================
+DEFINE_GLOBAL STRING MSG_ALIVE "[RB_NAME] is alive!!"         // Custom message for RaidBoss spawn You can use [RB_NAME]
+DEFINE_GLOBAL INT    CHECK_INTERVAL 5000                      // Checking interval in ms (1sec = 1000ms)
+DEFINE_GLOBAL INT    CHECK_COUNT  5                           // RB will be checked X times and after will be relog to next char
+DEFINE_GLOBAL INT    ALARM        1                           // if 1 - On RB spawn play l2.net alarm and show message box 
+DEFINE_GLOBAL INT    COUNTPMS     1                           // count pm then be sended
+DEFINE_GLOBAL INT    PMSINTERVAL  10000                       // inteval with pm pack send in ms (1s = 1000ms)
+
+// == DONT EDIT
+DEFINE_GLOBAL ARRAYLIST  PLAYERS
+DEFINE_GLOBAL ARRAYLIST  NPCS   
+DEFINE_GLOBAL SORTEDLIST RBNAMES
+DEFINE_GLOBAL INT        CAN_CHECK  1    
+DEFINE_GLOBAL INT        CHECK_STEP 
+// ==
+
+// Names of Raidboss 
+// RBNAMES.ADD [char_slot] "[rb_name]"
+RBNAMES.ADD 0 "Zaken"
+RBNAMES.ADD 1 "Flame Of Splendor Barakiel"
+RBNAMES.ADD 2 "Queen ant"
+
+// Players NAME list who will send message when RB will be alive
+// You can add next playrs if put next line: PLAYERS.ADD "#$playerNick"
+PLAYERS.ADD "#$Player1"
+PLAYERS.ADD "#$Player2"
+
+  
+// Main section - DONT EDIT NEXT
+// ===============================  
+WHILE CAN_CHECK == #i1
+     PRINT_TEXT "CHECKING STARTED"
+     FOREACH A INT RBNAMES 
+          PRINT_TEXT "<&RBNAMES.GET_KEY A&>"
+          PRINT_TEXT "== LogIn char in slot <&RBNAMES.A&> it will check rb <&RBNAMES.GET_KEY A&> <&CHECK_COUNT&> times.."
+          SELECTCHAR VOID 1 RBNAMES.A
+          CHECK_RB VOID 1 "RBNAMES.GET_KEY A" 
+          INJECT "57 00 00 00 00" // LogOut 
+          PRINT_TEXT "== LogOut.."    
+          SLEEP 5000
+     NEXTEACH
+     SLEEP "<&CHECK_INTERVAL&>"
+WEND
+
+PRINT_TEXT "STOP SCRIPT!]"
+END_SCRIPT
+
+// Function section
+// ===============================
+FUNCTION CHECK_RB 1 NAME
+     FOR G 0 "<&CHECK_COUNT&>" 1
+          GET_NPCS NPCS
+          FOREACH A NPC NPCS 
+               IF NPCS.A.NAME.TO_UPPER == NAME.TO_UPPER 
+                    PRINT_TEXT  "== <&NAME&> IS ALIVE!"
+                    IF ALARM == #i1
+                         NMESSAGE_BOX "RaidBoss ALIVE" "RaidBoss: <&NAME&> is alive!" "<&INFORMATION&>"
+                         PLAYALARM
+                    ENDIF     
+                    ALERT_PLAYERS     
+                    BREAK 3 //That will kill FOR
+               ENDIF
+          NEXTEACH
+          PRINT_TEXT "== <&NAME&> IS DEAD!"
+          SLEEP "<&CHECK_INTERVAL&>"
+     NEXT
+RETURN VOID 
+
+FUNCTION ALERT_PLAYERS
+     IF MSG_ALIVE.CONTAINS "#$[rb_name]" == true
+          MSG_ALIVE = MSG_ALIVE.REPLACE "[rb_name]" NAME  
+     ENDIF
+     FOR B 0 "<&COUNTPMS&>" 1
+          FOREACH A STRING PLAYERS
+               SAY_TEXT "<&CHANNEL_PRIVATE&>" "<&MSG_ALIVE&>" "<&PLAYERS.A&>"
+               SLEEP 1000
+          NEXTEACH
+          SLEEP "<&PMSINTERVAL&>"
+     NEXT
+     PRINT_TEXT "== MESSAGES SENDED"
+RETURN VOID
+
+FUNCTION SELECTCHAR 1 CHAR_SLOT
+     DEFINE BYTEBUFFER CharacterSelect 256
+     CharacterSelect.WRITE_BYTE 18  
+     CharacterSelect.WRITE_INT32 CHAR_SLOT
+     CharacterSelect.WRITE_INT16 0
+     CharacterSelect.WRITE_INT32 0
+     CharacterSelect.WRITE_INT32 0
+     CharacterSelect.WRITE_INT32 0
+     CharacterSelect.TRIM_TO_INDEX
+     INJECTBB CharacterSelect
+     DELETE CharacterSelect
+     SLEEP 5000
+RETURN VOID

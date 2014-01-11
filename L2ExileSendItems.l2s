@@ -1,0 +1,31 @@
+//-------------------------------------------------------------------------------------
+   INCLUDE "Include/EngineX.l2c"
+   DEFINE_GLOBAL ENGINEX ENGINEX 0
+   DEFINE INT ITEM_C 0
+   DEFINE INT REQUESTED_ADENA 0
+   
+//	WHILE ZERO == ZERO
+		//ITEM_COUNT ITEM_C 6673
+	//	IF ITEM_C > 1000
+			//-------------------------------------------------------------------------------------
+			DEFINE NULL xAUTOMAIL 0
+			ENGINEX.CONSTRUCT xAUTOMAIL 1 #$EngineX.AutoBot.Mailing
+			//-------------------------------------------------------------------------------------
+
+			//xAUTOMAIL.ADD_SEND_ITEM VOID 3 [ITEM_ID] [COUNT] [TYPE]
+			//types:
+			//0 = send all u have
+			//1 = send only this count, dont send if u have less
+			//2 = send this count, send less if u dont have that much
+			//3 = send this count multiple times as often as possible
+			//4 = send as much but keep this count
+
+			//xAUTOMAIL.ADD_SEND_ITEM VOID 3 6673 0 0
+			xAUTOMAIL.ADD_SEND_ITEM VOID 3 57 10000000000 1 
+   
+   
+			xAUTOMAIL.SEND_ITEMS VOID 4 #$Janie #$[RE]hello #$ REQUESTED_ADENA
+			DELETE xAUTOMAIL
+	//	ENDIF
+	//	SLEEP 1000 
+//	WEND

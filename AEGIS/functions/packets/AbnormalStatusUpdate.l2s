@@ -1,0 +1,69 @@
+// Handle AbnormalStatusUpdate packets.
+
+FUNCTION Packet::AbnormalStatusUpdate 1 _bAbnormalStatusUpdate
+
+  DEFINE SORTEDLIST AbnormalStatusUpdate_SL 0
+  DEFINE INT _iTime
+  DEFINE INT _iDelta
+  DEFINE INT _iTmp
+  
+  IF _bAbnormalStatusUpdate.COUNT <= #I3        
+   
+    LOCK AEGIS.MUTEX.EFFECTTRACKING.ABNORMALEFFECTS
+      AEGIS.EFFECTTRACKING.ABNORMALEFFECTS.CLEAR
+    UNLOCK AEGIS.MUTEX.EFFECTTRACKING.ABNORMALEFFECTS
+    
+  ELSE
+    CALL_EXTERN "DLIB\Packets\ReadAbnormalStatusUpdate.l2s" DLIB::Packets::ReadAbnormalStatusUpdate AbnormalStatusUpdate_SL 1 _bAbnormalStatusUpdate
+    LOCK AEGIS.MUTEX.EFFECTTRACKING.ABNORMALEFFECTS
+      FOREACH Object AbnormalStatusUpdate AbnormalStatusUpdate_SL
+        _iTmp = "AbnormalStatusUpdate_SL.GET_KEY OBJECT"
+       
+        IF "AEGIS.EFFECTTRACKING.ABNORMALEFFECTS.CONTAINS_KEY <&_iTmp&>" == TRUE
+          GET_TIME _iTime
+            IF "AbnormalStatusUpdate_SL.#$<&_iTmp&>.EFFECT_DURATION" == #I-1
+              "AbnormalStatusUpdate_SL.#$<&_iTmp&>.EFFECT_DURATION" = #I99999
+              _iDelta = "AbnormalStatusUpdate_SL.#$<&_iTmp&>.EFFECT_DURATION" * #I10000000
+              "AEGIS.EFFECTTRACKING.ABNORMALEFFECTS.#$<&_iTmp&>.EFFECT_DURATION" = "AbnormalStatusUpdate_SL.#$<&_iTmp&>.EFFECT_DURATION"
+            ELSE
+             _iDelta = "AbnormalStatusUpdate_SL.#$<&_iTmp&>.EFFECT_DURATION" * #I10000000
+              "AEGIS.EFFECTTRACKING.ABNORMALEFFECTS.#$<&_iTmp&>.EFFECT_DURATION" = "AbnormalStatusUpdate_SL.#$<&_iTmp&>.EFFECT_DURATION"
+            ENDIF
+          _iTime = _iTime + _iDelta
+          IF _iTime >= "AEGIS.EFFECTTRACKING.ABNORMALEFFECTS.#$<&_iTmp&>.AGE"
+            _iDelta = _iTime - "AEGIS.EFFECTTRACKING.ABNORMALEFFECTS.#$<&_iTmp&>.AGE"
+            _iDelta = _iDelta / #I10000000
+            "AEGIS.EFFECTTRACKING.ABNORMALEFFECTS.#$<&_iTmp&>.AGE" = _iTime
+            "AEGIS.EFFECTTRACKING.ABNORMALEFFECTS.#$<&_iTmp&>.EFFECT_LEVEL" = "AbnormalStatusUpdate_SL.#$<&_iTmp&>.EFFECT_LEVEL"
+          ENDIF
+          "AEGIS.EFFECTTRACKING.ABNORMALEFFECTS.#$<&_iTmp&>.EFFECT_ORDER" = "AbnormalStatusUpdate_SL.#$<&_iTmp&>.EFFECT_ORDER"
+        ELSE
+          DEFINE AbnormalStatusUpdate EFFECT 0 
+          GET_TIME EFFECT.AGE
+          
+          EFFECT.IS_DIRTY = #I0
+          EFFECT.EFFECT_ID = "AbnormalStatusUpdate_SL.#$<&_iTmp&>.EFFECT_ID"
+          EFFECT.EFFECT_LEVEL = "AbnormalStatusUpdate_SL.#$<&_iTmp&>.EFFECT_LEVEL"
+          IF "AbnormalStatusUpdate_SL.#$<&_iTmp&>.EFFECT_DURATION" == #I-1
+            "AbnormalStatusUpdate_SL.#$<&_iTmp&>.EFFECT_DURATION" = #I99999
+          ENDIF
+          EFFECT.EFFECT_DURATION = "AbnormalStatusUpdate_SL.#$<&_iTmp&>.EFFECT_DURATION"
+          EFFECT.EFFECT_ORDER = "AbnormalStatusUpdate_SL.#$<&_iTmp&>.EFFECT_ORDER"
+          _iTime = EFFECT.EFFECT_DURATION * #I10000000
+          
+          EFFECT.AGE = EFFECT.AGE + _iTime
+          //PRINT_TEXT "Adding <&AbnormalStatusUpdate_SL.#$<&_iTmp&>.EFFECT_ID&>"
+          AEGIS.EFFECTTRACKING.ABNORMALEFFECTS.ADD EFFECT "<&AbnormalStatusUpdate_SL.#$<&_iTmp&>.EFFECT_ID&>"
+          DELETE EFFECT
+        ENDIF
+      NEXTEACH
+      
+      FOREACH X AbnormalStatusUpdate AEGIS.EFFECTTRACKING.ABNORMALEFFECTS
+        IF "AbnormalStatusUpdate_SL.CONTAINS_KEY <&AEGIS.EFFECTTRACKING.ABNORMALEFFECTS.GET_KEY X&>" == FALSE              
+          "AEGIS.EFFECTTRACKING.ABNORMALEFFECTS.X.IS_DIRTY" = TRUE
+        ENDIF
+      NEXTEACH
+    UNLOCK AEGIS.MUTEX.EFFECTTRACKING.ABNORMALEFFECTS
+  ENDIF
+  
+RETURN VOID

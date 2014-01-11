@@ -1,0 +1,20 @@
+// New Class, inherits from NULL.
+CLASS Button NULL
+
+     VAR_START
+          // Variables definitions.
+          PUBLIC INT ENABLED
+          PUBLIC INT CHECKED
+          PUBLIC STRING ACTION
+          PUBLIC STRING NAME
+          PUBLIC STRING FORE
+          PUBLIC STRING BACK
+          PUBLIC INT WIDTH
+          PUBLIC INT HEIGHT
+     VAR_END
+
+     PUBLIC CONSTRUCT 0
+          // Function called when class is declared.
+     RETURN VOID
+
+END_CLASS

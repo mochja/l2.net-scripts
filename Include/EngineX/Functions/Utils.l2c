@@ -1,0 +1,57 @@
+
+//-------------------------------------------------------------------------------------
+CLASS ENGINEX_FUNCTIONS_UTILS NULL
+//-------------------------------------------------------------------------------------
+
+   PUBLIC SLOT_ID 2 BAR SLOT
+      DEFINE INT SLOT_ID 0
+      SLOT_ID = BAR - #i1
+      SLOT_ID = SLOT_ID * #i12
+      SLOT_ID = SLOT_ID + SLOT
+      SLOT_ID = SLOT_ID - #i1
+      SLEEP 1
+   RETURN SLOT_ID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC SLEEP 2 MIN MAX
+      IF ( MIN >= MAX )
+         MAX = MIN + MAX
+      ENDIF
+      DEFINE INT TIME 0
+      GET_RAND TIME "<&MIN&>" "<&MAX&>"
+      SLEEP "<&TIME&>"
+      SLEEP 1
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC TARGET_UNIQUE 3 UID TIMEOUT REPEATS
+      IF ( UID == TARGET_ID )
+         RETURN TRUE
+      ENDIF
+      DEFINE INT TARGET_FOUND 0
+      FOR I1 -1 "<&REPEATS&>" 1
+         DEFINE BYTEBUFFER BB 1024
+         BB.WRITE_BYTE #i31
+         BB.WRITE_INT32 UID
+         BB.WRITE_INT32 CHAR_X
+         BB.WRITE_INT32 CHAR_Y
+         BB.WRITE_INT32 CHAR_Z
+         BB.WRITE_BYTE ZERO
+         INJECTBB BB
+         DELETE BB
+         FOR I2 0 "<&TIMEOUT&>" 100
+            SLEEP 100
+            IF ( UID == TARGET_ID )
+               TARGET_FOUND = TRUE
+               BREAK 3
+            ENDIF
+         NEXT
+      NEXT
+      SLEEP 1
+   RETURN TARGET_FOUND
+
+//-------------------------------------------------------------------------------------
+END_CLASS
+//-------------------------------------------------------------------------------------

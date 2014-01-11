@@ -1,0 +1,105 @@
+
+CLASS LAZY_CASTING_CASTLIST NULL
+
+//-------------------------------------------------------------------------------------
+
+	VAR_START
+
+      PRIVATE STRING CASTLIST_NAME ""
+      PUBLIC ARRAYLIST SKILLS 0
+      PUBLIC INT CUR_SKILL_I 0
+      PUBLIC INT REPEAT 0
+      PUBLIC INT ON_CANCEL 0
+
+	VAR_END
+
+//-------------------------------------------------------------------------------------
+
+   ///
+   /// adds a skill to this classlist
+   /// argument SKILL is optional
+   /// returns the pointer to the castlist-skill
+   ///
+   PUBLIC ADD_SKILL 1 SKILL
+
+      // switch the type of the argument SKILL
+      SWITCH SKILL.TYPE
+
+         // argument wasnt passed
+         CASE NULL
+
+            DEFINE LAZY_CASTING_CASTLIST_SKILL CASTLIST_SKILL 0
+            THIS.SKILLS.ADD "CASTLIST_SKILL"
+
+            BREAK 1
+
+         // argument is skill id
+         CASE INT
+
+            DEFINE LAZY_CASTING_CASTLIST_SKILL CASTLIST_SKILL 0
+            CASTLIST_SKILL.SET_VALUE VOID 1 SKILL
+            THIS.SKILLS.ADD "CASTLIST_SKILL"
+
+            BREAK 1
+
+         // argument is piece reference
+         CASE STRING
+
+            DEFINE LAZY_CASTING_CASTLIST_SKILL CASTLIST_SKILL 0
+            CASTLIST_SKILL.SET_PIECE VOID 1 SKILL
+            THIS.SKILLS.ADD "CASTLIST_SKILL"
+
+            BREAK 1
+
+         // argument is unknown type
+         CASE STRING
+            RETURN ZERO
+            BREAK 1
+
+      ENDSWITCH
+
+   RETURN CASTLIST_SKILL
+
+//-------------------------------------------------------------------------------------
+
+   ///
+   /// deletes the skill at the position INDEX from the skills
+   ///
+   PUBLIC DELETE_SKILL 1 SKILL_INDEX
+
+      IF (SKILL_INDEX >= THIS.SKILLS.COUNT)
+         RETURN FALSE
+      ENDIF
+      IF (SKILL_INDEX < ZERO)
+         RETURN FALSE
+      ENDIF
+
+      THIS.SKILLS.REMOVE "<&SKILL_INDEX&>"
+
+   RETURN TRUE
+
+//-------------------------------------------------------------------------------------
+
+   ///
+   /// cleares the list of skills
+   ///
+   PUBLIC CLEAR_SKILLS 1 CASTLIST_NAME
+
+      THIS.SKILLS.CLEAR
+
+   RETURN TRUE
+
+//-------------------------------------------------------------------------------------
+
+   ///
+   /// starts this castlist
+   ///
+   PUBLIC START 0
+
+      LAZY.CLASSES.#$CASTING.START VOID 1 THIS.CASTLIST_NAME
+
+   RETURN TRUE
+
+//-------------------------------------------------------------------------------------
+
+END_CLASS

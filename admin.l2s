@@ -1,0 +1,30 @@
+// Kratky popis
+// Server: 
+// Autor: mochitto
+// Date: 
+// Special thanks for L2.NET contributors
+// rev.: 0
+PRINT_TEXT "SCRIPT STARTED!]"
+
+// Main section
+// ===============================
+//INJECT "74 68 00 65 00 61 00 6C 00 20 00 41 00 64 00 6D 00 00 00" 
+
+
+//SendBypassBuildCmd void 1 "#$gmspeed 3"
+//SendBypassBuildCmd void 1 "#$invul"
+SendBypassBuildCmd void 1 "#$script_load custom/pvp/__init__.py"
+//SendBypassBuildCmd void 1 "#$teleportto dfasdf"
+SendBypassBuildCmd void 1 "#$res"
+
+	
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT                         
+
+FUNCTION SendBypassBuildCmd 1 text
+	DEFINE BYTEBUFFER SendBypassBuildCmd 512
+	SendBypassBuildCmd.write_byte 0x74
+	SendBypassBuildCmd.write_string "#$<&text&>"
+	SendBypassBuildCmd.trim_to_index
+	injectbb SendBypassBuildCmd
+RETURN VOID      

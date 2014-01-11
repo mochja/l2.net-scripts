@@ -1,0 +1,14 @@
+// Invite 
+// version 0.1
+// by mochitto 2010
+
+PRINT_TEXT "start"
+PRINT_TEXT "===== Inviting player to academy: <&TARGET_NAME&>]"
+DEFINE INT CharID 0
+CHAR_GET_ID CharID "<&TARGET_NAME&>"
+SLEEP 1000
+INJECT "26 <&CharID.GET_HEX32&> FF FF FF FF"
+PRINT_TEXT "done"
+
+SLEEP 100
+END_SCRIPT

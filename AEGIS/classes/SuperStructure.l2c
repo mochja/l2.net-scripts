@@ -1,0 +1,22 @@
+// Global Superstructure class data
+// for L2.net.
+// by d00d
+//
+// v1.0 - Initial Draft
+
+CLASS SuperStructure null
+VAR_START
+ 
+  PUBLIC StatusEffects EffectTracking
+  PUBLIC ObjectPerception EntityTracking
+  PUBLIC Queues Pipeline
+  PUBLIC Locking Mutex
+  PUBLIC Configuration Options
+  PUBLIC SORTEDLIST Threads
+  PUBLIC INT VERSION_MAJOR 0
+  PUBLIC INT VERSION_MINOR 49
+  PUBLIC STRING VERSION_EXTRA RC1
+
+VAR_END
+ 
+END_CLASS

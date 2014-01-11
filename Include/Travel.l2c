@@ -1,0 +1,39 @@
+
+// (c) L2Agita
+// version: 31
+// Released: 25.04.2010
+
+INCLUDE Include/Travel/Recorder.l2c
+INCLUDE Include/Travel/Core.l2c
+INCLUDE Include/Travel/Walker.l2c
+INCLUDE Include/Travel/Dijkstra.l2c
+CLASS TRAVEL NULL
+
+   /***************************\
+   \***************************/
+
+	VAR_START
+
+		PUBLIC TRAVEL_RECORDER RECORDER 0
+		PUBLIC TRAVEL_CORE CORE 0
+		PUBLIC TRAVEL_WALKER WALKER 0
+		PUBLIC TRAVEL_DIJKSTRA DIJKSTRA 0
+
+	VAR_END
+
+   /***************************\
+   \***************************/
+
+   PUBLIC CONSTRUCT 0
+
+		TRAVEL.RECORDER.CONSTRUCT VOID 0
+		TRAVEL.CORE.CONSTRUCT VOID 0
+		TRAVEL.WALKER.CONSTRUCT VOID 0
+		TRAVEL.DIJKSTRA.CONSTRUCT VOID 0
+
+   RETURN VOID
+
+   /***************************\
+   \***************************/
+
+END_CLASS

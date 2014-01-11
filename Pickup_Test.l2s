@@ -1,0 +1,43 @@
+// Kratky popis
+// Server: 
+// Autor: mochitto
+// Date: 
+// Special thanks for L2.NET contributors
+// rev.: 0
+PRINT_TEXT "SCRIPT STARTED!]"
+INCLUDE "StdLib\Item.l2c"
+DEFINE ARRAYLIST ITEMS
+
+// Main section
+// ===============================
+	WHILE ZERO == ZERO
+		GET_ITEMS ITEMS
+		FOREACH I ITEM ITEMS
+			SWITCH ITEMS.I.ITEM_ID
+				CASE #i6660 //Ring of Queen Ant
+				CASE #i6659 //Zaken's Earring
+				CASE #i6656 //Earring of Antharas
+				CASE #i6658 //Ring of Baium
+				CASE #i6662 //Ring of Core
+				CASE #i6661 //Earring of Orfen
+				CASE #i6657 //Necklace of Valakas
+				//CASE #i57
+					DEFINE BYTEBUFFER Action 256
+					Action.WRITE_BYTE #i31 // 1F
+					Action.WRITE_INT32 ITEMS.I.ID // Object ID
+					Action.WRITE_INT32 ITEMS.I.X
+					Action.WRITE_INT32 ITEMS.I.Y
+					Action.WRITE_INT32 ITEMS.I.Z
+					Action.WRITE_BYTE #i0 // normal or shift
+					Action.TRIM_TO_INDEX
+					INJECTBB Action
+					DELETE Action  
+					SLEEP 500
+					BREAK 2
+			ENDSWITCH
+		NEXTEACH
+		SLEEP 500
+	WEND
+	
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT

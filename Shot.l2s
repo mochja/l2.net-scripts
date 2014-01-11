@@ -1,0 +1,52 @@
+// Kratky popis
+// Server: 
+// Autor: mochitto
+// Date: 
+// Special thanks for L2.NET contributors
+// rev.: 0
+PRINT_TEXT "SCRIPT STARTED!]"
+DEFINE INT CRAFT 0 // 1=BSPS 0=SSS
+// Main section
+// ===============================
+THREAD MP
+
+// sssss
+
+IF CRAFT == 1
+INJECT "B7 47 01 00 00" 
+DO 	 
+	INJECT "B8 47 01 00 00"
+	SLEEP 300
+LOOP ONE == ONE
+ELSE
+//sss
+INJECT "B7 18 00 00 00"
+DO 	 
+	INJECT "B8 18 00 00 00"
+	SLEEP 300
+LOOP ONE == ONE
+ENDIF	
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT
+
+FUNCTION MP
+	DEFINE INT ASD 0
+	DEFINE INT MPPOTS 0
+	WHILE ZERO == ZERO  
+		ITEM_COUNT MPPOTS 728
+		IF (MPPOTS > #i1)
+			ASD = CHAR_MAX_MP - 1200					
+			IF (CHAR_CUR_MP < ASD)
+				ASD = CHAR_MAX_MP * 80	
+				ASD = ASD / 100 		
+				WHILE (CHAR_CUR_MP < ASD) 
+					USE_ITEM 728 // Mana Potion
+					SLEEP 500
+				WEND
+			ENDIF
+		ELSE
+			SLEEP 10000
+		ENDIF
+		SLEEP 1000	
+	WEND
+RETURN VOID

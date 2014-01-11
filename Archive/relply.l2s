@@ -1,0 +1,11 @@
+FUNCTION reply
+DEFINE STRING BUFF "halo"
+    IF MESSAGE CONTAINS BUFF
+        SAY_TEXT "<&CHANNEL_PRIVATE&>" "jo muzu" "<&SENDERNAME&>"
+        SLEEP 1000
+        COMMAND "/target <&SENDERNAME&>"
+        COMMAND "/invite <&SENDERNAME&>"
+ENDIF
+RETURN VOID
+
+

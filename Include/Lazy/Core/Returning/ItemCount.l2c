@@ -1,0 +1,30 @@
+
+CLASS LAZY_RETURNING_ITEMCOUNT LAZY_RETURNING_BASEPIECE
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT
+
+      // the type id of the item
+      THIS.SET_VALUE VOID 2 #$ITEM_ID #i0
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC _GET_RETURN 1 CALLTIME
+
+      DEFINE INT _ITEM_ID 0
+
+      THIS.DATA.#$ITEM_ID.GET_RETURN _ITEM_ID 1 CALLTIME
+
+      // --- --- ---
+
+      DEFINE INT _ITEMCOUNT 0
+      ITEM_COUNT _ITEMCOUNT "<&_ITEM_ID&>"
+
+   RETURN _ITEMCOUNT
+
+//-------------------------------------------------------------------------------------
+
+END_CLASS

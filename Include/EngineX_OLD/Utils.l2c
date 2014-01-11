@@ -1,0 +1,283 @@
+
+INCLUDE "StdLib/NPC.l2c"
+
+CLASS ENGINEX_UTILS NULL
+
+//-------------------------------------------------------------------------------------
+
+   VAR_START
+   VAR_END
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT 0
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC GET_SLOT_ID 2 BAR SLOT
+      DEFINE INT SLOT_ID 0
+      SLOT_ID = BAR - #i1
+      SLOT_ID = SLOT_ID * #i12
+      SLOT_ID = SLOT_ID + SLOT
+      SLOT_ID = SLOT_ID - #i1
+   RETURN SLOT_ID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC SLEEP 2 MIN MAX
+      DEFINE INT TIME 0
+      GET_RAND TIME "<&MIN&>" "<&MAX&>"
+      SLEEP "<&TIME&>"
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC UNTARGET 2 TIMEOUT REPEATS
+      FOR I1 -1 "<&REPEATS&>" 1
+         DEFINE BYTEBUFFER BB 1024
+         BB.WRITE_BYTE #i72
+         BB.WRITE_INT16 TRUE
+         BB.TRIM_TO_INDEX
+         BB.RESET_INDEX
+         INJECTBB BB
+         DELETE BB
+         FOR I2 0 "<&TIMEOUT&>" 10
+            IF (TARGET_ID == ZERO)
+               BREAK 3
+            ENDIF
+         NEXT
+      NEXT
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC TARGET_NAME 3 NAME TIMEOUT REPEATS
+      DEFINE INT TARGET_FOUND 0
+      FOR I1 -1 "<&REPEATS&>" 1
+         COMMAND "/target <&NAME&>"
+         FOR I2 0 "<&TIMEOUT&>" 10
+            SLEEP 10
+            IF (NAME.TO_UPPER == TARGET_NAME.TO_UPPER)
+               TARGET_FOUND = TRUE
+               BREAK 3
+            ENDIF
+         NEXT
+      NEXT
+   RETURN TARGET_FOUND
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC TARGET_UNIQUE 3 UID TIMEOUT REPEATS
+      IF (UID == TARGET_ID)
+         RETURN TRUE
+      ENDIF
+      DEFINE INT TARGET_FOUND 0
+      FOR I1 -1 "<&REPEATS&>" 1
+         DEFINE BYTEBUFFER BB 1024
+         BB.WRITE_BYTE #i31
+         BB.WRITE_INT32 UID
+         BB.WRITE_INT32 CHAR_X
+         BB.WRITE_INT32 CHAR_Y
+         BB.WRITE_INT32 CHAR_Z
+         BB.WRITE_BYTE ZERO
+         INJECTBB BB
+         DELETE BB
+         FOR I2 0 "<&TIMEOUT&>" 10
+            SLEEP 10
+            IF (UID == TARGET_ID)
+               TARGET_FOUND = TRUE
+               BREAK 3
+            ENDIF
+         NEXT
+      NEXT
+   RETURN TARGET_FOUND
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC TARGET_TYPE 3 NPCID TIMEOUT REPEATS
+      DEFINE ARRAYLIST NPCS 0
+      DEFINE INT UID 0
+      DEFINE INT TARGET_FOUND 0
+      FOR I1 -1 "<&REPEATS&>" 1
+         GET_NPCS NPCS
+         FOREACH I NPC NPCS
+            IF (NPCS.I.NPC_ID == NPCID)
+               DEFINE BYTEBUFFER BB 1024
+               BB.WRITE_BYTE #i31
+               BB.WRITE_INT32 NPCS.I.ID
+               BB.WRITE_INT32 CHAR_X
+               BB.WRITE_INT32 CHAR_Y
+               BB.WRITE_INT32 CHAR_Z
+               BB.WRITE_BYTE ZERO
+               INJECTBB BB
+               DELETE BB
+               BREAK 2
+            ENDIF
+         NEXTEACH
+         FOR I2 0 "<&TIMEOUT&>" 10
+            SLEEP 10
+            IF (NPCID == TARGET_TYPEID)
+               TARGET_FOUND = TRUE
+               BREAK 3
+            ENDIF
+         NEXT
+      NEXT
+   RETURN TARGET_FOUND
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC HOLD 0
+      MOVE_TO "<&CHAR_X&>" "<&CHAR_Y&>" "<&CHAR_Z&>"
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   // thx to herscher
+   PUBLIC GET_MAP_X 1 POS_X
+      DEFINE INT MAP_X 0
+      DEFINE INT CFG_FULL_WORLD_REGIONS_X 32
+      DEFINE INT CFG_FULL_WORLD_MIN_X -655360
+      DEFINE INT CFG_FULL_WORLD_MAX_X 393216
+      DEFINE INT FULL_WORLD_COORDS_X 0
+      FULL_WORLD_COORDS_X = CFG_FULL_WORLD_MAX_X - CFG_FULL_WORLD_MIN_X
+      DEFINE INT REGION_COORDS_X 0
+      REGION_COORDS_X = "#i<&FULL_WORLD_COORDS_X&>" / "#i<&CFG_FULL_WORLD_REGIONS_X&>"
+      MAP_X = POS_X - "#i<&CFG_FULL_WORLD_MIN_X&>"
+      MAP_X = MAP_X / "#i<&REGION_COORDS_X&>"
+   RETURN MAP_X
+
+//-------------------------------------------------------------------------------------
+
+   // thx to herscher
+   PUBLIC GET_MAP_Y 1 POS_Y
+      DEFINE INT MAP_Y 0
+      DEFINE INT CFG_FULL_WORLD_REGIONS_Y 32
+      DEFINE INT CFG_FULL_WORLD_MIN_Y -589824
+      DEFINE INT CFG_FULL_WORLD_MAX_Y 458752
+      DEFINE INT FULL_WORLD_COORDS_Y 0
+      FULL_WORLD_COORDS_Y = CFG_FULL_WORLD_MAX_Y - CFG_FULL_WORLD_MIN_Y
+      DEFINE INT REGION_COORDS_Y 0
+      REGION_COORDS_Y = "#i<&FULL_WORLD_COORDS_Y&>" / "#i<&CFG_FULL_WORLD_REGIONS_Y&>"
+      MAP_Y = POS_Y - "#i<&CFG_FULL_WORLD_MIN_Y&>"
+      MAP_Y = MAP_Y / "#i<&REGION_COORDS_Y&>"
+   RETURN MAP_Y
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC POINT_IS_NEAR_POINT 7 P1X P1Y P1Z P2X P2Y P2Z MAXDISTANCE
+      DEFINE DOUBLE CURDISTANCE 0
+      DISTANCE CURDISTANCE P1X P1Y P1Z P2X P2Y P2Z
+		DEFINE INT ISNEAR 0
+		IF CURDISTANCE <= MAXDISTANCE
+			ISNEAR = TRUE
+		ENDIF
+   RETURN ISNEAR
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CHAR_IS_NEAR_POINT 4 X Y Z MAXDISTANCE
+		DEFINE INT ISNEAR 0
+		IF CHAR_ID != ZERO
+			ENGINEX.UTILS.POINT_IS_NEAR_POINT ISNEAR 7 CHAR_X CHAR_Y CHAR_Z X Y Z MAXDISTANCE
+		ENDIF
+   RETURN ISNEAR
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC TARGET_IS_NEAR_POINT 4 X Y Z MAXDISTANCE
+		DEFINE INT ISNEAR 0
+		IF TARGET_ID != ZERO
+			ENGINEX.UTILS.POINT_IS_NEAR_POINT ISNEAR 7 TARGET_X TARGET_Y TARGET_Z X Y Z MAXDISTANCE
+		ENDIF
+   RETURN ISNEAR
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC TARGET_IS_NEAR_CHAR 1 MAXDISTANCE
+		DEFINE INT ISNEAR 0
+		IF TARGET_ID != ZERO
+			ENGINEX.UTILS.POINT_IS_NEAR_POINT ISNEAR 7 TARGET_X TARGET_Y TARGET_Z CHAR_X CHAR_Y CHAR_Z MAXDISTANCE
+		ENDIF
+   RETURN ISNEAR
+
+//-------------------------------------------------------------------------------------
+
+	// token from trixy
+	// original created by darusOo
+	// thx to both
+	PUBLIC SCREENMESSAGE 6 MESSAGE POSITION SMALLFONT DURATION EFFECT FADING
+		DEFINE BYTEBUFFER PACKET 1024
+		PACKET.WRITE_BYTE #i254
+		PACKET.WRITE_INT16 #i57
+		PACKET.WRITE_INT32 #i1
+		PACKET.WRITE_INT32 #i0
+		PACKET.WRITE_INT32 POSITION
+		PACKET.WRITE_INT32 #i0
+		PACKET.WRITE_INT32 SMALLFONT
+		PACKET.WRITE_INT32 #i0
+		PACKET.WRITE_INT32 #i0
+		PACKET.WRITE_INT32 EFFECT
+		PACKET.WRITE_INT32 DURATION
+		PACKET.WRITE_INT32 FADING
+		PACKET.WRITE_STRING MESSAGE
+		INJECTBB_CLIENT PACKET
+	RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC AIMLOC 3 X Y Z
+      DEFINE BYTEBUFFER BB 1024
+      BB.WRITE_BYTE 241
+      BB.WRITE_INT32 0
+      BB.WRITE_INT32 1
+      BB.WRITE_INT32 X
+      BB.WRITE_INT32 Y
+      BB.WRITE_INT32 Z
+      INJECTBB_CLIENT BB
+      DELETE BB
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC UNAIMLOC 0
+      DEFINE BYTEBUFFER BB 1024
+      BB.WRITE_BYTE 241
+      BB.WRITE_INT32 0
+      BB.WRITE_INT32 1
+      BB.WRITE_INT32 CHAR_X
+      BB.WRITE_INT32 CHAR_Y
+      BB.WRITE_INT32 CHAR_Z
+      INJECTBB_CLIENT BB
+      DELETE BB
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC GET_HP_PERCENT 0
+      DEFINE DOUBLE TEMP_PERCENT 100
+      TEMP_PERCENT = TEMP_PERCENT / CHAR_MAX_HP
+      TEMP_PERCENT = TEMP_PERCENT * CHAR_CUR_HP
+   RETURN TEMP_PERCENT
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC GET_MP_PERCENT 0
+      DEFINE DOUBLE TEMP_PERCENT 100
+      TEMP_PERCENT = TEMP_PERCENT / CHAR_MAX_MP
+      TEMP_PERCENT = TEMP_PERCENT * CHAR_CUR_MP
+   RETURN TEMP_PERCENT
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC HTML2CLIENT 3 HTML PACKETSIZE NPC_ID
+      DEFINE BYTEBUFFER BB "<&PACKETSIZE&>"
+      BB.WRITE_BYTE #i25
+      BB.WRITE_INT32 NPC_ID
+      BB.WRITE_STRING HTML
+      INJECTBB_CLIENT BB
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+END_CLASS

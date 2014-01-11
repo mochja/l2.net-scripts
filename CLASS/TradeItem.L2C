@@ -1,0 +1,12 @@
+// Kratky popis
+// Server: 
+// Autor: mochitto
+// Date: 
+// Special thanks for L2.NET contributors
+// rev.: 0
+CLASS TradeItem null
+	VAR_START
+    PUBLIC INT ItemId   0
+    PUBLIC INT CurrentCount    0  
+	VAR_END
+END_CLASS

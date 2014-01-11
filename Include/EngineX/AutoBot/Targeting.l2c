@@ -1,0 +1,115 @@
+
+//-------------------------------------------------------------------------------------
+CLASS ENGINEX_AUTOBOT_TARGETING NULL
+//-------------------------------------------------------------------------------------
+
+   VAR_START
+
+      PUBLIC INT RETARGET_ID 0
+      PUBLIC INT RETARGET_RUN 0
+      PUBLIC INT RETARGET_WHEN_ZERO 1
+      PUBLIC INT RETARGET_WHEN_SELF 0
+      PUBLIC INT RETARGET_WHEN_DIFF 0
+      PUBLIC INT RETARGET_FORCE 0
+      PUBLIC INT RETARGET_SLEEP_MIN 500
+      PUBLIC INT RETARGET_SLEEP_MAX 1500
+
+      PUBLIC INT SEARCH_NPCS 1
+      PUBLIC INT SEARCH_PLAYERS 0
+      PUBLIC ARRAYLIST SEARCH_POLYLIST 0
+
+
+
+   VAR_END
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC START_RETARGET 0
+      IF ( THIS.RETARGET_RUN == FALSE )
+         THIS.RETARGET_RUN = TRUE
+         THREAD RETARGET_THREAD
+      ENDIF
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC RETARGET_THREAD 0
+      DEFINE NULL THIS 0
+      THIS = ENGINEX.AUTOBOT.TARGETING
+      DEFINE INT DO_RETARGET 0
+      DEFINE INT RETARGET_SLEEP 0
+      WHILE ( THIS.RETARGET_RUN == TRUE )
+         IF ( THIS.RETARGET_ID != ZERO )
+            IF ( THIS.RETARGET_FORCE == TRUE )
+               DO_RETARGET = TRUE
+               THIS.RETARGET_FORCE = FALSE
+            ELSE
+               DO_RETARGET = FALSE
+               IF ( THIS.RETARGET_WHEN_ZERO == TRUE )
+                  IF ( TARGET_ID == ZERO )
+                     DO_RETARGET = TRUE
+                  ENDIF
+               ENDIF
+               IF ( THIS.RETARGET_WHEN_SELF == TRUE )
+                  IF ( TARGET_ID == CHAR_ID )
+                     DO_RETARGET = TRUE
+                  ENDIF
+               ENDIF
+               IF ( THIS.RETARGET_WHEN_DIFF == TRUE )
+                  IF ( TARGET_ID == THIS.RETARGET_ID )
+                     DO_RETARGET = TRUE
+                  ENDIF
+               ENDIF
+            ENDIF
+            IF ( DO_RETARGET == TRUE )
+               THIS.TARGETU VOID 3 THIS.RETARGET_ID 1000 1
+            ENDIF
+         ENDIF
+         GET_RAND RETARGET_SLEEP "<&THIS.RETARGET_SLEEP_MIN&>" "<&THIS.RETARGET_SLEEP_MAX&>"
+         SLEEP "<&RETARGET_SLEEP&>"
+      WEND
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC TARGETU 3 UID TIMEOUT REPEATS
+      IF ( UID == TARGET_ID )
+         RETURN TRUE
+      ENDIF
+      DEFINE INT TARGET_FOUND 0
+      FOR I1 -1 "<&REPEATS&>" 1
+         DEFINE BYTEBUFFER BB 1024
+         BB.WRITE_BYTE #i31
+         BB.WRITE_INT32 UID
+         BB.WRITE_INT32 CHAR_X
+         BB.WRITE_INT32 CHAR_Y
+         BB.WRITE_INT32 CHAR_Z
+         BB.WRITE_BYTE ZERO
+         INJECTBB BB
+         DELETE BB
+         FOR I2 0 "<&TIMEOUT&>" 100
+            SLEEP 100
+            IF ( UID == TARGET_ID )
+               TARGET_FOUND = TRUE
+               BREAK 3
+            ENDIF
+         NEXT
+      NEXT
+      SLEEP 1
+   RETURN TARGET_FOUND
+
+//-------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+//-------------------------------------------------------------------------------------
+END_CLASS
+//-------------------------------------------------------------------------------------

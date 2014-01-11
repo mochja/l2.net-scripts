@@ -1,0 +1,35 @@
+
+//-------------------------------------------------------------------------------------
+CLASS ENGINEX_STDLIB_VECTOR3 NULL
+//-------------------------------------------------------------------------------------
+
+	PUBLIC BINARY 3 VECTOR OPERATOR VALUE
+      IF ( VECTOR.CLASSNAME != "#$VECTOR3" )
+         RETURN VECTOR
+      ENDIF
+      DEFINE VECTOR3 NEW_V3 0
+		SWITCH VALUE.CLASSNAME
+			CASE #$INT
+				NEW_V3.X = VECTOR.X "<&OPERATOR&>" VALUE
+				NEW_V3.Y = VECTOR.Y "<&OPERATOR&>" VALUE
+				NEW_V3.Z = VECTOR.Z "<&OPERATOR&>" VALUE
+				BREAK 1
+			CASE #$DOUBLE
+				NEW_V3.X = VECTOR.X "<&OPERATOR&>" VALUE
+				NEW_V3.Y = VECTOR.Y "<&OPERATOR&>" VALUE
+				NEW_V3.Z = VECTOR.Z "<&OPERATOR&>" VALUE
+				BREAK 1
+			CASE #$VECTOR3
+				NEW_V3.X = VECTOR.X "<&OPERATOR&>" VALUE.X
+				NEW_V3.Y = VECTOR.Y "<&OPERATOR&>" VALUE.Y
+				NEW_V3.Z = VECTOR.Z "<&OPERATOR&>" VALUE.Z
+				BREAK 1
+         DEFAULT
+            RETURN VECTOR
+            BREAK 1
+		ENDSWITCH
+	RETURN NEW_V3
+
+//-------------------------------------------------------------------------------------
+END_CLASS
+//-------------------------------------------------------------------------------------

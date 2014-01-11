@@ -1,0 +1,7 @@
+INCLUDE Tests\construct.l2c
+
+PRINT_TEXT "defining..."
+DEFINE Base aaa 0
+PRINT_TEXT "defined"
+
+SCRIPT_END

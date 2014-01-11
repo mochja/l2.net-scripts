@@ -1,0 +1,51 @@
+// DLIB::Packets::ReadPartySmallWindowUpdate
+// by Jozeph [28/09/09]
+//
+// Takes an byte buffer (_bInBuffer) containing the
+// PartySmallWindowUpdate packet and dumps the data into a sorted list
+// (_oPartySmallWindowUpdate).
+//
+// Thanks to d00d for the model for these classes, and the DLIB stuff in general
+// Version 1.0 - Initial Release
+
+FUNCTION DLIB::Packets::ReadPartySmallWindowUpdate 1 _bInBuffer
+
+  DEFINE SORTEDLIST _oPartySmallWindowUpdate
+  DEFINE INT MEMBER_ID
+  DEFINE STRING MEMBER_NAME
+  DEFINE INT CUR_CP
+  DEFINE INT MAX_CP
+  DEFINE INT CUR_HP
+  DEFINE INT MAX_HP
+  DEFINE INT CUR_MP
+  DEFINE INT MAX_MP
+  DEFINE INT LVL
+  DEFINE INT CLASS_ID
+  
+  IF _bInBuffer.CLASSNAME == "#$BYTEBUFFER"
+    _bInBuffer.READ_BYTE NULL // packet ID byte (0x52) (dec 82)
+    _bInBuffer.READ_INT32 MEMBER_ID
+    _bInBuffer.READ_STRING MEMBER_NAME
+    _bInBuffer.READ_INT32 CUR_CP
+    _bInBuffer.READ_INT32 MAX_CP
+    _bInBuffer.READ_INT32 CUR_HP
+    _bInBuffer.READ_INT32 MAX_HP
+    _bInBuffer.READ_INT32 CUR_MP
+    _bInBuffer.READ_INT32 MAX_MP
+    _bInBuffer.READ_INT32 LVL
+    _bInBuffer.READ_INT32 CLASS_ID
+    _oPartySmallWindowUpdate.ADD MEMBER_ID "MEMBER_ID"
+    _oPartySmallWindowUpdate.ADD MEMBER_NAME "MEMBER_NAME"
+    _oPartySmallWindowUpdate.ADD CUR_CP "CUR_CP"
+    _oPartySmallWindowUpdate.ADD MAX_CP "MAX_CP"
+    _oPartySmallWindowUpdate.ADD CUR_HP "CUR_HP"
+    _oPartySmallWindowUpdate.ADD MAX_HP "MAX_HP"
+    _oPartySmallWindowUpdate.ADD CUR_MP "CUR_MP"
+    _oPartySmallWindowUpdate.ADD MAX_MP "MAX_MP"
+    _oPartySmallWindowUpdate.ADD LVL "LVL"
+    _oPartySmallWindowUpdate.ADD CLASS_ID "CLASS_ID"
+  ELSE
+    PRINT_TEXT "_bInBuffer is not a ByteBuffer"
+  ENDIF
+  
+RETURN _oPartySmallWindowUpdate

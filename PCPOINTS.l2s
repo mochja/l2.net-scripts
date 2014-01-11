@@ -1,0 +1,52 @@
+// Kratky popis
+// Server: 
+// Autor: mochitto
+// Date: 
+// Special thanks for L2.NET contributors
+// rev.: 0
+PRINT_TEXT "SCRIPT STARTED!]"
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" SystemMessage 98  
+// Main section
+// ===============================
+DEFINE_GLOBAL INT PC_COUNT
+
+ITEM_COUNT PC_COUNT 10639
+ExPCCafePointInfo VOID 2 PC_COUNT 0
+
+SLEEP 1231231231
+	
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT
+
+FUNCTION ExPCCafePointInfo 2 POINTS POINTS_NEW
+	DEFINE BYTEBUFFER ExPCCafePointInfo 256
+	ExPCCafePointInfo.WRITE_BYTE  #i254
+	ExPCCafePointInfo.WRITE_INT16 #i50
+    ExPCCafePointInfo.WRITE_INT32 POINTS        // num points
+    ExPCCafePointInfo.WRITE_INT32 POINTS_NEW    // points inc display
+    ExPCCafePointInfo.WRITE_BYTE  #i0           // period(0=don't show window, 1=acquisition, 2=use points)
+    ExPCCafePointInfo.WRITE_INT32 #i0           // period hours left
+    ExPCCafePointInfo.WRITE_BYTE  #i0           // points inc display color(0=yellow,1=cyan-blue,2=red,all other black)
+    ExPCCafePointInfo.TRIM_TO_INDEX
+	INJECTBB_CLIENT ExPCCafePointInfo 
+RETURN VOID
+
+FUNCTION SystemMessage
+	DEFINE INT MESSAGE_ID
+	DEFINE INT I1
+	DEFINE INT I2
+	
+	PACKET.READ_BYTE NULL	
+	PACKET.READ_INT32 MESSAGE_ID
+	IF MESSAGE_ID == 29
+		PACKET.READ_INT32 NULL
+		PACKET.READ_INT32 NULL
+		PACKET.READ_INT32 I1
+		PACKET.READ_INT32 NULL
+		PACKET.READ_INT64 I2
+		IF I1 == 10639
+			ITEM_COUNT PC_COUNT 10639
+			ExPCCafePointInfo VOID 2 PC_COUNT I2
+		ENDIF
+	ENDIF
+RETURN VOID 

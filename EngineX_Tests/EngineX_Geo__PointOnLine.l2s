@@ -1,0 +1,24 @@
+
+	INCLUDE Include/EngineX.l2c
+	DEFINE_GLOBAL ENGINEX ENGINEX 0
+
+	PRINT_TEXT ""
+	PRINT_TEXT "-------------------------------------------------"
+
+	DEFINE SORTEDLIST NEWPOINT 0
+
+	// POINT_ON_LINE [Sortedlist p3] 7 [p1x] [p1y] [p1z] [p2x] [p2y] [p2z] [Distance p1->p3]
+	ENGINEX.GEO.POINT_ON_LINE NEWPOINT 7 #i0 #i0 #i0 #i100 #i0 #i0 #i50
+	PRINT_TEXT "New Point at: <&NEWPOINT.X&>/<&NEWPOINT.Y&> ... Z = <&NEWPOINT.Z&>"
+
+	// POINT_ON_LINE [Sortedlist p3] 7 [p1x] [p1y] [p1z] [p2x] [p2y] [p2z] [Distance p1->p3]
+	ENGINEX.GEO.POINT_ON_LINE NEWPOINT 7 #i0 #i0 #i0 #i100 #i0 #i0 #i150
+	PRINT_TEXT "New Point at: <&NEWPOINT.X&>/<&NEWPOINT.Y&> ... Z = <&NEWPOINT.Z&>"
+
+	PRINT_TEXT "-------------------------------------------------"
+	PRINT_TEXT ""
+
+END_SCRIPT
+
+
+

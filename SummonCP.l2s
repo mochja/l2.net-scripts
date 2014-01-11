@@ -1,0 +1,21 @@
+// Kratky popis
+// Server: 
+// Autor: mochitto
+// Date: 
+// Special thanks for L2.NET contributors
+// rev.: 0
+PRINT_TEXT "SCRIPT STARTED!]"
+DEFINE INT REUSE 0
+
+// Main section
+// ===============================
+DO
+	SKILL_GET_REUSE REUSE 1324
+	PRINT_TEXT "Waiting for reuse <&REUSE&>ms"
+	SLEEP "<&REUSE&>"
+	USE_SKILL 1324
+	SLEEP 10000
+LOOP ONE == ONE
+	
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT

@@ -1,0 +1,314 @@
+// Script for farming Adamantine on Gracia (SoD)
+// Server: l2-divinty.com
+// Autor: mochitto
+// Date: 5. 6. 2010
+// Special thanks for L2.NET contributors and Divinity Server :P
+// rev.: 40
+
+PRINT_TEXT "SCRIPT STARTED!]"
+
+// Event section
+// ===============================
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" BUFFMEONE 25
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKETEX&>" "<&SYSTEM_CURRENTFILE&>" BUFFME 141
+SET_EVENT "<&SCRIPTEVENT_SELFDIE&>" "<&SYSTEM_CURRENTFILE&>" IFDIE
+
+// Define section
+// ===============================
+DEFINE_GLOBAL INT COMM 0
+DEFINE_GLOBAL INT ObjID 0
+DEFINE_GLOBAL STRING _html 0
+DEFINE_GLOBAL DOUBLE WASDEAD FALSE
+
+// hypertextove odkazy pro buffera
+DEFINE_GLOBAL STRING Link2 "bypass -h Quest 9966_NPCBuffer 135"
+DEFINE_GLOBAL STRING Link3 "bypass -h Quest 9966_NPCBuffer 77"
+DEFINE_GLOBAL STRING Link4 "bypass -h Quest 9966_NPCBuffer 1"
+DEFINE_GLOBAL STRING Link5 "bypass -h Quest 9966_NPCBuffer 2.htm"
+DEFINE_GLOBAL STRING Link6 "bypass -h Quest 9966_NPCBuffer 12"
+DEFINE_GLOBAL STRING Link7 "bypass -h Quest 9966_NPCBuffer 3.htm"
+DEFINE_GLOBAL STRING Link8 "bypass -h Quest 9966_NPCBuffer 72"
+DEFINE_GLOBAL STRING Link9 "bypass -h Quest 9966_NPCBuffer 4.htm"
+DEFINE_GLOBAL STRING Link10 "bypass -h Quest 9966_NPCBuffer 120"
+DEFINE_GLOBAL STRING Link11 "bypass -h Quest 9966_NPCBuffer 124"
+DEFINE_GLOBAL STRING Link12 "bypass -h Quest 9966_NPCBuffer 5.htm"
+DEFINE_GLOBAL STRING Link13 "bypass -h Quest 9966_NPCBuffer 56"
+DEFINE_GLOBAL STRING Link14 "bypass -h Quest 9966_NPCBuffer 89"
+
+// Starting section
+// ===============================
+
+CANCEL_TARGET
+SLEEP 500
+USE_SKILL 337 // Activate: Arcana Power 
+MOVETOBUFFER  // Start in Clan Hall	
+
+// tento cyklus zabezpeci, ze se nam script nikdy neukonci
+WHILE ZERO == ZERO
+	SLEEP 10000
+WEND
+
+SCRIPT_END
+
+
+// Funkce
+// ===============================
+
+// Pokud v brubehu farmeni nastane situace umrti, automaticky se portneme do clan hall a zacneme od "zacatku"
+FUNCTION IFDIE
+	PRINT_TEXT "== f:IFDIE"
+	WASDEAD = TRUE
+	SLEEP 4000 
+	INJECT "7D 01 00 00 00" //to clan hall
+	PRINT_TEXT "30s sleep" 
+	SLEEP 30000
+	USE_SKILL 337
+	MOVETOBUFFER	
+RETURN VOID
+
+// Pouziti soe do ch 
+FUNCTION USESOE
+	PRINT_TEXT "== f:USESOE" 
+	USE_ITEM 1829  // Use Scroll of Escape: Clan Hall
+	SLEEP 40000	
+	MOVETOBUFFER
+RETURN VOID
+
+// Inject packety pro nakup shotu (10k) a mana potu (700) vzdy dopocita potrebne mnozstvi
+FUNCTION BUYPOTSSHOTS
+	PRINT_TEXT "== f:BUYPOTSSHOTS"
+	DEFINE INT MANAPOTS 0
+	DEFINE INT MANAPOTSNEED 0
+	DEFINE INT BSPSS 0
+	DEFINE INT BSPSSNEED 0
+	DEFINE INT MAX 5000
+		
+	ITEM_COUNT MANAPOTS 728
+	ITEM_COUNT BSPSS 3952
+	
+	MANAPOTSNEED = #i700 - MANAPOTS
+	BSPSSNEED = #i10000 - BSPSS
+	
+	COMMAND "/target gmsahop"
+	SLEEP 1000          
+	//buy Mana Pots
+	//INJECT "B0 5C C3 00 00 20 A1 07 00 <&MANAPOTSNEED.GET_HEX32&>00 00 00 00 00 00 00 00 00 00 00 00 00 00 FE FF 00 00 00 00 00 00 00 00 00 00 00 00 00 00" 
+	SLEEP 1000
+	//buy Blessed Spiritshots S-Grade
+	IF BSPSSNEED > MAX
+    	//INJECT "B0 5C C3 00 00 20 A1 07 00 <&MAX.GET_HEX32&>00 00 00 00 00 00 00 00 00 00 00 00 00 00 FE FF 00 00 00 00 00 00 00 00 00 00 00 00 00 00"
+		BSPSSNEED = BSPSSNEED - MAX 
+		SLEEP 1000
+	ENDIF
+	//INJECT "B0 5C C3 00 00 20 A1 07 00 <&BSPSSNEED.GET_HEX32&>00 00 00 00 00 00 00 00 00 00 00 00 00 00 FE FF 00 00 00 00 00 00 00 00 00 00 00 00 00 00"
+		
+	// TODO: inject packet
+	SLEEP 1000
+	GETBESERKERDANCE	
+RETURN VOID
+
+// This function need Dancer with berserker script at next L2.NET 
+FUNCTION GETBESERKERDANCE
+	PRINT_TEXT "== f:GETBESERKERDANCE"	
+	MOVE_TO "83436" "145494" "-3391"
+	SLEEP 3000
+	COMMAND "/invite ohmygod"
+	SLEEP 10000
+	MYTELEPORT
+RETURN VOID 
+
+// Klikani htm okna
+// Po overeni zda se link nachazi Chat Okne se na nej klikne
+FUNCTION BUFFMEONE         
+	PRINT_TEXT "== f:BUFFMEONE"	
+	PACKET.READ_BYTE NULL
+	PACKET.READ_INT32 NULL
+	PACKET.READ_STRING _html 		
+		
+	DEFINE STRING Link1 "bypass -h npc_<&TARGET_ID&>_Quest 9966_NPCBuffer"
+	SLEEP 330
+	
+	SWITCH COMM
+		CASE #i1
+			IF "_html.CONTAINS Link1" == TRUE
+				NPC_DIALOG "<&Link1&>"
+				PRINT_TEXT "Click buff 1"
+				COMM = #i2
+			ENDIF
+			BREAK 1
+	ENDSWITCH	
+RETURN VOID
+ 
+// Klikani v Quest Chat Okne
+FUNCTION BUFFME
+	PRINT_TEXT "== f:BUFFME"
+	PACKET.READ_BYTE NULL
+	PACKET.READ_INT16 NULL
+	PACKET.READ_INT32 NULL
+	PACKET.READ_STRING _html
+		
+	SLEEP 330
+	
+	SWITCH COMM
+		CASE #i2
+			IF "_html.CONTAINS Link2" == TRUE
+				NPC_DIALOG "<&Link2&>"
+				PRINT_TEXT "Click buff 2"
+				COMM = #i3
+			ENDIF
+			BREAK 1
+		CASE #i3
+			IF "_html.CONTAINS Link3" == TRUE
+				NPC_DIALOG "<&Link3&>"
+				PRINT_TEXT "Click buff 3"
+				COMM = #i4
+			ENDIF
+			BREAK 1
+		CASE #i4
+			IF "_html.CONTAINS Link4" == TRUE
+				NPC_DIALOG "<&Link4&>"
+				PRINT_TEXT "Click buff 4"
+				COMM = #i5
+			ENDIF
+			BREAK 1
+		CASE #i5
+			IF "_html.CONTAINS Link5" == TRUE
+				NPC_DIALOG "<&Link5&>"
+				PRINT_TEXT "Click buff 5"
+				COMM = #i6
+			ENDIF
+			BREAK 1
+		CASE #i6
+			IF "_html.CONTAINS Link6" == TRUE
+				NPC_DIALOG "<&Link6&>"
+				PRINT_TEXT "Click buff 6"
+				COMM = #i7
+			ENDIF
+			BREAK 1
+		CASE #i7
+			IF "_html.CONTAINS Link7" == TRUE
+				NPC_DIALOG "<&Link7&>"
+				PRINT_TEXT "Click buff 7"
+				COMM = #i8
+			ENDIF
+			BREAK 1
+		CASE #i8
+			IF "_html.CONTAINS Link8" == TRUE
+				NPC_DIALOG "<&Link8&>"
+				PRINT_TEXT "Click buff 8"
+				COMM = #i9
+			ENDIF
+			BREAK 1
+		CASE #i9
+			IF "_html.CONTAINS Link9" == TRUE
+				NPC_DIALOG "<&Link9&>"
+				PRINT_TEXT "Click buff 9"
+				COMM = #i10
+			ENDIF
+			BREAK 1
+		CASE #i10
+			IF "_html.CONTAINS Link10" == TRUE
+				NPC_DIALOG "<&Link10&>"
+				PRINT_TEXT "Click buff 10"
+				COMM = #i11
+			ENDIF
+			BREAK 1
+		CASE #i11
+			IF "_html.CONTAINS Link11" == TRUE
+				NPC_DIALOG "<&Link11&>"
+				PRINT_TEXT "Click buff 11"
+				COMM = #i12
+			ENDIF
+			BREAK 1
+		CASE #i12
+			IF "_html.CONTAINS Link12" == TRUE
+				NPC_DIALOG "<&Link12&>"
+				PRINT_TEXT "Click buff 12"
+				COMM = #i13
+			ENDIF
+			BREAK 1
+		CASE #i13
+			IF "_html.CONTAINS Link13" == TRUE
+				NPC_DIALOG "<&Link13&>"
+				PRINT_TEXT "Click buff 13"
+				COMM = #i14
+			ENDIF
+			BREAK 1
+		CASE #i14
+			IF "_html.CONTAINS Link14" == TRUE
+				NPC_DIALOG "<&Link14&>"
+				PRINT_TEXT "Click buff 14"
+				COMM = #i0
+				BUYPOTSSHOTS
+			ENDIF
+			BREAK 1
+	ENDSWITCH
+RETURN VOID 
+
+// Move to Divinity][Buffer and start talk + save adamanine data in next thread..
+FUNCTION MOVETOBUFFER
+	PRINT_TEXT "== f:MOVETOBUFFER"
+	THREAD WRITE
+	MOVE_TO "83319" "145807" "-3391"
+	SLEEP 6000
+	COMMAND "/target Nottingale"
+	COMM = #i1
+	SLEEP 1000
+	TALK_TARGET
+RETURN VOID
+
+// Inject packet for my teleport use
+FUNCTION MYTELEPORT
+	PRINT_TEXT "== f:MYTELEPORT"	
+	INJECT "D0 51 00 00 00 00 00" // CMD - MYTELEPORT
+	SLEEP 500
+	INJECT "D0 51 00 04 00 00 00 01 00 00 00" // TELEPORT SHORCUT 1
+	SLEEP 2000
+	MOVETOPOLYGON
+RETURN VOID
+
+// Move to polygon in Gracia continent and sleep (1:55h) script for farm 
+FUNCTION MOVETOPOLYGON
+	PRINT_TEXT "== f:MOVETOPOLYGON"
+	PRINT_TEXT "MOVE 1"
+	MOVE_TO "-246876" "250409" "4434"
+	SLEEP 15000
+	PRINT_TEXT "MOVE 2"
+	MOVE_TO "-246026" "249134" "4434"
+	SLEEP 10000
+	PRINT_TEXT "MOVE 3"
+	MOVE_TO "-245326" "248084" "4434"
+	SLEEP 10000
+	PRINT_TEXT "MOVE 4"
+	MOVE_TO "-244901" "247484" "4434"
+	SLEEP 8000
+	PRINT_TEXT "MOVE 5"
+	MOVE_TO "-243701" "246934" "4434"
+	SLEEP 10000
+	PRINT_TEXT "MOVE END"
+	IF WASDEAD == TRUE
+		WASDEAD = FALSE
+		RETURN VOID
+	ENDIF
+	PRINT_TEXT "SLEEP 1:55h"
+	SLEEP 6900000	
+	USESOE
+RETURN VOID  
+
+// Crazy text fce
+FUNCTION TEST
+	PRINT_TEXT "== f:TEST"
+	SLEEP 10000
+	PRINT_TEXT "o.O QQ"
+RETURN VOID  
+
+// Save adamantine count to Bubak_Gracia.txt
+FUNCTION WRITE
+	DEFINE INT COUNTADA 0
+	ITEM_COUNT COUNTADA 9629
+	DEFINE STRING S1 "Adamantine: <&COUNTADA&>" 
+	DEFINE FILEWRITER FW "Bubak_Gracia"
+	FW.WRITE S1   
+	FW.FLUSH
+	FW.CLOSE
+RETURN VOID

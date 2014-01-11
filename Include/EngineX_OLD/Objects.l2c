@@ -1,0 +1,52 @@
+
+CLASS ENGINEX_OBJECTS NULL
+
+//-------------------------------------------------------------------------------------
+
+   VAR_START
+   VAR_END
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT 0
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC GET_PARTY_OBJECT 1 OBJECT_ID
+      DEFINE ARRAYLIST PARTY 0
+      GET_PARTY PARTY
+      FOREACH I PLAYER PARTY
+         IF (PARTY.I.ID == OBJECT_ID)
+            RETURN PARTY.I
+         ENDIF
+      NEXTEACH
+   RETURN FALSE
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC GET_PLAYER_OBJECT 1 OBJECT_ID
+      DEFINE ARRAYLIST PLAYERS 0
+      GET_PLAYERS PLAYERS
+      FOREACH I PLAYER PLAYERS
+         IF (PLAYERS.I.ID == OBJECT_ID)
+            RETURN PLAYERS.I
+         ENDIF
+      NEXTEACH
+   RETURN FALSE
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC GET_NPC_OBJECT 1 OBJECT_ID
+      DEFINE ARRAYLIST NPCS 0
+      GET_NPCS NPCS
+      FOREACH I NPC NPCS
+         IF (NPCS.I.ID == OBJECT_ID)
+            RETURN NPCS.I
+         ENDIF
+      NEXTEACH
+   RETURN FALSE
+
+//-------------------------------------------------------------------------------------
+
+END_CLASS

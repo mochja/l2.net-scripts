@@ -1,0 +1,121 @@
+// Speedy Load - Players only edition
+// by d00d.mailbox@gmail.com
+//
+// Rewrites the charinfo packet of all players in perception to look like
+// a naked female dwarf.
+//
+// Requires DLIB 0.6+
+
+Init::GlobalVariables VOID 0
+
+BLOCK 49
+
+THREAD Unpack::Pipeline::CharInfo
+
+WHILE ONE == ONE
+
+  SLEEP 60000
+  
+WEND
+
+END_SCRIPT
+
+FUNCTION Init::GlobalVariables
+
+  DEFINE_GLOBAL SORTEDLIST CharInfo_SL
+  DEFINE_GLOBAL QUEUE Pipeline::CharInfo
+  
+  Init::Events VOID 0
+  
+RETURN VOID
+
+FUNCTION Init::Events
+
+  SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" Packet::CharInfo 49
+  
+RETURN VOID
+
+FUNCTION Packet::CharInfo
+
+  Pipeline::CharInfo.ADD PACKET
+  
+RETURN VOID
+
+FUNCTION Unpack::Pipeline::CharInfo
+
+  DEFINE BYTEBUFFER _bCharInfo
+  DEFINE BYTEBUFFER _bInject
+  
+  DEFINE STRING ClassName
+  
+  
+  WHILE ONE == ONE
+  
+    IF Pipeline::CharInfo.COUNT > ZERO
+     
+      _bCharInfo = Pipeline::CharInfo.POP
+      
+      CALL_EXTERN "DLIB\Packets\ReadCharInfo.l2s" DLIB::Packets::ReadCharInfo CharInfo_SL 1 _bCharInfo
+      
+      // Get Class
+      CALL_EXTERN "DLIB\Utility\GetClassName.l2s" DLIB::Utility::GetClassName ClassName 1 "CharInfo_SL.#$CURRENT_CLASS_ID"
+      
+      "CharInfo_SL.#$VISIBLE_TITLE"       = ClassName
+      "CharInfo_SL.#$RACE"                = #I4   
+      "CharInfo_SL.#$GENDER"              = #I1
+      "CharInfo_SL.#$HAIRSTYLE"           = #I1
+      "CharInfo_SL.#$HAIRCOLOR"           = #I1
+      "CharInfo_SL.#$FACESTYLE"           = #I1
+      "CharInfo_SL.#$UNDERWEAR_SLOT_IID"  = ZERO
+      "CharInfo_SL.#$HEAD_SLOT_IID"       = ZERO
+      "CharInfo_SL.#$R_HAND_SLOT_IID"     = ZERO
+      "CharInfo_SL.#$L_HAND_SLOT_IID"     = ZERO
+      "CharInfo_SL.#$GLOVES_SLOT_IID"     = ZERO
+      "CharInfo_SL.#$CHEST_SLOT_IID"      = ZERO
+      "CharInfo_SL.#$LEGS_SLOT_IID"       = ZERO
+      "CharInfo_SL.#$FEET_SLOT_IID"       = ZERO
+      "CharInfo_SL.#$BACK_SLOT_IID"       = ZERO
+      "CharInfo_SL.#$LRHAND_SLOT_IID"     = ZERO
+      "CharInfo_SL.#$HAIR_SLOT_IID"       = ZERO
+      "CharInfo_SL.#$HAIR2_SLOT_IID"      = ZERO
+      "CharInfo_SL.#$R_BRACELET_SLOT_IID" = ZERO
+      "CharInfo_SL.#$L_BRACELET_SLOT_IID" = ZERO
+      "CharInfo_SL.#$TALISMAN1_SLOT_IID"  = ZERO
+      "CharInfo_SL.#$TALISMAN2_SLOT_IID"  = ZERO
+      "CharInfo_SL.#$TALISMAN3_SLOT_IID"  = ZERO
+      "CharInfo_SL.#$TALISMAN4_SLOT_IID"  = ZERO
+      "CharInfo_SL.#$TALISMAN5_SLOT_IID"  = ZERO
+      "CharInfo_SL.#$TALISMAN6_SLOT_IID"  = ZERO
+      "CharInfo_SL.#$BELT_IID"            = ZERO
+      "CharInfo_SL.#$UNDERWEAR_SLOT_AID"  = ZERO
+      "CharInfo_SL.#$HEAD_SLOT_AID"       = ZERO
+      "CharInfo_SL.#$R_HAND_SLOT_AID"     = ZERO
+      "CharInfo_SL.#$L_HAND_SLOT_AID"     = ZERO
+      "CharInfo_SL.#$GLOVES_SLOT_AID"     = ZERO
+      "CharInfo_SL.#$CHEST_SLOT_AID"      = ZERO
+      "CharInfo_SL.#$LEGS_SLOT_AID"       = ZERO
+      "CharInfo_SL.#$FEET_SLOT_AID"       = ZERO
+      "CharInfo_SL.#$BACK_SLOT_AID"       = ZERO
+      "CharInfo_SL.#$LRHAND_SLOT_AID"     = ZERO
+      "CharInfo_SL.#$HAIR_SLOT_AID"       = ZERO
+      "CharInfo_SL.#$HAIR2_SLOT_AID"      = ZERo
+      "CharInfo_SL.#$R_BRACELET_SLOT_AID" = ZERO
+      "CharInfo_SL.#$L_BRACELET_SLOT_AID" = ZERO
+      "CharInfo_SL.#$TALISMAN1_SLOT_AID"  = ZERO
+      "CharInfo_SL.#$TALISMAN2_SLOT_AID"  = ZERO
+      "CharInfo_SL.#$TALISMAN3_SLOT_AID"  = ZERo
+      "CharInfo_SL.#$TALISMAN4_SLOT_AID"  = ZERO
+      "CharInfo_SL.#$TALISMAN5_SLOT_AID"  = ZERO
+      "CharInfo_SL.#$TALISMAN6_SLOT_AID"  = ZERO
+      "CharInfo_SL.#$BELT_AID"            = ZERO
+      
+      CALL_EXTERN "DLIB\Packets\WriteCharInfo.l2s" DLIB::Packets::WriteCharInfo _bInject 1 CharInfo_SL
+      
+      INJECTBB_CLIENT _bInject
+     
+    ENDIF
+    
+    SLEEP 5
+  WEND
+  
+RETURN VOID

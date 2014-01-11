@@ -1,0 +1,13 @@
+
+//-------------------------------------------------------------------------------------
+CLASS ENGINEX_WORLDEVENTS NULL
+//-------------------------------------------------------------------------------------
+
+   VAR_START
+      PUBLIC STRING OBJECTSTATES "Include/EngineX/WorldEvents/ObjectStates.l2c"
+      PUBLIC STRING NEARPLAYERS "Include/EngineX/WorldEvents/NearPlayers.l2c"
+   VAR_END
+
+//-------------------------------------------------------------------------------------
+END_CLASS
+//-------------------------------------------------------------------------------------

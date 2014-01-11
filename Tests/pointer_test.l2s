@@ -1,0 +1,15 @@
+PRINT_TEXT "allocating array"
+
+FOR A 0 5 1
+DEFINE INT "B<&A&>" "<&A&>"
+NEXT
+
+PRINT_TEXT "printing array"
+
+FOR A 0 5 1
+PRINT_TEXT "<&B<&A&>&>"
+NEXT
+
+PRINT_TEXT "done"
+
+END_SCRIPT

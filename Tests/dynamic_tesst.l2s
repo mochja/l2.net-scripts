@@ -1,0 +1,46 @@
+DEFINE SORTEDLIST FruitJuice 0
+DEFINE INT TestOp 0
+
+FruitJuice.ADD ZERO "Apple Cider"
+
+TestOp = FruitJuice.CONTAINS_KEY "#$Apple Cider"
+
+IF TestOp == TRUE
+
+  PRINT_TEXT "111111  Key Apple Cider exists in Fruit_SL"
+  
+ENDIF
+
+TestOp = FruitJuice.CONTAINS_KEY "Apple Cider"
+
+IF TestOp == TRUE
+
+  PRINT_TEXT "222222 Key Apple Cider exists in Fruit_SL"
+  
+ENDIF
+
+TestOp = FruitJuice.CONTAINS_KEY "APPLE CIDER"
+
+IF TestOp == TRUE
+
+  PRINT_TEXT "33333 Key Apple Cider exists in Fruit_SL"
+  
+ENDIF
+
+TestOp = FruitJuice.CONTAINS_KEY "<&#$Apple Cider&>"
+
+IF TestOp == TRUE
+
+  PRINT_TEXT "4444 Key Apple Cider exists in Fruit_SL"
+  
+ENDIF
+
+TestOp = FruitJuice.CONTAINS_KEY "<&#$APPLE CIDER&>"
+
+IF TestOp == TRUE
+
+  PRINT_TEXT "5555 Key Apple Cider exists in Fruit_SL"
+  
+ENDIF
+
+END_SCRIPT

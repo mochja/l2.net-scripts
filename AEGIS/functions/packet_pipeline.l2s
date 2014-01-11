@@ -1,0 +1,417 @@
+// Packet Pipeline v5.0
+
+FUNCTION Pipeline::Fork
+
+  // Block Unmanaged PrivStoreBuy/Sell Msg
+  BLOCK 162
+  BLOCK 191
+  
+  IF "AEGIS.OPTIONS.CONFIG.CONTAINS_KEY PACKET_PROFILING" == FALSE
+    AEGIS.OPTIONS.CONFIG.ADD FALSE "PACKET_PROFILING"
+  ENDIF
+ 
+  DEFINE THREAD Pipeline::SQ Pipeline::Server
+  DEFINE THREAD Pipeline::CQ Pipeline::Client
+  DEFINE THREAD Pipeline::LL Pipeline::LowLatency
+  
+  AEGIS.Threads.ADD Pipeline::SQ "Pipeline::SQ"
+  AEGIS.Threads.ADD Pipeline::CQ "Pipeline::CQ"
+  AEGIS.THREADS.ADD Pipeline::LL "Pipeline::LL"
+  
+  PopulateData VOID 0
+
+RETURN VOID
+
+FUNCTION Pipeline::LowLatency
+
+  DEFINE SORTEDLIST ServerPackets
+  DEFINE SORTEDLIST ServerPacketsEx
+  DEFINE BYTEBUFFER _bPacket
+  DEFINE INT _iPacketID
+  DEFINE INT EX 0
+  
+  // Packet Profiling
+  DEFINE DOUBLE T_START 0.0
+  DEFINE DOUBLE T_END 0.0
+  DEFINE DOUBLE T_CONVERT 0.0
+  
+  // Preload Stored procedures  
+
+  DEFINE SORTEDLIST EXTERN
+  EXTERN.ADD "#$AEGIS\functions\packets\StatusUpdate.l2s" "Packet::StatusUpdate"
+  ServerPackets.ADD EXTERN "24"
+  DELETE EXTERN
+    
+  DEFINE SORTEDLIST EXTERN
+  EXTERN.ADD "#$AEGIS\functions\packets\UserInfo.l2s" "Packet::UserInfo"
+  ServerPackets.ADD EXTERN "50"
+  DELETE EXTERN
+  
+  DEFINE SORTEDLIST EXTERN
+  EXTERN.ADD "#$AEGIS\functions\packets\SystemMessage.l2s" "Packet::SystemMessage"
+  ServerPackets.ADD EXTERN "98"
+  DELETE EXTERN
+
+  DEFINE SORTEDLIST EXTERN
+  EXTERN.ADD "#$AEGIS\functions\packets\RestartResponse.l2s" "Packet::RestartResponse"
+  ServerPackets.ADD EXTERN "113"
+  DELETE EXTERN
+
+  DEFINE SORTEDLIST EXTERN
+  EXTERN.ADD "#$AEGIS\functions\packets\AbnormalStatusUpdate.l2s" "Packet::AbnormalStatusUpdate"
+  ServerPackets.ADD EXTERN "133"
+  DELETE EXTERN
+  
+  LABEL Restart::LL
+  WHILE AEGIS.PIPELINE.NETWORK.LOWLATENCY.COUNT > #I0
+    IF AEGIS.MUTEX.PIPELINE.NETWORK IS_LOCKED
+    ELSE
+      _bPacket = AEGIS.PIPELINE.NETWORK.LOWLATENCY.POP      
+      _bPacket.READ_BYTE _iPacketID
+     
+      IF _iPacketID == #I254
+        EX = TRUE
+        _bPacket.READ_INT16 _iPacketID
+      ENDIF
+      
+      _bPacket.RESET_INDEX
+      
+      IF EX == FALSE
+        IF "ServerPackets.CONTAINS_KEY <&_iPacketID&>" == TRUE
+        
+          IF "AEGIS.OPTIONS.CONFIG.#$PACKET_PROFILING" == TRUE
+            GET_TIME T_START
+            CALL_EXTERN "<&ServerPackets.#$<&_iPacketID&>.#I0&>" "<&ServerPackets.#$<&_iPacketID&>.GET_KEY #I0&>" VOID 1 _bPacket
+            GET_TIME T_END
+            T_CONVERT = T_END - T_START
+            T_CONVERT = T_CONVERT / #D10000000.0
+            IF T_CONVERT >= #D1.0
+              PRINT_TEXT "<&ServerPackets.#$<&_iPacketID&>.GET_KEY #I0&> took <&T_CONVERT&> s to complete"
+            ENDIF
+          ELSE
+            CALL_EXTERN "<&ServerPackets.#$<&_iPacketID&>.#I0&>" "<&ServerPackets.#$<&_iPacketID&>.GET_KEY #I0&>" VOID 1 _bPacket
+          ENDIF
+            
+        ENDIF
+      ELSE
+        IF "ServerPacketsEx.CONTAINS_KEY <&_iPacketID&>" == TRUE
+          IF "AEGIS.OPTIONS.CONFIG.#$PACKET_PROFILING" == TRUE
+            GET_TIME T_START
+            CALL_EXTERN "<&ServerPacketsEx.#$<&_iPacketID&>.#I0&>" "<&ServerPacketsEx.#$<&_iPacketID&>.GET_KEY #I0&>" VOID 1 _bPacket
+            GET_TIME T_END
+            T_CONVERT = T_END - T_START
+            T_CONVERT = T_CONVERT / #D10000000.0
+            IF T_CONVERT >= #D1.0
+              PRINT_TEXT "<&ServerPacketsEx.#$<&_iPacketID&>.GET_KEY #I0&> took <&T_CONVERT&> s to complete"
+            ENDIF
+          ELSE
+            CALL_EXTERN "<&ServerPacketsEx.#$<&_iPacketID&>.#I0&>" "<&ServerPacketsEx.#$<&_iPacketID&>.GET_KEY #I0&>" VOID 1 _bPacket
+          ENDIF
+        ENDIF
+      ENDIF    
+    ENDIF
+    EX = FALSE
+  WEND
+  AEGIS.THREADS.#$Pipeline::LL.STOP
+  JUMP_TO_LABEL Restart::LL
+
+RETURN VOID
+
+
+FUNCTION Pipeline::Server
+
+  DEFINE SORTEDLIST ServerPackets
+  DEFINE SORTEDLIST ServerPacketsEx
+  DEFINE BYTEBUFFER _bPacket
+  DEFINE INT _iPacketID
+  DEFINE INT EX 0
+  
+  // Packet Profiling
+  DEFINE DOUBLE T_START 0.0
+  DEFINE DOUBLE T_END 0.0
+  DEFINE DOUBLE T_CONVERT 0.0
+  
+  // Preload Stored procedures  
+
+  DEFINE SORTEDLIST EXTERN
+  EXTERN.ADD "#$AEGIS\functions\packets\ExSetCompassZoneCode.l2s" "Packet::ExSetCompassZoneCode"
+  ServerPacketsEx.ADD EXTERN "51"
+  DELETE EXTERN
+
+  DEFINE SORTEDLIST EXTERN
+  EXTERN.ADD "#$AEGIS\functions\packets\PrivateStoreMsg.l2s" "Packet::PrivateStoreMsg"
+  ServerPacketsEx.ADD EXTERN "128"
+  DELETE EXTERN
+
+  DEFINE SORTEDLIST EXTERN
+  EXTERN.ADD "#$AEGIS\functions\packets\Die.l2s" "Packet::Die"
+  ServerPackets.ADD EXTERN "0"
+  DELETE EXTERN
+        
+  DEFINE SORTEDLIST EXTERN
+  EXTERN.ADD "#$AEGIS\functions\packets\Revive.l2s" "Packet::Revive"
+  ServerPackets.ADD EXTERN "1"
+  DELETE EXTERN
+
+  DEFINE SORTEDLIST EXTERN
+  EXTERN.ADD "#$AEGIS\functions\packets\DeleteObject.l2s" "Packet::DeleteObject"
+  ServerPackets.ADD EXTERN "8"
+  DELETE EXTERN
+
+  DEFINE SORTEDLIST EXTERN
+  EXTERN.ADD "#$AEGIS\functions\packets\NpcInfo.l2s" "Packet::NpcInfo"
+  ServerPackets.ADD EXTERN "12"
+  DELETE EXTERN
+  
+  DEFINE SORTEDLIST EXTERN
+  EXTERN.ADD "#$AEGIS\functions\packets\TeleportToLocation.l2s" "Packet::TeleportToLocation"
+  ServerPackets.ADD EXTERN "34"
+  DELETE EXTERN
+            
+  DEFINE SORTEDLIST EXTERN
+  EXTERN.ADD "#$AEGIS\functions\packets\TargetSelected.l2s" "Packet::TargetSelected"
+  ServerPackets.ADD EXTERN "35"
+  DELETE EXTERN
+  
+  DEFINE SORTEDLIST EXTERN
+  EXTERN.ADD "#$AEGIS\functions\packets\TargetUnselected.l2s" "Packet::TargetUnselected"
+  ServerPackets.ADD EXTERN "36"
+  DELETE EXTERN
+  
+  DEFINE SORTEDLIST EXTERN
+  EXTERN.ADD "#$AEGIS\functions\packets\CharInfo.l2s" "Packet::CharInfo"
+  ServerPackets.ADD EXTERN "49"
+  DELETE EXTERN
+    
+  DEFINE SORTEDLIST EXTERN
+  EXTERN.ADD "#$AEGIS\functions\packets\MagicSkillUse.l2s" "Packet::MagicSkillUse"
+  ServerPackets.ADD EXTERN "72"
+  DELETE EXTERN
+  
+  DEFINE SORTEDLIST EXTERN
+  EXTERN.ADD "#$AEGIS\functions\packets\MagicSkillCanceld.l2s" "Packet::MagicSkillCanceld"
+  ServerPackets.ADD EXTERN "73"
+  DELETE EXTERN
+  
+  DEFINE SORTEDLIST EXTERN
+  EXTERN.ADD "#$AEGIS\functions\packets\SkillList.l2s" "Packet::SkillList"
+  ServerPackets.ADD EXTERN "95"
+  DELETE EXTERN
+
+  DEFINE SORTEDLIST EXTERN
+  EXTERN.ADD "#$AEGIS\functions\packets\PrivateStoreMsg.l2s" "Packet::PrivateStoreMsg"
+  ServerPackets.ADD EXTERN "162"
+  ServerPackets.ADD EXTERN "191"
+  DELETE EXTERN
+  
+  DEFINE SORTEDLIST EXTERN
+  EXTERN.ADD "#$AEGIS\functions\packets\MyTargetSelected.l2s" "Packet::MyTargetSelected"
+  ServerPackets.ADD EXTERN "185"
+  DELETE EXTERN
+  
+  DEFINE SORTEDLIST EXTERN
+  EXTERN.ADD "#$AEGIS\functions\packets\RelationChanged.l2s" "Packet::RelationChanged"
+  ServerPackets.ADD EXTERN "206"
+  DELETE EXTERN
+
+  LABEL Restart::SQ
+  WHILE AEGIS.PIPELINE.NETWORK.SERVER.COUNT > #I0
+    IF AEGIS.MUTEX.PIPELINE.NETWORK IS_LOCKED
+    ELSE
+      _bPacket = AEGIS.PIPELINE.NETWORK.SERVER.POP      
+      _bPacket.READ_BYTE _iPacketID
+     
+      IF _iPacketID == #I254
+        EX = TRUE
+        _bPacket.READ_INT16 _iPacketID
+      ENDIF
+      
+      _bPacket.RESET_INDEX
+      
+      IF EX == FALSE
+        IF "ServerPackets.CONTAINS_KEY <&_iPacketID&>" == TRUE
+        
+          IF "AEGIS.OPTIONS.CONFIG.#$PACKET_PROFILING" == TRUE
+            GET_TIME T_START
+            CALL_EXTERN "<&ServerPackets.#$<&_iPacketID&>.#I0&>" "<&ServerPackets.#$<&_iPacketID&>.GET_KEY #I0&>" VOID 1 _bPacket
+            GET_TIME T_END
+            T_CONVERT = T_END - T_START
+            T_CONVERT = T_CONVERT / #D10000000.0
+            IF T_CONVERT >= #D1.0
+              PRINT_TEXT "<&ServerPackets.#$<&_iPacketID&>.GET_KEY #I0&> took <&T_CONVERT&> s to complete"
+            ENDIF
+          ELSE
+            CALL_EXTERN "<&ServerPackets.#$<&_iPacketID&>.#I0&>" "<&ServerPackets.#$<&_iPacketID&>.GET_KEY #I0&>" VOID 1 _bPacket
+          ENDIF
+            
+        ENDIF
+      ELSE
+        IF "ServerPacketsEx.CONTAINS_KEY <&_iPacketID&>" == TRUE
+          IF "AEGIS.OPTIONS.CONFIG.#$PACKET_PROFILING" == TRUE
+            GET_TIME T_START
+            CALL_EXTERN "<&ServerPacketsEx.#$<&_iPacketID&>.#I0&>" "<&ServerPacketsEx.#$<&_iPacketID&>.GET_KEY #I0&>" VOID 1 _bPacket
+            GET_TIME T_END
+            T_CONVERT = T_END - T_START
+            T_CONVERT = T_CONVERT / #D10000000.0
+            IF T_CONVERT >= #D1.0
+              PRINT_TEXT "<&ServerPacketsEx.#$<&_iPacketID&>.GET_KEY #I0&> took <&T_CONVERT&> s to complete"
+            ENDIF
+          ELSE
+            CALL_EXTERN "<&ServerPacketsEx.#$<&_iPacketID&>.#I0&>" "<&ServerPacketsEx.#$<&_iPacketID&>.GET_KEY #I0&>" VOID 1 _bPacket
+          ENDIF
+        ENDIF
+      ENDIF    
+    ENDIF
+    EX = FALSE
+  WEND
+  AEGIS.THREADS.#$Pipeline::SQ.STOP
+  JUMP_TO_LABEL Restart::SQ
+  
+RETURN VOID
+
+FUNCTION Pipeline::Client
+
+  DEFINE SORTEDLIST ClientPackets
+  DEFINE SORTEDLIST ClientPacketsEx
+  
+  DEFINE BYTEBUFFER _bPacket
+  DEFINE INT _iPacketID
+  DEFINE INT EX 0
+  // Packet Profiling
+  DEFINE DOUBLE T_START 0.0
+  DEFINE DOUBLE T_END 0.0
+  DEFINE DOUBLE T_CONVERT 0.0
+
+  // Preload Stored procedures
+
+  DEFINE SORTEDLIST EXTERN
+  EXTERN.ADD "#$AEGIS\functions\packets\UseItem.l2s" "Packet::UseItem"
+  ClientPackets.ADD EXTERN "25"
+  DELETE EXTERN
+
+  DEFINE SORTEDLIST EXTERN
+  EXTERN.ADD "#$AEGIS\functions\packets\Action.l2s" "Packet::Action"
+  ClientPackets.ADD EXTERN "31"
+  DELETE EXTERN
+  
+  DEFINE SORTEDLIST EXTERN
+  EXTERN.ADD "#$AEGIS\functions\packets\RequestBypassToServer.l2s" "Packet::RequestBypassToServer"
+  ClientPackets.ADD EXTERN "35"
+  ClientPackets.ADD EXTERN "133"
+  ClientPackets.ADD EXTERN "134"
+  DELETE EXTERN
+
+  DEFINE SORTEDLIST EXTERN
+  EXTERN.ADD "#$AEGIS\functions\packets\RequestMagicSkillUse.l2s" "Packet::RequestMagicSkillUse"
+  ClientPackets.ADD EXTERN "57"
+  DELETE EXTERN
+
+  DEFINE SORTEDLIST EXTERN
+  EXTERN.ADD "#$AEGIS\functions\packets\RequestRestart.l2s" "Packet::RequestRestart"
+  ClientPackets.ADD EXTERN "87"
+  DELETE EXTERN
+
+  DEFINE SORTEDLIST EXTERN
+  EXTERN.ADD "#$AEGIS\functions\packets\RequestTargetCanceld.l2s" "Packet::RequestTargetCanceld"
+  ClientPackets.ADD EXTERN "72"
+  DELETE EXTERN
+  
+  DEFINE SORTEDLIST EXTERN
+  EXTERN.ADD "#$AEGIS\functions\packets\RequestSendL2FriendSay.l2s" "Packet::RequestSendL2FriendSay"
+  ClientPackets.ADD EXTERN "107"
+  DELETE EXTERN
+  
+  LABEL Restart::CQ
+  WHILE AEGIS.PIPELINE.NETWORK.CLIENT.COUNT > #I0
+    IF AEGIS.MUTEX.PIPELINE.NETWORK IS_LOCKED
+    ELSE
+      _bPacket = AEGIS.PIPELINE.NETWORK.CLIENT.POP      
+      _bPacket.READ_BYTE _iPacketID
+     
+      IF _iPacketID == #I254
+        EX = TRUE
+        _bPacket.READ_INT16 _iPacketID
+      ENDIF
+      
+      _bPacket.RESET_INDEX
+      
+      IF EX == FALSE
+        IF "ClientPackets.CONTAINS_KEY <&_iPacketID&>" == TRUE
+        
+          IF "AEGIS.OPTIONS.CONFIG.#$PACKET_PROFILING" == TRUE
+            GET_TIME T_START
+            CALL_EXTERN "<&ClientPackets.#$<&_iPacketID&>.#I0&>" "<&ClientPackets.#$<&_iPacketID&>.GET_KEY #I0&>" VOID 1 _bPacket
+            GET_TIME T_END
+            T_CONVERT = T_END - T_START
+            T_CONVERT = T_CONVERT / #D10000000.0
+            IF T_CONVERT >= #D1.0
+              PRINT_TEXT "<&ClientPackets.#$<&_iPacketID&>.GET_KEY #I0&> took <&T_CONVERT&> s to complete"
+            ENDIF
+          ELSE
+            CALL_EXTERN "<&ClientPackets.#$<&_iPacketID&>.#I0&>" "<&ClientPackets.#$<&_iPacketID&>.GET_KEY #I0&>" VOID 1 _bPacket
+          ENDIF
+            
+        ENDIF
+      ELSE
+        IF "ClientPacketsEx.CONTAINS_KEY <&_iPacketID&>" == TRUE
+          IF "AEGIS.OPTIONS.CONFIG.#$PACKET_PROFILING" == TRUE
+            GET_TIME T_START
+            CALL_EXTERN "<&ClientPacketsEx.#$<&_iPacketID&>.#I0&>" "<&ClientPacketsEx.#$<&_iPacketID&>.GET_KEY #I0&>" VOID 1 _bPacket
+            GET_TIME T_END
+            T_CONVERT = T_END - T_START
+            T_CONVERT = T_CONVERT / #D10000000.0
+            IF T_CONVERT >= #D1.0
+              PRINT_TEXT "<&ClientPacketsEx.#$<&_iPacketID&>.GET_KEY #I0&> took <&T_CONVERT&> s to complete"
+            ENDIF
+          ELSE
+            CALL_EXTERN "<&ClientPacketsEx.#$<&_iPacketID&>.#I0&>" "<&ClientPacketsEx.#$<&_iPacketID&>.GET_KEY #I0&>" VOID 1 _bPacket
+          ENDIF
+        ENDIF
+      ENDIF
+    ENDIF
+    EX = FALSE
+  WEND
+  AEGIS.THREADS.#$Pipeline::CQ.STOP
+  JUMP_TO_LABEL Restart::CQ
+  
+RETURN VOID
+
+FUNCTION PopulateData
+
+  FOR Z 0 3 1
+    UtilPacket VOID 2 Z #I0
+  NEXT
+  
+RETURN VOID
+
+FUNCTION UtilPacket 2 _iMode _iTarget
+
+  DEFINE BYTEBUFFER _bPacket 1024
+  
+  SWITCH _iMode
+    CASE #I0 // Request Reload
+    _bPacket.WRITE_BYTE #I110
+    _bPacket.TRIM_TO_INDEX
+    _bPacket.RESET_INDEX
+    BREAK 1
+    CASE #I1 // Open Inventory
+    _bPacket.WRITE_BYTE #I20
+    _bPacket.TRIM_TO_INDEX
+    _bPacket.RESET_INDEX
+    BREAK 1
+    CASE #I2 // Skill List Update
+    _bPacket.WRITE_BYTE #I80
+    _bPacket.TRIM_TO_INDEX
+    _bPacket.RESET_INDEX
+    BREAK 1
+  ENDSWITCH
+  
+  // =0 - inject to server
+  // >0 - inject to client
+  IF _iTarget == ZERO
+    INJECTBB _bPacket
+  ELSE
+    INJECTBB_CLIENT _bPacket
+  ENDIF
+
+RETURN VOID

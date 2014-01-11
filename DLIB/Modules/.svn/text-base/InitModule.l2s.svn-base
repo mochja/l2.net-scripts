@@ -1,0 +1,7 @@
+// Global Functions for DLIB script modules.
+
+FUNCTION InitModule::DLIB
+
+  DEFINE_GLOBAL DlibModule DLIB
+  
+RETURN VOID

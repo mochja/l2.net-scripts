@@ -1,0 +1,37 @@
+
+CLASS LAZY_RETURNING_DISTANCE LAZY_RETURNING_BASEPIECE
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT
+
+      // the left point. needs to be a vector3 variable
+      DEFINE VECTOR3 _LEFT 0
+      THIS.SET_VALUE VOID 2 #$LEFT _LEFT
+
+      // the right point. needs to be a vector3 variable
+      DEFINE VECTOR3 _RIGHT 0
+      THIS.SET_VALUE VOID 2 #$RIGHT _RIGHT
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC _GET_RETURN 1 CALLTIME
+
+      DEFINE INT _LEFT 0
+      DEFINE INT _RIGHT 0
+
+      THIS.DATA.#$LEFT.GET_RETURN _LEFT 1 CALLTIME
+      THIS.DATA.#$RIGHT.GET_RETURN _RIGHT 1 CALLTIME
+
+      // --- --- ---
+
+      DEFINE DOUBLE _DISTANCE 0
+      DISTANCE _DISTANCE _LEFT.X _LEFT.Y _LEFT.Z _RIGHT.X _RIGHT.Y _RIGHT.Z
+
+   RETURN _DISTANCE
+
+//-------------------------------------------------------------------------------------
+
+END_CLASS

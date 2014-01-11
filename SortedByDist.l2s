@@ -1,0 +1,58 @@
+   INCLUDE StdLib/NPC.l2c
+   DEFINE ARRAYLIST NEARNPCS 0
+   DEFINE INT TESTDIST 0
+ 
+   PRINT_TEXT "------------------------------------"
+   PRINT_TEXT "TEST WITH ARRAYLIST"
+ 
+   DEFINE ARRAYLIST ARRAYNPCS 0
+   GET_NPCS ARRAYNPCS
+   SORT_OBJECTS_BY_DIST NEARNPCS 1 ARRAYNPCS
+   FOR I 0 "<&NEARNPCS.COUNT&>" 1
+      //NEARNPCS.I.DIST TESTDIST 0
+      PRINT_TEXT "<&NEARNPCS.I.ID&> -> <&NEARNPCS.I.NAME&>"
+   NEXT
+  /*
+   PRINT_TEXT "------------------------------------"
+   PRINT_TEXT "TEST WITH SORTEDLIST"
+ 
+   DEFINE ARRAYLIST SORTEDNPCS 0
+   GET_NPCS SORTEDNPCS
+   SORT_OBJECTS_BY_DIST NEARNPCS 1 SORTEDNPCS
+   FOR I 0 "<&NEARNPCS.COUNT&>" 1
+      NEARNPCS.I.DIST TESTDIST 0
+      PRINT_TEXT "<&NEARNPCS.I.ID&> -> <&NEARNPCS.I.NAME&> (<&TESTDIST&>)"
+   NEXT
+    */
+   PRINT_TEXT "------------------------------------"
+   PRINT_TEXT "nearest id: <&NEARNPCS.ZERO.ID&>"
+   PRINT_TEXT "------------------------------------"
+ 
+//-------------------------------------------------------------------------------------
+END_SCRIPT
+//-------------------------------------------------------------------------------------
+ 
+   // @aparam1: sortedlist/arraylist of npcs
+   // returns: arraylist, sorted by distance (nearest first)
+   FUNCTION SORT_OBJECTS_BY_DIST 1 _OBJLIST
+      DEFINE ARRAYLIST SORTED_OBJECTS_BY_DIST 0
+      DEFINE ARRAYLIST OBJLIST 0
+      DEFINE DOUBLE TEMP_DIST 0
+      DEFINE DOUBLE NEAR_DIST 0
+      DEFINE INT NEAR_I 0
+      FOR I 0 "<&_OBJLIST.COUNT&>" 1
+         OBJLIST.ADD _OBJLIST.I
+      NEXT
+      WHILE ( OBJLIST.COUNT > ZERO )
+         NEAR_DIST = 9999999999
+         FOR I 0 "<&OBJLIST.COUNT&>" 1
+            OBJLIST.I.DIST TEMP_DIST 0
+            IF ( TEMP_DIST < NEAR_DIST )
+               NEAR_DIST = "#d<&TEMP_DIST&>"
+               NEAR_I = "#i<&I&>"
+            ENDIF
+         NEXT
+         SORTED_OBJECTS_BY_DIST.ADD OBJLIST.NEAR_I
+         OBJLIST.REMOVE "<&NEAR_I&>"
+      WEND
+   RETURN SORTED_OBJECTS_BY_DIST

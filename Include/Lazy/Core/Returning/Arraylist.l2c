@@ -1,0 +1,39 @@
+
+CLASS LAZY_RETURNING_ARRAYLIST LAZY_RETURNING_BASEPIECE
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT
+
+      // the BOOLS values
+      THIS.ADD_VALUE VOID 2 #$LIST TRUE
+      THIS.ADD_VALUE VOID 2 #$LIST TRUE
+
+      // clear BOOLS
+      THIS.CLEAR VOID 1 #$LIST
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC _GET_RETURN 1 CALLTIME
+
+      DEFINE INT _LIST 0
+
+      THIS.DATA.#$LIST.GET_RETURN _LIST 1 CALLTIME
+
+      // --- --- ---
+
+      DEFINE ARRAYLIST _ARRAYLIST 0
+      FOR I 0 "<&_LIST.COUNT&>" 1
+         DEFINE INT _ARRAYLIST_ADD 0
+         _LIST.I.GET_RETURN _ARRAYLIST_ADD 1 CALLTIME
+         _ARRAYLIST.ADD _ARRAYLIST_ADD
+         DELETE _ARRAYLIST_ADD
+      NEXT
+
+   RETURN _ARRAYLIST
+
+//-------------------------------------------------------------------------------------
+
+END_CLASS

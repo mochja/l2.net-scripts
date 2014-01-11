@@ -1,0 +1,59 @@
+
+//-------------------------------------------------------------------------------------
+CLASS ENGINEX_INTERFACE_MENU NULL
+//-------------------------------------------------------------------------------------
+
+   VAR_START
+      PUBLIC SORTEDLIST MENUKEYS 0
+   VAR_END
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT
+      ENGINEX.CONSTRUCT VOID 1 #$EngineX.ScriptEvents.ServerPackets
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC HIDE_TUTORIAL_WINDOW 0
+      DEFINE SORTEDLIST DATA 0
+      ENGINEX.SCRIPTEVENTS.SERVERPACKETS.WRITE VOID 3 169 DATA TRUE
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC SHOW_TUTORIAL_MARK 1 MARK_ID
+      DEFINE SORTEDLIST DATA 0
+      DATA.ADD "#i<&MARK_ID&>" "MARK_ID"
+      ENGINEX.SCRIPTEVENTS.SERVERPACKETS.WRITE VOID 3 167 DATA TRUE
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC SAY 2 FROM TEXT
+      DEFINE SORTEDLIST DATA 0
+      DATA.ADD ZERO "SENDERID"
+      DATA.ADD CHANNEL_PARTYCOMMANDER "MESSAGETYPE"
+      DATA.ADD FROM "SENDERNAME"
+      DATA.ADD TEXT "MESSAGE"
+      ENGINEX.SCRIPTEVENTS.SERVERPACKETS.WRITE VOID 3 74 DATA TRUE
+      PRINT_TEXT "<&FROM&>: <&TEXT&> ]"
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC GENERATE_MENUKEY 0
+      DEFINE INT MENUKEY 0
+      DEFINE INT GENERATE 1
+      WHILE ( GENERATE == TRUE )
+         GET_RAND MENUKEY -987654321 987654321
+         IF ( THIS.MENUKEYS.CONTAINS_KEY "<&MENUKEY&>" == FALSE )
+            THIS.MENUKEYS.ADD NULL "<&MENUKEY&>"
+            GENERATE = FALSE
+         ENDIF
+      WEND
+   RETURN MENUKEY
+
+//-------------------------------------------------------------------------------------
+END_CLASS
+//-------------------------------------------------------------------------------------

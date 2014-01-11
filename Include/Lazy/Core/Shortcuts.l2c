@@ -1,0 +1,147 @@
+
+INCLUDE "Include/Lazy/Core/Shortcuts/Skill.l2c"
+INCLUDE "Include/Lazy/Core/Shortcuts/Item.l2c"
+INCLUDE "Include/Lazy/Core/Shortcuts/Action.l2c"
+INCLUDE "Include/Lazy/Core/Shortcuts/Macro.l2c"
+INCLUDE "Include/Lazy/Core/Shortcuts/Recipe.l2c"
+
+CLASS LAZY_SHORTCUTS NULL
+
+//-------------------------------------------------------------------------------------
+
+   VAR_START
+
+      PUBLIC INT {MENU} 0
+
+      PUBLIC INT LOADED 0
+      PUBLIC INT LOADING 0
+      PUBLIC INT FAKE_SLOT_ID 119
+      PUBLIC INT FAKE_ACTION_ID 0
+      PUBLIC SORTEDLIST ITEMS 0
+      PUBLIC SORTEDLIST SKILLS 0
+      PUBLIC SORTEDLIST ACTIONS 0
+      PUBLIC SORTEDLIST MACROS 0
+      PUBLIC SORTEDLIST RECIPES 0
+
+   VAR_END
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT2 0
+
+      ENGINEX.EVENTS.ADD_SERVERPACKET VOID 2 #i69 #$LAZY.CLASSES.#$SHORTCUTS.SERVEREVENT_SHORTCUTINIT
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+// user calls
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+
+   PUBLIC LOAD_SHORTCUTS 0
+
+      // reset values
+      THIS.LOADED = FALSE
+      THIS.LOADING = TRUE
+
+      // put fake action into fake slot
+      DEFINE BYTEBUFFER BB 1024
+      BB.WRITE_BYTE #i61
+      BB.WRITE_INT32 #i3
+      BB.WRITE_INT32 THIS.FAKE_SLOT_ID
+      BB.WRITE_INT32 THIS.FAKE_ACTION_ID
+      BB.WRITE_INT32 #i0
+      BB.WRITE_INT32 #i1
+      BB.TRIM_TO_INDEX
+      BB.RESET_INDEX
+      INJECTBB BB
+      DELETE BB
+
+      ENGINEX.UTILS.SLEEP VOID 2 #i500 #i1000
+
+      // remove fake action from fake slot
+      DEFINE BYTEBUFFER BB 1024
+      BB.WRITE_BYTE #i63
+      BB.WRITE_INT32 THIS.FAKE_SLOT_ID
+      BB.TRIM_TO_INDEX
+      BB.RESET_INDEX
+      INJECTBB BB
+      DELETE BB
+
+      // wait while its loading
+      WHILE (THIS.LOADING == TRUE)
+         SLEEP 10
+      WEND
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+// server events
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+
+   PUBLIC SERVEREVENT_SHORTCUTINIT 1 PACKET_DATA
+
+      THIS.ITEMS.CLEAR
+      THIS.SKILLS.CLEAR
+      THIS.ACTIONS.CLEAR
+      THIS.MACROS.CLEAR
+      THIS.RECIPES.CLEAR
+
+      // foreach initialiced shortcut
+      FOREACH I SORTEDLIST PACKET_DATA.#$SHORTCUTS
+         SWITCH PACKET_DATA.#$SHORTCUTS.I.#$TYPE
+
+            CASE SHORTCUT_ITEM
+               DEFINE LAZY_SHORTCUTS_ITEM SHORTCUT_ITEM 0
+               SHORTCUT_ITEM.OBJECT_ID = "#i<&PACKET_DATA.#$SHORTCUTS.I.#$ITEM_OBJ_ID&>"
+               THIS.ITEMS.ADD SHORTCUT_ITEM "<&PACKET_DATA.#$SHORTCUTS.I.#$SLOT_ID&>"
+               DELETE SHORTCUT_ITEM
+               BREAK 1
+
+            CASE SHORTCUT_SKILL
+               DEFINE LAZY_SHORTCUTS_SKILL SHORTCUT_SKILL 0
+               SHORTCUT_SKILL.SKILL_ID = "#i<&PACKET_DATA.#$SHORTCUTS.I.#$SKILL_ID&>"
+               SHORTCUT_SKILL.LEVEL = "#i<&PACKET_DATA.#$SHORTCUTS.I.#$SKILL_LEVEL&>"
+               THIS.SKILLS.ADD SHORTCUT_SKILL "<&PACKET_DATA.#$SHORTCUTS.I.#$SLOT_ID&>"
+               DELETE SHORTCUT_SKILL
+               BREAK 1
+
+            CASE SHORTCUT_ACTION
+               DEFINE LAZY_SHORTCUTS_ACTION SHORTCUT_ACTION 0
+               SHORTCUT_ACTION.ACTION_ID = "#i<&PACKET_DATA.#$SHORTCUTS.I.#$ACTION_ID&>"
+               THIS.ACTIONS.ADD SHORTCUT_ACTION "<&PACKET_DATA.#$SHORTCUTS.I.#$SLOT_ID&>"
+               DELETE SHORTCUT_ACTION
+               BREAK 1
+
+            CASE SHORTCUT_MACRO
+               DEFINE LAZY_SHORTCUTS_MACRO SHORTCUT_MACRO 0
+               SHORTCUT_MACRO.MACRO_ID = "#i<&PACKET_DATA.#$SHORTCUTS.I.#$MACRO_ID&>"
+               THIS.MACROS.ADD SHORTCUT_MACRO "<&PACKET_DATA.#$SHORTCUTS.I.#$SLOT_ID&>"
+               DELETE SHORTCUT_MACRO
+               BREAK 1
+
+            CASE SHORTCUT_RECIPE
+               DEFINE LAZY_SHORTCUTS_RECIPE SHORTCUT_RECIPE 0
+               SHORTCUT_RECIPE.RECIPE_ID = "#i<&PACKET_DATA.#$SHORTCUTS.I.#$RECIPE_ID&>"
+               THIS.RECIPES.ADD SHORTCUT_RECIPE "<&PACKET_DATA.#$SHORTCUTS.I.#$SLOT_ID&>"
+               DELETE SHORTCUT_RECIPE
+               BREAK 1
+
+         ENDSWITCH
+      NEXTEACH
+
+      THIS.LOADED = TRUE
+      THIS.LOADING = FALSE
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+END_CLASS

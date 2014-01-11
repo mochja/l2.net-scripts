@@ -1,0 +1,223 @@
+// AEGIS\Functions\TargetingPerception.l2s
+// Enhance in game perception of targeting that occurs in peception.
+
+FUNCTION TargetPerceptionAdmin
+
+  IF "AEGIS.OPTIONS.CONFIG.CONTAINS_KEY TARGET_TRACKING" == FALSE
+    AEGIS.OPTIONS.CONFIG.ADD FALSE "TARGET_TRACKING"
+  ENDIF
+
+  IF "AEGIS.OPTIONS.CONFIG.#$TARGET_TRACKING" == TRUE
+    // Stop unfiltered CharInfo Packets
+    BLOCK 49
+  ENDIF  
+
+  DEFINE SORTEDLIST SkillCanceld
+
+  IF "AEGIS.OPTIONS.TEMP.CONTAINS_KEY SKILLCANCELD" == FALSE
+    LOCK AEGIS.OPTIONS.TEMP.MUTEX
+      AEGIS.OPTIONS.TEMP.ADD SKILLCANCELD "SKILLCANCELD"
+    UNLOCK AEGIS.OPTIONS.TEMP.MUTEX
+  ENDIF
+
+  IF "AEGIS.OPTIONS.TEMP.CONTAINS_KEY RezTracker" == FALSE
+    DEFINE SORTEDLIST RezTracker
+    LOCK AEGIS.OPTIONS.TEMP.MUTEX
+      AEGIS.OPTIONS.TEMP.ADD RezTracker "RezTracker"
+    UNLOCK AEGIS.OPTIONS.TEMP.MUTEX
+  ENDIF
+
+  IF "AEGIS.OPTIONS.TEMP.CONTAINS_KEY BubbleTracker" == FALSE
+    DEFINE SORTEDLIST BubbleTracker
+    LOCK AEGIS.OPTIONS.TEMP.MUTEX
+      AEGIS.OPTIONS.TEMP.ADD BubbleTracker "BubbleTracker"
+    UNLOCK AEGIS.OPTIONS.TEMP.MUTEX
+  ENDIF
+
+  IF "AEGIS.OPTIONS.CONFIG.#$TARGET_TRACKING" == TRUE
+    PRINT_TEXT "Enhanced target perception starting."
+    THREAD TargetTracking
+  ELSE
+    PRINT_TEXT "Enhanced target perception exiting."
+  ENDIF
+  
+RETURN VOID
+
+FUNCTION TargetTracking
+
+  DEFINE BYTEBUFFER _bCharInfo
+  DEFINE SORTEDLIST P_CLONE
+  
+  WHILE ONE == ONE
+
+    LOCK AEGIS.MUTEX.ENTITYTRACKING.PLAYERS
+      P_CLONE = AEGIS.ENTITYTRACKING.PLAYERS
+    UNLOCK AEGIS.MUTEX.ENTITYTRACKING.PLAYERS
+    
+    FOREACH Obj CharList P_CLONE
+      IF P_CLONE.Obj.CURRENT_TARGET != CHAR_ID
+        IF P_CLONE.Obj.CharInfo.#$TEAM_CIRCLE > #I0
+          P_CLONE.Obj.CharInfo.#$TEAM_CIRCLE = #I0
+          CALL_EXTERN "DLIB\Packets\WriteCharInfo.L2S" DLIB::Packets::WriteCharInfo _bCharInfo 1 P_CLONE.Obj.CharInfo
+          AEGIS.PIPELINE.NETWORK.SERVER.ADD _bCharInfo
+          AEGIS.THREADS.#$Pipeline::SQ.START
+        ENDIF
+      ENDIF
+    NEXTEACH
+    
+    IF "AEGIS.OPTIONS.CONFIG.#$TARGET_TRACKING" == FALSE
+      CALL_EXTERN "AEGIS\functions\packet_pipeline.l2s" UtilPacket VOID 2 #I0 #I0
+      BREAK 2
+    ENDIF
+
+  SLEEP 500
+  WEND
+  
+RETURN VOID
+
+FUNCTION AEGIS::TargetPerception::ProcessNpcInfo 1 _oNpcInfo
+
+  DEFINE BYTEBUFFER _bNpcInfo
+  DEFINE INT B_RESULT 0
+
+  _oNpcInfo.#$NAME_VISIBLE = #I1 
+  
+  // Rewrite the modified packet
+  CALL_EXTERN "DLIB\Packets\WriteNpcInfo.L2S" DLIB::Packets::WriteNpcInfo _bNpcInfo 1 _oNpcInfo
+
+RETURN _bNpcInfo
+
+FUNCTION AEGIS::TargetPerception::ProcessCharInfo 1 _oCharInfo
+
+  DEFINE BYTEBUFFER _bCharInfo
+  DEFINE SORTEDLIST P_CLONE
+  DEFINE INT B_RESULT 0
+
+  IF "AEGIS.ENTITYTRACKING.PLAYERS.CONTAINS_KEY <&_oCharInfo.#$OBJECT_ID&>" == TRUE
+    IF "AEGIS.ENTITYTRACKING.PLAYERS.#$<&_oCharInfo.#$OBJECT_ID&>.CURRENT_TARGET" == CHAR_ID
+      _oCharInfo.#$TEAM_CIRCLE = #I2
+    ENDIF   
+  ENDIF
+  
+  // Rewrite the modified packet
+  CALL_EXTERN "DLIB\Packets\WriteCharInfo.L2S" DLIB::Packets::WriteCharInfo _bCharInfo 1 _oCharInfo
+  
+RETURN _bCharInfo
+
+FUNCTION AEGIS::TargetingPerception::ProcessMSU 1 _oMagicSkillUse
+
+  IF "AEGIS.ENTITYTRACKING.PLAYERS.CONTAINS_KEY <&_oMagicSkillUse.#$SOURCE&>" == TRUE
+    "AEGIS.ENTITYTRACKING.PLAYERS.#$<&_oMagicSkillUse.#$SOURCE&>.CURRENT_TARGET" = "_oMagicSkillUse.#$TARGET"
+  ENDIF
+
+  SWITCH "_oMagicSkillUse.#$SKILL"
+    CASE #I701   // Divine Healer Resurrection
+    CASE #I740   // Heretic Resurrection
+    CASE #I1016  // Resurrection
+    CASE #I1254  // Mass Resurrection
+    CASE #I2014  // Scroll of Resurrection
+    CASE #I2049  // BREZ
+    CASE #I2062  // BREZ
+    CASE #I2179  // BREZ
+    CASE #I2321  // BREZ - Pet
+    CASE #I2393  // BREZ - Event
+    CASE #I2596  // Gran Kain's BREZ Scroll
+    CASE #I3160  // Item Skill: Resurection
+    CASE #I3263  // Blessed Resurection
+    CASE #I3409  // Blessed Ring of Resurrection
+    CASE #I5541  // Agathion Rez
+    CASE #I5545  // Agathion Rez
+    CASE #I21054 // BREZ - Unknown
+    CASE #I21095 // BREZ - Unknown
+    CASE #I21102 // BREZ - Unknown
+    CASE #I22104 // BREZ - Event
+    CASE #I23005 // Agathion Rez
+    CASE #I23009 // Agathion Rez
+    CASE #I23014 // Agathion Rez
+    CASE #I23030 // Agathion Rez
+    CASE #I23062 // Agathion Rez    
+      AEGIS.OPTIONS.TEMP.#$RezTracker = _oMagicSkillUse.CLONE
+      THREAD RezTrackerProcess
+      BREAK 1
+    CASE #I1419 // Volcano
+    CASE #I1420 // Cyclone
+    CASE #I1421 // Raging Waves
+    CASE #I1423 // Gehenna
+      AEGIS.OPTIONS.TEMP.#$BubbleTracker = _oMagicSkillUse.CLONE
+      THREAD BubbleTrackerProcess
+      BREAK 1
+  ENDSWITCH
+
+RETURN VOID
+
+FUNCTION RezTrackerProcess
+
+  DEFINE BYTEBUFFER _bCharInfo 1024
+  DEFINE BYTEBUFFER _bRevive 1024
+  DEFINE INT INTERRUPTED 0
+  DEFINE SORTEDLIST _oMagicSkillUse
+  
+  LOCK AEGIS.OPTIONS.TEMP.RezTrackerProcess
+    _oMagicSkillUse = AEGIS.OPTIONS.TEMP.#$RezTracker.CLONE
+  UNLOCK AEGIS.OPTIONS.TEMP.RezTrackerProcess
+  
+  IF "AEGIS.ENTITYTRACKING.PLAYERS.CONTAINS_KEY <&_oMagicSkillUse.#$TARGET&>" == TRUE
+    LOCK AEGIS.MUTEX.ENTITYTRACKING.PLAYERS
+      "AEGIS.ENTITYTRACKING.PLAYERS.#$<&_oMagicSkillUse.#$TARGET&>.CharInfo.#$ABNORMAL_VFX" = #I131072
+    UNLOCK AEGIS.MUTEX.ENTITYTRACKING.PLAYERS
+    _bRevive.WRITE_BYTE #I1
+    _bRevive.WRITE_INT32 _oMagicSkillUse.#$TARGET
+    _bRevive.TRIM_TO_INDEX
+    _bRevive.RESET_INDEX
+    IF "AEGIS.OPTIONS.TEMP.#$SKILLCANCELD.CONTAINS_KEY <&_oMagicSkillUse.#$SOURCE&>" == FALSE
+      LOCK AEGIS.MUTEX.NETWORK.MAGICSKILLCANCELD
+        AEGIS.OPTIONS.TEMP.#$SKILLCANCELD.ADD ZERO "<&_oMagicSkillUse.#$SOURCE&>"
+      UNLOCK AEGIS.MUTEX.NETWORK.MAGICSKILLCANCELD
+    ELSE
+      "AEGIS.OPTIONS.TEMP.#$SKILLCANCELD.#$<&_oMagicSkillUse.#$SOURCE&>" = ZERO
+    ENDIF
+    SLEEP "<&_oMagicSkillUse.#$WINDUP&>"
+    IF "AEGIS.OPTIONS.TEMP.#$SKILLCANCELD.#$<&_oMagicSkillUse.#$SOURCE&>" == ZERO
+      INJECTBB_CLIENT _bRevive
+      CALL_EXTERN "DLIB\Packets\WriteCharInfo.L2S" DLIB::Packets::WriteCharInfo _bCharInfo 1 "AEGIS.ENTITYTRACKING.PLAYERS.#$<&_oMagicSkillUse.#$TARGET&>.CharInfo"
+      INJECTBB_CLIENT _bCharInfo
+    ENDIF
+  ENDIF
+  
+RETURN VOID
+
+FUNCTION BubbleTrackerProcess
+
+  DEFINE BYTEBUFFER _bCharInfo 1024
+  DEFINE INT INTERRUPTED 0
+  DEFINE SORTEDLIST _oMagicSkillUse
+
+  LOCK AEGIS.OPTIONS.TEMP.BubbleTrackerProcess
+    _oMagicSkillUse = AEGIS.OPTIONS.TEMP.#$BubbleTracker.CLONE
+  UNLOCK AEGIS.OPTIONS.TEMP.BubbleTrackerProcess
+
+  IF "AEGIS.ENTITYTRACKING.PLAYERS.CONTAINS_KEY <&_oMagicSkillUse.#$SOURCE&>" == TRUE
+    LOCK AEGIS.MUTEX.ENTITYTRACKING.PLAYERS
+      "AEGIS.ENTITYTRACKING.PLAYERS.#$<&_oMagicSkillUse.#$SOURCE&>.CharInfo.#$EXTENDED_VFX" = #I4
+    UNLOCK AEGIS.MUTEX.ENTITYTRACKING.PLAYERS
+    IF "AEGIS.OPTIONS.TEMP.#$SKILLCANCELD.CONTAINS_KEY <&_oMagicSkillUse.#$SOURCE&>" == FALSE
+      LOCK AEGIS.MUTEX.NETWORK.MAGICSKILLCANCELD
+        AEGIS.OPTIONS.TEMP.#$SKILLCANCELD.ADD ZERO "<&_oMagicSkillUse.#$SOURCE&>"
+      UNLOCK AEGIS.MUTEX.NETWORK.MAGICSKILLCANCELD
+    ELSE
+      "AEGIS.OPTIONS.TEMP.#$SKILLCANCELD.#$<&_oMagicSkillUse.#$SOURCE&>" = ZERO
+    ENDIF
+    IF "AEGIS.OPTIONS.TEMP.#$SKILLCANCELD.#$<&_oMagicSkillUse.#$SOURCE&>" == ZERO
+      CALL_EXTERN "DLIB\Packets\WriteCharInfo.L2S" DLIB::Packets::WriteCharInfo _bCharInfo 1 "AEGIS.ENTITYTRACKING.PLAYERS.#$<&_oMagicSkillUse.#$TARGET&>.CharInfo"
+      INJECTBB_CLIENT _bCharInfo
+    ENDIF
+    SLEEP "<&_oMagicSkillUse.#$WINDUP&>"
+    LOCK AEGIS.MUTEX.ENTITYTRACKING.PLAYERS
+      "AEGIS.ENTITYTRACKING.PLAYERS.#$<&_oMagicSkillUse.#$SOURCE&>.CharInfo.#$EXTENDED_VFX" = #I0
+    UNLOCK AEGIS.MUTEX.ENTITYTRACKING.PLAYERS
+    CALL_EXTERN "DLIB\Packets\WriteCharInfo.L2S" DLIB::Packets::WriteCharInfo _bCharInfo 1 "AEGIS.ENTITYTRACKING.PLAYERS.#$<&_oMagicSkillUse.#$TARGET&>.CharInfo"
+    INJECTBB_CLIENT _bCharInfo
+  ENDIF
+RETURN VOID
+
+

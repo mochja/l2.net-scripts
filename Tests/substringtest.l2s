@@ -1,0 +1,5 @@
+DEFINE STRING A "bla bla"
+DEFINE STRING B " "
+B = A.SUBSTRING #i1 #i3
+PRINT_TEXT "sub - '<&B&>' / orig - '<&A&>'"
+END_SCRIPT

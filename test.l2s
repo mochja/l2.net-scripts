@@ -1,0 +1,36 @@
+// Kratky popis
+// Server: 
+// Autor: mochitto
+// Date: 
+// Special thanks for L2.NET contributors
+// rev.: 0
+PRINT_TEXT "SCRIPT STARTED!]"
+define string intStr
+// Main section
+// ===============================
+FORMATADENA intStr 1 1000000
+PRINT_TEXT "<&intStr&>"
+	
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT
+
+FUNCTION FORMATADENA 1 AMOUNT
+	DEFINE STRING S
+	DEFINE INT REM 0
+	REM = AMOUNT % 1000
+	S = "#$<&REM&>"
+	AMOUNT = AMOUNT - REM 
+	AMOUNT = AMOUNT / 1000
+	WHILE AMOUNT > 0
+		IF REM < 99
+			S = "#$0<&S&>"
+		ENDIF
+		IF REM < 9
+			S = "#$0<&S&>"
+		ENDIF
+		REM = AMOUNT % 1000
+		S = "#$<&REM&>,<&S&>"
+		AMOUNT = AMOUNT - REM 
+		AMOUNT = AMOUNT / 1000
+	WEND
+RETURN S

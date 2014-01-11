@@ -1,0 +1,18 @@
+// Kratky popis
+// Server: 
+// Autor: mochitto
+// Date: 
+// Special thanks for L2.NET contributors
+// rev.: 0
+PRINT_TEXT "SCRIPT STARTED!]"
+
+// Main section
+// ===============================
+
+
+DO
+	
+LOOP ONE == ONE
+	
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT

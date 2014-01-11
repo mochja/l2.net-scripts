@@ -1,0 +1,129 @@
+
+CLASS LAZY_FASTCAST NULL
+
+//-------------------------------------------------------------------------------------
+
+   VAR_START
+
+      PUBLIC INT {MENU} 0
+      PUBLIC INT {CASTING} 0
+      PUBLIC INT {SHORTCUTS} 0
+
+   VAR_END
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT2 0
+
+      LAZY.REGISTER THIS.{CASTING} 1 #$CASTING
+      LAZY.REGISTER THIS.{SHORTCUTS} 1 #$SHORTCUTS
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+// user calls
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+
+   PUBLIC ADD_SKILL_BY_NAME 2 _CASTLIST_NAME SKILL_NAME
+      DEFINE STRING CASTLIST_NAME "<&_CASTLIST_NAME.TO_UPPER&>"
+
+      IF ("THIS.{CASTING}.CASTLISTS.CONTAINS_KEY <&CASTLIST_NAME&>" == FALSE)
+         PRINT_TEXT "Lazy::FastCast]: Castlist (<&CASTLIST_NAME&>) doesnt exist."
+         RETURN ZERO
+      ENDIF
+
+      DEFINE INT SKILL_ID 0
+      SKILL_GET_ID SKILL_ID "<&SKILL_NAME&>"
+
+      IF (SKILL_ID == ZERO)
+         PRINT_TEXT "Lazy::FastCast]: Skill (<&SKILL_NAME&>) doesn't exist."
+         RETURN ZERO
+      ENDIF
+
+      DEFINE INT ADDED_SKILL 0
+      THIS.{CASTING}.ADD_SKILL ADDED_SKILL 2 CASTLIST_NAME SKILL_ID
+
+   RETURN ADDED_SKILL
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC ADD_SHORTCUT_SLOT 3 _CASTLIST_NAME BAR SLOT
+      DEFINE STRING CASTLIST_NAME "<&_CASTLIST_NAME.TO_UPPER&>"
+
+      IF ("THIS.{CASTING}.CASTLISTS.CONTAINS_KEY <&CASTLIST_NAME&>" == FALSE)
+         PRINT_TEXT "Lazy::FastCast]: Castlist (<&CASTLIST_NAME&>) doesnt exist."
+         RETURN ZERO
+      ENDIF
+
+      IF (THIS.{SHORTCUTS}.LOADED == FALSE)
+         THIS.{SHORTCUTS}.LOAD_SHORTCUTS VOID 0
+      ENDIF
+
+      DEFINE INT SLOT_ID 0
+      ENGINEX.UTILS.GET_SLOT_ID SLOT_ID 2 BAR SLOT
+      DEFINE STRING SLOT_KEY "<&SLOT_ID&>"
+
+      IF ("THIS.{SHORTCUTS}.SKILLS.CONTAINS_KEY <&SLOT_KEY&>" == FALSE)
+         PRINT_TEXT "Lazy::FastCast]: There is no skill in bar (<&BAR&>) and slot (<&SLOT&>) ."
+         RETURN ZERO
+      ENDIF
+
+      DEFINE INT ADDED_SKILL 0
+      THIS.{CASTING}.ADD_SKILL ADDED_SKILL 2 CASTLIST_NAME THIS.{SHORTCUTS}.SKILLS.SLOT_KEY.SKILL_ID
+
+   RETURN ADDED_SKILL
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC ADD_SHORTCUT_BAR 2 _CASTLIST_NAME BAR
+      DEFINE STRING CASTLIST_NAME "<&_CASTLIST_NAME.TO_UPPER&>"
+
+      IF ("THIS.{CASTING}.CASTLISTS.CONTAINS_KEY <&CASTLIST_NAME&>" == FALSE)
+         PRINT_TEXT "Lazy::FastCast]: Castlist (<&CASTLIST_NAME&>) doesnt exist."
+         RETURN FALSE
+      ENDIF
+
+      IF (THIS.{SHORTCUTS}.LOADED == FALSE)
+         THIS.{SHORTCUTS}.LOAD_SHORTCUTS VOID 0
+      ENDIF
+
+      DEFINE INT SLOT_ID 0
+      DEFINE STRING SLOT_KEY ""
+      FOR I 1 13 1
+         ENGINEX.UTILS.GET_SLOT_ID SLOT_ID 2 BAR I
+         SLOT_KEY = "#$<&SLOT_ID&>"
+         IF ("THIS.{SHORTCUTS}.SKILLS.CONTAINS_KEY <&SLOT_KEY&>" == TRUE)
+            THIS.{CASTING}.ADD_SKILL VOID 2 CASTLIST_NAME THIS.{SHORTCUTS}.SKILLS.SLOT_KEY.SKILL_ID
+         ENDIF
+      NEXT
+
+   RETURN TRUE
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC ADD_ALL_SHORTCUTS 1 _CASTLIST_NAME
+      DEFINE STRING CASTLIST_NAME "<&_CASTLIST_NAME.TO_UPPER&>"
+
+      IF ("THIS.{CASTING}.CASTLISTS.CONTAINS_KEY <&CASTLIST_NAME&>" == FALSE)
+         PRINT_TEXT "Lazy::FastCast]: Castlist (<&CASTLIST_NAME&>) doesnt exist."
+         RETURN FALSE
+      ENDIF
+
+      IF (THIS.{SHORTCUTS}.LOADED == FALSE)
+         THIS.{SHORTCUTS}.LOAD_SHORTCUTS VOID 0
+      ENDIF
+
+      DEFINE STRING SLOT_KEY ""
+      FOR I 0 "<&THIS.{SHORTCUTS}.SKILLS.COUNT&>" 1
+         THIS.{CASTING}.ADD_SKILL VOID 2 CASTLIST_NAME THIS.{SHORTCUTS}.SKILLS.I.SKILL_ID
+      NEXT
+
+   RETURN TRUE
+
+//-------------------------------------------------------------------------------------
+
+END_CLASS

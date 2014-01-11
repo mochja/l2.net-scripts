@@ -1,0 +1,6 @@
+﻿PRINT_TEXT "started buff"
+SET_EVENT "<&SCRIPTEVENT_CHAT&>" wcbuff.l2s WarcryerBuffs
+PRINT_TEXT "start sleep"
+SLEEP 100000000
+PRINT_TEXT "end script"
+END_SCRIPT

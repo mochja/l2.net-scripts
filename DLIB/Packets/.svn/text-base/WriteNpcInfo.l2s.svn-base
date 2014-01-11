@@ -1,0 +1,75 @@
+// DLIB::Packets::WriteNpcInfo - v2.0 for Gracia 2.3
+// by d00d [06/06/09]
+//
+// Creates a NpcInfo packet based on a sorted list
+// template of values.
+//
+
+// Version 1.0 - Initial Release
+// Version 1.1 - Updated for v358
+// Version 2.0 - Reprototyped and updated for Gracia Final (CT2.3)
+// Version 2.1 - Added EXTENDED_VFX
+
+  
+FUNCTION DLIB::Packets::WRITENpcInfo 1 _oNpcInfo
+
+  DEFINE BYTEBUFFER _bOutBuffer 1024
+
+  IF _oNpcInfo.CLASSNAME == "#$SORTEDLIST"
+    _bOutBuffer.WRITE_BYTE #I12
+    _bOutBuffer.WRITE_INT32 "_oNpcInfo.#$OBJECT_ID"
+    _bOutBuffer.WRITE_INT32 "_oNpcInfo.#$NPC_ID"
+    _bOutBuffer.WRITE_INT32 "_oNpcInfo.#$KARMA"
+    _bOutBuffer.WRITE_INT32 "_oNpcInfo.#$X"
+    _bOutBuffer.WRITE_INT32 "_oNpcInfo.#$Y"
+    _bOutBuffer.WRITE_INT32 "_oNpcInfo.#$Z"
+    _bOutBuffer.WRITE_INT32 "_oNpcInfo.#$HEADING"
+    _bOutBuffer.WRITE_INT32 "_oNpcInfo.#$CT23_UNKNOWN_00"
+    _bOutBuffer.WRITE_INT32 "_oNpcInfo.#$MATKSPD"
+    _bOutBuffer.WRITE_INT32 "_oNpcInfo.#$PATKSPD"
+    _bOutBuffer.WRITE_INT32 "_oNpcInfo.#$RUNSPD"
+    _bOutBuffer.WRITE_INT32 "_oNpcInfo.#$WALKSPD"
+    _bOutBuffer.WRITE_INT32 "_oNpcInfo.#$SWIM_RUNSPD"
+    _bOutBuffer.WRITE_INT32 "_oNpcInfo.#$SWIM_WALKSPD"
+    _bOutBuffer.WRITE_INT32 "_oNpcInfo.#$FL_RUNSPD"
+    _bOutBuffer.WRITE_INT32 "_oNpcInfo.#$FL_WALKSPD"
+    _bOutBuffer.WRITE_INT32 "_oNpcInfo.#$FLY_RUNSPD"
+    _bOutBuffer.WRITE_INT32 "_oNpcInfo.#$FLY_WALKSPD"
+    _bOutBuffer.WRITE_DOUBLE "_oNpcInfo.#$MOVE_MULTI"
+    _bOutBuffer.WRITE_DOUBLE "_oNpcInfo.#$ATTACKSPD_MULTI"
+    _bOutBuffer.WRITE_DOUBLE "_oNpcInfo.#$COLLISION_RADIUS"
+    _bOutBuffer.WRITE_DOUBLE "_oNpcInfo.#$COLLISION_HEIGHT"
+    _bOutBuffer.WRITE_INT32 "_oNpcInfo.#$R_HAND_WEAPON"
+    _bOutBuffer.WRITE_INT32 "_oNpcInfo.#$CT23_UNKNOWN_01"
+    _bOutBuffer.WRITE_INT32 "_oNpcInfo.#$L_HAND_WEAPON"
+    _bOutBuffer.WRITE_BYTE "_oNpcInfo.#$NAME_VISIBLE"
+    _bOutBuffer.WRITE_BYTE "_oNpcInfo.#$IS_RUNNING"
+    _bOutBuffer.WRITE_BYTE "_oNpcInfo.#$IS_FIGHTING"
+    _bOutBuffer.WRITE_BYTE "_oNpcInfo.#$IS_FAKING_DEATH"
+    _bOutBuffer.WRITE_BYTE "_oNpcInfo.#$IS_INVISIBLE"
+    _bOutBuffer.WRITE_STRING "_oNpcInfo.#$VISIBLE_NAME"
+    _bOutBuffer.WRITE_STRING "_oNpcInfo.#$VISIBLE_TITLE"    
+    _bOutBuffer.WRITE_INT32 "_oNpcInfo.#$CT23_UNKNOWN_02"
+    _bOutBuffer.WRITE_INT32 "_oNpcInfo.#$CT23_UNKNOWN_03"
+    _bOutBuffer.WRITE_INT32 "_oNpcInfo.#$CT23_UNKNOWN_04"
+    _bOutBuffer.WRITE_UINT32 "_oNpcInfo.#$ABNORMAL_VFX"
+    _bOutBuffer.WRITE_INT32 "_oNpcInfo.#$CLAN_ID"
+    _bOutBuffer.WRITE_INT32 "_oNpcInfo.#$CREST_ID"
+    _bOutBuffer.WRITE_INT32 "_oNpcInfo.#$CT23_UNKNOWN_05"
+    _bOutBuffer.WRITE_INT32 "_oNpcInfo.#$CT23_UNKNOWN_06"
+    _bOutBuffer.WRITE_BYTE "_oNpcInfo.#$CT23_UNKNOWN_07"
+    _bOutBuffer.WRITE_BYTE "_oNpcInfo.#$TEAM_CIRCLE"
+    _bOutBuffer.WRITE_DOUBLE "_oNpcInfo.#$COLLISION_RADIUS2"
+    _bOutBuffer.WRITE_DOUBLE "_oNpcInfo.#$COLLISION_HEIGHT2"
+    _bOutBuffer.WRITE_INT32 "_oNpcInfo.#$CT23_UNKNOWN_08"
+    _bOutBuffer.WRITE_INT32 "_oNpcInfo.#$CT23_UNKNOWN_09"
+    _bOutBuffer.WRITE_INT32 "_oNpcInfo.#$CT23_UNKNOWN_10"
+    _bOutBuffer.WRITE_INT32 "_oNpcInfo.#$CT23_UNKNOWN_11"
+    _bOutBuffer.WRITE_BYTE "_oNpcInfo.#$CT23_UNKNOWN_12"
+    _bOutBuffer.WRITE_BYTE "_oNpcInfo.#$CT23_UNKNOWN_13"
+    _bOutBuffer.WRITE_UINT32 "_oNpcInfo.#$EXTENDED_VFX"
+  ELSE
+    PRINT_TEXT "_oNpcInfo is not a SortedList"
+  ENDIF
+
+RETURN _bOutBuffer

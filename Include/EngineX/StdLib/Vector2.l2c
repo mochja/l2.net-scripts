@@ -1,0 +1,52 @@
+
+//-------------------------------------------------------------------------------------
+CLASS ENGINEX_STDLIB_VECTOR2 NULL
+//-------------------------------------------------------------------------------------
+
+	PUBLIC BINARY 3 VECTOR OPERATOR VALUE
+      IF ( VECTOR.CLASSNAME != "#$VECTOR2" )
+         RETURN VECTOR
+      ENDIF
+      DEFINE VECTOR2 NEW_V2 0
+		SWITCH VALUE.CLASSNAME
+			CASE #$INT
+				NEW_V2.X = VECTOR.X "<&OPERATOR&>" VALUE
+				NEW_V2.Y = VECTOR.Y "<&OPERATOR&>" VALUE
+				BREAK 1
+			CASE #$DOUBLE
+				NEW_V2.X = VECTOR.X "<&OPERATOR&>" VALUE
+				NEW_V2.Y = VECTOR.Y "<&OPERATOR&>" VALUE
+				BREAK 1
+			CASE #$VECTOR2
+				NEW_V2.X = VECTOR.X "<&OPERATOR&>" VALUE.X
+				NEW_V2.Y = VECTOR.Y "<&OPERATOR&>" VALUE.Y
+				BREAK 1
+         DEFAULT
+            RETURN VECTOR
+            BREAK 1
+		ENDSWITCH
+	RETURN NEW_V2
+
+//-------------------------------------------------------------------------------------
+
+	PUBLIC ROTATE 2 VECTOR RAD
+		DEFINE VECTOR2 ROTATED 0
+		DEFINE DOUBLE ROTATED_X1 0
+		DEFINE DOUBLE ROTATED_X2 0
+		ROTATED_X1 = COS RAD
+		ROTATED_X1 = ROTATED_X1 * VECTOR.X
+		ROTATED_X2 = SIN RAD
+		ROTATED_X2 = ROTATED_X2 * VECTOR.Y
+		ROTATED.X = ROTATED_X1 - ROTATED_X2
+		DEFINE DOUBLE ROTATED_Y1 0
+		DEFINE DOUBLE ROTATED_Y2 0
+		ROTATED_Y1 = COS RAD
+		ROTATED_Y1 = ROTATED_Y1 * VECTOR.Y
+		ROTATED_Y2 = SIN RAD
+		ROTATED_Y2 = ROTATED_Y2 * VECTOR.X
+		ROTATED.Y = ROTATED_Y1 + ROTATED_Y2
+	RETURN ROTATED
+
+//-------------------------------------------------------------------------------------
+END_CLASS
+//-------------------------------------------------------------------------------------

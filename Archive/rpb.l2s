@@ -1,0 +1,140 @@
+//Edit the following EACH TIME you login
+DEFINE_GLOBAL INT movePacket 162
+DEFINE_GLOBAL INT clickPacket 69
+DEFINE_GLOBAL INT attackPacket 64
+
+//information needed for L2.NET **DO NOT TOUCH**
+SET_EVENT "<&SCRIPTEVENT_SELFPACKET&>" "<&SYSTEM_CURRENTFILE&>" move 89
+SET_EVENT "<&SCRIPTEVENT_SELFPACKET&>" "<&SYSTEM_CURRENTFILE&>" click 15
+SET_EVENT "<&SCRIPTEVENT_SELFPACKET&>" "<&SYSTEM_CURRENTFILE&>" attack 31
+SET_EVENT "<&SCRIPTEVENT_SELFPACKET&>" "<&SYSTEM_CURRENTFILE&>" fattack 1
+SET_EVENT "<&SCRIPTEVENT_SELFPACKET&>" "<&SYSTEM_CURRENTFILE&>" fspell 57
+block_SELF 31 // target
+block_SELF 15 // move
+block_SELF 89 // vaidate
+block_SELF 1 // force attack
+block_SELF 57 // force spell
+
+while zero == zero
+sleep 1000
+wend
+
+
+
+
+
+function move
+print_text "packet intercepted move"
+
+//Define all needed variables
+DEFINE bytebuffer packet 256
+DEFINE INT NOTHING 0
+DEFINE INT IDENT1 0
+DEFINE INT IDENT2 0
+DEFINE INT IDENT3 0
+DEFINE INT IDENT4 0
+DEFINE INT IDENT5 0
+DEFINE INT IDENT6 0
+DEFINE INT IDENT7 0
+//End of defining variables
+
+//Reading information
+PACKET.READ_BYTE NOTHING
+PACKET.READ_INT32 IDENT1
+PACKET.READ_INT32 IDENT2
+PACKET.READ_INT32 IDENT3
+PACKET.READ_INT32 IDENT4
+PACKET.READ_INT32 IDENT5
+PACKET.READ_INT32 IDENT6
+PACKET.READ_INT32 IDENT7
+//Done reading
+
+//Buffering packet
+packet.WRITE_BYTE movePacket
+packet.WRITE_INT32 IDENT1
+packet.WRITE_INT32 IDENT2
+packet.WRITE_INT32 IDENT3
+packet.WRITE_INT32 IDENT4
+packet.WRITE_INT32 IDENT5
+packet.WRITE_INT32 IDENT6
+packet.WRITE_INT32 IDENT7
+
+//trimming and injecting
+packet.TRIM_TO_INDEX
+injectbb packet
+
+return void
+
+
+
+function click
+print_text "packet intercepted click"
+
+//Define all needed variables
+DEFINE bytebuffer packet1 256
+DEFINE INT NOTHING 0
+DEFINE INT IDENT1 0
+DEFINE INT IDENT2 0
+DEFINE INT IDENT3 0
+DEFINE INT IDENT4 0
+DEFINE INT IDENT5 0
+//End of defining variables
+
+//Reading information
+PACKET.READ_BYTE NOTHING
+PACKET.READ_INT32 IDENT1
+PACKET.READ_INT32 IDENT2
+PACKET.READ_INT32 IDENT3
+PACKET.READ_INT32 IDENT4
+PACKET.READ_INT32 IDENT5
+//Done reading
+
+//Buffering packet
+packet1.WRITE_BYTE clickPacket
+packet1.WRITE_INT32 IDENT1
+packet1.WRITE_INT32 IDENT2
+packet1.WRITE_INT32 IDENT3
+packet1.WRITE_INT32 IDENT4
+packet1.WRITE_INT32 IDENT5
+
+//trimming and injecting
+packet1.TRIM_TO_INDEX
+injectbb packet1
+
+return void
+
+
+function attack
+print_text "packet intercepted attack"
+
+//Define all needed variables
+DEFINE bytebuffer packet2 256
+DEFINE INT NOTHING 0
+DEFINE INT IDENT1 0
+DEFINE INT IDENT2 0
+DEFINE INT IDENT3 0
+DEFINE INT IDENT4 0
+DEFINE INT IDENT5 0
+//End of defining variables
+
+//Reading information
+PACKET.READ_BYTE NOTHING
+PACKET.READ_BYTE IDENT1
+PACKET.READ_INT32 IDENT2
+PACKET.READ_INT32 IDENT3
+PACKET.READ_INT32 IDENT4
+PACKET.READ_INT32 IDENT5
+//Done reading
+
+//Buffering packet
+packet2.WRITE_BYTE attackPacket
+packet2.WRITE_BYTE IDENT1
+packet2.WRITE_INT32 IDENT2
+packet2.WRITE_INT32 IDENT3
+packet2.WRITE_INT32 IDENT4
+packet2.WRITE_INT32 IDENT5
+
+//trimming and injecting
+packet2.TRIM_TO_INDEX
+injectbb packet2
+return void

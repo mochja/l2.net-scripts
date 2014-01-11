@@ -1,0 +1,150 @@
+INCLUDE Include/node.l2c
+
+
+CLASS NodeManager null
+	VAR_START
+		//Stores all of the groups of nodes
+		PRIVATE ARRAYLIST nodeGroups 0
+		PRIVATE ARRAYLIST distanceArray 0
+		
+		//Tolerance for distance when moving to a node
+		PRIVATE DOUBLE TOL 30
+		
+		//PRIVATE INT currentGroupIndex 0
+	
+	
+	VAR_END
+
+	PUBLIC startNodeGroup 0
+		THIS.nodeGroups.ADD #$"start"
+	RETURN NULL
+	
+	PUBLIC endNodeGroup 0
+		THIS.nodeGroups.ADD #$"end"
+	RETURN NULL
+	
+	PUBLIC addNode 3 _xpos _ypos _zpos
+		DEFINE node newNode
+		newNode.xpos = _xpos
+		newNode.ypos = _ypos
+		newNode.zpos = _zpos
+		
+		THIS.nodeGroups.ADD newNode
+	RETURN NULL
+	
+	PUBLIC printNodeTree 0
+		PRINT_TEXT "Printing node tree count: <&THIS.nodeGroups.COUNT&>"
+		FOR i 0 "<&THIS.nodeGroups.COUNT&>" 1
+			IF THIS.nodeGroups.i == #$"start"
+				PRINT_TEXT "Started Node Group"
+			ELSE 
+				IF THIS.nodeGroups.i == #$"end"
+					PRINT_TEXT "Ended Node Group"
+				ELSE
+					PRINT_TEXT "    Node: <&THIS.nodeGroups.i.xpos&> <&THIS.nodeGroups.i.ypos&> <&THIS.nodeGroups.i.zpos&>"
+				ENDIF
+			ENDIF
+		NEXT
+	RETURN NULL
+	
+	PUBLIC calcDistances 0
+		DEFINE INT tempDistance 0
+		
+		FOR i 0 "<&THIS.nodeGroups.COUNT&>" 1
+			IF THIS.nodeGroups.i == #$"start"
+				THIS.distanceArray.ADD #$"start"
+			ELSE
+				IF THIS.nodeGroups.i == #$"end"
+					THIS.distanceArray.ADD #$"end"
+				ELSE
+				
+					//PRINT_TEXT "class: <&THIS.nodeGroups.i.CLASSNAME&>"
+					//PRINT_TEXT "distance: <&THIS.nodeGroups.i.xpos&> <&THIS.nodeGroups.i.ypos&> <&THIS.nodeGroups.i.zpos&>"
+					DISTANCE tempDistance THIS.nodeGroups.i.xpos THIS.nodeGroups.i.ypos THIS.nodeGroups.i.zpos CHAR_X CHAR_Y CHAR_Z
+					//PRINT_TEXT "tempDistance: <&tempDistance&>"
+					THIS.distanceArray.ADD tempDistance.CLONE
+				ENDIF
+			ENDIF
+		NEXT
+	RETURN NULL
+	
+	PUBLIC printDistances
+		PRINT_TEXT "printing distances"
+		FOR i 0 "<&THIS.distanceArray.COUNT&>" 1
+			PRINT_TEXT "Distance: <&i&> <&THIS.distanceArray.i&>"
+		NEXT
+	RETURN NULL
+	
+	PUBLIC findSmallestIndex 0
+		DEFINE INT bestIndex 1
+		DEFINE STRING curClassName
+		FOR i 0 "<&THIS.distanceArray.COUNT&>" 1
+			IF THIS.distanceArray.i.TYPE == INT				
+				IF THIS.distanceArray.bestIndex > THIS.distanceArray.i
+					bestIndex = i
+				ENDIF
+			ENDIF
+		NEXT
+	RETURN bestIndex
+	
+	PUBLIC travelToNodeIndex 1 _index
+		DEFINE INT movex 0
+		DEFINE INT movey 0
+		DEFINE INT movez 0
+		DEFINE DOUBLE currentDistance 0
+		
+		//PRINT_TEXT "Moving to node index <&_index&>"
+	
+		movex = THIS.nodeGroups._index.xpos
+		movey = THIS.nodeGroups._index.ypos
+		movez = THIS.nodeGroups._index.zpos
+		
+		currentDistance = THIS.distanceArray._index
+		MOVE_TO "<&movex&>" "<&movey&>" "<&movez&>"
+		WHILE currentDistance > THIS.TOL
+			DISTANCE currentDistance movex movey movez CHAR_X CHAR_Y CHAR_Z
+			SLEEP 500
+		WEND
+		PRINT_TEXT "Traveling done"
+	RETURN NULL
+	
+	PUBLIC followNodeTrain 1 _index	
+		DEFINE INT i 0
+		//PRINT_TEXT "got node :<&_index&>"
+		FOR i "<&_index&>" "<&THIS.nodeGroups.COUNT&>" 1
+			//PRINT_TEXT "visiting node <&i&>"
+			IF THIS.nodeGroups.i.TYPE == STRING
+				IF THIS.nodeGroups.i == #$"end"
+					//PRINT_TEXT "Found valid end of train"
+					BREAK 3
+				ELSE
+					PRINT_TEXT "Error: Malformed node train."
+				ENDIF
+			ELSE
+				THIS.travelToNodeIndex NULL 1 i
+			ENDIF
+				
+		NEXT
+		PRINT_TEXT "Finished moving."
+		THIS.distanceArray.CLEAR
+	RETURN NULL
+END_CLASS
+
+
+
+//FUNCTION FindNearestNode 3 _xpos _ypos _zpos
+//	DEFINE INT bestDistance -1
+//	DEFINE INT tempDistance 0
+
+	//For each list of nodes
+//	FOR i 0 nodeLists.COUNT 1
+//		//for each node in list
+//		FOR j 0 nodeList.i.COUNT 1
+//			IF bestDistance == #i-1
+//				DISTANCE bestDistance _xpos _ypos _zpos nodeList.j.xpos  nodeList.j.ypos  nodeList.j.zpos 
+//			ELSE
+//				DISTANCE bestDistance _xpos _ypos _zpos nodeList.j.xpos  nodeList.j.ypos  nodeList.j.zpos 
+//			ENDIF
+//		NEXT
+//	NEXT
+//RETURN NULL

@@ -1,0 +1,20 @@
+// SkillList Packet class data
+// for L2.net.
+// by d00d
+//
+// v1.0 - Initial Draft
+// v1.1 - updates for g2.4
+
+CLASS SkillList null
+VAR_START
+
+  PUBLIC INT TYPE 0
+  PUBLIC INT LEVEL 0
+  PUBLIC INT ID 0
+  PUBLIC INT ENCHANTED
+  PUBLIC INT DISABLED
+  PUBLIC STRING NAME " "
+  
+VAR_END
+
+END_CLASS

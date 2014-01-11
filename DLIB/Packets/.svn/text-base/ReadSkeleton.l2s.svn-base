@@ -1,0 +1,31 @@
+// DLIB::Packets::Read<skeleton> - v1.0 for Gracia 2.3
+// by d00d [09/29/09]
+//
+// Takes an byte buffer (_bInBuffer) containing the 
+// <packet_type> packet and dumps the data into a sorted list
+// (_oPetInfo).
+
+// Version 1.0 - Initial Release
+
+FUNCTION DLIB::Packets::Read<skeleton 1 _bInBuffer
+
+  // Define variables here
+
+  DEFINE DOUBLE SOMEDOUBLE
+  DEFINE INT SOMEINT
+  DEFINE STRING SOMESTRING
+  DEFINE SORTEDLIST SOMESORTEDLIST
+    
+  IF _bInBuffer.CLASSNAME == "#$BYTEBUFFER"
+    _bInBuffer.RESET_INDEX
+    _bInBuffer.READ_BYTE NULL // Packet Header
+    _bInBuffer.READ_INT32 SOMEINT // Some int32value
+    _bInBuffer.READ_DOUBLE SOMEDOUBLE // Some doublevalue
+    _bInBuffer.READ_STRING SOMESTRING // some string
+    
+    _oSOMESORTEDLIST.ADD SOMEINT "SOMEINT"
+  ELSE
+    PRINT_TEXT "_bInBuffer is not a ByteBuffer"
+  ENDIF
+  
+RETURN _oSOMEOSORTEDLIST

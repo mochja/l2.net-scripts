@@ -1,0 +1,107 @@
+
+//-------------------------------------------------------------------------------------
+CLASS ENGINEX_FUNCTIONS_MATH NULL
+//-------------------------------------------------------------------------------------
+
+   VAR_START
+   VAR_END
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT 0
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+	PUBLIC MAX_DBL 0
+	RETURN #d+1.79769313486231580E+308
+
+//-------------------------------------------------------------------------------------
+
+	PUBLIC MIN_DBL 0
+	RETURN #d-1.7976931348623158E+308
+
+//-------------------------------------------------------------------------------------
+
+	PUBLIC MAX_INFINITY 0
+		DEFINE DOUBLE TEMP_INFINITY 0
+		TEMP_INFINITY = #d+1.79769313486231580E+308 + #d0.0000000000000001E+308
+	RETURN TEMP_INFINITY
+
+//-------------------------------------------------------------------------------------
+
+	PUBLIC MIN_INFINITY 0
+		DEFINE DOUBLE TEMP_INFINITY 0
+		TEMP_INFINITY = #d-1.7976931348623158E+308 - #d0.0000000000000001E+308
+	RETURN TEMP_INFINITY
+
+//-------------------------------------------------------------------------------------
+
+	PUBLIC MAX_INT 0
+	RETURN #i9223372036854775807
+
+//-------------------------------------------------------------------------------------
+
+	PUBLIC MIN_INT 0
+	RETURN #i-9223372036854775808
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC PERCENT 3 CUR MAX FULL
+      IF ( FULL.TYPE == NULL )
+         FULL = 100
+      ENDIF
+      DEFINE DOUBLE TEMP_PERCENT "<&FULL&>"
+      TEMP_PERCENT = TEMP_PERCENT / MAX
+      TEMP_PERCENT = TEMP_PERCENT * CUR
+   RETURN TEMP_PERCENT
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC SUBINT 3 OLD_INT POS LENGTH
+      IF ( LENGTH < ZERO )
+         POS = POS + LENGTH
+         LENGTH = LENGTH / #i-1
+      ENDIF
+      DEFINE STRING NEW_INT "<&OLD_INT&>"
+      NEW_INT = NEW_INT.SUBSTRING "<&POS&>" "<&LENGTH&>"
+   RETURN "#i<&NEW_INT&>"
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC ROUND 2 OLD_VALUE COUNT
+      IF ( COUNT.TYPE == NULL )
+         COUNT = ZERO
+      ENDIF
+
+      DEFINE DOUBLE NEW_VALUE 0
+      DEFINE INT ZEROPOW 1
+
+      IF ( COUNT > ZERO )
+         ZEROPOW = #i10 ^ COUNT
+         NEW_VALUE = "#d<&OLD_VALUE&>" * ZEROPOW
+      ELSE
+         IF ( COUNT == ZERO )
+            NEW_VALUE = OLD_VALUE
+         ELSE
+            COUNT = COUNT / #i-1
+            ZEROPOW = #i10 ^ COUNT
+            NEW_VALUE = "#d<&OLD_VALUE&>" / ZEROPOW
+            COUNT = COUNT / #i-1
+         ENDIF
+      ENDIF
+
+      NEW_VALUE = NEW_VALUE + #d0.5
+      NEW_VALUE = "#i<&NEW_VALUE&>"
+
+      IF ( COUNT > ZERO )
+         NEW_VALUE = NEW_VALUE / ZEROPOW
+      ELSE
+         NEW_VALUE = NEW_VALUE * ZEROPOW
+      ENDIF
+
+   RETURN NEW_VALUE
+
+//-------------------------------------------------------------------------------------
+END_CLASS
+//-------------------------------------------------------------------------------------

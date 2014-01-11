@@ -1,0 +1,29 @@
+DEFINE INT A 10
+DEFINE INT B 100
+DEFINE INT C 1000
+DEFINE INT D 0
+
+PRINT_TEXT "A = <&A&>"
+PRINT_TEXT "B = <&B&>"
+PRINT_TEXT "C = <&C&>"
+PRINT_TEXT "D = <&D&>"
+
+CALL TESTF D 1 A
+
+PRINT_TEXT "A = <&A&>"
+PRINT_TEXT "B = <&B&>"
+PRINT_TEXT "C = <&C&>"
+PRINT_TEXT "D = <&D&>"
+
+END_SCRIPT
+
+//functions after here
+
+FUNCTION TESTF 1 Cad
+PRINT_TEXT "in function"
+DEFINE INT A 222
+PRINT_TEXT "A = <&A&>"
+PRINT_TEXT "Cad = <&Cad&>"
+RETURN A
+
+

@@ -1,0 +1,102 @@
+// Read CFG Options
+
+FUNCTION ReadCFG 1 _file
+
+  DEFINE FILEREADER FR "<&_file&>"
+  DEFINE STRING HEADER "!StartConfigData!"
+  DEFINE STRING FOOTER "!EndConfigData!"
+  DEFINE STRING BUFFER
+  DEFINE SORTEDLIST _oSortedList
+  FR.READ BUFFER
+  
+  IF "BUFFER.CONTAINS HEADER" == TRUE
+  
+    WHILE ONE == ONE
+      FR.READ BUFFER
+      
+      IF "BUFFER.CONTAINS FOOTER" == TRUE
+        BREAK 2
+      ELSE
+        ReadLine _oSortedList 2 BUFFER _oSortedList
+      ENDIF   
+    WEND
+
+  ELSE
+    PRINT_TEXT "Config file does not contain a valid header - Exiting !"
+    END_SCRIPT
+  ENDIF
+
+  
+  FR.CLOSE
+  
+RETURN _oSortedList
+
+FUNCTION ReadLine 2 _sBuffer _oSortedList
+
+  DEFINE STRING VERB
+  DEFINE STRING ARGS
+  DEFINE ARRAYLIST ARRAY
+  DEFINE SORTEDLIST LIST
+  
+  CALL_EXTERN "AEGIS\functions\utility.l2s" SPLIT ARRAY 2 "#$=" _sBuffer
+  IF ARRAY.COUNT > #I0
+    IF "_sBuffer.CONTAINS #$#" == FALSE
+      VERB = ARRAY.#I0
+      ARRAY.REMOVEAT #I0
+     
+      ARGS = ARRAY.#I0
+     
+      CALL_EXTERN "AEGIS\functions\utility.l2s" SPLIT ARRAY 2 "#$," ARGS
+     
+      ARGS = ARRAY.#I0
+      
+      FOR Z 0 "<&ARRAY.COUNT&>" 1
+        LIST.ADD ARRAY.Z "<&ARRAY.Z&>"
+      NEXT
+      
+      IF ARRAY.COUNT == #I1
+        _oSortedList.ADD ARGS "<&VERB&>"
+      ELSE
+        _oSortedList.ADD LIST "<&VERB&>"
+      ENDIF
+    ENDIF
+  ENDIF
+RETURN _oSortedList
+
+FUNCTION SPLIT 2 _sSplitChar _sData
+
+  DEFINE INT CYCLE
+  
+  DEFINE STRING CHAR
+  DEFINE STRING BUFFER
+
+  DEFINE ARRAYLIST _oArray
+
+  CYCLE = _sData.COUNT + #I1
+
+  FOR Z 0 "<&CYCLE&>" 1
+
+    IF Z == _sData.COUNT
+      IF Z != ZERO
+        CHAR = _sSplitChar
+      ENDIF
+    ELSE
+     CHAR = "_sData.SUBSTRING Z #I1"
+    ENDIF
+    
+    SWITCH CHAR
+      CASE _sSplitChar
+        _oArray.ADD "#$<&BUFFER&>"
+        BUFFER = "#$"
+        BREAK 1
+      DEFAULT
+        BUFFER = BUFFER + CHAR
+        BREAK 1
+    ENDSWITCH
+
+  NEXT
+
+RETURN _oArray
+
+
+

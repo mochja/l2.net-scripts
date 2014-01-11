@@ -1,0 +1,44 @@
+// Kratky popis
+// Server: 
+// Autor: mochitto
+// Date: 
+// Special thanks for L2.NET contributors
+// rev.: 0
+PRINT_TEXT "SCRIPT STARTED!]"
+
+// Main section
+// ===============================
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" sysmsgfunc 98
+DEFINE_GLOBAL INT STATUS
+
+THREAD MOVE_CLOSER
+
+WHILE ONE == ONE
+   SLEEP 99999
+WEND
+END_SCRIPT
+ 
+FUNCTION sysmsgfunc
+    DEFINE INT b 0
+    DEFINE INT type 0
+    DEFINE INT more 0
+    PACKET.READ_BYTE b
+    PACKET.READ_BYTE type
+    PACKET.READ_BYTE more
+    IF type == #i181 //here I will put my server "Cannot see target" system type number
+            STATUS = #i1
+    ENDIF
+RETURN VOID
+ 
+FUNCTION MOVE_CLOSER
+   WHILE ONE == ONE
+      IF STATUS == #i1
+         MOVE_TO "<&TARGET_X&>" "<&TARGET_Y&>" "<&TARGET_Z&>"
+         STATUS = #i0
+      ENDIF
+      SLEEP 5000
+   WEND
+RETURN VOID
+	
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT

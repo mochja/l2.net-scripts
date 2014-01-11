@@ -1,0 +1,184 @@
+
+CLASS ENGINEX_SCRIPTEVENTS_SERVERPACKETS NULL
+
+//-------------------------------------------------------------------------------------
+
+   VAR_START
+
+		PUBLIC SORTEDLIST EVALDATA 0
+		PUBLIC SORTEDLIST BLOCKDATA 0
+		PUBLIC SORTEDLIST PACKETFILES 0
+      PUBLIC ARRAYLIST EVALQUEUE 0
+
+   VAR_END
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT 0
+
+      THIS.SET_FILE VOID 2 "0" "#$Include/EngineX/ScriptEvents/ServerPackets/0_Die.l2f"
+      THIS.SET_FILE VOID 2 "8" "#$Include/EngineX/ScriptEvents/ServerPackets/8_ObjectDelete.l2f"
+      THIS.SET_FILE VOID 2 "12" "#$Include/EngineX/ScriptEvents/ServerPackets/12_NpcInfo.l2f"
+      THIS.SET_FILE VOID 2 "22" "#$Include/EngineX/ScriptEvents/ServerPackets/22_DropItem.l2f"
+      THIS.SET_FILE VOID 2 "25" "#$Include/EngineX/ScriptEvents/ServerPackets/25_NpcHtmlMessage.l2f"
+      THIS.SET_FILE VOID 2 "31" "#$Include/EngineX/ScriptEvents/ServerPackets/31_ActionFailed.l2f"
+      THIS.SET_FILE VOID 2 "33" "#$Include/EngineX/ScriptEvents/ServerPackets/33_InventoryUpdate.l2f"
+      THIS.SET_FILE VOID 2 "35" "#$Include/EngineX/ScriptEvents/ServerPackets/35_TargetSelected.l2f"
+      THIS.SET_FILE VOID 2 "36" "#$Include/EngineX/ScriptEvents/ServerPackets/36_TargetUnselected.l2f"
+      THIS.SET_FILE VOID 2 "37" "#$Include/EngineX/ScriptEvents/ServerPackets/37_AutoAttackStart.l2f"
+      THIS.SET_FILE VOID 2 "38" "#$Include/EngineX/ScriptEvents/ServerPackets/38_AutoAttackStop.l2f"
+      THIS.SET_FILE VOID 2 "41" "#$Include/EngineX/ScriptEvents/ServerPackets/41_ChangeWaitType.l2f"
+      THIS.SET_FILE VOID 2 "47" "#$Include/EngineX/ScriptEvents/ServerPackets/47_MoveToLocation.l2f"
+      THIS.SET_FILE VOID 2 "69" "#$Include/EngineX/ScriptEvents/ServerPackets/69_ShortCutInit.l2f"
+      THIS.SET_FILE VOID 2 "95" "#$Include/EngineX/ScriptEvents/ServerPackets/95_SkillList.l2f"
+      THIS.SET_FILE VOID 2 "98" "#$Include/EngineX/ScriptEvents/ServerPackets/98_SystemMessage.l2f"
+      THIS.SET_FILE VOID 2 "106" "#$Include/EngineX/ScriptEvents/ServerPackets/106_PledgeCrest.l2f"
+      THIS.SET_FILE VOID 2 "114" "#$Include/EngineX/ScriptEvents/ServerPackets/114_MoveToPawn.l2f"
+      THIS.SET_FILE VOID 2 "121" "#$Include/EngineX/ScriptEvents/ServerPackets/121_ValidateLocation.l2f"
+      THIS.SET_FILE VOID 2 "124" "#$Include/EngineX/ScriptEvents/ServerPackets/124_ChooseInventoryItem.l2f"
+      THIS.SET_FILE VOID 2 "135" "#$Include/EngineX/ScriptEvents/ServerPackets/135_EnchantResult.l2f"
+      THIS.SET_FILE VOID 2 "166" "#$Include/EngineX/ScriptEvents/ServerPackets/166_TutorialShowHtml.l2f"
+      THIS.SET_FILE VOID 2 "185" "#$Include/EngineX/ScriptEvents/ServerPackets/185_MyTargetSelected.l2f"
+      THIS.SET_FILE VOID 2 "208" "#$Include/EngineX/ScriptEvents/ServerPackets/208_MultiSellList.l2f"
+
+      THREAD QUEUELOOP
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC SET_FILE 2 PID FILEPATH
+      IF "THIS.PACKETFILES.CONTAINS_KEY <&PID&>" == FALSE
+         THIS.PACKETFILES.ADD "#$<&FILEPATH&>" "<&PID&>"
+      ELSE
+         DEFINE STRING PIDKEY "<&PID&>"
+         THIS.PACKETFILES.PIDKEY = "#$<&FILEPATH&>"
+      ENDIF
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC ADD_EVENT 3 PACKET_TYPE FUNCTION FILE
+      DEFINE STRING PACKET_TYPE_KEY "<&PACKET_TYPE&>"
+
+      IF ( "THIS.EVALDATA.CONTAINS_KEY <&PACKET_TYPE_KEY&>" == FALSE )
+         DEFINE ARRAYLIST EVALCALLS 0
+         THIS.EVALDATA.ADD EVALCALLS "<&PACKET_TYPE_KEY&>"
+         DELETE EVALCALLS
+         SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" RECEIVE "<&PACKET_TYPE_KEY&>"
+      ENDIF
+
+      DEFINE SORTEDLIST CALLDATA 0
+      CALLDATA.ADD "#$<&FUNCTION&>" "FUNCTION"
+      IF ( FILE.CLASSNAME != "#$NULL" )
+         CALLDATA.ADD "#$<&FILE&>" "FILE"
+      ENDIF
+      THIS.EVALDATA.PACKET_TYPE_KEY.ADD "CALLDATA"
+      DELETE CALLDATA
+
+	RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+	PUBLIC RECEIVE 1 PACKET
+
+		DEFINE INT PACKET_TYPE 0
+		PACKET.READ_BYTE PACKET_TYPE
+		PACKET.RESET_INDEX
+
+      DEFINE STRING PACKET_TYPE_KEY "<&PACKET_TYPE&>"
+      FOR CALLDATA_I 0 "<&ENGINEX.SCRIPTEVENTS.SERVERPACKETS.EVALDATA.PACKET_TYPE_KEY.COUNT&>" 1
+         DEFINE ARRAYLIST EVALQUEUEADD 0
+         EVALQUEUEADD.ADD "#$<&PACKET_TYPE_KEY&>"
+         EVALQUEUEADD.ADD "#i<&CALLDATA_I&>"
+         EVALQUEUEADD.ADD PACKET
+         ENGINEX.SCRIPTEVENTS.SERVERPACKETS.EVALQUEUE.ADD EVALQUEUEADD
+         DELETE EVALQUEUEADD
+      NEXT
+
+	RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+	PUBLIC QUEUELOOP 0
+      WHILE ( TRUE == TRUE )
+         IF ( ENGINEX.SCRIPTEVENTS.SERVERPACKETS.EVALQUEUE.COUNT != ZERO )
+            THREAD FORWARD
+            WHILE ( ENGINEX.SCRIPTEVENTS.SERVERPACKETS.EVALQUEUE.0.COUNT != ZERO )
+               SLEEP 1
+            WEND
+            ENGINEX.SCRIPTEVENTS.SERVERPACKETS.EVALQUEUE.REMOVE 0
+         ENDIF
+         SLEEP 1
+      WEND
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+	PUBLIC FORWARD 0
+
+      DEFINE STRING PACKET_TYPE_KEY "<&ENGINEX.SCRIPTEVENTS.SERVERPACKETS.EVALQUEUE.0.0&>"
+      DEFINE INT CALLDATA_I "<&ENGINEX.SCRIPTEVENTS.SERVERPACKETS.EVALQUEUE.0.1&>"
+      DEFINE BYTEBUFFER PACKET 0
+      PACKET = ENGINEX.SCRIPTEVENTS.SERVERPACKETS.EVALQUEUE.0.2.CLONE
+      ENGINEX.SCRIPTEVENTS.SERVERPACKETS.EVALQUEUE.0.CLEAR
+
+      DEFINE SORTEDLIST PACKET_DATA 0
+		CALL_EXTERN "<&ENGINEX.SCRIPTEVENTS.SERVERPACKETS.PACKETFILES.PACKET_TYPE_KEY&>" READ PACKET_DATA 1 PACKET
+      PACKET_DATA.ADD "PACKET" "PACKET"
+      IF ( "ENGINEX.SCRIPTEVENTS.SERVERPACKETS.EVALDATA.PACKET_TYPE_KEY.CALLDATA_I.CONTAINS_KEY FILE" == TRUE )
+         CALL_EXTERN "<&ENGINEX.SCRIPTEVENTS.SERVERPACKETS.EVALDATA.PACKET_TYPE_KEY.CALLDATA_I.#$FILE&>" "<&ENGINEX.SCRIPTEVENTS.SERVERPACKETS.EVALDATA.PACKET_TYPE_KEY.CALLDATA_I.#$FUNCTION&>" VOID 1 PACKET_DATA
+      ELSE
+         CALL "<&ENGINEX.SCRIPTEVENTS.SERVERPACKETS.EVALDATA.PACKET_TYPE_KEY.CALLDATA_I.#$FUNCTION&>" VOID 1 PACKET_DATA
+      ENDIF
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC BLOCK 2 PACKET_TYPE BLOCK_KEY
+      IF ( "THIS.BLOCKDATA.CONTAINS_KEY <&PACKET_TYPE&>" == FALSE )
+         DEFINE SORTEDLIST BLOCKCOUNTS 0
+         THIS.BLOCKDATA.ADD "BLOCKCOUNTS" "<&PACKET_TYPE&>"
+         DELETE BLOCKCOUNTS
+         BLOCK "<&PACKET_TYPE&>"
+      ENDIF
+      DEFINE STRING PACKET_TYPE_STRING "<&PACKET_TYPE&>"
+      IF ( "THIS.BLOCKDATA.PACKET_TYPE_STRING.CONTAINS_KEY <&BLOCK_KEY&>" == FALSE )
+         THIS.BLOCKDATA.PACKET_TYPE_STRING.ADD "0" "<&BLOCK_KEY&>"
+      ELSE
+         THIS.BLOCKDATA.PACKET_TYPE_STRING.BLOCK_KEY = THIS.BLOCKDATA.PACKET_TYPE_STRING.BLOCK_KEY + ONE
+      ENDIF
+	RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC UNBLOCK 2 PACKET_TYPE BLOCK_KEY
+      DEFINE STRING PACKET_TYPE_STRING "<&PACKET_TYPE&>"
+      IF ( "THIS.BLOCKDATA.CONTAINS_KEY <&PACKET_TYPE_STRING&>" == TRUE )
+         IF ( "THIS.BLOCKDATA.PACKET_TYPE_STRING.CONTAINS_KEY <&BLOCK_KEY&>" == TRUE )
+            THIS.BLOCKDATA.PACKET_TYPE_STRING.BLOCK_KEY = THIS.BLOCKDATA.PACKET_TYPE_STRING.BLOCK_KEY - ONE
+            IF ( THIS.BLOCKDATA.PACKET_TYPE_STRING.BLOCK_KEY == ZERO )
+               THIS.BLOCKDATA.PACKET_TYPE_STRING.REMOVE "<&BLOCK_KEY&>"
+            ENDIF
+         ENDIF
+         IF ( THIS.BLOCKDATA.PACKET_TYPE_STRING.COUNT == ZERO )
+            THIS.BLOCKDATA.REMOVE "<&PACKET_TYPE_STRING&>"
+         ENDIF
+      ENDIF
+      IF ( "THIS.BLOCKDATA.CONTAINS_KEY <&PACKET_TYPE_STRING&>" == FALSE )
+         UNBLOCK "<&PACKET_TYPE&>"
+      ENDIF
+	RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC UNBLOCK_FORCE 1 PACKET_TYPE
+      DEFINE STRING PACKET_TYPE_STRING "<&PACKET_TYPE&>"
+      THIS.BLOCKDATA.REMOVE "<&PACKET_TYPE_STRING&>"
+      UNBLOCK "<&PACKET_TYPE&>"
+	RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+END_CLASS

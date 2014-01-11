@@ -1,0 +1,61 @@
+
+	INCLUDE "Include/EngineX.l2c"
+	DEFINE_GLOBAL ENGINEX ENGINEX 0
+
+	INCLUDE "Include/Lazy.l2c"
+	DEFINE_GLOBAL LAZY LAZY 0
+
+//-------------------------------------------------------------------------------------
+
+   // Test:
+   // - IfThenElse
+   // - SubString
+
+   DEFINE INT RETURNING 0
+   LAZY.REGISTER RETURNING 1 #$RETURNING
+
+//-------------------------------------------------------------------------------------
+
+   DEFINE_GLOBAL INT MYBOOL 0
+
+   DEFINE INT MYPIECE 0
+   RETURNING.NEW_PIECE MYPIECE 2 #$If #$BooleanComparison
+   MYPIECE.SET_VALUE VOID 2 #$LEFT TRUE
+   MYPIECE.SET_VALUE VOID 2 #$OPERATOR #$==
+   MYPIECE.SET_VARIABLE VOID 2 #$RIGHT #$MYBOOL
+   DELETE MYPIECE
+
+   DEFINE INT MYPIECE 0
+   RETURNING.NEW_PIECE MYPIECE 2 #$Then #$SubString
+   MYPIECE.SET_VALUE VOID 2 #$STRING #$Agita
+   MYPIECE.SET_VALUE VOID 2 #$START #i0
+   MYPIECE.SET_VALUE VOID 2 #$LENGTH #i3
+   DELETE MYPIECE
+
+   DEFINE INT MYPIECE 0
+   RETURNING.NEW_PIECE MYPIECE 2 #$Else #$SubString
+   MYPIECE.SET_VALUE VOID 2 #$STRING #$Agita
+   MYPIECE.SET_VALUE VOID 2 #$START #i3
+   MYPIECE.SET_VALUE VOID 2 #$LENGTH #i2
+   DELETE MYPIECE
+
+   DEFINE INT MYPIECE 0
+   RETURNING.NEW_PIECE MYPIECE 2 #$IfThenElse #$IfThenElse
+   MYPIECE.SET_REFERENCE VOID 2 #$IF #$If
+   MYPIECE.SET_REFERENCE VOID 2 #$THEN #$Then
+   MYPIECE.SET_REFERENCE VOID 2 #$ELSE #$Else
+   DELETE MYPIECE
+
+   DEFINE STRING MYRETURN ""
+
+   MYBOOL = TRUE
+   RETURNING.PIECES.#$IfThenElse.GET_RETURN MYRETURN 0
+   PRINT_TEXT "<&MYRETURN&>"
+
+   MYBOOL = FALSE
+   RETURNING.PIECES.#$IfThenElse.GET_RETURN MYRETURN 0
+   PRINT_TEXT "<&MYRETURN&>"
+
+//-------------------------------------------------------------------------------------
+
+END_SCRIPT

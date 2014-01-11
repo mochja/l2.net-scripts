@@ -1,0 +1,90 @@
+// DLIB::Packets::WritePetInfo - v1.0 for Gracia 2.3
+// by d00d [09/29/09]
+//
+// Creates a PetInfo packet based on a sorted list
+// template of values.
+
+// Version 1.0 - Initial Release
+
+FUNCTION DLIB::Packets::WritePetInfo 1 _oPetInfo
+
+  DEFINE BYTEBUFFER _bOutBuffer 1024
+
+  IF _oCharInfo.CLASSNAME == "#$SORTEDLIST"
+  
+    _bOutBuffer.WRITE_BYTE #I178 // CharInfo Packet Integer
+    _bOutBuffer.WRITE_INT32 "_oPetInfo.#$SUMMON_TYPE"
+    _bOutBuffer.WRITE_INT32 "_oPetInfo.#$OBJECT_ID"
+    _bOutBuffer.WRITE_INT32 "_oPetInfo.#$NPC_ID"
+    _bOutBuffer.WRITE_INT32 "_oPetInfo.#$IS_ATTACKABLE"
+    _bOutBuffer.WRITE_INT32 "_oPetInfo.#$X"
+    _bOutBuffer.WRITE_INT32 "_oPetInfo.#$Y"
+    _bOutBuffer.WRITE_INT32 "_oPetInfo.#$Z"
+    _bOutBuffer.WRITE_INT32 "_oPetInfo.#$HEADING"
+    _bOutBuffer.WRITE_INT32 "_oPetInfo.#$CT23_UNKNOWN_00"
+    _bOutBuffer.WRITE_INT32 "_oPetInfo.#$MATKSPD"
+    _bOutBuffer.WRITE_INT32 "_oPetInfo.#$PATKSPD"
+    _bOutBuffer.WRITE_INT32 "_oPetInfo.#$RUNSPD"
+    _bOutBuffer.WRITE_INT32 "_oPetInfo.#$WALKSPD"
+    _bOutBuffer.WRITE_INT32 "_oPetInfo.#$SWIMRUNSPD"
+    _bOutBuffer.WRITE_INT32 "_oPetInfo.#$SWIMWALKSPD"
+    _bOutBuffer.WRITE_INT32 "_oPetInfo.#$FLRUNSPD"
+    _bOutBuffer.WRITE_INT32 "_oPetInfo.#$FLWALKSPD"
+    _bOutBuffer.WRITE_INT32 "_oPetInfo.#$FLYRUNSPD"
+    _bOutBuffer.WRITE_INT32 "_oPetInfo.#$FLYWALKSPD"
+    _bOutBuffer.WRITE_DOUBLE "_oPetInfo.#$MOVEMULTI"
+    _bOutBuffer.WRITE_DOUBLE "_oPetInfo.#$ATKSPDMULTI"
+    _bOutBuffer.WRITE_DOUBLE "_oPetInfo.#$COLLISON_RADIUS"
+    _bOutBuffer.WRITE_DOUBLE "_oPetInfo.#$COLLISON_HEIGHT"
+    _bOutBuffer.WRITE_INT32 "_oPetInfo.#$R_HAND_SLOT_IID" 
+    _bOutBuffer.WRITE_INT32 "_oPetInfo.#$CHEST_SLOT_IID"    
+    _bOutBuffer.WRITE_INT32 "_oPetInfo.#$L_HAND_SLOT_IID"
+    _bOutBuffer.WRITE_BYTE "_oPetInfo.#$HAS_OWNER"
+    _bOutBuffer.WRITE_BYTE "_oPetInfo.#$IS_RUNNING"
+    _bOutBuffer.WRITE_BYTE "_oPetInfo.#$IS_FIGHTING"
+    _bOutBuffer.WRITE_BYTE "_oPetInfo.#$IS_FAKING_DEATH"
+    _bOutBuffer.WRITE_BYTE "_oPetInfo.#$IS_SUMMONED"    
+    _bOutBuffer.WRITE_STRING "_oPetInfo.#$VISIBLE_NAME"
+    _bOutBuffer.WRITE_STRING "_oPetInfo.#$VISIBLE_TITLE"
+    _bOutBuffer.WRITE_INT32 "_oPetInfo.#$CT23_UNKNOWN_01"
+    _bOutBuffer.WRITE_INT32 "_oPetInfo.#$PVP_FLAG"
+    _bOutBuffer.WRITE_INT32 "_oPetInfo.#$KARMA"    
+    _bOutBuffer.WRITE_INT32 "_oPetInfo.#$CUR_FOOD"
+    _bOutBuffer.WRITE_INT32 "_oPetInfo.#$MAX_FOOD"  
+    _bOutBuffer.WRITE_INT32 "_oPetInfo.#$CUR_HP"
+    _bOutBuffer.WRITE_INT32 "_oPetInfo.#$MAX_HP"
+    _bOutBuffer.WRITE_INT32 "_oPetInfo.#$CUR_MP"
+    _bOutBuffer.WRITE_INT32 "_oPetInfo.#$MAX_MP"
+    _bOutBuffer.WRITE_INT32 "_oPetInfo.#$SP"
+    _bOutBuffer.WRITE_INT32 "_oPetInfo.#$LEVEL"
+    _bOutBuffer.WRITE_INT64 "_oPetInfo.#$XP"
+    _bOutBuffer.WRITE_INT64 "_oPetInfo.#$PERCENT_ITL"
+    _bOutBuffer.WRITE_INT64 "_oPetInfo.#$PERCENT_TNL"
+    _bOutBuffer.WRITE_INT32 "_oPetInfo.#$CUR_LOAD"
+    _bOutBuffer.WRITE_INT32 "_oPetInfo.#$MAX_LOAD"
+    _bOutBuffer.WRITE_INT32 "_oPetInfo.#$PATK"
+    _bOutBuffer.WRITE_INT32 "_oPetInfo.#$PDEF"
+    _bOutBuffer.WRITE_INT32 "_oPetInfo.#$MATK"
+    _bOutBuffer.WRITE_INT32 "_oPetInfo.#$MDEF"
+    _bOutBuffer.WRITE_INT32 "_oPetInfo.#$ACCURACY"
+    _bOutBuffer.WRITE_INT32 "_oPetInfo.#$EVASION"
+    _bOutBuffer.WRITE_INT32 "_oPetInfo.#$CRITICAL"
+    _bOutBuffer.WRITE_INT32 "_oPetInfo.#$RUNSPD2"
+    _bOutBuffer.WRITE_INT32 "_oPetInfo.#$PATKSPD2"
+    _bOutBuffer.WRITE_INT32 "_oPetInfo.#$MATKSPD2"
+    _bOutBuffer.WRITE_INT32 "_oPetInfo.#$ABNORMAL_VFX"
+    _bOutBuffer.WRITE_INT16 "_oPetInfo.#$MOUNTABLE"
+    _bOutBuffer.WRITE_BYTE "_oPetInfo.#$CT23_UNKNOWN_02"
+    _bOutBuffer.WRITE_INT16 "_oPetInfo.#$CT23_UNKNOWN_03"
+    _bOutBuffer.WRITE_BYTE "_oPetInfo.#$TEAM_CIRCLE"
+    _bOutBuffer.WRITE_INT32 "_oPetInfo.#$SS_USAGE"
+    _bOutBuffer.WRITE_INT32 "_oPetInfo.#$SPS_USAGE"
+    
+    _bOutBuffer.TRIM_TO_INDEX
+    _bOutBuffer.RESET_INDEX
+    
+  ELSE
+    PRINT_TEXT "_bOutBuffer is not a Sorted List"
+  ENDIF
+
+RETURN _bOutBuffer

@@ -1,0 +1,11 @@
+// Handle SystemMessage packets.
+
+FUNCTION Packet::SystemMessage 1 _bSystemMessage
+  
+  IF "AEGIS.OPTIONS.CONFIG.CONTAINS_KEY MESSAGE_FILTER" == TRUE
+    CALL_EXTERN "AEGIS\functions\MessageFilter.l2s" MessageFilter VOID 1 _bSystemMessage
+  ELSE
+    INJECTBB_CLIENT _bSystemMessage
+  ENDIF
+  
+RETURN VOID

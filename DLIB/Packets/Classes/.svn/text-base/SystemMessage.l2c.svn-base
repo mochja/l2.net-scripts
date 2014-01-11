@@ -1,0 +1,20 @@
+// SystemMessage Packet class data
+// for L2.net.
+// by d00d
+//
+// v1.0 - Initial Draft
+
+CLASS SystemMessage null
+VAR_START
+
+  PUBLIC INT MESSAGE_TYPE
+  PUBLIC INT INT_BUFFER0
+  PUBLIC INT INT_BUFFER1
+  PUBLIC INT INT_BUFFER2
+  PUBLIC INT STRING_BUFFER
+
+VAR_END
+
+END_CLASS
+
+

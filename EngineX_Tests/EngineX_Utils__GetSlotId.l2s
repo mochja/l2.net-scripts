@@ -1,0 +1,19 @@
+
+	INCLUDE Include/EngineX.l2c
+	DEFINE_GLOBAL ENGINEX ENGINEX 0
+
+	PRINT_TEXT ""
+	PRINT_TEXT "-------------------------------------------------"
+
+	DEFINE INT MYSLOT 0
+
+	ENGINEX.UTILS.GET_SLOT_ID MYSLOT 2 #i1 #i1
+	PRINT_TEXT "First slot in first row: <&MYSLOT&> (should be 0)"
+
+	ENGINEX.UTILS.GET_SLOT_ID MYSLOT 2 #i5 #i2
+	PRINT_TEXT "2rd slot in 5th row: <&MYSLOT&> (should be 49)"
+
+	PRINT_TEXT "-------------------------------------------------"
+	PRINT_TEXT ""
+
+END_SCRIPT

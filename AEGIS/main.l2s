@@ -1,0 +1,106 @@
+////////////////////////////////////////////////////////////////////////////////
+// AEGIS - An adaptation of CODEX for PvP
+// by d00d.mailbox@gmail.com
+// v0.8 - Release Candidate 1
+////////////////////////////////////////////////////////////////////////////////
+//// Includes
+// Load Order is critical, do not change.
+
+// DLIB packet includes
+INCLUDE "DLIB\Packets\Classes\RelationChanged.l2c"
+INCLUDE "DLIB\Packets\Classes\SystemMessage.l2c"
+INCLUDE "DLIB\Packets\Classes\ExSetCompassZone.l2c"
+INCLUDE "DLIB\Packets\Classes\SkillList.l2c"
+INCLUDE "DLIB\Packets\Classes\PartySpelled.l2c"
+INCLUDE "DLIB\Packets\Classes\MultiAttack.l2c"
+INCLUDE "DLIB\Packets\Classes\AbnormalStatusUpdate.l2c"
+
+// AEGIS core includes
+INCLUDE "AEGIS\classes\HtmlBuilder.l2c"
+INCLUDE "AEGIS\classes\DataDecay.l2c"
+INCLUDE "AEGIS\classes\PotionManagement.l2c"
+INCLUDE "AEGIS\Classes\NetQueue.l2c"
+INCLUDE "AEGIS\Classes\NetLock.l2c"
+INCLUDE "AEGIS\Classes\InterfaceBypass.l2c"
+INCLUDE "AEGIS\Classes\Configuration.l2c"
+INCLUDE "AEGIS\classes\Locking.l2c"
+INCLUDE "AEGIS\classes\Queues.l2c"
+INCLUDE "AEGIS\classes\MyCharacter.l2c"
+INCLUDE "AEGIS\classes\ObjectPerception.l2c"
+INCLUDE "AEGIS\classes\StatusEffects.l2c"
+INCLUDE "AEGIS\classes\moblist.l2c"
+INCLUDE "AEGIS\classes\charlist.l2c"
+
+INCLUDE "AEGIS\classes\SuperStructure.l2c"
+
+
+INCLUDE "STDLIB\Player.l2c"
+INCLUDE "STDLIB\Inventory.l2c"
+
+
+// Init::GlobalVariables
+CALL_EXTERN "AEGIS\functions\init_globals.l2s" Init::GlobalVariables VOID 0
+CALL_EXTERN "AEGIS\functions\interface.l2s" IG_PlayerList_OFF VOID 0
+
+// Reading configuration data
+CALL_EXTERN "AEGIS\functions\read_config.l2s" ReadCFG AEGIS.OPTIONS.CONFIG 1 "#$..\AEGIS\CONFIG.INI"
+
+// DataDecay
+CALL_EXTERN "AEGIS\functions\data_decay.l2s" DataDecay VOID 0
+
+// Pipeline::Fork
+CALL_EXTERN "AEGIS\functions\packet_pipeline.l2s" Pipeline::Fork VOID 0
+
+PRINT_TEXT "AEGIS <&AEGIS.VERSION_MAJOR&>.<&AEGIS.VERSION_MINOR&> <&AEGIS.VERSION_EXTRA&>"
+
+// Enhanced Target Perception
+CALL_EXTERN "AEGIS\functions\TargetingPerception.l2s" TargetPerceptionAdmin VOID 0
+
+// Counter Hide
+CALL_EXTERN "AEGIS\functions\CounterHide.l2s" CounterHideAdmin VOID 0
+
+// IG User Interface
+CALL_EXTERN "AEGIS\functions\interface.l2s" InterfaceAdmin VOID 0
+
+// Message Filter
+CALL_EXTERN "AEGIS\functions\MessageFilter.l2s" MessageFilterAdmin VOID 0
+
+// Not ready just yet
+// AutoPot
+// CALL_EXTERN "AEGIS\functions\autopot.l2s" PotionManagementAdmin VOID 0
+
+// Active Riposte
+CALL_EXTERN "AEGIS\functions\ActiveRiposte.l2s" ActiveRiposteAdmin VOID 0
+
+// Active Parry
+CALL_EXTERN "AEGIS\functions\ActiveParry.l2s" ActiveParryAdmin VOID 0
+
+// Counter Stab
+CALL_EXTERN "AEGIS\functions\CounterStab.l2s" CounterStabAdmin VOID 0
+
+// Hold target
+CALL_EXTERN "AEGIS\functions\HoldTarget.l2s" HoldtargetAdmin VOID 0
+
+// Counter Disarm
+CALL_EXTERN "AEGIS\functions\CounterDisarm.l2s" CounterDisarmAdmin VOID 0
+
+// Smart Skills
+CALL_EXTERN "AEGIS\functions\SmartSkills.l2s" SmartSkillsAdmin VOID 0
+
+// Auto Dispel
+CALL_EXTERN "AEGIS\functions\AutoDispel.l2s" AutoDispelAdmin VOID 0
+
+// Buff Protect
+CALL_EXTERN "AEGIS\functions\BuffProtect.l2s" BuffProtectAdmin VOID 0
+
+// Skill Recon
+CALL_EXTERN "AEGIS\functions\SkillRecon.l2s" SkillReconAdmin VOID 0
+
+////////////////////////////////////////////////////////////////////////////////
+
+
+SLEEP 604800000
+PRINT_TEXT "1 Week Elapsed, shutting down."
+END_SCRIPT
+
+

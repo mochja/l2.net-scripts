@@ -1,0 +1,97 @@
+
+INCLUDE Include/EngineX/StdLib/_Vector2.l2c
+INCLUDE Include/EngineX/StdLib/_Vector3.l2c
+INCLUDE Include/EngineX/StdLib/_HtmlTag.l2c
+INCLUDE Include/EngineX/StdLib/_Shortcut.l2c
+INCLUDE Include/EngineX/StdLib/_Skill.l2c
+INCLUDE Include/EngineX/StdLib/_SysMessData.l2c
+INCLUDE Include/EngineX/StdLib/_MultiSellEntry.l2c
+INCLUDE Include/EngineX/StdLib/_MultiSellItem.l2c
+INCLUDE Include/EngineX/StdLib/_Attachment.l2c
+
+INCLUDE StdLib/Effect.l2c
+INCLUDE StdLib/Item.l2c
+INCLUDE StdLib/Inventory.l2c
+INCLUDE StdLib/Player.l2c
+INCLUDE StdLib/NPC.l2c
+
+//-------------------------------------------------------------------------------------
+CLASS ENGINEX NULL
+//-------------------------------------------------------------------------------------
+
+   VAR_START
+      PUBLIC STRING SYSTEM "Include/EngineX/System.l2c"
+      PUBLIC STRING AUTOBOT "Include/EngineX/AutoBot.l2c"
+      PUBLIC STRING TEST "Include/EngineX/Test.l2c"
+      PUBLIC STRING DATABASE "Include/EngineX/Database.l2c"
+      PUBLIC STRING WORLDEVENTS "Include/EngineX/WorldEvents.l2c"
+      PUBLIC STRING SCRIPTEVENTS "Include/EngineX/ScriptEvents.l2c"
+      PUBLIC STRING SERVERS "Include/EngineX/Servers.l2c"
+      PUBLIC STRING INTERFACE "Include/EngineX/Interface.l2c"
+      PUBLIC STRING STDLIB "Include/EngineX/StdLib.l2c"
+   VAR_END
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT 1 CLASSNAME
+      IF ( CLASSNAME.TYPE == NULL )
+         RETURN NULL
+      ENDIF
+      IF ( CLASSNAME.TYPE != STRING )
+         RETURN NULL
+      ENDIF
+		CLASSNAME = CLASSNAME.TO_UPPER
+      DEFINE ARRAYLIST CLASSNAMES 0
+      DEFINE INT STRPOS 0
+      DEFINE STRING SUBSTR ""
+      DEFINE STRING OLDSTR ""
+      WHILE ( STRPOS < CLASSNAME.LENGTH )
+         SUBSTR = CLASSNAME.SUBSTRING STRPOS 1
+         IF ( SUBSTR == "#$." )
+            CLASSNAMES.ADD "#$<&OLDSTR&>"
+            OLDSTR = "#$"
+         ELSE
+            SUBSTR = CLASSNAME.SUBSTRING STRPOS 1
+            OLDSTR = "#$<&OLDSTR&><&SUBSTR&>"
+         ENDIF
+         STRPOS = STRPOS + 1
+      WEND
+      IF ( OLDSTR != "#$" )
+         CLASSNAMES.ADD "#$<&OLDSTR&>"
+      ENDIF
+      CLASSNAME = "#$"
+      DEFINE STRING CLASSTYPE "ENGINEX"
+      IF ( ( CLASSNAMES.COUNT > ONE ) && ( CLASSNAMES.ZERO == #$ENGINEX ) )
+         FOR I 1 "<&CLASSNAMES.COUNT&>" 1
+            CLASSNAME = "#$<&CLASSNAME&>.<&CLASSNAMES.I&>"
+            CLASSTYPE = "#$<&CLASSTYPE&>_<&CLASSNAMES.I&>"
+            //IF ( [] "<&CLASSNAME&>" )
+               IF ( "THIS<&CLASSNAME&>.CLASSNAME" == #$STRING )
+                  IF ( "THIS<&CLASSNAME&>.STARTSWITH #$Include/EngineX/" == TRUE )
+                     IF ( FILE_EXISTS "#$Scripts/<&THIS<&CLASSNAME&>&>" )
+                        THIS.CONSTRUCT_DEFINE "THIS<&CLASSNAME&>" 2 CLASSTYPE CLASSNAME
+                     ELSE
+                        PRINT_TEXT "file doesnt exist: <&THIS<&CLASSNAME&>&>"
+                        RETURN NULL
+                     ENDIF
+                  ELSE
+                     PRINT_TEXT "not a valid include: <&THIS<&CLASSNAME&>&>"
+                     RETURN NULL
+                  ENDIF
+               ENDIF
+            //ELSE
+            //ENDIF
+         NEXT
+      ENDIF
+   RETURN "THIS<&CLASSNAME&>"
+
+//-------------------------------------------------------------------------------------
+
+   PRIVATE CONSTRUCT_DEFINE 2 CLASSTYPE CLASSNAME
+      INCLUDE "<&THIS<&CLASSNAME&>&>"
+      DEFINE "<&CLASSTYPE&>" NEWCLASS 0
+   RETURN NEWCLASS
+
+//-------------------------------------------------------------------------------------
+END_CLASS
+//-------------------------------------------------------------------------------------

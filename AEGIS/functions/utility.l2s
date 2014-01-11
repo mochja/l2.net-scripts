@@ -1,0 +1,97 @@
+// Utility Functions
+
+FUNCTION SPLIT 2 _sSplitChar _sData
+
+  DEFINE INT CYCLE
+  
+  DEFINE STRING CHAR
+  DEFINE STRING BUFFER
+
+  DEFINE ARRAYLIST _oArray
+
+  CYCLE = _sData.COUNT + #I1
+
+  FOR Z 0 "<&CYCLE&>" 1
+
+    IF Z == _sData.COUNT
+      IF Z != ZERO
+        CHAR = _sSplitChar
+      ENDIF
+    ELSE
+     CHAR = "_sData.SUBSTRING Z #I1"
+    ENDIF
+    
+    SWITCH CHAR
+      CASE _sSplitChar
+        _oArray.ADD "#$<&BUFFER&>"
+        BUFFER = "#$"
+        BREAK 1
+      DEFAULT
+        BUFFER = BUFFER + CHAR
+        BREAK 1
+    ENDSWITCH
+
+  NEXT
+
+RETURN _oArray
+
+FUNCTION BubbleSort 1 _Object
+
+  DEFINE INT ELEMENTS 0
+  DEFINE INT N 0
+  DEFINE INT A1 0
+  DEFINE INT TMP 0
+
+  ELEMENTS = _Object.Count
+  ELEMENTS = ELEMENTS - #I1
+    
+  FOR X 0 "<&Elements&>" 1
+    N = ELEMENTS - X
+    FOR j 0 "<&N&>" 1
+       A1 = J + #I1       
+       IF _Object.A1 < _Object.J
+         TMP = _Object.J
+         _Object.J = _Object.A1
+         _Object.A1 = TMP
+       ENDIF
+    NEXT
+  NEXT
+  
+RETURN _Object
+
+FUNCTION ClassBubbleSort 2 _oObject _sObj
+
+  DEFINE INT ELEMENTS 0
+  DEFINE INT N 0
+  DEFINE INT A1 0
+  DEFINE INT TMP 0
+
+  DEFINE INT Result_A1
+  DEFINE INT RESULT_J
+
+  ELEMENTS = _oObject.Count
+  ELEMENTS = ELEMENTS - #I1
+    
+  FOR X 0 "<&Elements&>" 1
+    N = ELEMENTS - X
+    FOR j 0 "<&N&>" 1
+      A1 = J + #I1
+      DigClassElement Result_A1 3 _oObject A1 _sObj
+      DigClassElement Result_J 3 _oObject J "#$CURRENT_CLASS_ID"
+      IF Result_A1 < Result_J
+        TMP = _oObject.J.CURRENT_CLASS_ID
+        "_oObject.J.<&_sObj&>" = "_oObject.A1.<&_sObj&>"
+        "_oObject.A1.<&_sObj&>" = TMP        
+       ENDIF
+    NEXT
+  NEXT
+  
+RETURN _oObject
+
+
+FUNCTION DigClassElement 3 _oArray _iElement Obj
+
+  DEFINE INT RESULT
+  RESULT = "#I<&_oArray._iElement.<&Obj&>&>"
+  
+RETURN RESULT

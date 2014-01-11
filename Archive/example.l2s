@@ -1,0 +1,144 @@
+﻿SET_EVENT "<&SCRIPTEVENT_CHAT&>" "<&SYSTEM_CURRENTFILE&>" CHAT
+DEFINE INT MinMP 500 
+DEFINE INT Shot 3949
+DO
+IF CHAR_CUR_MP < MinMP
+WHILE CHAR_CUR_MP != CHAR_MAX_MP
+USE_ITEM 728
+SLEEP 500
+WEND
+ENDIF
+     SLEEP 1000
+LOOP ONE == ONE
+END_SCRIPT
+
+FUNCTION CHAT
+
+IF MESSAGETYPE == CHANNEL_PARTY
+IF MESSAGE == "#$buffni se"
+         SLEEP 20
+//21:27:59 :[DEBUG: NPC Chat Click: bypass -h npc_<&TARGET_ID&>_Quest 9999_NPCBuffer
+//21:28:01 :[DEBUG: NPC Chat Click: bypass -h Quest 9999_NPCBuffer 1
+//21:42:19 :[DEBUG: NPC Chat Click: bypass -h npc_268505628_Link villagemaster/SubClass.htm
+//21:42:20 :[DEBUG: NPC Chat Click: bypass -h npc_268505628_Subclass 2
+
+//MOVE_TO "81820" "148372" "-3472" //maximilian
+//SLEEP 1203
+MOVE_TO "82034" "148360" "-3472" //maddy
+SLEEP 1203
+COMMAND "/target Maddy"
+TALK_TARGET
+SLEEP 400
+NPC_DIALOG "bypass -h npc_<&TARGET_ID&>_Quest 9999_NPCBuffer"
+SLEEP 400
+NPC_DIALOG "bypass -h Quest 9999_NPCBuffer 1"
+SLEEP 400
+ENDIF
+
+    IF MESSAGE == "#$buff fight"
+	PRINT_TEXT "Davam buffy <&SENDERNAME&>"
+SAY_TEXT "<&CHANNEL_PARTY&>" "buffuji partu za 5 sekundy"
+SLEEP 800
+				
+COMMAND "/target Maximilian"
+SLEEP 2000
+TALK_TARGET
+SLEEP 800      
+NPC_DIALOG "bypass -h npc_<&TARGET_ID&>_Link villagemaster/SubClass.htm"
+SLEEP 2000
+NPC_DIALOG "bypass -h npc_<&TARGET_ID&>_Subclass 2"
+SLEEP 2000
+NPC_DIALOG "bypass -h npc_<&TARGET_ID&>_Subclass 5 1"
+SLEEP 2000
+USE_ITEM 3949
+        USE_SKILL 1002 0 0 //flame chant
+USE_ITEM 3949
+        SLEEP 1000
+        USE_SKILL 1007 0 0 //chant of battle
+USE_ITEM 3949
+        SLEEP 1000
+        USE_SKILL 1009 0 0 //chant of shielding
+USE_ITEM 3949
+        SLEEP 1000
+        USE_SKILL 1006 0 0 //chant of fire
+USE_ITEM 3949
+        SLEEP 1000
+        USE_SKILL 1251 0 0 //chant of fury
+USE_ITEM 3949
+        SLEEP 1000
+        USE_SKILL 1253 0 0 //rage
+USE_ITEM 3949
+        SLEEP 1000
+        USE_SKILL 1308 0 0 //predator
+USE_ITEM 3949
+        SLEEP 1000
+        USE_SKILL 1252 0 0 //evasion
+USE_ITEM 3949
+        SLEEP 1000
+        USE_SKILL 1309 0 0 //eagle
+USE_ITEM 3949
+        SLEEP 1000
+        USE_SKILL 1310 0 0 //vampire
+USE_ITEM 3949
+        SLEEP 1000
+        USE_SKILL 1390 0 0 //warchant
+USE_ITEM 3949
+        SLEEP 1000
+        USE_SKILL 1461 0 0 //protection
+USE_ITEM 3949
+        SLEEP 1000
+        USE_SKILL 1363 0 0 //protection
+        SLEEP 10000
+COMMAND "/target Maximilian"
+TALK_TARGET
+SLEEP 800      
+NPC_DIALOG "bypass -h npc_<&TARGET_ID&>_Link villagemaster/SubClass.htm"
+SLEEP 800
+NPC_DIALOG "bypass -h npc_<&TARGET_ID&>_Subclass 2"
+SLEEP 1000
+NPC_DIALOG "bypass -h npc_<&TARGET_ID&>_Subclass 5 3"
+SLEEP 2000
+COMMAND "/target test"
+USE_ITEM 3949
+				SLEEP 1000
+				USE_SKILL 1085 0 0 //acumen
+USE_ITEM 3949
+				SLEEP 1000
+				USE_SKILL 1062 0 0				
+				SLEEP 2000
+COMMAND "/target <&SENDERNAME&>"
+USE_ITEM 3949
+        SLEEP 1000
+        USE_SKILL 1068 0 0
+USE_ITEM 3949
+       				SLEEP 1000
+       				USE_SKILL 1068 0 0 
+USE_ITEM 3949
+				SLEEP 1000
+				USE_SKILL 1035 0 0 
+USE_ITEM 3949
+				SLEEP 1000
+				USE_SKILL 1040 0 0      				
+    ENDIF
+    COMMAND "/target test"
+IF MESSAGE == "#$opust nas"
+	COMMAND "/leave"
+ENDIF
+ENDIF
+IF MESSAGETYPE == CHANNEL_PRIVATE
+    IF MESSAGE == "#$vše"
+         SLEEP 902
+         PRINT_TEXT "Confrim trade"
+         inject "1C 01 00 00 00 "
+    ENDIF
+
+    IF MESSAGE == "#$pt"
+        COMMAND "/invite <&SENDERNAME&>"
+    ENDIF
+IF MESSAGE == "#$zastav script"
+SLEEP 2400
+SAY_TEXT "<&CHANNEL_PRIVATE&>" "Měj se!" "<&SENDERNAME&>"
+    END_SCRIPT
+ENDIF
+ENDIF
+RETURN VOID

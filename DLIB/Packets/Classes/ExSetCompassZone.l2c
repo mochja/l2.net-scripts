@@ -1,0 +1,21 @@
+// ExSetCompassZone Packet class data
+// for L2.net.
+// by d00d
+//
+// v1.0 - Initial Draft
+
+
+CLASS ZoneInfo null
+VAR_START
+
+  PUBLIC INT ALTERDZONE   0
+  PUBLIC INT SIEGEWARZONE1 0
+  PUBLIC INT SIEGEWARZONE2 0
+  PUBLIC INT PEACEZONE     0
+  PUBLIC INT SEVENSIGNZONE 0
+  PUBLIC INT PVPZONE       0
+  PUBLIC INT GENERALZONE   0
+  
+VAR_END
+
+END_CLASS

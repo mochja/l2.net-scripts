@@ -1,0 +1,229 @@
+
+//-------------------------------------------------------------------------------------
+CLASS ENGINEX_FUNCTIONS_GEO NULL
+//-------------------------------------------------------------------------------------
+
+   VAR_START
+      PUBLIC SIZE REGION_SIZE 0
+      PUBLIC VECTOR2 WORLD_MIN 0
+      PUBLIC VECTOR2 WORLD_MAX 0
+   VAR_END
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT 0
+      THIS.REGION_SIZE.WIDTH = #i32768
+      THIS.REGION_SIZE.HEIGHT = #i32768
+      THIS.WORLD_MIN.X = #i-655360
+      THIS.WORLD_MIN.Y = #i-589824
+      THIS.WORLD_MAX.X = #i393216
+      THIS.WORLD_MAX.Y = #i458752
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   // thx to herscher
+   PUBLIC MAP_X 1 POS_X
+      DEFINE INT MAP_X 0
+      MAP_X = POS_X - THIS.WORLD_MIN.X
+      MAP_X = MAP_X / THIS.REGION_SIZE.WIDTH
+   RETURN MAP_X
+
+//-------------------------------------------------------------------------------------
+
+   // thx to herscher
+   PUBLIC MAP_Y 1 POS_Y
+      DEFINE INT MAP_Y 0
+      MAP_Y = POS_Y - THIS.WORLD_MIN.Y
+      MAP_Y = MAP_Y / THIS.REGION_SIZE.HEIGHT
+   RETURN MAP_Y
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC RAND_OFFSET 4 P1X P1Y P1Z MAX
+      DEFINE VECTOR3 P2 0
+      IF ( MAX > ZERO )
+         DEFINE DOUBLE X_OFFSET 0
+         DEFINE DOUBLE Y_OFFSET 0
+         DEFINE DOUBLE RANDOM_OFFSET 0
+         DEFINE DOUBLE RANDOM_ANGLE 0
+         DEFINE DOUBLE RANDOM_Z 0
+         GET_RAND RANDOM_OFFSET "-<&MAX&>" "<&MAX&>"
+         GET_RAND RANDOM_ANGLE 0 360
+         GET_RAND RANDOM_Z 0 20
+         X_OFFSET = COS RANDOM_ANGLE
+         //ENGINEX.MATH.NORMALIZE_DOUBLE X_OFFSET 1 X_OFFSET
+         X_OFFSET = X_OFFSET * RANDOM_OFFSET
+         Y_OFFSET = SIN RANDOM_ANGLE
+         //ENGINEX.MATH.NORMALIZE_DOUBLE Y_OFFSET 1 Y_OFFSET
+         Y_OFFSET = Y_OFFSET * RANDOM_OFFSET
+         P2.X = X_OFFSET + P1X
+         P2.Y = Y_OFFSET + P1Y
+         P2.Z = RANDOM_Z + P1Z
+      ELSE
+         P2.X = P1X
+         P2.Y = P1Y    
+         P2.Z = P1Z
+      ENDIF
+   RETURN P2
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC IN_POLY 3 POLYGON X Y
+      DEFINE INT IS_IN 0
+      DEFINE INT J 0
+      J = POLYGON.COUNT - ONE
+      DEFINE DOUBLE TEMP1 0
+      DEFINE DOUBLE TEMP2 0
+      DEFINE DOUBLE TEMP3 0
+      DEFINE DOUBLE TEMP 0
+      FOR I 0 "<&POLYGON.COUNT&>" 1
+         IF ( ( ( POLYGON.I.Y < Y ) AND ( POLYGON.J.Y >= Y ) ) OR ( ( POLYGON.J.Y < Y ) AND ( POLYGON.I.Y >= Y ) ) )
+            TEMP1 = Y - POLYGON.I.Y
+            TEMP2 = POLYGON.J.Y - POLYGON.I.Y
+            TEMP3 = POLYGON.J.X - POLYGON.I.X
+            TEMP = TEMP1 / TEMP2
+            TEMP = TEMP * TEMP3
+            TEMP = TEMP + POLYGON.I.X
+            IF ( TEMP < X )
+               IF ( IS_IN == TRUE )
+                  IS_IN = FALSE
+               ELSE
+                  IS_IN = TRUE
+               ENDIF
+            ENDIF
+         ENDIF
+         J = "#i<&I&>"
+      NEXT
+   RETURN IS_IN
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CIRCLE_POINTS 5 CENTER_X CENTER_Y CORNERS RADIUS START_DEG
+
+      DEFINE DOUBLE START_RAD 0
+      THIS.DEG2RAD START_RAD 1 START_DEG
+
+      DEFINE DOUBLE RADIAN_BIT 0
+      RADIAN_BIT = PI * TWO
+      RADIAN_BIT = RADIAN_BIT / CORNERS
+      DEFINE DOUBLE RADIAN_CUR 0
+
+		DEFINE ARRAYLIST POINTS 0
+      FOR I 0 "<&CORNERS&>" 1
+
+         DEFINE DOUBLE POINT_X 0
+         DEFINE DOUBLE POINT_Y 0
+
+         RADIAN_CUR = RADIAN_BIT * I
+         RADIAN_CUR = RADIAN_CUR + START_RAD
+
+         POINT_X = COS RADIAN_CUR
+         //ENGINEX.MATH.NORMALIZE_DOUBLE TEMP_X 1 TEMP_X
+         POINT_X = POINT_X * RADIUS
+
+         POINT_Y = SIN RADIAN_CUR
+         //ENGINEX.MATH.NORMALIZE_DOUBLE TEMP_Y 1 TEMP_Y
+         POINT_Y = POINT_Y * RADIUS
+
+         POINT_X = POINT_X + CENTER_X
+         POINT_Y = POINT_Y + CENTER_Y
+
+			DEFINE VECTOR2 POINTVECTOR 0
+			POINTVECTOR.X = POINT_X
+			POINTVECTOR.Y = POINT_Y
+         POINTS.ADD POINTVECTOR
+         DELETE POINTVECTOR
+         DELETE POINT_X
+         DELETE POINT_Y
+
+      NEXT
+   RETURN POINTS
+
+//-------------------------------------------------------------------------------------
+
+   // thx to schmurmel
+   PUBLIC LINE_INTERSECT 9 X1 Y1 Z1 X2 Y2 Z2 X3 Y3 Z3
+      DEFINE DOUBLE R_X 0
+      DEFINE DOUBLE R_Y 0
+      DEFINE DOUBLE R_Z 0
+      DEFINE DOUBLE SUM_1 0
+      DEFINE DOUBLE SUM_2 0
+      DEFINE DOUBLE SUM_3 0
+      DEFINE DOUBLE SUM 0
+      DEFINE DOUBLE LAMDA_1_1 0
+      DEFINE DOUBLE LAMDA_1_2 0
+      DEFINE DOUBLE LAMDA_1_3 0
+      DEFINE DOUBLE LAMDA_1 0
+      DEFINE DOUBLE LAMDA_2_1 0
+      DEFINE DOUBLE LAMDA_2_2 0
+      DEFINE DOUBLE LAMDA_2_3 0
+      DEFINE DOUBLE LAMDA_2 0
+      DEFINE DOUBLE LAMDA 0
+      DEFINE DOUBLE S_X 0
+      DEFINE DOUBLE S_Y 0
+      DEFINE DOUBLE S_Z 0
+      DEFINE DOUBLE X_DIFF 0
+      DEFINE DOUBLE Y_DIFF 0
+      DEFINE DOUBLE Z_DIFF 0
+      DEFINE VECTOR3 SP 0
+      R_X = X2 - X1
+      R_Y = Y2 - Y1
+      R_Z = Z2 - Z1
+      SUM_1 = X3 * R_X
+      SUM_2 = Y3 * R_Y
+      SUM_3 = Z3 * R_Z
+      SUM = SUM_1 + SUM_2
+      SUM = SUM + SUM_3
+      LAMDA_1_1 = R_X * X1
+      LAMDA_1_2 = R_Y * Y1
+      LAMDA_1_3 = R_Z * Z1
+      LAMDA_1 = LAMDA_1_1 + LAMDA_1_2
+      LAMDA_1 = LAMDA_1 + LAMDA_1_3
+      LAMDA_1 = SUM - LAMDA_1
+      LAMDA_2_1 = R_X ^ TWO
+      LAMDA_2_2 = R_Y ^ TWO
+      LAMDA_2_3 = R_Z ^ TWO
+      LAMDA_2 = LAMDA_2_1 + LAMDA_2_2
+      LAMDA_2 = LAMDA_2 + LAMDA_2_3
+      LAMDA = LAMDA_1 / LAMDA_2
+      S_X = LAMDA * R_X
+      S_X = S_X + X1
+      S_Y = LAMDA * R_Y
+      S_Y = S_Y + Y1
+      S_Z = LAMDA * R_Z
+      S_Z = S_Z + Z1
+      SP.X = S_X
+      SP.Y = S_Y
+      SP.Z = S_Z
+   RETURN SP
+
+//-------------------------------------------------------------------------------------
+
+	PUBLIC NORMALIZE_ANGLE 1 OLD
+      DEFINE "<&OLD.CLASSNAME&>" NEW "<&OLD&>"
+      NEW = NEW % 360
+      IF ( NEW < ZERO )
+         NEW = NEW + 360
+      ENDIF
+	RETURN NEW
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC DEG2RAD 1 DEG
+      DEFINE DOUBLE RAD "<&DEG&>"
+      RAD = RAD / #d180
+      RAD = PI * RAD
+   RETURN RAD
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC RAD2DEG 1 RAD
+      DEFINE DOUBLE DEG "<&RAD&>"
+      DEG = DEG / PI
+      DEG = DEG * #d180
+   RETURN DEG
+
+//-------------------------------------------------------------------------------------
+END_CLASS
+//-------------------------------------------------------------------------------------

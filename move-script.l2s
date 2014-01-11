@@ -1,0 +1,96 @@
+// Kratky popis
+// Server: 
+// Autor: mochitto
+// Date: 
+// Special thanks for L2.NET contributors
+// rev.: 0
+PRINT_TEXT "SCRIPT STARTED!]"
+SET_EVENT "<&SCRIPTEVENT_CHAT&>" "<&SYSTEM_CURRENTFILE&>" moveadd
+
+// Main section
+// ===============================
+                                         
+WALK_TO VOID 3 #i151277 #i-112789 #i-2145
+WALK_TO VOID 3 #i151301 #i-112951 #i-2087
+WALK_TO VOID 3 #i151560 #i-112908 #i-1989
+WALK_TO VOID 3 #i151875 #i-113303 #i-1684
+WALK_TO VOID 3 #i152024 #i-113334 #i-1610
+WALK_TO VOID 3 #i153643 #i-113927 #i-1641
+WALK_TO VOID 3 #i154265 #i-113939 #i-1612
+WALK_TO VOID 3 #i155185 #i-115327 #i-1584
+WALK_TO VOID 3 #i157160 #i-116013 #i-1889
+WALK_TO VOID 3 #i157641 #i-115389 #i-1912
+SLEEP 6000
+//0:48:06 :[DEBUG: NPC Chat Click: bypass -h npc_268465422_Quest
+//:48:09 :[DEBUG: NPC Chat Click: bypass -h npc_268465422_Quest 621_EggDelivery
+//0:48:12 :[DEBUG: NPC Chat Click: bypass -h Quest 621_EggDelivery 31543-1.htm
+WALK_TO VOID 3 #i156829 #i-114331 #i-1776
+WALK_TO VOID 3 #i156040 #i-113632 #i-1745
+WALK_TO VOID 3 #i155320 #i-111812 #i-1868
+WALK_TO VOID 3 #i155822 #i-110690 #i-2627
+WALK_TO VOID 3 #i155662 #i-108724 #i-2642
+WALK_TO VOID 3 #i156190 #i-107816 #i-2631
+WALK_TO VOID 3 #i155806 #i-107353 #i-2637
+WALK_TO VOID 3 #i155500 #i-106010 #i-2750
+WALK_TO VOID 3 #i155623 #i-105713 #i-2762
+SLEEP 6000
+//0:51:36 :[DEBUG: NPC Chat Click: bypass -h npc_268465423_Quest 621_EggDelivery
+//PP0:51:38 :[DEBUG: NPC Chat Click: bypass -h Quest 621_EggDelivery 31544-1.htm
+WALK_TO VOID 3 #i153773 #i-102884 #i-2985
+WALK_TO VOID 3 #i153619 #i-100961 #i-2932
+WALK_TO VOID 3 #i150985 #i-101633 #i-2890
+WALK_TO VOID 3 #i149291 #i-101072 #i-2899
+WALK_TO VOID 3 #i146696 #i-101196 #i-3126
+WALK_TO VOID 3 #i146072 #i-101855 #i-2912
+WALK_TO VOID 3 #i144838 #i-102609 #i-3534
+WALK_TO VOID 3 #i143812 #i-102827 #i-3551
+WALK_TO VOID 3 #i141533 #i-104963 #i-3644
+WALK_TO VOID 3 #i140672 #i-105454 #i-3640
+SLEEP 6000
+//0:54:52 :[DEBUG: NPC Chat Click: bypass -h npc_268465424_Quest 621_EggDelivery
+//0:54:54 :[DEBUG: NPC Chat Click: bypass -h Quest 621_EggDelivery 31545-1.htm
+WALK_TO VOID 3 #i141388 #i-106495 #i-3588
+WALK_TO VOID 3 #i141017 #i-107914 #i-3639
+WALK_TO VOID 3 #i141297 #i-108152 #i-3602
+WALK_TO VOID 3 #i141764 #i-109419 #i-3600
+WALK_TO VOID 3 #i141632 #i-109437 #i-3599
+SLEEP 6000
+//0:56:21 :[DEBUG: NPC Chat Click: bypass -h npc_268465425_Quest
+//0:56:22 :[DEBUG: NPC Chat Click: bypass -h npc_268465425_Quest 621_EggDelivery
+//0:56:24 :[DEBUG: NPC Chat Click: bypass -h Quest 621_EggDelivery 31546-1.htm
+WALK_TO VOID 3 #i142731 #i-109013 #i-3578
+WALK_TO VOID 3 #i148090 #i-108919 #i-2791
+WALK_TO VOID 3 #i149046 #i-109099 #i-2560
+WALK_TO VOID 3 #i149564 #i-111174 #i-2254
+WALK_TO VOID 3 #i149103 #i-111842 #i-2177
+WALK_TO VOID 3 #i147488 #i-113306 #i-2121
+SLEEP 6000
+//0:58:11 :[DEBUG: NPC Chat Click: bypass -h npc_268465426_Quest
+//0:58:13 :[DEBUG: NPC Chat Click: bypass -h npc_268465426_Quest 621_EggDelivery
+//0:58:15 :[DEBUG: NPC Chat Click: bypass -h Quest 621_EggDelivery 31547-1.htm
+WALK_TO VOID 3 #i149235 #i-112724 #i-2072
+WALK_TO VOID 3 #i149452 #i-112643 #i-2072
+WALK_TO VOID 3 #i149542 #i-112719 #i-2072
+//0:59:13 :[DEBUG: NPC Chat Click: bypass -h npc_268465420_Quest
+//0:59:15 :[DEBUG: NPC Chat Click: bypass -h npc_268465420_Quest 621_EggDelivery
+//0:59:16 :[DEBUG: NPC Chat Click: bypass -h Quest 621_EggDelivery 31521-3.htm
+
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT
+
+FUNCTION moveadd
+	PRINT_TEXT "WALK_TO VOID 3 #i<&CHAR_X&> #i<&CHAR_Y&> #i<&CHAR_Z&>"
+RETURN VOID
+
+FUNCTION WALK_TO 3 X Y Z
+    DEFINE INT TDIST 0           
+    Z = Z + #i23
+    PRINT_TEXT "TDIST = <&tdist&>"
+    DISTANCE TDIST X Y Z CHAR_X CHAR_Y CHAR_Z
+    WHILE TDIST > #i50
+        MOVE_TO "<&X&>" "<&Y&>" "<&Z&>"
+        SLEEP 500
+        DISTANCE TDIST X Y Z CHAR_X CHAR_Y CHAR_Z
+        PRINT_TEXT "TDIST = <&tdist&>"
+    WEND
+RETURN VOID

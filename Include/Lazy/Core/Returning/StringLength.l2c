@@ -1,0 +1,29 @@
+
+CLASS LAZY_RETURNING_DISTANCE LAZY_RETURNING_BASEPIECE
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT
+
+      // the string
+      THIS.SET_VALUE VOID 2 #$STRING "#$"
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC _GET_RETURN 1 CALLTIME
+
+      DEFINE INT _STRING 0
+
+      THIS.DATA.#$STRING.GET_RETURN _STRING 1 CALLTIME
+
+      // --- --- ---
+
+      DEFINE INT _LENGTH "<&_STRING.LENGTH&>"
+
+   RETURN _LENGTH
+
+//-------------------------------------------------------------------------------------
+
+END_CLASS

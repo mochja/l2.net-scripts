@@ -1,0 +1,75 @@
+
+CLASS LAZY_RETURNING_STRINGCOMPARISON LAZY_RETURNING_BASEPIECE
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT
+
+      // the left value
+      THIS.SET_VALUE VOID 2 #$LEFT "#$"
+
+      // the operator. can be "==", "!=", "CONTAINS", "STARTSWITH", "ENDSWITH"
+      THIS.SET_VALUE VOID 2 #$OPERATOR #$==
+
+      // the right value
+      THIS.SET_VALUE VOID 2 #$RIGHT "#$"
+
+      // case sensitive? can be: "TRUE", "FALSE"
+      THIS.SET_VALUE VOID 2 #$CASESENSITIVE FALSE
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC _GET_RETURN 1 CALLTIME
+
+      DEFINE INT _LEFT 0
+      DEFINE INT _OPERATOR 0
+      DEFINE INT _RIGHT 0
+      DEFINE INT _CASESENSITIVE 0
+
+      THIS.DATA.#$LEFT.GET_RETURN _LEFT 1 CALLTIME
+      THIS.DATA.#$OPERATOR.GET_RETURN _OPERATOR 1 CALLTIME
+      THIS.DATA.#$RIGHT.GET_RETURN _RIGHT 1 CALLTIME
+      THIS.DATA.#$CASESENSITIVE.GET_RETURN _CASESENSITIVE 1 CALLTIME
+
+      // --- --- ---
+
+      IF (_CASESENSITIVE == FALSE)
+         _LEFT = _LEFT.TO_UPPER
+         _RIGHT = _RIGHT.TO_UPPER
+      ENDIF
+
+      SWITCH _OPERATOR
+         CASE #$==
+            IF (_LEFT == _RIGHT)
+               RETURN TRUE
+            ENDIF
+            BREAK 1
+         CASE #$!=
+            IF (_LEFT != _RIGHT)
+               RETURN TRUE
+            ENDIF
+            BREAK 1
+         CASE #$CONTAINS
+            IF ("_LEFT.CONTAINS _RIGHT" == TRUE)
+               RETURN TRUE
+            ENDIF
+            BREAK 1
+         CASE #$STARTSWITH
+            IF ("_LEFT.STARTSWITH _RIGHT" == TRUE)
+               RETURN TRUE
+            ENDIF
+            BREAK 1
+         CASE #$ENDSWITH
+            IF ("_LEFT.ENDSWITH _RIGHT" == TRUE)
+               RETURN TRUE
+            ENDIF
+            BREAK 1
+      ENDSWITCH
+
+   RETURN FALSE
+
+//-------------------------------------------------------------------------------------
+
+END_CLASS

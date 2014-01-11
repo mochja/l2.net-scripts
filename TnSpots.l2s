@@ -1,0 +1,26 @@
+// TnS potions all in one ;)
+// Server: l2tns.com
+// Autor: mochitto
+// Date: 15.6.2010
+// Special thanks for L2.NET contributors
+// rev.: 2
+PRINT_TEXT "SCRIPT STARTED!]"
+
+// Main section
+// ===============================
+THREAD MP
+
+FUNCTION MP
+	DEFINE_GLOBAL INT ASD 0
+	DO  
+		ASD = CHAR_MAX_MP
+		IF  CHAR_CUR_MP < ASD
+			USE_ITEM 728 // Mana Potion
+			SLEEP 1000
+		ENDIF
+		SLEEP 1000	
+	LOOP ONE == ONE
+RETURN VOID
+	
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT

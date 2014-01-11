@@ -1,0 +1,235 @@
+// Manor 1.6 by AdiFenix 
+//////////////////////////////////////////////////////////////////
+DEFINE_GLOBAL Arraylist SED_ID 0
+DEFINE_GLOBAL Arraylist ILO 0
+DEFINE_GLOBAL Arraylist MAN 0
+DEFINE_GLOBAL Arraylist u_id 0
+/////////////////////////////////////////////////////////////////////
+///////////////////// Manor /////////////////////////////////////////
+// 1 - gludio ///2 - dion // 3 - giran // 4 - oren // 5 -aden
+// 6 - innadril // 7 -  goddard // 8 - rune // 9 - schuttgard
+///////////////////////////////////////////////////////////////////////
+ 
+SED_ID.add #I6544
+ILO.add #I270
+MAN.add #I8 
+
+//bluecoba - rune
+SED_ID.add #I6541
+ILO.add #I1080
+MAN.add #I8 
+// - godard
+SED_ID.add #I6541
+ILO.add #I300
+MAN.add #I7 
+
+//gold coba -rune
+SED_ID.add #I6543
+ILO.add #I300
+MAN.add #I8
+// - godard
+SED_ID.add #I6543
+ILO.add #I319
+MAN.add #I7
+
+
+// red coba
+SED_ID.add #I6542
+ILO.add #I1002
+MAN.add #I8
+// - goddard
+SED_ID.add #I6542
+ILO.add #I1002
+MAN.add #I7
+
+////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////
+/////////////// Dont change anything below /////////////////////////
+////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////
+DEFINE_GLOBAL int zaeve 0
+DEFINE_GLOBAL int ok 0
+DEFINE_GLOBAL int check_last 0 
+DEFINE_GLOBAL int Gmsg 0
+Define int temp_spr1 0
+Define string Man_name "Manor Manager"
+Define int dyst_man 0
+///////////////////////
+if SED_ID.count != ILO.count
+	PRINT_TEXT " Data corrupt  ! - Script Stopped"
+	Jump_to_label koni
+else
+	if SED_ID.count != MAN.count
+		PRINT_TEXT " Data corrupt  ! - Script Stopped "
+		Jump_to_label koni
+endif
+ENDIF
+
+
+for a 0 "<&ILO.count&>" 1
+	ITEM_COUNT temp_spr1 "<&SED_ID.a&>"
+	sleep 250
+	if temp_spr1 < ILO.a
+		PRINT_TEXT "You typed too much crops to sell =  <&ILO.a&> in inv u have =  <&temp_spr1&>  - Script Stopped"
+		Jump_to_label koni
+	ENDIF
+next
+
+for a 0 "<&man.count&>" 1
+	if man.a < 1
+	 	PRINT_TEXT " manor nr ---??? - check data ! - Script Stopped"
+		jump_to_label koni
+	ENDIF
+	if man.a > 9
+		PRINT_TEXT " manor nr +++??? - check data ! - Script Stopped"
+		jump_to_label koni
+	ENDIF
+next
+
+IF target_name != Man_name
+	COMMAND "/Target <&Man_name&>"
+ENDIF
+sleep 500
+IF target_name == Man_name
+	DISTANCE dyst_man CHAR_X CHAR_Y CHAR_Z TARGET_X TARGET_Y TARGET_Z
+	if dyst_man > 150
+		PRINT_TEXT " You need to be closer to Manor manager !! - Script Stopped"
+		jump_to_label koni
+	endif
+ELSE
+	PRINT_TEXT " I dont see -  Manor manager - Script Stopped"
+	jump_to_label koni
+ENDIF
+/////////////////////////////////////////////
+define int temmm 0
+for a o "<&SED_ID.count&>" 1
+INVEN_GET_UID temmm "<&SED_ID.a&>"
+u_id.add temmm.clone
+
+next
+
+
+
+
+PRINT_TEXT "-------------------------------------------------------------------"
+PRINT_TEXT "AUTO Sell crops v1.6 EPILOGUE by AdiFenix"
+PRINT_TEXT "-------------------------------------------------------------------"
+
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKETEX&>" "<&SYSTEM_CURRENTFILE&>" Buy_fun 120
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" sysmas 98
+sleep 500
+Call prepare_1
+
+
+do
+sleep 1000
+loop zaeve < SED_ID.count
+
+
+Label koni
+
+
+END_SCRIPT
+
+
+
+FUNCTION prepare_1
+define int zm1 0
+ok = 1
+do
+	Gmsg = 0
+	NPC_DIALOG "bypass -h manor_menu_select?ask=9&state=<&SED_ID.0&>&time=0"
+	do
+		sleep 5
+	loop Gmsg == 0
+	if ok == 1
+	sleep 600
+	endif
+loop  ok != 0
+
+if SED_ID.count > 1
+sleep 600
+for i 1 "<&SED_ID.count&>" 1
+	
+	
+	check_last = 1
+	NPC_DIALOG "bypass -h manor_menu_select?ask=9&state=<&SED_ID.i&>&time=0"
+	
+		
+	do
+		 sleep 2
+	loop check_last == 1
+	sleep 600
+NEXT
+endif
+
+
+
+RETURN VOID 
+
+FUNCTION Buy_fun
+ok = 0
+Gmsg = 1
+Define int Man_ok 0
+Define int temp_seed 0
+Define int ile_man 0
+Define int temp_manor 0
+Define int ilo_sed 0
+Define int price 0
+Define int temp_uid 0
+packet.READ_BYTE null
+packet.READ_INT16 null
+packet.READ_INT32 temp_seed
+FOR b 0 "<&SED_ID.count&>" 1
+if temp_seed == SED_ID.b
+	packet.READ_INT32 ile_man 
+	IF ile_man == 0
+		PRINT_TEXT "Manor with this type of croops (<&temp_seed&>) = 0 "
+	endif
+	for a 0 "<&ile_man&>" 1
+		packet.READ_INT32 temp_manor
+		if temp_manor == man.b
+			packet.READ_INT64 ilo_sed 
+			packet.READ_INT64 price 
+			packet.READ_BYTE null
+			PRINT_TEXT " Slots available =  <&ilo_sed&> Price <&price&> ID = <&temp_seed&>"
+			IF ilo_sed < ILO.b
+				inject "D0 02 00 01 00 00 00 <&u_id.b.GET_HEX32&> <&temp_seed.GET_HEX32&> <&temp_manor.GET_HEX32&> <&ilo_sed.GET_HEX32&> 00 00 00 00"
+			ELSE
+				inject "D0 02 00 01 00 00 00 <&u_id.b.GET_HEX32&> <&temp_seed.GET_HEX32&> <&temp_manor.GET_HEX32&> <&ilo.b.GET_HEX32&> 00 00 00 00"	
+			ENDIF
+		ELSE
+			packet.READ_INT64 null
+			packet.READ_INT64 null
+			packet.READ_BYTE null
+			PRINT_TEXT "Diferent man.: <&temp_manor&> for <&temp_seed&> "
+		ENDIF
+	NEXT
+	
+
+endif
+next
+
+if check_last == 1
+check_last = 0
+endif
+zaeve = zaeve + 1
+RETURN VOID
+
+
+FUNCTION sysmas
+define int man_mani 879
+define int temp_id 0
+packet.read_byte null
+packet.read_int32 temp_id
+if temp_id == man_mani
+Gmsg = 1
+endif
+
+
+RETURN VOID

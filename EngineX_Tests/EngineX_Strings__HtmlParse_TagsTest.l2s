@@ -1,0 +1,39 @@
+
+	INCLUDE Include/EngineX.l2c
+	DEFINE_GLOBAL ENGINEX ENGINEX 0
+
+	PRINT_TEXT ""
+	PRINT_TEXT "______________________"
+
+	DEFINE STRING HTMLTEXT ""
+	HTMLTEXT = "#$<&HTMLTEXT&> <html>"
+	HTMLTEXT = "#$<&HTMLTEXT&>  <title>Tags-Test</title>"
+	HTMLTEXT = "#$<&HTMLTEXT&>  <body>"
+	HTMLTEXT = "#$<&HTMLTEXT&>   <font color=ff0000>Red</font>"
+	HTMLTEXT = "#$<&HTMLTEXT&>   <!-- COMMENT -->"
+	HTMLTEXT = "#$<&HTMLTEXT&>   <font color=ff0000>"
+	HTMLTEXT = "#$<&HTMLTEXT&>    <font color=00ff00>"
+	HTMLTEXT = "#$<&HTMLTEXT&>     Green"
+	HTMLTEXT = "#$<&HTMLTEXT&>    </font>"
+	HTMLTEXT = "#$<&HTMLTEXT&>   </font>"
+	HTMLTEXT = "#$<&HTMLTEXT&>  </body>"
+	HTMLTEXT = "#$<&HTMLTEXT&> </html>"
+
+	DEFINE ARRAYLIST HTMLTAGS 0
+	HTMLTAGS.ADD "#$HTML"
+	HTMLTAGS.ADD "#$TITLE"
+	HTMLTAGS.ADD "#$BODY"
+	HTMLTAGS.ADD "#$FONT"
+
+	DEFINE SORTEDLIST HTMLDATA 0
+	ENGINEX.STRINGS.PARSEHTML HTMLDATA 2 HTMLTEXT HTMLTAGS
+
+	DEFINE ARRAYLIST DUMPDATA 0
+	ENGINEX.LISTS.DUMP DUMPDATA 1 HTMLDATA
+	ENGINEX.FILES.WRITE_FILE VOID 3 "#$EngineX_Strings__HtmlParse_TagsTest_Dump" "#$__EOF" DUMPDATA
+	PRINT_TEXT "Dump written to: Files/EngineX_Strings__HtmlParse_TagsTest_Dump.txt"
+
+	PRINT_TEXT "______________________"
+	PRINT_TEXT ""
+
+END_SCRIPT

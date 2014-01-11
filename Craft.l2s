@@ -1,0 +1,412 @@
+//-----------------------------------------------
+// Created by: Magic
+// Version: 1.1
+// Release date: 07-08-2010
+// v1.1 - added Crafted leather | Corrected crystal S get_id | added High Grade Suede recipe
+//          
+//-----------------------------------------------
+//----------------------------------------------//
+//    PUT 1 IN THE RECS YOU WANT TO CRAFT       //
+//----------------------------------------------//
+DEFINE INT CBP                0
+DEFINE INT VOP                1
+DEFINE INT MITHRIL_ALLOY      0
+DEFINE INT COKES              0
+DEFINE INT SYNTETIC_COKES     0
+DEFINE INT SOULSHOTS_S        1
+DEFINE INT SOULSHOTS_A        0
+DEFINE INT SOULSHOTS_B        0
+DEFINE INT SOULSHOTS_C        0
+DEFINE INT SOULSHOTS_D        0
+DEFINE INT BLESSED_SS_S       0
+DEFINE INT BLESSED_SS_A       0
+DEFINE INT BLESSED_SS_B       0
+DEFINE INT BLESSED_SS_C       0
+DEFINE INT BLESSED_SS_D       0
+DEFINE INT CRAFTED_LEATHER    0
+DEFINE INT HIGH_GRADE_SUEDE   0
+//----------- DONT EDIT FROM THIS POINT ON UNLESS YOU KNOW WHAT YOUR DOING -------//
+
+
+//----------------------------------------------//
+//                 MP EACH REC CONSUMES         //
+//----------------------------------------------//
+DEFINE INT CBP_MP                10
+DEFINE INT VOP_MP                20
+DEFINE INT MITHRIL_ALLOY_MP      40
+DEFINE INT COKES_MP              10
+DEFINE INT SYNTETIC_COKES_MP     20
+DEFINE INT SOULSHOTS_S_MP        150
+DEFINE INT SOULSHOTS_A_MP        120
+DEFINE INT SOULSHOTS_B_MP        100
+DEFINE INT SOULSHOTS_C_MP        84
+DEFINE INT SOULSHOTS_D_MP        50
+DEFINE INT BLESSED_SS_S_MP       300
+DEFINE INT BLESSED_SS_A_MP       240
+DEFINE INT BLESSED_SS_B_MP       180
+DEFINE INT BLESSED_SS_C_MP       120
+DEFINE INT BLESSED_SS_D_MP       60
+DEFINE INT CRAFTED_LEATHER_MP    40
+DEFINE INT HIGH_GRADE_SUEDE_MP   20
+
+
+//----------------------------------------------//
+//          MINIMUM MATS EACH REC CONSUMES      //
+//----------------------------------------------//
+DEFINE INT CBP_ANIMALBONE_COUNT       10
+DEFINE INT VOPS_CBP_COUNT             3
+DEFINE INT VOPS_VARNISH_COUNT         3
+DEFINE INT VOPS_SOP_COUNT             1
+DEFINE INT MITHRIL_ALLOY_VOPS         1
+DEFINE INT MITHRIL_ALLOY_STEELS       2
+DEFINE INT MITHRIL_ALLOY_M_ORE        1
+DEFINE INT COKES_CHARCOAL             3
+DEFINE INT COKES_COAL                 3
+DEFINE INT SYN_COKES_COKES            3
+DEFINE INT SYN_COKES_ORI_ORES         1
+DEFINE INT SOULSHOTS_S_SOULORES       40
+DEFINE INT SOULSHOTS_S_CRYSTALS       1
+DEFINE INT SOULSHOTS_A_SOULORES       36
+DEFINE INT SOULSHOTS_A_CRYSTALS       1
+DEFINE INT SOULSHOTS_B_SOULORES       54
+DEFINE INT SOULSHOTS_B_CRYSTALS       1
+DEFINE INT SOULSHOTS_C_SOULORES       30
+DEFINE INT SOULSHOTS_C_CRYSTALS       2
+DEFINE INT SOULSHOTS_D_SOULORES       9
+DEFINE INT SOULSHOTS_D_CRYSTALS       3
+DEFINE INT BLESSED_SS_S_SPIRITORES    50
+DEFINE INT BLESSED_SS_S_CRYSTALS      2
+DEFINE INT BLESSED_SS_A_SPIRITORES    70
+DEFINE INT BLESSED_SS_A_CRYSTALS      2
+DEFINE INT BLESSED_SS_B_SPIRITORES    16
+DEFINE INT BLESSED_SS_B_CRYSTALS      2
+DEFINE INT BLESSED_SS_C_SPIRITORES    30
+DEFINE INT BLESSED_SS_C_CRYSTALS      2
+DEFINE INT BLESSED_SS_D_SPIRITORES    8
+DEFINE INT BLESSED_SS_D_CRYSTALS      2
+DEFINE INT CRAFTED_LEATHER_CORD       4
+DEFINE INT CRAFTED_LEATHER_LEATHER    4
+DEFINE INT CRAFTED_LEATHER_COAL       4
+DEFINE INT HIGH_GRADE_SUEDE_CBP       1
+DEFINE INT HIGH_GRADE_SUEDE_SUEDE     3
+
+//----------------------------------------------//
+//                COUNT VARIABLES DEFINITION    //
+//----------------------------------------------//
+DEFINE INT C_ANIMAL_BONE      0
+DEFINE INT C_CBP              0
+DEFINE INT C_VARNISH          0
+DEFINE INT C_SOP              0
+DEFINE INT C_STEEL            0
+DEFINE INT C_M_ORE            0
+DEFINE INT C_VOPS             0
+DEFINE INT C_COAL             0
+DEFINE INT C_CHARCOAL         0
+DEFINE INT C_COKES            0 
+DEFINE INT C_ORI_ORE          0
+DEFINE INT C_SOULORE          0 
+DEFINE INT C_SPIRITORE        0
+DEFINE INT C_CRYSTAL_S        0
+DEFINE INT C_CRYSTAL_A        0
+DEFINE INT C_CRYSTAL_B        0
+DEFINE INT C_CRYSTAL_C        0
+DEFINE INT C_CRYSTAL_D        0
+DEFINE INT C_LEATHER          0
+DEFINE INT C_CORD             0
+DEFINE INT C_SUEDE            0
+
+//----------------------------------------------//
+//                ID VARIABLES DEFINITION       //
+//----------------------------------------------//
+DEFINE INT ID_ANIMAL_BONE      0
+DEFINE INT ID_CBP              0
+DEFINE INT ID_VARNISH          0
+DEFINE INT ID_SOP              0
+DEFINE INT ID_STEEL            0
+DEFINE INT ID_M_ORE            0
+DEFINE INT ID_VOP              0 
+DEFINE INT ID_COAL             0 
+DEFINE INT ID_CHARCOAL         0 
+DEFINE INT ID_COKES            0 
+DEFINE INT ID_ORI_ORE          0 
+DEFINE INT ID_SOULORE          0
+DEFINE INT ID_SPIRITORE        0
+DEFINE INT ID_CRYSTAL_S        0
+DEFINE INT ID_CRYSTAL_A        0
+DEFINE INT ID_CRYSTAL_B        0
+DEFINE INT ID_CRYSTAL_C        0
+DEFINE INT ID_CRYSTAL_D        0
+DEFINE INT ID_LEATHER          0
+DEFINE INT ID_CORD             0
+DEFINE INT ID_SUEDE            0
+
+//----------------------------------------------//
+//              GET IDS BY NAME                 //
+//----------------------------------------------//
+
+ITEM_GET_ID ID_ANIMAL_BONE      "Animal Bone"
+ITEM_GET_ID ID_CBP              "Coarse Bone Powder"
+ITEM_GET_ID ID_VARNISH          "Varnish"
+ITEM_GET_ID ID_SOP              "Stone of Purity"
+ITEM_GET_ID ID_VOP              "Varnish of Purity"
+ITEM_GET_ID ID_STEEL            "Steel"
+ITEM_GET_ID ID_M_ORE            "Mithril Ore"
+ITEM_GET_ID ID_CHARCOAL         "Charcoal"
+ITEM_GET_ID ID_COAL             "Coal"
+ITEM_GET_ID ID_COKES            "Cokes"
+ITEM_GET_ID ID_ORI_ORE          "Oriharukon Ore"
+ITEM_GET_ID ID_SOULORE          "Soul Ore"
+ITEM_GET_ID ID_SPIRITORE        "Spirit Ore"
+ITEM_GET_ID ID_CRYSTAL_S        "Crystal: S Grade"
+ITEM_GET_ID ID_CRYSTAL_A        "Crystal: A-Grade"
+ITEM_GET_ID ID_CRYSTAL_B        "Crystal: B-Grade"
+ITEM_GET_ID ID_CRYSTAL_C        "Crystal: C-Grade"
+ITEM_GET_ID ID_CRYSTAL_D        "Crystal: D-Grade"
+ITEM_GET_ID ID_LEATHER          "Leather"
+ITEM_GET_ID ID_CORD             "Cord"
+ITEM_GET_ID ID_SUEDE            "Suede"
+
+WHILE ONE == ONE
+     
+     IF CBP != 0
+          IF CHAR_CUR_MP > CBP_MP
+               ITEM_COUNT C_ANIMAL_BONE "<&ID_ANIMAL_BONE&>"
+               IF C_ANIMAL_BONE >= CBP_ANIMALBONE_COUNT 
+                    PRINT_TEXT "Crafting CBP!"
+                    INJECT "B8 1F 00 00 00"
+                    SLEEP 300
+               ENDIF
+          ENDIF
+     ENDIF
+     
+     IF VOP != 0
+          IF CHAR_CUR_MP > VOP_MP
+               ITEM_COUNT C_CBP          "<&ID_CBP&>"
+               ITEM_COUNT C_VARNISH      "<&ID_VARNISH&>"
+               ITEM_COUNT C_SOP          "<&ID_SOP&>"
+               IF C_CBP >= VOPS_CBP_COUNT
+                    IF C_VARNISH >= VOPS_VARNISH_COUNT
+                         IF C_SOP >= VOPS_SOP_COUNT
+                              PRINT_TEXT "Crafting VOPs!"
+                              INJECT "B8 23 00 00 00"
+                              SLEEP 300
+                         ENDIF
+                    ENDIF               
+               ENDIF
+          ENDIF
+     ENDIF
+      
+      IF MITHRIL_ALLOY != 0
+          IF CHAR_CUR_MP > MITHRIL_ALLOY_MP
+               ITEM_COUNT C_M_ORE           "<&ID_M_ORE&>"
+               ITEM_COUNT C_STEEL           "<&ID_STEEL&>"
+               ITEM_COUNT C_VOPS            "<&ID_VOP&>"
+               IF C_M_ORE >= MITHRIL_ALLOY_M_ORE
+                    IF C_STEEL >= MITHRIL_ALLOY_STEELS
+                         IF C_VOPS >= MITHRIL_ALLOY_VOPS
+                              PRINT_TEXT "Crafting Mithril Alloy!"
+                              INJECT "B8 26 00 00 00"
+                              SLEEP 300
+                         ENDIF
+                    ENDIF               
+               ENDIF
+          ENDIF
+     ENDIF
+
+     IF CRAFTED_LEATHER != 0
+          IF CHAR_CUR_MP > CRAFTED_LEATHER_MP
+               ITEM_COUNT C_COAL           "<&ID_COAL&>"
+               ITEM_COUNT C_CORD           "<&ID_CORD&>"
+               ITEM_COUNT C_LEATHER           "<&ID_LEATHER&>"
+               IF C_COAL >= CRAFTED_LEATHER_COAL
+                    IF C_CORD >= CRAFTED_LEATHER_COAL
+                         IF C_LEATHER >= CRAFTED_LEATHER_LEATHER
+                              PRINT_TEXT "Crafting Crafted Leather!"
+                              INJECT "B8 29 00 00 00"
+                              SLEEP 300
+                         ENDIF
+                    ENDIF               
+               ENDIF
+          ENDIF
+     ENDIF
+     
+     IF COKES != 0
+          IF CHAR_CUR_MP > COKES_MP
+               ITEM_COUNT C_COAL "<&ID_COAL&>"
+               ITEM_COUNT C_CHARCOAL "<&ID_CHARCOAL&>"
+               IF C_COAL >= COKES_COAL 
+                    IF C_CHARCOAL >= COKES_CHARCOAL 
+                         PRINT_TEXT "Crafting Cokes!"
+                         INJECT "B8 1D 00 00 00"
+                         SLEEP 300
+                    ENDIF
+               ENDIF
+          ENDIF
+     ENDIF
+
+     IF HIGH_GRADE_SUEDE != 0
+          IF CHAR_CUR_MP > HIGH_GRADE_SUEDE_MP
+               ITEM_COUNT C_CBP "<&ID_CBP&>"
+               ITEM_COUNT C_SUEDE "<&ID_SUEDE&>"
+               IF C_CBP >= HIGH_GRADE_SUEDE_CBP
+                    IF C_SUEDE >= HIGH_GRADE_SUEDE_SUEDE
+                         PRINT_TEXT "Crafting High Grade Suede!"
+                         INJECT "B8 21 00 00 00"
+                         SLEEP 300
+                    ENDIF
+               ENDIF
+          ENDIF
+     ENDIF     
+
+     IF SYNTETIC_COKES != 0
+          IF CHAR_CUR_MP > SYNTETIC_COKES_MP
+               ITEM_COUNT C_COKES "<&ID_COKES&>"
+               ITEM_COUNT C_ORI_ORE "<&ID_ORI_ORE&>"
+               IF C_COKES >= SYN_COKES_COKES 
+                    IF C_ORI_ORE >= SYN_COKES_ORI_ORES 
+                         PRINT_TEXT "Crafting Syntetic Cokes!"
+                         INJECT "B8 24 00 00 00"
+                         SLEEP 300
+                    ENDIF
+               ENDIF
+          ENDIF
+     ENDIF
+
+     IF SOULSHOTS_A != 0
+          IF CHAR_CUR_MP > SOULSHOTS_A_MP
+               ITEM_COUNT C_SOULORE "<&ID_SOULORE&>"
+               ITEM_COUNT C_CRYSTAL_A "<&ID_CRYSTAL_A&>"
+               IF C_SOULORE >= SOULSHOTS_A_SOULORES 
+                    IF C_CRYSTAL_A >= SOULSHOTS_A_CRYSTALS 
+                         PRINT_TEXT "Crafting Soulshots A-Grade!"
+                         INJECT "B8 17 00 00 00"
+                         SLEEP 300
+                    ENDIF
+               ENDIF
+          ENDIF
+     ENDIF
+
+     IF SOULSHOTS_S != 0
+          IF CHAR_CUR_MP > SOULSHOTS_S_MP
+               ITEM_COUNT C_SOULORE "<&ID_SOULORE&>"
+               ITEM_COUNT C_CRYSTAL_S "<&ID_CRYSTAL_S&>"
+               IF C_SOULORE >= SOULSHOTS_S_SOULORES 
+                    IF C_CRYSTAL_S >= SOULSHOTS_S_CRYSTALS 
+                         PRINT_TEXT "Crafting Soulshots S-Grade!"
+                         INJECT "B8 18 00 00 00"
+                         SLEEP 300
+                    ENDIF
+               ENDIF
+          ENDIF
+     ENDIF
+
+     IF SOULSHOTS_B != 0
+          IF CHAR_CUR_MP > SOULSHOTS_B_MP
+               ITEM_COUNT C_SOULORE "<&ID_SOULORE&>"
+               ITEM_COUNT C_CRYSTAL_B "<&ID_CRYSTAL_B&>"
+               IF C_SOULORE >= SOULSHOTS_B_SOULORES 
+                    IF C_CRYSTAL_B >= SOULSHOTS_B_CRYSTALS 
+                         PRINT_TEXT "Crafting Soulshots B-Grade!"
+                         INJECT "B8 16 00 00 00"
+                         SLEEP 300
+                    ENDIF
+               ENDIF
+          ENDIF
+     ENDIF
+     IF SOULSHOTS_C != 0
+          IF CHAR_CUR_MP > SOULSHOTS_C_MP
+               ITEM_COUNT C_SOULORE "<&ID_SOULORE&>"
+               ITEM_COUNT C_CRYSTAL_C "<&ID_CRYSTAL_C&>"
+               IF C_SOULORE >= SOULSHOTS_C_SOULORES 
+                    IF C_CRYSTAL_C >= SOULSHOTS_C_CRYSTALS 
+                         PRINT_TEXT "Crafting Soulshots C-Grade!"
+                         INJECT "B8 15 00 00 00"
+                         SLEEP 300
+                    ENDIF
+               ENDIF
+          ENDIF
+     ENDIF
+     IF SOULSHOTS_D != 0
+          IF CHAR_CUR_MP > SOULSHOTS_D_MP
+               ITEM_COUNT C_SOULORE "<&ID_SOULORE&>"
+               ITEM_COUNT C_CRYSTAL_D "<&ID_CRYSTAL_D&>"
+               IF C_SOULORE >= SOULSHOTS_D_SOULORES 
+                    IF C_CRYSTAL_D >= SOULSHOTS_D_CRYSTALS 
+                         PRINT_TEXT "Crafting Soulshots D-Grade!"
+                         INJECT "B8 14 00 00 00"
+                         SLEEP 300
+                    ENDIF
+               ENDIF
+          ENDIF
+     ENDIF
+     IF BLESSED_SS_A != 0
+          IF CHAR_CUR_MP > BLESSED_SS_A_MP
+               ITEM_COUNT C_SPIRITORE "<&ID_SPIRITORE&>"
+               ITEM_COUNT C_CRYSTAL_A "<&ID_CRYSTAL_A&>"
+               IF C_SPIRITORE >= BLESSED_SS_A_SPIRITORES 
+                    IF C_CRYSTAL_A >= BLESSED_SS_A_CRYSTALS 
+                         PRINT_TEXT "Crafting Blessed-Soulshots A-Grade!"
+                         INJECT "B8 46 01 00 00"
+                         SLEEP 300
+                    ENDIF
+               ENDIF
+          ENDIF
+     ENDIF
+
+     IF BLESSED_SS_S != 0
+          IF CHAR_CUR_MP > BLESSED_SS_S_MP
+               ITEM_COUNT C_SPIRITORE "<&ID_SPIRITORE&>"
+               ITEM_COUNT C_CRYSTAL_S "<&ID_CRYSTAL_S&>"
+               IF C_SPIRITORE >= BLESSED_SS_S_SPIRITORES 
+                    IF C_CRYSTAL_S >= BLESSED_SS_S_CRYSTALS 
+                         PRINT_TEXT "Crafting Blessed-Soulshots S-Grade!"
+                         INJECT "B8 47 01 00 00"
+                         SLEEP 300
+                    ENDIF
+               ENDIF
+          ENDIF
+     ENDIF
+
+     IF BLESSED_SS_B != 0
+          IF CHAR_CUR_MP > BLESSED_SS_B_MP
+               ITEM_COUNT C_SPIRITORE "<&ID_SPIRITORE&>"
+               ITEM_COUNT C_CRYSTAL_B "<&ID_CRYSTAL_B&>"
+               IF C_SPIRITORE >= BLESSED_SS_B_SPIRITORES 
+                    IF C_CRYSTAL_B >= BLESSED_SS_B_CRYSTALS 
+                         PRINT_TEXT "Crafting Blessed-Soulshots B-Grade!"
+                         INJECT "B8 45 01 00 00"
+                         SLEEP 300
+                    ENDIF
+               ENDIF
+          ENDIF
+     ENDIF
+     IF BLESSED_SS_C != 0
+          IF CHAR_CUR_MP > BLESSED_SS_C_MP
+               ITEM_COUNT C_SPIRITORE "<&ID_SPIRITORE&>"
+               ITEM_COUNT C_CRYSTAL_C "<&ID_CRYSTAL_C&>"
+               IF C_SPIRITORE >= BLESSED_SS_C_SPIRITORES 
+                    IF C_CRYSTAL_C >= BLESSED_SS_C_CRYSTALS 
+                         PRINT_TEXT "Crafting Blessed-Soulshots C-Grade!"
+                         INJECT "B8 44 01 00 00"
+                         SLEEP 300
+                    ENDIF
+               ENDIF
+          ENDIF
+     ENDIF
+     IF BLESSED_SS_D != 0
+          IF CHAR_CUR_MP > BLESSED_SS_D_MP
+               ITEM_COUNT C_SPIRITORE "<&ID_SPIRITORE&>"
+               ITEM_COUNT C_CRYSTAL_D "<&ID_CRYSTAL_D&>"
+               IF C_SPIRITORE >= BLESSED_SS_D_SPIRITORES 
+                    IF C_CRYSTAL_D >= BLESSED_SS_D_CRYSTALS 
+                         PRINT_TEXT "Crafting Blessed-Soulshots D-Grade!"
+                         INJECT "B8 43 01 00 00"
+                         SLEEP 300
+                    ENDIF
+               ENDIF
+          ENDIF
+     ENDIF      
+
+     SLEEP 400
+WEND
+END_SCRIPT

@@ -1,0 +1,53 @@
+// DLIB::Packets::ReadExSetCompassZoneCode - v1.0 for Gracia +
+// by d00d [01/29/10]
+//
+// Takes an byte buffer (_bInBuffer) containing the 
+// ExSetCompassZoneCode packet and dumps the data into a ZoneInfo class object
+//
+// Requires ExSetCompassZone.l2c
+//
+// Version 1.0 - Initial Release
+
+FUNCTION DLIB::Packets::ReadExSetCompassZoneCode 1 _bInBuffer
+
+  DEFINE INT ZONE_TYPE
+  DEFINE ZoneInfo ZoneData
+  
+  IF _bInBuffer.CLASSNAME == "#$BYTEBUFFER"
+    _bInBuffer.RESET_INDEX
+    _bInBuffer.READ_BYTE NULL
+    _bInBuffer.READ_INT16 NULL
+    _bInBuffer.READ_INT32 ZONE_TYPE
+    
+    SWITCH ZONE_TYPE
+      CASE #I8
+        ZoneData.ALTERDZONE = #I1
+        BREAK 1
+      CASE #I10
+        ZoneData.SIEGEWARZONE1 = #I1
+        BREAK 1
+      CASE #I11
+        ZoneData.SIEGEWARZONE2 = #I1
+        BREAK 1
+      CASE #I12
+        ZoneData.PEACEZONE = #I1
+        BREAK 1
+      CASE #I13
+        ZoneData.SEVENSIGNSZONE = #I1
+        BREAK 1
+      CASE #I14
+        ZoneData.PVPZONE = #I1
+        BREAK 1
+      CASE #I15
+        ZoneData.GENERALZONE = #I1
+        BREAK 1
+      DEFAULT
+        PRINT_TEXT "Unknown Zone, Type = <&ZONE_TYPE&>"
+        BREAK 1
+    ENDSWITCH
+    
+  ELSE
+    PRINT_TEXT "_bInBuffer is not a ByteBuffer"
+  ENDIF
+  
+RETURN ZoneData

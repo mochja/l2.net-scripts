@@ -1,0 +1,191 @@
+// Handle RequestMagicSkillUse packets.
+
+FUNCTION Packet::RequestBypassToServer 1 _bRequestBypassToServer
+  
+  DEFINE STRING BYPASS_LINK
+  DEFINE INT BLEN
+  DEFINE INT PROCESS 0
+  DEFINE STRING OBJECT_ID
+  
+  DEFINE InterfaceBypass Control
+  
+  //LOCK AEGIS.MUTEX.NETWORK.REQUESTBYPASSTOSERVER
+    _bRequestBypassToServer.READ_BYTE NULL
+    _bRequestBypassToServer.READ_STRING BYPASS_LINK
+
+    IF "BYPASS_LINK.CONTAINS #$AEGIS"  == TRUE
+      PROCESS = TRUE
+    ENDIF
+
+    IF "BYPASS_LINK.CONTAINS #$AT_"  == TRUE
+      PROCESS = TRUE
+    ENDIF
+
+
+      IF "BYPASS_LINK.CONTAINS #$AT_" == TRUE
+        // PRINT_TEXT "BYPASS_LINK == <&BYPASS_LINK&>"
+        BLEN = BYPASS_LINK.COUNT - #I3
+        OBJECT_ID = "BYPASS_LINK.SUBSTRING #I3 BLEN"       
+        BYPASS_LINK = "BYPASS_LINK.SUBSTRING #I0 #I2"
+      ELSE
+        BYPASS_LINK = "#$bypass -h <&BYPASS_LINK&>"
+      ENDIF
+      SWITCH BYPASS_LINK
+        CASE "#$AT"
+          TARGET "<&OBJECT_ID&>"
+          BREAK 1
+        CASE Control.BYPASS_COUNTER_STAB_ON
+          "AEGIS.OPTIONS.CONFIG.#$COUNTER_STAB" = TRUE
+          CALL_EXTERN "AEGIS\functions\CounterStab.l2s" CounterStabAdmin VOID 0
+          CALL_EXTERN "AEGIS\functions\interface.l2s" IG_Window VOID 0
+          BREAK 1
+        CASE Control.BYPASS_COUNTER_STAB_OFF
+          "AEGIS.OPTIONS.CONFIG.#$COUNTER_STAB" = FALSE
+          CALL_EXTERN "AEGIS\functions\CounterStab.l2s" CounterStabAdmin VOID 0
+          CALL_EXTERN "AEGIS\functions\interface.l2s" IG_Window VOID 0
+          BREAK 1
+        CASE Control.BYPASS_ACTIVE_RIPOSTE_ON
+          "AEGIS.OPTIONS.CONFIG.#$ACTIVE_RIPOSTE" = TRUE
+          CALL_EXTERN "AEGIS\functions\ActiveRiposte.l2s" ActiveRiposteAdmin VOID 0
+          CALL_EXTERN "AEGIS\functions\interface.l2s" IG_Window VOID 0
+          BREAK 1
+        CASE Control.BYPASS_ACTIVE_RIPOSTE_OFF
+          "AEGIS.OPTIONS.CONFIG.#$ACTIVE_RIPOSTE" = FALSE
+          CALL_EXTERN "AEGIS\functions\ActiveRiposte.l2s" ActiveRiposteAdmin VOID 0
+          CALL_EXTERN "AEGIS\functions\interface.l2s" IG_Window VOID 0
+          BREAK 1
+        CASE Control.BYPASS_ACTIVE_PARRY_ON
+          "AEGIS.OPTIONS.CONFIG.#$ACTIVE_PARRY" = TRUE
+          CALL_EXTERN "AEGIS\functions\interface.l2s" IG_Window VOID 0
+          BREAK 1
+        CASE Control.BYPASS_ACTIVE_PARRY_OFF
+          "AEGIS.OPTIONS.CONFIG.#$ACTIVE_PARRY" = FALSE
+          CALL_EXTERN "AEGIS\functions\interface.l2s" IG_Window VOID 0
+          BREAK 1
+        CASE Control.BYPASS_MESSAGE_FILTER_ON
+          "AEGIS.OPTIONS.CONFIG.#$MESSAGE_FILTER" = TRUE
+          CALL_EXTERN "AEGIS\functions\MessageFilter.l2s" MessageFilterAdmin VOID 0
+          CALL_EXTERN "AEGIS\functions\interface.l2s" IG_Window VOID 0
+          BREAK 1
+        CASE Control.BYPASS_MESSAGE_FILTER_OFF
+          "AEGIS.OPTIONS.CONFIG.#$MESSAGE_FILTER" = FALSE
+          CALL_EXTERN "AEGIS\functions\MessageFilter.l2s" MessageFilterAdmin VOID 0
+          CALL_EXTERN "AEGIS\functions\interface.l2s" IG_Window VOID 0
+          BREAK 1
+        CASE Control.BYPASS_COUNTER_HIDE_ON
+          "AEGIS.OPTIONS.CONFIG.#$COUNTER_HIDE" = TRUE
+          CALL_EXTERN "AEGIS\functions\CounterHide.l2s" CounterHideAdmin VOID 0
+          CALL_EXTERN "AEGIS\functions\interface.l2s" IG_Window VOID 0
+          BREAK 1
+        CASE Control.BYPASS_COUNTER_HIDE_OFF
+          "AEGIS.OPTIONS.CONFIG.#$COUNTER_HIDE" = FALSE
+          CALL_EXTERN "AEGIS\functions\CounterHide.l2s" CounterHideAdmin VOID 0
+          CALL_EXTERN "AEGIS\functions\interface.l2s" IG_Window VOID 0
+          BREAK 1
+        CASE Control.BYPASS_TARGET_TRACKING_ON
+          "AEGIS.OPTIONS.CONFIG.#$TARGET_TRACKING" = TRUE
+          CALL_EXTERN "AEGIS\functions\TargetingPerception.l2s" TargetPerceptionAdmin VOID 0
+          CALL_EXTERN "AEGIS\functions\interface.l2s" IG_Window VOID 0
+          BREAK 1
+        CASE Control.BYPASS_TARGET_TRACKING_OFF
+          "AEGIS.OPTIONS.CONFIG.#$TARGET_TRACKING" = FALSE
+          CALL_EXTERN "AEGIS\functions\TargetingPerception.l2s" TargetPerceptionAdmin VOID 0
+          CALL_EXTERN "AEGIS\functions\interface.l2s" IG_Window VOID 0
+          BREAK 1
+        CASE Control.BYPASS_PLAYER_LIST_ON
+          "AEGIS.OPTIONS.CONFIG.#$PLAYER_LIST" = TRUE
+          CALL_EXTERN "AEGIS\functions\interface.l2s" IG_Playerlist_THREAD VOID 0
+          BREAK 1
+        CASE Control.BYPASS_PLAYER_LIST_OFF
+          "AEGIS.OPTIONS.CONFIG.#$PLAYER_LIST" = FALSE
+          CALL_EXTERN "AEGIS\functions\TargetingPerception.l2s" TargetPerceptionAdmin VOID 0
+          CALL_EXTERN "AEGIS\functions\interface.l2s" IG_PlayerList_OFF VOID 0
+          BREAK 1
+        CASE Control.BYPASS_SHOW_ONLY_CLAN
+          "AEGIS.OPTIONS.TEMP.#$UI.#$CURRENT_MODE" = #I1
+	  BREAK 1
+        CASE Control.BYPASS_SHOW_ONLY_NEUT
+	  "AEGIS.OPTIONS.TEMP.#$UI.#$CURRENT_MODE" = #I2
+	  BREAK 1
+        CASE Control.BYPASS_SHOW_ONLY_2WAY
+	  "AEGIS.OPTIONS.TEMP.#$UI.#$CURRENT_MODE" = #I3
+	  BREAK 1
+        CASE Control.BYPASS_SHOW_ONLY_1WAY
+	  "AEGIS.OPTIONS.TEMP.#$UI.#$CURRENT_MODE" = #I4
+	  BREAK 1
+        CASE Control.BYPASS_PLAYER_LIST_FREEZE
+          AEGIS.OPTIONS.TEMP.#$UI.#$FREEZE_LIST = TRUE
+          PRINT_TEXT "Freezing the player list"
+	  BREAK 1
+        CASE Control.BYPASS_PLAYER_LIST_UNFREEZE
+          AEGIS.OPTIONS.TEMP.#$UI.#$FREEZE_LIST = FALSE
+          PRINT_TEXT "Unfreezing the player list"	  
+	  BREAK 1
+        CASE Control.BYPASS_HOLD_TARGET_ON
+          "AEGIS.OPTIONS.CONFIG.#$HOLD_TARGET" = TRUE
+          CALL_EXTERN "AEGIS\functions\HoldTarget.l2s" HoldTargetAdmin VOID 0
+          CALL_EXTERN "AEGIS\functions\interface.l2s" IG_Window VOID 0
+          BREAK 1
+        CASE Control.BYPASS_HOLD_TARGET_OFF
+          "AEGIS.OPTIONS.CONFIG.#$HOLD_TARGET" = FALSE
+          CALL_EXTERN "AEGIS\functions\HoldTarget.l2s" HoldTargetAdmin VOID 0
+          CALL_EXTERN "AEGIS\functions\interface.l2s" IG_Window VOID 0
+          BREAK 1
+        CASE Control.BYPASS_COUNTER_DISARM_ON
+          "AEGIS.OPTIONS.CONFIG.#$COUNTER_DISARM" = TRUE
+          CALL_EXTERN "AEGIS\functions\CounterDisarm.l2s" CounterDisarmAdmin VOID 0
+          CALL_EXTERN "AEGIS\functions\interface.l2s" IG_Window VOID 0
+          BREAK 1
+        CASE Control.BYPASS_COUNTER_DISARM_OFF
+          "AEGIS.OPTIONS.CONFIG.#$COUNTER_DISARM" = FALSE
+          CALL_EXTERN "AEGIS\functions\CounterDisarm.l2s" CounterDisarmAdmin VOID 0
+          CALL_EXTERN "AEGIS\functions\interface.l2s" IG_Window VOID 0
+          BREAK 1
+        CASE Control.BYPASS_SMART_SKILLS_ON
+          "AEGIS.OPTIONS.CONFIG.#$SMART_SKILLS" = TRUE
+          CALL_EXTERN "AEGIS\functions\SmartSkills.l2s" SmartSkillsAdmin VOID 0
+          CALL_EXTERN "AEGIS\functions\interface.l2s" IG_Window VOID 0
+          BREAK 1
+        CASE Control.BYPASS_SMART_SKILLS_OFF
+          "AEGIS.OPTIONS.CONFIG.#$SMART_SKILLS" = FALSE
+          CALL_EXTERN "AEGIS\functions\SmartSkills.l2s" SmartSkillsAdmin VOID 0
+          CALL_EXTERN "AEGIS\functions\interface.l2s" IG_Window VOID 0
+          BREAK 1
+        CASE Control.BYPASS_AUTO_DISPEL_ON
+          "AEGIS.OPTIONS.CONFIG.#$AUTO_DISPEL" = TRUE
+          CALL_EXTERN "AEGIS\functions\AutoDispel.l2s" AutoDispelAdmin VOID 0
+          CALL_EXTERN "AEGIS\functions\interface.l2s" IG_Window VOID 0
+          BREAK 1
+        CASE Control.BYPASS_AUTO_DISPEL_OFF
+          "AEGIS.OPTIONS.CONFIG.#$AUTO_DISPEL" = FALSE
+          CALL_EXTERN "AEGIS\functions\AutoDispel.l2s" AutoDispelAdmin VOID 0
+          CALL_EXTERN "AEGIS\functions\interface.l2s" IG_Window VOID 0
+          BREAK 1
+        CASE Control.BYPASS_BUFF_PROTECT_ON
+          "AEGIS.OPTIONS.CONFIG.#$BUFF_PROTECT" = TRUE
+          CALL_EXTERN "AEGIS\functions\BuffProtect.l2s" BuffProtectAdmin VOID 0
+          CALL_EXTERN "AEGIS\functions\interface.l2s" IG_Window VOID 0
+          BREAK 1
+        CASE Control.BYPASS_BUFF_PROTECT_OFF
+          "AEGIS.OPTIONS.CONFIG.#$SMART_SKILLS" = FALSE
+          CALL_EXTERN "AEGIS\functions\BuffProtect.l2s" BuffProtectAdmin VOID 0
+          CALL_EXTERN "AEGIS\functions\interface.l2s" IG_Window VOID 0
+          BREAK 1
+        CASE Control.BYPASS_SKILL_RECON_ON
+          "AEGIS.OPTIONS.CONFIG.#$SKILL_RECON" = TRUE
+          CALL_EXTERN "AEGIS\functions\SkillRecon.l2s" SkillReconAdmin VOID 0
+          CALL_EXTERN "AEGIS\functions\interface.l2s" IG_Window VOID 0
+          BREAK 1
+        CASE Control.BYPASS_SKILL_RECON_OFF
+          "AEGIS.OPTIONS.CONFIG.#$SKILL_RECON" = FALSE
+          CALL_EXTERN "AEGIS\functions\SkillRecon.l2s" SkillReconAdmin VOID 0
+          CALL_EXTERN "AEGIS\functions\interface.l2s" IG_Window VOID 0
+          BREAK 1            
+        DEFAULT
+          // PRINT_TEXT "Passed unmatched <&BYPASS_LINK&> to server"
+          INJECTBB _bRequestBypassToServer
+          BREAK 1
+      ENDSWITCH
+
+  //UNLOCK AEGIS.MUTEX.NETWORK.REQUESTBYPASSTOSERVER
+RETURN VOID

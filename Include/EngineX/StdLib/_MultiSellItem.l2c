@@ -1,0 +1,26 @@
+
+//-------------------------------------------------------------------------------------
+CLASS MULTISELLITEM NULL
+//-------------------------------------------------------------------------------------
+
+   VAR_START
+		PUBLIC INT ITEM_ID 0
+		PUBLIC INT BODYPART 0
+		PUBLIC INT TYPE2 0
+		PUBLIC INT ITEM_COUNT 0
+		PUBLIC INT ENCHANT_LVL 0
+		PUBLIC INT AUGMENT_ID 0
+		PUBLIC INT MANA 0
+		PUBLIC INT ELEMENT_ID 0
+		PUBLIC INT ELEMENT_VAL 0
+		PUBLIC INT FIRE_VAL 0
+		PUBLIC INT WATER_VAL 0
+		PUBLIC INT WIND_VAL 0
+		PUBLIC INT EARTH_VAL 0
+		PUBLIC INT HOLY_VAL 0
+		PUBLIC INT DARK_VAL 0
+   VAR_END
+
+//-------------------------------------------------------------------------------------
+END_CLASS
+//-------------------------------------------------------------------------------------

@@ -1,0 +1,52 @@
+// Handle AbnormalStatusUpdate packets.
+
+FUNCTION Packet::ShortBuffStatusUpdate 1 _bShortBuffStatusUpdate
+
+  DEFINE SORTEDLIST ShortBuffStatusUpdate_SL 0
+  DEFINE INT _iTime
+  DEFINE INT _iDelta
+  DEFINE INT _iTmp
+  
+  CALL_EXTERN "DLIB\Packets\ReadShortBuffStatusUpdate.l2s" DLIB::Packets::ReadShortBuffStatusUpdate ShortBuffStatusUpdate_SL 1 _bShortBuffStatusUpdate
+  
+  IF ShortBuffStatusUpdate_SL.COUNT == #I0
+  
+    LOCK AEGIS.MUTEX.NETWORK.SHORTBUFFSTATUSUPDATE
+      AEGIS.EFFECTTRACKING.SHORTEFFECTS.CLEAR
+    UNLOCK AEGIS.MUTEX.NETWORK.SHORTBUFFSTATUSUPDATE
+  ELSE
+    LOCK AEGIS.MUTEX.NETWORK.SHORTBUFFSTATUSUPDATE
+      FOREACH Object ShortBuffStatusUpdate ShortBuffStatusUpdate_SL
+        _iTmp = "ShortBuffStatusUpdate_SL.GET_KEY OBJECT"
+
+        IF "AEGIS.EFFECTTRACKING.SHORTEFFECTS.CONTAINS_KEY <&_iTmp&>" == TRUE
+          GET_TIME _iTime
+          _iDelta = "ShortBuffStatusUpdate_SL.#$<&_iTmp&>.EFFECT_DURATION" * #I10000000
+          _iTime = _iTime + _iDelta
+          IF _iTime >= "AEGIS.EFFECTTRACKING.SHORTEFFECTS.#$<&_iTmp&>.AGE"
+            _iDelta = _iTime - "AEGIS.EFFECTTRACKING.SHORTEFFECTS.#$<&_iTmp&>.AGE"
+            _iDelta = _iDelta / #I10000000
+            "AEGIS.EFFECTTRACKING.SHORTEFFECTS.#$<&_iTmp&>.AGE" = _iTime
+            "AEGIS.EFFECTTRACKING.SHORTEFFECTS.#$<&_iTmp&>.EFFECT_LEVEL" = "ShortBuffStatusUpdate_SL.#$<&_iTmp&>.EFFECT_LEVEL"
+            "AEGIS.EFFECTTRACKING.SHORTEFFECTS.#$<&_iTmp&>.EFFECT_DURATION" = "ShortBuffStatusUpdate_SL.#$<&_iTmp&>.EFFECT_DURATION"
+          ENDIF
+        ELSE
+          DEFINE ShortBuffStatusUpdate EFFECT 0 
+          GET_TIME EFFECT.AGE
+          
+          EFFECT.IS_DIRTY = #I0
+          EFFECT.EFFECT_ID = "ShortBuffStatusUpdate_SL.#$<&_iTmp&>.EFFECT_ID"
+          EFFECT.EFFECT_LEVEL = "ShortBuffStatusUpdate_SL.#$<&_iTmp&>.EFFECT_LEVEL"
+          EFFECT.EFFECT_DURATION = "ShortBuffStatusUpdate_SL.#$<&_iTmp&>.EFFECT_DURATION"
+          
+          _iTime = EFFECT.EFFECT_DURATION * #I10000000
+          
+          EFFECT.AGE = EFFECT.AGE + _iTime
+          AEGIS.EFFECTTRACKING.SHORTEFFECTS.ADD EFFECT "<&ShortBuffStatusUpdate_SL.#$<&_iTmp&>.EFFECT_ID&>"
+          DELETE EFFECT
+        ENDIF
+      NEXTEACH
+    UNLOCK AEGIS.MUTEX.NETWORK.SHORTBUFFSTATUSUPDATE
+  ENDIF
+  
+RETURN VOID

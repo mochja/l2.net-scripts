@@ -1,0 +1,25 @@
+// DLIB::Packets::WriteSkeleton - v1.0 for Gracia 2.3
+// by d00d [09/29/09]
+//
+// Creates a <skeleton> packet based on a sorted list
+// template of values.
+
+// Version 1.0 - Initial Release
+
+FUNCTION DLIB::Packets::Write<skeleton> 1 _o<skeleton>
+
+  DEFINE BYTEBUFFER _bOutBuffer 1024
+
+  IF _oCharInfo.CLASSNAME == "#$SORTEDLIST"
+  
+    _bOutBuffer.WRITE_BYTE #I<skeleton> // CharInfo Packet Integer
+    _bOutBuffer.WRITE_INT32 "_<skeleton>.#$<skeleton>"
+    
+    _bOutBuffer.TRIM_TO_INDEX
+    _bOutBuffer.RESET_INDEX
+    
+  ELSE
+    PRINT_TEXT "_bOutBuffer is not a Sorted List"
+  ENDIF
+
+RETURN _bOutBuffer

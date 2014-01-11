@@ -1,0 +1,5 @@
+//-------------------------------------------------------
+//     classkey       classname             classfile
+//-------------------------------------------------------
+       FASTCAST       LAZY_FASTCAST        Include/Lazy/Custom/FastCast.l2c
+__EOF

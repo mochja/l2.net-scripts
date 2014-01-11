@@ -1,0 +1,13 @@
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" cancel_trade 112
+
+PRINT_TEXT "waiting for trade invites..."
+SLEEP 700000000
+PRINT_TEXT "end script"
+END_SCRIPT
+
+FUNCTION cancel_trade
+PRINT_TEXT "received trade invite... sleeping 2 seconds"
+SLEEP 2000
+PRINT_TEXT "canceling trade invite"
+INJECT "55 00 00 00 00"
+RETURN VOID

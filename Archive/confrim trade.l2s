@@ -1,0 +1,4 @@
+PRINT_TEXT "Confrim trade"
+inject "1C 01 00 00 00 "
+END_SCRIPT
+

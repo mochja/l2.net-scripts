@@ -1,0 +1,40 @@
+// DLIB::Packets::WritePetStatusUpdate - v1.0 for Gracia 2.3
+// by d00d [09/29/09]
+//
+// Creates a PetStatusUpdate packet based on a sorted list
+// template of values.
+
+// Version 1.0 - Initial Release
+// Version 1.1 - Typo fix for XP_TNL (thx to l2netabuser)
+
+FUNCTION DLIB::Packets::WritePetStatusUpdate 1 _oPetStatusUpdate
+
+  DEFINE BYTEBUFFER _bOutBuffer 1024
+
+  IF _oCharInfo.CLASSNAME == "#$SORTEDLIST"
+  
+    _bOutBuffer.WRITE_BYTE #I182 // CharInfo Packet Integer
+    _bOutBuffer.WRITE_INT32 "_oPetStatusUpdate.#$SUMMON_TYPE"
+    _bOutBuffer.WRITE_INT32 "_oPetStatusUpdate.#$X"
+    _bOutBuffer.WRITE_INT32 "_oPetStatusUpdate.#$Y"
+    _bOutBuffer.WRITE_INT32 "_oPetStatusUpdate.#$Z"
+    _bOutBuffer.WRITE_STRING "_oPetStatusUpdate.#$VISIBLE_NAME"
+    _bOutBuffer.WRITE_INT32 "_oPetStatusUpdate.#$CUR_FOOD"
+    _bOutBuffer.WRITE_INT32 "_oPetStatusUpdate.#$MAX_FOOD"
+    _bOutBuffer.WRITE_INT32 "_oPetStatusUpdate.#$CUR_HP"
+    _bOutBuffer.WRITE_INT32 "_oPetStatusUpdate.#$MAX_HP"
+    _bOutBuffer.WRITE_INT32 "_oPetStatusUpdate.#$CUR_MP"
+    _bOutBuffer.WRITE_INT32 "_oPetStatusUpdate.#$MAX_MP"
+    _bOutBuffer.WRITE_INT32 "_oPetStatusUpdate.#$LEVEL"
+    _bOutBuffer.WRITE_INT64 "_oPetStatusUpdate.#$XP"
+    _bOutBuffer.WRITE_INT64 "_oPetStatusUpdate.#$XP_ITL"
+    _bOutBuffer.WRITE_INT64 "_oPetStatusUpdate.#$XP_TNL"
+    
+    _bOutBuffer.TRIM_TO_INDEX
+    _bOutBuffer.RESET_INDEX
+    
+  ELSE
+    PRINT_TEXT "_bOutBuffer is not a Sorted List"
+  ENDIF
+
+RETURN _bOutBuffer

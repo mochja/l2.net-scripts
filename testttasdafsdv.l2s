@@ -1,0 +1,28 @@
+// Kratky popis
+// Server: 
+// Autor: mochitto
+// Date: 
+// Special thanks for L2.NET contributors
+// rev.: 0
+PRINT_TEXT "SCRIPT STARTED!]"
+                      INCLUDE "StdLib/Player.l2c"
+// Main section
+// ===============================
+//while one == one
+define arraylist pl
+while one == one
+GET_PLAYERS pl
+ FOREACH obj Player pl
+  // IF pl.obj.NAME == "#$Gee"
+     IF IS_INVISIBLE pl.obj.ID
+       PRINT_TEXT "<&pl.obj.NAME&> is invisible"
+    // ENDIF
+   ENDIF
+   //sleep 25
+ NEXTEACH
+ SLEEP 1000
+ wend
+//WEND
+	
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT

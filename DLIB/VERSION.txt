@@ -1,0 +1,222 @@
+Beta Release 3.4 [10/14/10]
+- Preliminary support for CT2-Freya
+- Updated DLIB::Packets::ReadCharInfo
+- Updated DLIB::Packets::WriteCharInfo
+Beta Release 3.3 [06/20/10]
+- Added DLIB::Utility::GetIcon 1 _iSkillID
+
+Beta Release 3.2 [06/06/10]
+- Fixed DLIB::Packets::ReadItemList
+- Added EFFECT_ORDER to AbnormalStatusUpdate for processing order of buffs/debuffs.
+- Fixed Read/WriteNpcInfo.l2s
+- updates Read/Write Npc/CharInfo.l2s (twar info/disguses)
+- typo fix to ReadExSetCompassZoneCode.l2s
+
+
+Beta RElease 3.1 [05/22/10]
+- DLIB::Packets::ReadRealationChanged 1 _bInBuffer
+- Added  RealationChanged.l2c
+- Added xp_per_hour.l2s
+- Added CloakWalkerLoader.l2s
+
+Beta RElease 3.0 [05/15/10]
+- Further Bugfixes to DLIB::Packets::WriteSkillList
+
+Beta Release 2.9 [05/13/10]
+- Bugfixes to DLIB::Packets:ReadSkillList / WriteSkillList
+
+Beta Release 2.8 [05/09/10]
+Updates to (changed int32 to uint32 for abnormal_Vfx and extended_vfx):
+- DLIB::Packets::ReadCharInfo
+- DLIB::Packets::ReadUserInfo
+- DLIB::Packets::ReadNpcInfo
+- DLIB::Packets::WriteCharInfo
+- DLIB::Packets::WriteUserInfo
+- DLIB::Packets::WriteNpcInfo
+- Fixed vfx_test.l2s, also added extended_vfx
+
+Beta Release 2.7 [05/06/10]
+Updates to:
+- DLIB::Packets::ReadMagicSkillUse
+- DLIB::Packets::WriteMagicSkillUse
+
+Beta Release 2.6 [04/28/10]
+Bugfixes to:
+- DLIB::Packets::ReadTargetSelected
+- DLIB::Packets::ReadTargetUnselected
+
+Beta Release 2.5 [04/27/10]
+- DLIB::Packets::ReadTargetSelected 1 _bInBuffer
+- DLIB::Packets::ReadTargetUnselected 1 _bInbuffer
+
+Beta Release 2.4 [04/27/10]
+- Bugfix an duplicate DEFINE in DLIB/Packets/ReadCharInfo.l2s
+- Updated DLIB::Packets::ReadUserInfo
+  + Added CLOAK_STATUS
+  + Added MAX_TALISMAN_COUNT
+
+Beta Release 2.3 [03/11/10]
+- Updated the following functions to include EXTENDED_VFX
+  DLIB::Packets::ReadUserInfo
+  DLIB::Packets::ReadNpcInfo
+  DLIB::Packets::ReadCharInfo
+  DLIB::Packets::WriteUserInfo
+  DLIB::Packets::WriteNpcInfo
+  DLIB::Packets::WriteCharInfo
+
+  EXTENDED_VFX is where visual effects like Stigma of Shilen, Invincibility and a few other
+  effects get placed.
+
+Beta Release 2.2 [01/29/10]
+- Rewrote DLIB::Packets::ReadStatusUpdate
+  Version 2.0 - Redesign, dropped class implementation
+              - Only populate base sorted list with values that are updated
+              - Made Key names compliant with DLIB::Packets::ReadUserInfo
+- DLIB::Packets::ReadExSetCompassZone 1 _bInBuffer
+- Added Packets/Classes/ExSetCompassZone.l2c
+
+Beta Release 2.2 [01/25/10]
+- DLIB::Packets::ReadStatusUpdate 1 _bInBuffer
+- Added Packets/Classes/StatusUpdate.l2c
+- Fixed DLIB::Packets::ReadUserInfo
+
+Beta Release 2.1 [01/06/10]
+- Fixed DLIB::Packets::ReadClanRoster
+
+Beta Release 2.0 [12/30/09]
+- Gracia Plus Support
+- Updated ItemList.l2c
+- Updated DLIB::Packets::ReadItemList
+- Updated DLIB::Packets::WriteItemList
+
+Beta Release 1.6b [10/13/09]
+- Bugfix DLIB::Packets::ReadPetStatusUpdate (thx to l2netabuser)
+- Bugfix DLIB::Packets::WritePetStatusUpdate
+
+Beta Release 1.6a [09/29/09]
+- DLIB::Packets::ReadPartyMemberPosition 1 _bInBuffer
+- DLIB::Packets::WritePartyMemberPosition 1 _oPartyMemberPosition
+- DLIB::Packets::ReadPetInfo 1 _bInBuffer
+- DLIB::Packets::WritePetInfo 1 _oPetInfo
+- DLIB::Packets::ReadExPartyPetWindowUpdate 1 _bInBuffer
+- DLIB::Packets::ReadPetStatusUpdate 1 _bInBuffer
+- DLIB::Packets::WritePetStatusUpdate 1 _oPetStatusUpdate
+- Community Addition by Jozeph DLIB::Packets::ReadPartySmallWindowUpdate 1 _bInBuffer
+- Added Module::DLIB::CloakWalker, cleanses l2walkers gmlist and move packet errors.
+- Misc Bugfixes
+
+Beta Release 1.5a [09/26/09]
+- Fixes to DLIB::Perception::Area (thanks to alp for spotting the typo)
+- Changed all Read packet functions to conform to 1 argument
+  DLIB::Packets::ReadWhateverPacket RETVAR 1 _bInBuffer
+
+Beta Release 1.4a [09/23/09]
+- Fixes and updates for DLIB::Packets::ReadAttack
+- Fixes to DLIB::Packets::ReadMagicSkillUse (thanks to jozeph's for noticing the typos!)
+
+Beta Release 1.3a [09/03/09]
+- Fixes and updates for DLIB::Packets::ReadNpcInfo
+- Fixes and updates for DLIB::Packets::WriteNpcInfo
+- Added Tests\SpeedyLoad2.l2s, this rewrites all NpcInfo packets to redraw all npc's
+  as a Test Dummy.
+  
+Beta Release 1.2a [09/03/09]
+- Fixes and updates for: DLIB::Utility::GetClassName
+- Fixes and updates for: DLIB::Packets::ReadCharInfo
+- Fixes and updates for: DLIB::Packets::WriteCharInfo
+- Added Tests\SpeedyLoad.l2s, this rewrites all CharInfo packets to redraw all players
+  as a female dwarf with the same face/hairstyle.  The targets title is rewritten with
+  the players actual class so you can tell who is what.  I can load all of giran in about
+  3s with this script running before I log in :)
+  
+Beta Release 1.0a [08/24/09]
+- Added the Modules/ folder.  This is meant to hold bolt on code for "even easier"
+  inclusion into scripts.
+- Added DLIB\Modules\InitModule.l2s
+- Added DLIB\Modules\Logout_XP.l2s
+- Added DLIB\Modules\Classes\XP_Watchdog.l2c
+- Added DLIB\Modules\Classes\DlibModule.l2c
+- Added Tests\test_logout_module.l2s example script.
+
+Beta Release 0.9c [08/17/09]
+- Fixed some retardation I had with DLIB::Packets::ReadSystemMessage so it works now!
+
+Beta release 0.9b [08/15/09]
+- Rewrite DLIB::Packets::ReadSystemMessage to handle multi part system messages.
+- Added DLIB\Packets\Classes\SystemMessage.l2c
+
+Beta release 0.9 [08/15/09]
+- DLIB::Packets::ReadSystemMessage 1 _bInBuffer
+- DLIB::Packets::WriteSystemMessage 1 _oSystemMessage
+- renamed Utility::WriteSystemMessage to DLIB::Packets::WriteSystemMessage2
+
+Beta release 0.8 [06/24/09]
+- DLIB::Packets::ReadAttack 1 _bInBuffer
+- DLIB::Packets::ReadMoveToLocation 1 _bInBuffer
+- Also added since you cant read sbsu packets with the asu template!
+- DLIB::Packets::ReadShortBuffStatusUpdate 1 _bInBuffer
+- DLIB\Packets\Classes\multiattack.l2c
+- Misc Fixes for other packet types.
+
+Beta release 0.7 [06/18/09]
+- DLIB::Packets::ReadAbnormalStatusUpdate 1 _bInBuffer
+- DLIB::Packets::ReadPartySpelled 1 _bInBuffer
+- DLIB\Packets\Classes\AbnormalStatusUpdate.l2c
+- DLIB\Packets\Classes\PartySpelled.l2c
+- ShortBuffStatusUpdate can be processed via ReadAbnormalStatusUpdate
+
+Beta release 0.6b [06/16/09]
+- Fixes for UserInfo/CharInfo/ItemList/NpcInfo Read/Write functions.
+- Added Tests folder with example scripts.
+- Reprototyped ReadSkillList and updated for Gracia 2.3
+
+Beta release 0.6a [06/06/09]
+- Primary CT2-Gracia Support for UserInfo/CharInfo/ItemList/NpcInfo
+    Sorted List keys and related class files have changed, be sure to update your scripts.
+    Calling function parameters changed to 1 _bInBuffer
+- DLIB\Packets\Tests\vfx_test.l2s
+- DLIB\Packets\Tests\DumpAugment.l2s
+- DLIB::Utility::ByteCheck 2 _bExemplar _bSubject
+
+Beta release 0.5 [02/22/09]
+- DLIB::Packets::ReadClanRoster 2 _bInBuffer _oSortedList
+- DLIB\Packets\Classes\ClanRoster.l2c
+- DLIB\Packets\Classes\ClanMember.l2c
+
+Beta release 0.4 [02/19/09]
+- DLIB::Packets::ReadWarehouse 2 _bInBuffer _oSortedList
+- Updated Packets\Classes\ItemList.l2c (new defintions and extended attributes)
+    This release breaks compatibility with v0.3 and earlier, please update your
+    scripts.
+- Rewrote DLIB::Packets::ReadItemList (compatibility with ItemList.l2c v1.2 and general clieanup)
+- Rewrote DLIB::Packets::WriteItemList (compatibility with ItemList.l2c v1.2 and general clieanup)
+
+Beta relase 0.3 [02/03/09]
+Functions Provided:
+- DLIB::Perception::Area 3 _iType _iOrigin _iRadius
+- DLIB::Perception::IsPartyID 1 _iObjectID
+
+Beta Release 0.2 [01/28/09]
+- Fixed GetWindup to be v358+ compliant.
+
+Beta Release 0.1 [01/28/09]
+Functions Provided:
+- DLIB::Packets::ReadCharInfo 2 _bInBuffer _oSortedList
+- DLIB::Packets::ReadUserInfo 2 _bInBuffer _oSortedList
+- DLIB::Packets::ReadNpcInfo 2 _bInBuffer _oSortedList
+- DLIB::Packets::ReadSkillList 2 _bInBuffer _oSortedList
+- DLIB::Packets::ReadItemList 2 _bInBuffer _oSortedList
+- DLIB::Statistics::UserInfo 2 _sUI_Name _sKey
+- DLIB::Utility::GetClassName 1 _iClassID
+- DLIB::Utility::GetVfxName 1 _iVFX
+- DLIB::Utility::GetWindup 2 _iType _iWindUp
+- DLIB::Utility::WriteSystemMessage 1 _sMsgBuffer
+- DLIB::Wrapper::GetPlayers 1 _oDataObject
+- DLIB::Wrapper::GetParty 1 _oDataObject
+- Byte Buffer Tools (bbtools.l2s)
+
+Class Files Provided:
+- Packets\Classes\ItemList.l2c
+- Packets\Classes\SkillList.l2c
+- Packets\Classes\ClanRoster.l2c
+- Packets\Classes\ClanMember.l2c

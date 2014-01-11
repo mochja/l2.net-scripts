@@ -1,0 +1,40 @@
+// DLIB::Packets::WriteMagicSkillLaunched v1.0 for Gracia 2.2
+// by d00d [12/08/08]
+//
+// Takes an byte buffer (_bInBuffer) containing the 
+// UserInfo packet and dumps the data into a sorted list
+// (_oMagicSkilluse).
+
+// Version 1.0 - Initial Release
+// Version 1.1 - Updated for v358
+
+FUNCTION DLIB::Packets::WriteMagicSkillLaunched 1 _oMagicSkillLaunched
+
+  DEFINE BYTEBUFFER _bOutBuffer 1024
+  
+  IF _oMagicSkillLaunched.CLASSNAME == "#$SORTEDLIST"
+    
+    _bOutBuffer.WRITE_BYTE #I84
+    _bOutBuffer.WRITE_INT32 "_oMagicSkillLaunched.#$SOURCE_ID"
+    _bOutBuffer.WRITE_INT32 "_oMagicSkillLaunched.#$SKILL_ID"
+    _bOutBuffer.WRITE_INT32 "_oMagicSkillLaunched.#$SKILL_LEVEL"
+    _bOutBuffer.WRITE_INT32 "_oMagicSkillLaunched.#$TARGET_COUNT"
+    
+    IF "_oMagicSkillLaunched.#$TARGET_COUNT" == ZERO
+      _bOutBuffer.WRITE_INT32 "_oMagicSkillLaunched.#$TARGET_ID"
+    ELSE
+      IF "_oMagicSkillLaunched.#$TARGET_ID.CLASSNAME" == "#$ARRAYLIST"
+        FOREACH T_ID INT "_oMagicSkillLaunched.#$TARGET_ID"
+          _bOutBuffer.WRITE_INT32 "_oMagicSkillLaunched.#$TARGET_ID.T_ID"
+        NEXTEACH
+      ELSE
+        PRINT_TEXT "For multiple target ID's TARGET_ID must be an ARRAYLIST"
+      ENDIF
+    ENDIF
+    
+    _bOutBuffer.TRIM_TO_INDEX
+    _bOutBuffer.RESET_INDEX
+    
+  ENDIF
+  
+RETURN _bOutBuffer

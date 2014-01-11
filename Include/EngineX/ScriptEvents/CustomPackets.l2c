@@ -1,0 +1,115 @@
+
+//-------------------------------------------------------------------------------------
+CLASS ENGINEX_SCRIPTEVENTS_CUSTOMPACKETS NULL
+//-------------------------------------------------------------------------------------
+
+   VAR_START
+
+		PUBLIC SORTEDLIST PIPELIST 0
+      PUBLIC ARRAYLIST PIPEQUEUE 0
+
+		PUBLIC SORTEDLIST READFILES 0
+
+   VAR_END
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT
+      THIS.SET_FILE VOID 2 "0" "#$Include/EngineX/ScriptEvents/CustomPackets/0_Chat.l2f"
+      THREAD PIPELOOP
+      SLEEP 1
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC SET_FILE 2 PID FILEPATH
+      THIS.READFILES.REMOVE "<&PID&>"
+      THIS.READFILES.ADD "#$<&FILEPATH&>" "<&PID&>"
+      SLEEP 1
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC ADD_PIPE 3 PID FUNCTION FILE
+
+      IF ( THIS.READFILES.CONTAINS_KEY "<&PID&>" == FALSE )
+         RETURN VOID
+      ENDIF
+
+      DEFINE STRING PID2STR "<&PID&>"
+      IF ( "THIS.PIPELIST.CONTAINS_KEY <&PID&>" == FALSE )
+         DEFINE ARRAYLIST PIPECALLS 0
+         THIS.PIPELIST.ADD PIPECALLS "<&PID&>"
+         DELETE PIPECALLS
+         SET_EVENT "<&PID&>" "<&THIS.READFILES.PID2STR&>" "READ"
+      ENDIF
+
+      DEFINE SORTEDLIST PIPECALL 0
+      PIPECALL.ADD "#$<&FUNCTION&>" "FUNCTION"
+      IF ( FILE.CLASSNAME != "#$NULL" )
+         PIPECALL.ADD "#$<&FILE&>" "FILE"
+      ENDIF
+      THIS.PIPELIST.PID2STR.ADD "PIPECALL"
+
+      SLEEP 1
+	RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+	PUBLIC RECEIVE 2 PID DATA
+
+      DEFINE STRING PID2STR "<&PID&>"
+      IF ( "ENGINEX.SCRIPTEVENTS.CUSTOMPACKETS.PIPELIST.CONTAINS_KEY <&PID&>" == TRUE )
+         FOR PIPE_I 0 "<&ENGINEX.SCRIPTEVENTS.CUSTOMPACKETS.PIPELIST.PID2STR.COUNT&>" 1
+            DEFINE ARRAYLIST PIPEQUEUED 0
+            PIPEQUEUED.ADD "#$<&PID2STR&>"
+            PIPEQUEUED.ADD "#i<&PIPE_I&>"
+            PIPEQUEUED.ADD DATA
+            ENGINEX.SCRIPTEVENTS.CUSTOMPACKETS.PIPEQUEUE.ADD PIPEQUEUED
+            DELETE PIPEQUEUED
+         NEXT
+      ENDIF
+
+	RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+	PUBLIC PIPELOOP 0
+      DEFINE NULL THIS 0
+      THIS = ENGINEX.SCRIPTEVENTS.CUSTOMPACKETS
+      WHILE ( THIS.CLASSNAME == #$STRING )
+         SLEEP 1
+      WEND
+      WHILE ( TRUE == TRUE )
+         IF ( THIS.PIPEQUEUE.COUNT != ZERO )
+            THREAD PIPE
+            WHILE ( THIS.PIPEQUEUE.0.COUNT != ZERO )
+               SLEEP 1
+            WEND
+            THIS.PIPEQUEUE.REMOVE 0
+         ENDIF
+         SLEEP 1
+      WEND
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+	PUBLIC PIPE 0
+
+      DEFINE STRING PID2STR "<&ENGINEX.SCRIPTEVENTS.CUSTOMPACKETS.PIPEQUEUE.0.0&>"
+      DEFINE INT CALLDATA_I "<&ENGINEX.SCRIPTEVENTS.CUSTOMPACKETS.PIPEQUEUE.0.1&>"
+      DEFINE SORTEDLIST DATA 0
+      DATA = ENGINEX.SCRIPTEVENTS.CUSTOMPACKETS.PIPEQUEUE.0.2.CLONE
+      ENGINEX.SCRIPTEVENTS.CUSTOMPACKETS.PIPEQUEUE.0.CLEAR
+
+      IF ( "ENGINEX.SCRIPTEVENTS.CUSTOMPACKETS.PIPELIST.PID2STR.CALLDATA_I.CONTAINS_KEY FILE" == TRUE )
+         CALL_EXTERN "<&ENGINEX.SCRIPTEVENTS.CUSTOMPACKETS.PIPELIST.PID2STR.CALLDATA_I.#$FILE&>" "<&ENGINEX.SCRIPTEVENTS.CUSTOMPACKETS.PIPELIST.PID2STR.CALLDATA_I.#$FUNCTION&>" VOID 1 DATA
+      ELSE
+         CALL "<&ENGINEX.SCRIPTEVENTS.CUSTOMPACKETS.PIPELIST.PID2STR.CALLDATA_I.#$FUNCTION&>" VOID 1 DATA
+      ENDIF
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+END_CLASS
+//-------------------------------------------------------------------------------------

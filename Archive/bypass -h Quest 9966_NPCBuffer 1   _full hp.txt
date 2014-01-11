@@ -1,0 +1,4 @@
+bypass -h Quest 9966_NPCBuffer 1   //full hp
+bypass -h Quest 9966_NPCBuffer 77  //nobless
+bypass -h Quest 9966_NPCBuffer 136 //mage set
+bypass -h npc_268501863_Quest 9966_NPCBuffer //buff for player

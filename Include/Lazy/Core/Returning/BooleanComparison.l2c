@@ -1,0 +1,41 @@
+
+CLASS LAZY_RETURNING_BOOLEANCOMPARISON LAZY_RETURNING_BASEPIECE
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT
+
+      // the left value
+      THIS.SET_VALUE VOID 2 #$LEFT TRUE
+
+      // the operator. can be "<", ">", "<=", ">=", "!=", "=="
+      THIS.SET_VALUE VOID 2 #$OPERATOR #$==
+
+      // the right value
+      THIS.SET_VALUE VOID 2 #$RIGHT TRUE
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC _GET_RETURN 1 CALLTIME
+
+      DEFINE INT _LEFT 0
+      DEFINE INT _OPERATOR 0
+      DEFINE INT _RIGHT 0
+
+      THIS.DATA.#$LEFT.GET_RETURN _LEFT 1 CALLTIME
+      THIS.DATA.#$OPERATOR.GET_RETURN _OPERATOR 1 CALLTIME
+      THIS.DATA.#$RIGHT.GET_RETURN _RIGHT 1 CALLTIME
+
+      // --- --- ---
+
+      IF (_LEFT "<&_OPERATOR&>" _RIGHT)
+         RETURN TRUE
+      ENDIF
+
+   RETURN FALSE
+
+//-------------------------------------------------------------------------------------
+
+END_CLASS

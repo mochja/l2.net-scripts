@@ -1,0 +1,54 @@
+DEFINE INT I 0
+
+IF ?I I
+	PRINT_TEXT "is int"
+ELSE
+	PRINT_TEXT "not int"
+ENDIF
+
+I = 1 + 2 + 3 + 4
+PRINT_TEXT "I: <&I&> : should be 10"
+
+I = ( 1 + 2 ) * ( 3 + 4 )
+PRINT_TEXT "I: <&I&> : should be 21"
+
+I = ( 1 + 2 ) * 3 + 4
+PRINT_TEXT "I: <&I&> : should be 13"
+
+I = SQRT ( ( 1 + 2 ) * ( 3 + 4 ) )
+PRINT_TEXT "I: <&I&> : should be 4"
+
+I = ( 1 + 2 ) < ( 3 + 4 )
+PRINT_TEXT "I: <&I&> : should be 1"
+
+I = ( 1 + 2 ) > ( 3 + 4 )
+PRINT_TEXT "I: <&I&> : should be 0"
+
+I = 5 + ( ( 1 + 2 ) * 4 ) - 3
+PRINT_TEXT "I: <&I&> : should be 14"
+
+IF 14
+	PRINT_TEXT "14 is true"
+ELSE
+	PRINT_TEXT "14 is false"
+ENDIF
+
+IF -14
+	PRINT_TEXT "-14 is true"
+ELSE
+	PRINT_TEXT "-14 is false"
+ENDIF
+
+IF ABS ( 5 + ( ( 1 + 2 ) * 4 ) - 3 ) * -1
+	PRINT_TEXT "this is wrong"
+ELSE
+	PRINT_TEXT "this is right"
+ENDIF
+
+IF ( TRUE || FALSE ) && TRUE && ( ~ FALSE )
+	PRINT_TEXT "tada!"
+ELSE
+	PRINT_TEXT "bad"
+ENDIF
+
+END_SCRIPT

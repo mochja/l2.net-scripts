@@ -1,0 +1,84 @@
+	INCLUDE "Include/EngineX.l2c"
+	DEFINE_GLOBAL ENGINEX ENGINEX 0
+
+	INCLUDE "Include/Lazy.l2c"
+	DEFINE_GLOBAL LAZY LAZY 0
+	
+	
+	   DEFINE INT TARGETING 0
+   LAZY.REGISTER TARGETING 1 #$TARGETING
+
+   DEFINE INT RETURNING 0
+   LAZY.REGISTER RETURNING 1 #$RETURNING
+
+   DEFINE INT CASTING 0
+   LAZY.REGISTER CASTING 1 #$CASTING
+   
+
+   // this is how to use pieces for the right skill id
+   //     if (hp < 80%) {
+   //        use "vampiric touch"
+   //     } else {
+   //        if (distance < 200) {
+   //           use "aura burn"
+   //        } else {
+   //           use "blaze"
+   //        }
+   //     }
+   //
+
+   DEFINE INT MYPIECE 0
+   RETURNING.NEW_PIECE MYPIECE 2 #$Casting_SkillId #$IfThenElse
+   MYPIECE.SET_REFERENCE VOID 2 #$IF #$Self_MyHpIsOk
+   MYPIECE.SET_VALUE VOID 2 #$THEN #i1239
+   MYPIECE.SET_VALUE VOID 2 #$ELSE #i1234
+   DELETE MYPIECE
+
+//-------------------------------------------------------------------------------------
+
+   // the pointer to our castlist
+   DEFINE INT CASTLIST 0
+
+   // create the castlist
+   CASTING.CREATE_CASTLIST CASTLIST 1 #$MyCastlist
+
+   // of course we want to repeat the castlist, as long as the mob is alive
+   CASTLIST.REPEAT = TRUE
+
+   // the pointer to our castlist-skill
+   DEFINE INT CASTLISTSKILL 0
+
+   // adds the skill to the castlist
+   CASTLIST.ADD_SKILL CASTLISTSKILL 0
+
+   // set the break piece ("4" when the target is invalid, otherwise "0")
+   CASTLISTSKILL.BREAK_PIECE = 0
+
+   // set the piece to search for the best skill-id
+   CASTLISTSKILL.SET_PIECE VOID 1 #$Casting_SkillId
+
+   // now we dont need this pointer anymore
+   DELETE CASTLISTSKILL
+
+//-------------------------------------------------------------------------------------
+
+   DEFINE INT OBJECT_ID 0
+   WHILE (TRUE == TRUE)
+
+      	TARGET_NEAREST
+        
+         // target the id
+         //ENGINEX.UTILS.TARGET_UNIQUE VOID 3 OBJECT_ID #i1000 #i3
+
+         // start the castlist by using the pointer
+         CASTLIST.START VOID 0
+
+         // its the same like:
+         // starting the castling by using the lazy-class
+         //CASTING.START VOID 1 #$MyCastlist
+
+         // sleep this script while casting
+         CASTING.SLEEP VOID 0
+
+      SLEEP 100
+   WEND

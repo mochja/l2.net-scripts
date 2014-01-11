@@ -1,0 +1,7 @@
+		BYTE 22
+		_url = readS();
+		_arg1 = readS();
+		_arg2 = readS();
+		_arg3 = readS();
+		_arg4 = readS();
+		_arg5 = readS();

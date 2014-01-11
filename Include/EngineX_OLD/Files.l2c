@@ -1,0 +1,53 @@
+
+CLASS ENGINEX_FILES NULL
+
+//-------------------------------------------------------------------------------------
+
+   VAR_START
+   VAR_END
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT 0
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   // original idea @ iosc
+   PUBLIC READ_FILE 2 FILENAME EOF_CALLER
+      DEFINE ARRAYLIST CONTENT 0
+      DEFINE STRING LINEREADER ""   
+      DEFINE FILEREADER FROPEN "<&FILENAME&>"
+      DO
+         FROPEN.READ LINEREADER
+         IF LINEREADER == "#$<&EOF_CALLER&>"
+            BREAK 2
+         ELSE
+            CONTENT.ADD "#$<&LINEREADER&>"
+         ENDIF
+      LOOP ONE == ONE
+      FROPEN.CLOSE
+   RETURN CONTENT
+
+//-------------------------------------------------------------------------------------
+
+   // original idea @ iosc
+   PUBLIC WRITE_FILE 3 FILENAME EOF_CALLER CONTENT
+      DEFINE FILEWRITER FWOPEN "<&FILENAME&>"
+      IF CONTENT.CLASSNAME == #$ARRAYLIST
+         FOREACH I STRING CONTENT
+            FWOPEN.WRITE CONTENT.I
+         NEXTEACH
+      ELSE
+         IF CONTENT.CLASSNAME == #$STRING
+            FWOPEN.WRITE CONTENT
+         ENDIF
+      ENDIF
+      FWOPEN.WRITE "#$<&EOF_CALLER&>"
+      FWOPEN.FLUSH
+      FWOPEN.CLOSE
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+END_CLASS

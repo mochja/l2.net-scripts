@@ -1,0 +1,52 @@
+
+//-------------------------------------------------------------------------------------
+CLASS ENGINEX_FUNCTIONS_TIME NULL
+//-------------------------------------------------------------------------------------
+
+   VAR_START
+		PUBLIC INT TIMESTAMP_OFFSET 62135596800
+		PUBLIC INT SECONDS_PER_MINUTE 60
+		PUBLIC INT SECONDS_PER_HOUR 3600
+		PUBLIC INT SECONDS_PER_DAY 86400
+		PUBLIC INT SECONDS_PER_WEEK 604800
+   VAR_END
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT 0
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+	PUBLIC TIMESTAMP2TICKS 1 TIMESTAMP
+		DEFINE INT TICKS 0
+		TICKS = TIMESTAMP + THIS.TIMESTAMP_OFFSET
+		TICKS = TICKS * TICKS_PER_S
+	RETURN TICKS
+
+//-------------------------------------------------------------------------------------
+
+	PUBLIC TICKS2TIMESTAMP 1 TICKS
+		DEFINE INT TIMESTAMP 0
+      TIMESTAMP = TICKS / TICKS_PER_S
+      TIMESTAMP = TIMESTAMP - THIS.TIMESTAMP_OFFSET
+	RETURN TIMESTAMP
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC IS_LEAPYEAR 1 YEAR
+      DEFINE INT REST400 0
+      DEFINE INT REST100 0
+      DEFINE INT REST004 0
+      REST400 = YEAR % 400
+      REST100 = YEAR % 100
+      REST004 = YEAR % 4
+      DEFINE INT RETURNBOOL 0
+      IF ( ( REST400 == ZERO ) || ( ( REST100 != ZERO ) && ( REST004 == ZERO ) ) )
+         RETURNBOOL = TRUE
+      ENDIF
+   RETURN RETURNBOOL
+
+//-------------------------------------------------------------------------------------
+END_CLASS
+//-------------------------------------------------------------------------------------

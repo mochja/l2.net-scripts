@@ -1,0 +1,121 @@
+
+//-------------------------------------------------------------------------------------
+CLASS ENGINEX_AUTOBOT_FOLLOW NULL
+//-------------------------------------------------------------------------------------
+
+   VAR_START
+      PUBLIC INT FOLLOW_ID 0
+      PUBLIC INT FOLLOW_DISTANCE 100
+      PUBLIC INT FOLLOW_MOVE_START_SLEEP_MIN 500
+      PUBLIC INT FOLLOW_MOVE_START_SLEEP_MAX 1000
+   VAR_END
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT
+      ENGINEX.CONSTRUCT VOID 1 #$EngineX.AutoBot.Moving
+      ENGINEX.CONSTRUCT VOID 1 #$EngineX.ScriptEvents.ServerPackets
+      ENGINEX.CONSTRUCT VOID 1 #$EngineX.Functions.Utils
+      ENGINEX.SCRIPTEVENTS.SERVERPACKETS.ADD_PIPE VOID 2 "47" "#$ENGINEX.AUTOBOT.FOLLOW.PIPE_MoveToLocation"
+      //THREAD FOLLOW_THREAD
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC FOLLOW_THREAD 0
+      DEFINE NULL THIS 0
+      THIS = ENGINEX.AUTOBOT.FOLLOW
+      DEFINE SORTEDLIST PLAYERS 0
+      DEFINE STRING FID2STR ""
+      DEFINE DOUBLE TEMP_DISTANCE 0
+      DEFINE INT NEW_X 0
+      DEFINE INT NEW_Y 0
+      DEFINE INT NEW_Z 0
+      DEFINE DOUBLE TEMP_DOUBLE 0
+      WHILE ( TRUE == TRUE )
+         GET_PLAYERS PLAYERS
+         IF ( PLAYERS.CONTAINS_KEY "<&THIS.FOLLOW_ID&>" == TRUE )
+            FID2STR = "#$<&THIS.FOLLOW_ID&>"
+            NEW_X = PLAYERS.FID2STR.X
+            NEW_Y = PLAYERS.FID2STR.Y
+            NEW_Z = PLAYERS.FID2STR.Z
+            DISTANCE TEMP_DISTANCE CHAR_X CHAR_Y CHAR_Z NEW_X NEW_Y NEW_Z
+            IF ( TEMP_DISTANCE > THIS.FOLLOW_DISTANCE )
+               //ENGINEX.AUTOBOT.MOVING.POINTS.CLEAR
+               TEMP_DOUBLE = #d1 / TEMP_DISTANCE
+               TEMP_DISTANCE = TEMP_DISTANCE - THIS.FOLLOW_DISTANCE
+               TEMP_DOUBLE = TEMP_DOUBLE * TEMP_DISTANCE
+               NEW_X = NEW_X - CHAR_X
+               NEW_Y = NEW_Y - CHAR_Y
+               NEW_Z = NEW_Z - CHAR_Z
+               NEW_X = TEMP_DOUBLE * NEW_X
+               NEW_Y = TEMP_DOUBLE * NEW_Y
+               NEW_Z = TEMP_DOUBLE * NEW_Z
+               NEW_X = NEW_X + CHAR_X
+               NEW_Y = NEW_Y + CHAR_Y
+               NEW_Z = NEW_Z + CHAR_Z
+               ENGINEX.AUTOBOT.MOVING.ADD_POINT VOID 3 NEW_X NEW_Y NEW_Z
+               ENGINEX.AUTOBOT.MOVING.START VOID 0
+               ENGINEX.FUNCTIONS.UTILS.SLEEP VOID 2 100 1000
+            ELSE
+               ENGINEX.FUNCTIONS.UTILS.SLEEP VOID 2 THIS.FOLLOW_MOVE_START_SLEEP_MIN THIS.FOLLOW_MOVE_START_SLEEP_MAX
+            ENDIF
+         ELSE
+            SLEEP 100
+         ENDIF
+      WEND
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC PIPE_MoveToLocation 1 PACKET
+      DEFINE INT OBJID 0
+      PACKET.READ_BYTE VOID
+      PACKET.READ_INT32 OBJID
+      IF ( OBJID == THIS.FOLLOW_ID )
+         DEFINE INT NEW_X 0
+         DEFINE INT NEW_Y 0
+         DEFINE INT NEW_Z 0
+         DEFINE INT OLD_X 0
+         DEFINE INT OLD_Y 0
+         DEFINE INT OLD_Z 0
+         PACKET.READ_INT32 NEW_X
+         PACKET.READ_INT32 NEW_Y
+         PACKET.READ_INT32 NEW_Z
+         PACKET.READ_INT32 OLD_X
+         PACKET.READ_INT32 OLD_Y
+         PACKET.READ_INT32 OLD_Z
+         ENGINEX.AUTOBOT.MOVING.POINTS.REVERSE
+         ENGINEX.AUTOBOT.MOVING.SHIFT_POINT VOID 0
+         ENGINEX.AUTOBOT.MOVING.POINTS.REVERSE
+         ENGINEX.AUTOBOT.MOVING.ADD_POINT VOID 3 OLD_X OLD_Y OLD_Z
+
+         DEFINE DOUBLE TEMP_DISTANCE 0
+         DISTANCE TEMP_DISTANCE OLD_X OLD_Y OLD_Z NEW_X NEW_Y NEW_Z
+         IF ( TEMP_DISTANCE > THIS.FOLLOW_DISTANCE )
+            DEFINE DOUBLE TEMP_DOUBLE 1
+            TEMP_DOUBLE = TEMP_DOUBLE / TEMP_DISTANCE
+            TEMP_DISTANCE = TEMP_DISTANCE - THIS.FOLLOW_DISTANCE
+            TEMP_DOUBLE = TEMP_DOUBLE * TEMP_DISTANCE
+            NEW_X = NEW_X - OLD_X
+            NEW_Y = NEW_Y - OLD_Y
+            NEW_Z = NEW_Z - OLD_Z
+            NEW_X = TEMP_DOUBLE * NEW_X
+            NEW_Y = TEMP_DOUBLE * NEW_Y
+            NEW_Z = TEMP_DOUBLE * NEW_Z
+            NEW_X = NEW_X + OLD_X
+            NEW_Y = NEW_Y + OLD_Y
+            NEW_Z = NEW_Z + OLD_Z
+            ENGINEX.AUTOBOT.MOVING.ADD_POINT VOID 3 NEW_X NEW_Y NEW_Z
+         ELSE
+            ENGINEX.AUTOBOT.MOVING.ADD_POINT VOID 3 OLD_X OLD_Y OLD_Z
+         ENDIF
+
+         ENGINEX.FUNCTIONS.UTILS.SLEEP VOID 2 THIS.FOLLOW_MOVE_START_SLEEP_MIN THIS.FOLLOW_MOVE_START_SLEEP_MAX
+         ENGINEX.AUTOBOT.MOVING.START VOID 0
+      ENDIF
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+END_CLASS
+//-------------------------------------------------------------------------------------

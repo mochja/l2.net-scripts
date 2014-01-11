@@ -1,0 +1,48 @@
+// G+ email send...
+// Server: all
+// Autor: mochitto
+// Date: 24. 6. 2010 
+// Special thanks for L2.NET contributors
+// rev.: 8
+PRINT_TEXT "SCRIPT STARTED!]"
+
+DEFINE INT COUNT 0
+DEFINE INT ADENA_UID 0
+DEFINE ARRAYLIST PLAYER_LIST 0
+
+// Main section
+// ===============================
+PLAYER_LIST.ADD "#$Derian"
+PLAYER_LIST.add "#$EidolonR"
+
+ITEM_COUNT COUNT 57 
+INVEN_GET_UID ADENA_UID 57  
+COUNT = COUNT - #i100000
+COUNT = COUNT / "<&PLAYER_LIST.COUNT&>"
+
+
+FOREACH A STRING PLAYER_LIST
+	PRINT_TEXT "SEND eMail to <&PLAYER_LIST.A&> with <&COUNT&> Adena"
+	SLEEP 1000
+	INJECT "D0 67 00"
+	SLEEP 1000
+	INJECT "D0 65 00"
+	SLEEP 1000
+	DEFINE BYTEBUFFER RequestSendPost 256
+		RequestSendPost.WRITE_BYTE #i208
+		RequestSendPost.WRITE_INT16 #i102
+		RequestSendPost.WRITE_STRING "#$<&PLAYER_LIST.A&>"
+		RequestSendPost.WRITE_INT32 #i0
+		RequestSendPost.WRITE_STRING "#$Vyplata..."
+		RequestSendPost.WRITE_STRING "#$Nas craft opet neco usetril posilam ti tvoji cast <&COUNT&> Adena"
+		RequestSendPost.WRITE_INT32 #i1
+		RequestSendPost.WRITE_INT32 "<&ADENA_UID&>" // obj_id
+		RequestSendPost.WRITE_INT64 "<&COUNT&>" // count
+		RequestSendPost.WRITE_INT64 #i0
+		RequestSendPost.TRIM_TO_INDEX
+	INJECTBB RequestSendPost
+	DELETE RequestSendPost
+NEXTEACH
+	
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT

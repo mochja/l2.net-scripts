@@ -1,0 +1,47 @@
+DEFINE INT KiteRange 450
+DEFINE DOUBLE VX 0
+DEFINE DOUBLE VY 0
+DEFINE DOUBLE LEN 0
+
+DEFINE INT C_X 1900
+DEFINE INT C_Y -1900
+DEFINE INT T_X 2000
+DEFINE INT T_Y -2000
+
+//need to get a vector for from the monster to us
+VX = C_X - T_X
+VY = C_Y - T_Y
+
+PRINT_TEXT "Vector:"
+PRINT_TEXT "VX: <&VX&>"
+PRINT_TEXT "VY: <&VY&>"
+
+//now we have the vector from the target to us... lets normalize it now
+DISTANCE LEN ZERO ZERO ZERO VX VY ZERO
+VX = VX / LEN
+VY = VY / LEN
+
+PRINT_TEXT "Normalized to:"
+PRINT_TEXT "VX: <&VX&>"
+PRINT_TEXT "VY: <&VY&>"
+
+//now lets scale back up to our range
+VX = VX * KiteRange
+VY = VY * KiteRange
+
+PRINT_TEXT "Scaled to:"
+PRINT_TEXT "VX: <&VX&>"
+PRINT_TEXT "VY: <&VY&>"
+
+//then we add this offset to the mob location
+VX = VX + T_X
+VY = VY + T_Y
+
+PRINT_TEXT "Ready to move to:"
+PRINT_TEXT "VX: <&VX&>"
+PRINT_TEXT "VY: <&VY&>"
+
+//and finally... we move
+MOVE_TO "<&VX&>" "<&VY&>" "<&CHAR_Z&>" 
+
+END_SCRIPT

@@ -1,0 +1,23 @@
+
+	INCLUDE Include/EngineX.l2c
+	DEFINE_GLOBAL ENGINEX ENGINEX 0
+
+	PRINT_TEXT ""
+	PRINT_TEXT "-------------------------------------------------"
+
+	DEFINE STRING MY_STRING "|Hello|World|"
+	DEFINE ARRAYLIST MY_ARRAY 0
+	PRINT_TEXT "String: '<&MY_STRING&>'"
+
+	ENGINEX.STRINGS.EXPLODE MY_ARRAY 2 "#$|" "#$<&MY_STRING&>"
+	FOR I 0 "<&MY_ARRAY.COUNT&>" 1
+		PRINT_TEXT "> '<&MY_ARRAY.I&>'"
+	NEXT
+
+	ENGINEX.STRINGS.IMPLODE MY_STRING 2 "#$ " MY_ARRAY
+	PRINT_TEXT "String: '<&MY_STRING&>'"
+
+	PRINT_TEXT "-------------------------------------------------"
+	PRINT_TEXT ""
+
+END_SCRIPT

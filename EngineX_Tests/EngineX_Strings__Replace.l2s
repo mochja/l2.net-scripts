@@ -1,0 +1,24 @@
+
+	INCLUDE Include/EngineX.l2c
+	DEFINE_GLOBAL ENGINEX ENGINEX 0
+
+	PRINT_TEXT ""
+	PRINT_TEXT "-------------------------------------------------"
+
+	DEFINE STRING MYSTRING "haaaaalloooooooo"
+	PRINT_TEXT "String: <&MYSTRING&>"
+
+	PRINT_TEXT "Replace 'aa' with 'a'"
+	ENGINEX.STRINGS.REPLACE MYSTRING 4 MYSTRING "#$aa" "#$a" FALSE
+
+	PRINT_TEXT "String: <&MYSTRING&>"
+
+	PRINT_TEXT "Replace 'oo' with 'o'"
+	ENGINEX.STRINGS.REPLACE MYSTRING 4 MYSTRING "#$oo" "#$o" TRUE
+
+	PRINT_TEXT "String: <&MYSTRING&>"
+
+	PRINT_TEXT "-------------------------------------------------"
+	PRINT_TEXT ""
+
+END_SCRIPT

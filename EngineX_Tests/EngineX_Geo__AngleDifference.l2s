@@ -1,0 +1,25 @@
+
+	INCLUDE Include/EngineX.l2c
+	DEFINE_GLOBAL ENGINEX ENGINEX 0
+
+	PRINT_TEXT ""
+	PRINT_TEXT "-------------------------------------------------"
+
+	DEFINE INT ANGLEDIFF 0
+
+	ENGINEX.GEO.ANGLE_DIFFERENCE ANGLEDIFF 2 #i0 #i360
+	PRINT_TEXT "Difference: <&ANGLEDIFF&> (should be 0)"
+
+	ENGINEX.GEO.ANGLE_DIFFERENCE ANGLEDIFF 2 #i0 #i90
+	PRINT_TEXT "Difference: <&ANGLEDIFF&> (should be 90)"
+
+	ENGINEX.GEO.ANGLE_DIFFERENCE ANGLEDIFF 2 #i0 #i180
+	PRINT_TEXT "Difference: <&ANGLEDIFF&> (should be 180)"
+
+	ENGINEX.GEO.ANGLE_DIFFERENCE ANGLEDIFF 2 #i0 #i181
+	PRINT_TEXT "Difference: <&ANGLEDIFF&> (should be 179)"
+
+	PRINT_TEXT "-------------------------------------------------"
+	PRINT_TEXT ""
+
+END_SCRIPT

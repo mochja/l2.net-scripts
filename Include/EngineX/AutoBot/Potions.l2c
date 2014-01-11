@@ -1,0 +1,152 @@
+
+INCLUDE Include/EngineX/AutoBot/Potions/Potion.l2c
+
+//-------------------------------------------------------------------------------------
+CLASS ENGINEX_AUTOBOT_POTIONS NULL
+//-------------------------------------------------------------------------------------
+
+   VAR_START
+
+      PUBLIC SORTEDLIST POTIONS 0
+      PUBLIC STRING FORWARD_KEY ""
+
+   VAR_END
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC ADD 1 KEY
+      IF ( "THIS.POTIONS.CONTAINS_KEY <&KEY&>" == TRUE )
+         RETURN NULL
+      ENDIF
+      DEFINE ENGINEX_AUTOBOT_AUTOPOT_POTION POTION 0
+      POTION.POTKEY = "#$<&KEY&>"
+      THIS.POTIONS.ADD POTION "<&KEY&>"
+   RETURN POTION
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC START 1 KEY
+      IF ( "THIS.POTIONS.CONTAINS_KEY <&KEY&>" == FALSE )
+         RETURN FALSE
+      ENDIF
+      IF ( THIS.POTIONS.KEY.RUNNING == TRUE )
+         RETURN FALSE
+      ENDIF
+      THIS.POTIONS.KEY.RUNNING = TRUE
+      THIS.FORWARD_KEY = KEY
+      THREAD LOOP
+      WHILE ( THIS.FORWARD_KEY != "#$" )
+         SLEEP 100
+      WEND
+   RETURN TRUE
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC STOP 1 KEY
+      IF ( "THIS.POTIONS.CONTAINS_KEY <&KEY&>" == FALSE )
+         RETURN FALSE
+      ENDIF
+      THIS.POTIONS.KEY.RUNNING = FALSE
+   RETURN TRUE
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC LOOP
+
+      DEFINE STRING KEY "<&ENGINEX.AUTOBOT.AUTOPOT.FORWARD_KEY&>"
+      ENGINEX.AUTOBOT.AUTOPOT.FORWARD_KEY = "#$"
+      DEFINE NULL POTION 0
+      POTION = ENGINEX.AUTOBOT.AUTOPOT.POTIONS.KEY
+
+      DEFINE INT HP_PERCENT_BAD 0
+      DEFINE INT HP_PERCENT_GOOD 0
+      DEFINE INT CHECK_SLEEP 0
+      DEFINE INT USE_SLEEP 0
+      DEFINE ARRAYLIST MYITEMS 0
+      DEFINE ARRAYLIST UNIQUE_IDS 0
+
+      DEFINE INT IS_BAD 0
+      DEFINE INT IS_GOOD 0
+
+      DEFINE INT PERCENT_BAD 0
+      DEFINE INT PERCENT_GOOD 0
+
+      GET_RAND PERCENT_BAD "<&POTION.PERCENT_BAD_MIN&>" "<&POTION.PERCENT_BAD_MAX&>"
+      GET_RAND PERCENT_GOOD "<&PERCENT_BAD&>" "<&POTION.PERCENT_GOOD_MAX&>"
+
+      WHILE ( POTION.RUNNING == TRUE )
+
+         IF ( IS_DISABLED CHAR_ID )
+         ELSE
+
+            IS_BAD = FALSE
+            IS_GOOD = TRUE
+            SWITCH POTION.STAT
+               CASE 1
+                  IF ( CHAR_PER_HP <= PERCENT_BAD )
+                     IS_BAD = TRUE
+                     IS_GOOD = FALSE
+                  ENDIF
+                  BREAK 1
+               CASE 2
+                  IF ( CHAR_PER_MP <= PERCENT_BAD )
+                     IS_BAD = TRUE
+                     IS_GOOD = FALSE
+                  ENDIF
+                  BREAK 1
+            ENDSWITCH
+            IF ( IS_BAD == TRUE )
+               WHILE ( IS_GOOD == FALSE )
+
+                  GET_INVENTORY MYITEMS
+                  UNIQUE_IDS.CLEAR
+                  FOREACH I INVENTORY MYITEMS
+                     IF ( MYITEMS.I.ITEM_ID == POTION.ITEM_ID )
+                        UNIQUE_IDS.ADD "<&MYITEMS.I.ID&>"
+                     ENDIF
+                  NEXTEACH
+
+                  IF ( UNIQUE_IDS.COUNT > ZERO )
+
+                     //USE_ITEM "<&UNIQUE_IDS.ZERO&>"
+                     DEFINE BYTEBUFFER BB 1024
+                     BB.WRITE_BYTE 0x19
+                     BB.WRITE_INT32 UNIQUE_IDS.ZERO
+                     BB.WRITE_INT32 ZERO
+                     BB.TRIM_TO_INDEX
+                     INJECTBB BB
+                     DELETE BB
+
+                     GET_RAND USE_SLEEP "<&POTION.USE_SLEEP_MIN&>" "<&POTION.USE_SLEEP_MAX&>"
+                     SLEEP "<&USE_SLEEP&>"
+                  ELSE
+                     BREAK 2
+                  ENDIF
+
+                  SWITCH POTION.STAT
+                     CASE 1
+                        IF ( CHAR_PER_HP >= PERCENT_GOOD )
+                           IS_GOOD = TRUE
+                        ENDIF
+                        BREAK 1
+                     CASE 2
+                        IF ( CHAR_PER_MP >= PERCENT_GOOD )
+                           IS_GOOD = TRUE
+                        ENDIF
+                        BREAK 1
+                  ENDSWITCH
+
+               WEND
+               GET_RAND PERCENT_BAD "<&POTION.PERCENT_BAD_MIN&>" "<&POTION.PERCENT_BAD_MAX&>"
+               GET_RAND PERCENT_GOOD "<&PERCENT_BAD&>" "<&POTION.PERCENT_GOOD_MAX&>"
+            ENDIF
+         ENDIF
+         GET_RAND CHECK_SLEEP "<&POTION.CHECK_SLEEP_MIN&>" "<&POTION.CHECK_SLEEP_MAX&>"
+         SLEEP "<&CHECK_SLEEP&>"
+      WEND
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+END_CLASS
+//-------------------------------------------------------------------------------------

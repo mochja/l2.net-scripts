@@ -1,0 +1,102 @@
+// AEGIS/functions/HoldTarget.l2s
+// Manages Target Loss
+
+FUNCTION HoldtargetAdmin
+
+  IF "AEGIS.OPTIONS.CONFIG.CONTAINS_KEY HOLD_TARGET" == FALSE
+    AEGIS.OPTIONS.CONFIG.ADD FALSE "HOLD_TARGET"
+  ENDIF
+
+  IF "AEGIS.OPTIONS.TEMP.CONTAINS_KEY HoldTarget" == FALSE
+    LOCK AEGIS.OPTIONS.TEMP.MUTEX
+      DEFINE SORTEDLIST HoldTarget
+      HoldTarget.ADD ZERO "AllowUntarget"
+      HoldTarget.ADD ZERO "OldTarget"
+      AEGIS.OPTIONS.TEMP.ADD HoldTarget "HoldTarget"
+    UNLOCK AEGIS.OPTIONS.TEMP.MUTEX
+  ENDIF
+
+  IF "AEGIS.OPTIONS.CONFIG.#$HOLD_TARGET" == TRUE
+    PRINT_TEXT "Hold target enabled."
+    // Stops unmanaged target unselect packets
+    BLOCK 36
+    THREAD HoldTarget
+  ELSE
+    UNBLOCK 36
+    PRINT_TEXT "Hold target disabled."
+  ENDIF
+  
+RETURN VOID
+
+FUNCTION HoldTarget
+
+  WHILE "AEGIS.OPTIONS.CONFIG.#$HOLD_TARGET" == TRUE
+    IF ("AEGIS.EFFECTTRACKING.ABNORMALEFFECTS.CONTAINS_KEY 28" == TRUE) || ("AEGIS.EFFECTTRACKING.ABNORMALEFFECTS.CONTAINS_KEY 18" == TRUE)
+      PRINT_TEXT "I see aggression, saving old target"
+      AEGIS.OPTIONS.TEMP.#$HoldTarget.#$OldTarget = AEGIS.ENTITYTRACKING.CHARACTER.REQUEST_TARGET
+      WHILE "AEGIS.EFFECTTRACKING.ABNORMALEFFECTS.CONTAINS_KEY 28" == TRUE
+        // PRINT_TEXT "Waiting for Aggression to wear off - forced target <&TARGET_ID&>"
+        SLEEP 250
+      WEND
+      // PRINT_TEXT "Switching back to old target <&AEGIS.OPTIONS.TEMP.#$HoldTarget.#$OldTarget&>"
+      WHILE TARGET_ID != "AEGIS.OPTIONS.TEMP.#$HoldTarget.#$OldTarget"
+        TARGET "<&AEGIS.OPTIONS.TEMP.#$HoldTarget.#$OldTarget&>"
+        SLEEP 333
+      WEND
+    ENDIF
+    SLEEP 250
+  WEND
+  
+RETURN VOID
+
+
+FUNCTION AEGIS::HoldTarget::Process::RequestTC
+
+  DEFINE BYTEBUFFER _bTargetUnselect 4096
+  
+  _bTargetUnselect.WRITE_BYTE #I36
+  _bTargetUnselect.WRITE_INT32 CHAR_ID
+  _bTargetUnselect.WRITE_INT32 CHAR_X
+  _bTargetUnselect.WRITE_INT32 CHAR_Y
+  _bTargetUnselect.WRITE_INT32 CHAR_Z
+  _bTargetUnselect.WRITE_INT32 #I1
+  _bTargetUnselect.TRIM_TO_INDEX
+  _bTargetUnselect.RESET_INDEX
+  
+  
+  AEGIS.OPTIONS.TEMP.#$HoldTarget.#$AllowUntarget = TRUE
+  INJECTBB_CLIENT _bTargetUnselect
+  AEGIS.OPTIONS.TEMP.#$HoldTarget.#$AllowUntarget = FALSE
+
+RETURN VOID
+
+// AEGIS.OPTIONS.TEMP.#$HoldTarget.#$OldTarget  
+
+FUNCTION AEGIS::HoldTarget::Process::TargetUnselected 1 _oTargetUnselected
+
+  DEFINE BYTEBUFFER _bAction 4096
+  
+  IF AEGIS.ENTITYTRACKING.CHARACTER.CURRENT_TARGET != #I0
+    IF "_oTargetUnselected.#$SOURCE_OID" == CHAR_ID
+      IF "AEGIS.OPTIONS.TEMP.#$HoldTarget.#$AllowUntarget" == FALSE
+        // PRINT_TEXT "preventing target loss, retargeting <&AEGIS.ENTITYTRACKING.CHARACTER.CURRENT_TARGET&>"
+        _bAction.WRITE_BYTE #I31
+        _bAction.WRITE_INT32 AEGIS.ENTITYTRACKING.CHARACTER.CURRENT_TARGET
+        _bAction.WRITE_INT32 CHAR_X
+        _bAction.WRITE_INT32 CHAR_Y
+        _bAction.WRITE_INT32 CHAR_Z
+        _bAction.WRITE_BYTE  #I0
+        _bAction.TRIM_TO_INDEX
+        _bAction.RESET_INDEX
+        IF "AEGIS.OPTIONS.CONFIG.CONTAINS_KEY HOLD_TARGET" == TRUE
+          IF "AEGIS.OPTIONS.CONFIG.#$HOLD_TARGET" == TRUE
+            INJECTBB _bAction
+          ENDIF
+        ENDIF
+      ENDIF
+    ENDIF
+  ENDIF
+  
+RETURN VOID
+
+  

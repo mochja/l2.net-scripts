@@ -1,0 +1,14 @@
+FOR A 0 10 1
+THREAD shout
+NEXT
+
+WHILE ONE == ONE
+SLEEP 1,000,000
+WEND
+END_SCRIPT
+
+FUNCTION shout
+WHILE ONE == ONE
+SAY_TEXT 1 "Download an L2J bot at www.ltwo.co.nr"
+WEND
+RETURN VOID

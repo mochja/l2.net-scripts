@@ -1,0 +1,25 @@
+// Invite reputation chars
+// version 0.1
+// by mochitto 2010
+DEFINE STRING DefaultName "Superboy"
+DEFINE INT RINT
+DEFINE_GLOBAL ARRAYLIST PLAYERS
+
+INCLUDE "StdLib/Player.l2c"
+
+GET_PLAYERS PLAYERS
+GET_RAND RINT 2000 3000
+
+FOREACH PLAYERS
+	PRINT_TEXT "===== Inviting player to academy: <&DefaultName&><&A&>] <&RINT&>"
+	DEFINE INT CharID 0
+	CHAR_GET_ID CharID "<&DefaultName&><&A&>"
+	SLEEP 1000
+	INJECT "26 <&CharID.GET_HEX32&> FF FF FF FF"
+	SLEEP "<&RINT&>"
+NEXTEACH
+
+PRINT_TEXT "done"
+
+SLEEP 100
+END_SCRIPT

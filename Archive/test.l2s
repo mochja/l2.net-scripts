@@ -1,0 +1,68 @@
+//By mochitto for Luzr s.r.o 2010
+
+
+	DEFINE STRING _html 0
+	PACKET.READ_BYTE NULL
+	PACKET.READ_INT32 NULL
+	PACKET.READ_STRING _html
+	
+	PRINT_TEXT _html
+
+
+DEFINE INT ItmCnt 0
+DEFINE INT ItmCntMin 50
+
+LABEL HERE
+ITEM_COUNT ItmCnt 8765
+
+IF ItmCnt < ItmCntMin
+PRINT_TEXT "Nemas red stone"
+SCRIPT_END
+ENDIF
+
+//IF "_html.CONTAINS bypass -h Quest 662_AGameOfCards Klump_PlayBegin.htm" == TRUE
+	NPC_DIALOG "bypass -h Quest 662_AGameOfCards Klump_PlayBegin.htm"
+////ENDIF
+SLEEP 1000
+
+//IF "_html.CONTAINS bypass -h Quest 662_AGameOfCards Klump_PlayField.htm" == TRUE
+	NPC_DIALOG "bypass -h Quest 662_AGameOfCards Klump_PlayField.htm"
+//ENDIF
+SLEEP 1000
+
+//IF "_html.CONTAINS bypass -h Quest 662_AGameOfCards Klump_openCard1.htm" == TRUE
+	NPC_DIALOG "bypass -h Quest 662_AGameOfCards Klump_openCard1.htm"
+//ENDIF
+SLEEP 1000
+
+//IF "_html.CONTAINS bypass -h Quest 662_AGameOfCards Klump_openCard2.htm" == TRUE
+	NPC_DIALOG "bypass -h Quest 662_AGameOfCards Klump_openCard2.htm"
+//ENDIF
+SLEEP 1000
+
+//IF "_html.CONTAINS bypass -h Quest 662_AGameOfCards Klump_openCard3.htm" == TRUE
+	NPC_DIALOG "bypass -h Quest 662_AGameOfCards Klump_openCard3.htm"
+//ENDIF
+SLEEP 1000
+
+//IF "_html.CONTAINS bypass -h Quest 662_AGameOfCards Klump_openCard4.htm" == TRUE
+	NPC_DIALOG "bypass -h Quest 662_AGameOfCards Klump_openCard4.htm"
+//ENDIF
+SLEEP 1000
+
+//IF "_html.CONTAINS bypass -h Quest 662_AGameOfCards Klump_openCard5.htm" == TRUE
+	NPC_DIALOG "bypass -h Quest 662_AGameOfCards Klump_openCard5.htm"
+//ENDIF
+SLEEP 1000
+
+IF ItmCnt < ItmCntMin
+PRINT_TEXT "Nemas red stone"
+SCRIPT_END
+ENDIF
+
+//IF "_html.CONTAINS bypass -h Quest 662_AGameOfCards Klump_QuestInProgress.htm" == TRUE
+	NPC_DIALOG "bypass -h Quest 662_AGameOfCards Klump_QuestInProgress.htm"
+//ENDIF
+SLEEP 1000
+JUMP_TO_LABEL HERE
+RETURN VOID

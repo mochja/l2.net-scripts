@@ -1,0 +1,116 @@
+DEFINE STRING MASTER "Cruzz"  //name of char you want to rec
+DEFINE INT HOWMANYCHARS "7"  //how many chars in account, set same number as FROM_WHICH to be recced only from one char
+DEFINE INT FROM_WHICH "1"  //from which char in a row bot will start reccing
+DEFINE INT HOWMANYREC "20"  //how many times it will try to reccomend
+DEFINE INT DEBUG "1"  //if set to 1 u will see some extra concole messages
+//---- Delays
+DEFINE INT NUMBER1_MIN "800"  //delay after targeting MASTER
+DEFINE INT NUMBER1_MAX "1200"
+DEFINE INT NUMBER2_MIN "1000"  //delay after recing MASTER and before performing restart
+DEFINE INT NUMBER2_MAX "1400"
+DEFINE INT NUMBER3_MIN "5000"  //delay after restart and before selecting char
+DEFINE INT NUMBER3_MAX "6000"
+DEFINE INT NUMBER4_MIN "4000"  //delay after selecting char and before logging back in game
+DEFINE INT NUMBER4_MAX "5000"
+DEFINE INT NUMBER5_MIN "500"  //some random delay o.o
+DEFINE INT NUMBER5_MAX "600"
+//----- edit the code below only for learning or fixing purposes
+DEFINE INT ONE "1"
+DEFINE INT REC_COUNT "1"
+DEFINE INT BLA1 0
+DEFINE INT BLA2 0
+DEFINE INT NUMBER1 0  
+DEFINE INT NUMBER2 0  
+DEFINE INT NUMBER3 0  
+DEFINE INT NUMBER4 0  
+DEFINE INT NUMBER5 0  
+
+BLA1 = HOWMANYCHARS - FROM_WHICH
+BLA2 = BLA1 + ONE
+
+PRINT_TEXT "Script started."
+DO
+	WHILE REC_COUNT < HOWMANYREC
+		COMMAND "/target <&MASTER&>"
+		GET_RAND NUMBER1 "<&NUMBER1_MIN&>" "<&NUMBER1_MAX&>"
+		SLEEP "<&NUMBER1&>"
+		COMMAND "/evaluate"
+		IF DEBUG == ONE
+			PRINT_TEXT "=> Reccing."
+		ENDIF
+		GET_RAND NUMBER2 "<&NUMBER2_MIN&>" "<&NUMBER2_MAX&>"
+		SLEEP "<&NUMBER2&>"
+		INJECT "57 00 00 00 00"
+		GET_RAND NUMBER3 "<&NUMBER3_MIN&>" "<&NUMBER3_MAX&>"
+		SLEEP "<&NUMBER3&>"
+		SWITCH FROM_WHICH
+			CASE #i1
+				INJECT "12 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00" 
+				IF DEBUG == ONE
+					PRINT_TEXT "=> Now logging char: <&FROM_WHICH&> "
+				ENDIF
+				BREAK 1
+			CASE #i2
+				INJECT "12 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00" 
+				IF DEBUG == ONE
+					PRINT_TEXT "=> Now logging char: <&FROM_WHICH&> "
+				ENDIF
+				BREAK 1	
+			CASE #i3
+				INJECT "12 02 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00" 
+				IF DEBUG == ONE
+					PRINT_TEXT "=> Now logging char: <&FROM_WHICH&> "
+				ENDIF
+				BREAK 1	
+			CASE #i4
+				INJECT "12 03 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00" 
+				IF DEBUG == ONE
+					PRINT_TEXT "=> Now logging char: <&FROM_WHICH&> "
+				ENDIF
+				BREAK 1	
+			CASE #i5
+				INJECT "12 04 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00" 
+				IF DEBUG == ONE
+					PRINT_TEXT "=> Now logging char: <&FROM_WHICH&> "
+				ENDIF
+				BREAK 1	
+			CASE #i6
+				INJECT "12 05 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00" 
+				IF DEBUG == ONE
+					PRINT_TEXT "=> Now logging char: <&FROM_WHICH&> "
+				ENDIF
+				BREAK 1
+			CASE #i7
+				INJECT "12 06 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00" 
+				IF DEBUG == ONE
+					PRINT_TEXT "=> Now logging char: <&FROM_WHICH&> "
+				ENDIF
+				BREAK 1
+			CASE #i8
+				INJECT "12 07 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00" 
+				IF DEBUG == ONE
+					PRINT_TEXT "=> Now logging char: <&FROM_WHICH&> "
+				ENDIF
+				BREAK 1
+			DEFAULT
+				PRINT_TEXT "!! Wrong value of chars selected."
+				BREAK 1
+		ENDSWITCH	
+		GET_RAND NUMBER4 "<&NUMBER4_MIN&>" "<&NUMBER4_MAX&>"
+		SLEEP "<&NUMBER4&>"
+		REC_COUNT = REC_COUNT + ONE
+		GET_RAND NUMBER5 "<&NUMBER5_MIN&>" "<&NUMBER5_MAX&>"
+		SLEEP "<&NUMBER5&>"
+	WEND
+	FROM_WHICH = FROM_WHICH + ONE
+	REC_COUNT = ZERO + ZERO
+	SLEEP "<&NUMBER5&>"
+LOOP FROM_WHICH <= HOWMANYCHARS
+COMMAND "/target <&MASTER&>"
+SLEEP "<&NUMBER1&>"
+COMMAND "/evaluate"
+IF DEBUG == ONE
+	PRINT_TEXT "=> Recced!"
+ENDIF
+PRINT_TEXT "=> Done reccing <&MASTER&> with <&BLA2&> chars."
+SCRIPT_END

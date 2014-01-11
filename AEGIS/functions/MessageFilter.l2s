@@ -1,0 +1,54 @@
+// System Message Filter
+
+FUNCTION MessageFilterAdmin
+
+  // Stop unfiltered SystemMessage packets
+  BLOCK 98
+
+
+  IF "AEGIS.OPTIONS.CONFIG.CONTAINS_KEY MESSAGE_FILTER" == FALSE
+    AEGIS.OPTIONS.CONFIG.ADD FALSE "MESSAGE_FILTER"
+  ENDIF
+
+    IF "AEGIS.OPTIONS.CONFIG.CONTAINS_KEY DEL_MSG" == TRUE
+      IF "AEGIS.OPTIONS.CONFIG.#$DEL_MSG.CLASSNAME" == "#$STRING"
+        DEFINE STRING DELMSG_TMP "<&AEGIS.OPTIONS.CONFIG.#$DEL_MSG&>"
+        AEGIS.OPTIONS.CONFIG.REMOVE "DEL_MSG"
+        DEFINE SORTEDLIST LIST
+        LIST.ADD "#$<&DELMSG_TMP&>" "<&DELMSG_TMP&>"
+        AEGIS.OPTIONS.CONFIG.ADD LIST "DEL_MSG"
+      ENDIF
+    ENDIF
+
+  IF "AEGIS.OPTIONS.CONFIG.#$MESSAGE_FILTER" == TRUE
+    IF "AEGIS.OPTIONS.CONFIG.CONTAINS_KEY DEL_MSG" == FALSE
+      PRINT_TEXT "MESSAGE_FILTER is enabled but DEL_MSG is undefined."
+      AEGIS.OPTIONS.CONFIG.#$MESSAGE_FILTER = FALSE
+      PRINT_TEXT "System Message Filter Disabled"
+    ELSE
+      PRINT_TEXT "System Message Filter Enabled"
+    ENDIF
+  ELSE
+    PRINT_TEXT "System Message Filter Disabled"
+  ENDIF
+  
+RETURN VOID
+
+FUNCTION MessageFilter 1 _bSystemMessage
+
+  DEFINE SORTEDLIST _oMessage
+  
+  IF "AEGIS.OPTIONS.CONFIG.CONTAINS_KEY MESSAGE_FILTER" == TRUE
+    IF "AEGIS.OPTIONS.CONFIG.#$MESSAGE_FILTER" == TRUE
+      CALL_EXTERN "DLIB\Packets\ReadSystemMessage.l2s" DLIB::Packets::ReadSystemMessage _oMessage 1 _bSystemMessage
+      IF "AEGIS.OPTIONS.CONFIG.#$DEL_MSG.CONTAINS_KEY <&_oMessage.#$MESSAGE_ID&>" == TRUE
+        JUMP_TO_LABEL MessageFilter::Exit
+      ENDIF
+    ENDIF
+  ENDIF
+
+  INJECTBB_CLIENT _bSystemMessage
+  
+  LABEL MessageFilter::Exit
+RETURN VOID
+

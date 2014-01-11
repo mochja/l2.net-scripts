@@ -1,0 +1,270 @@
+
+INCLUDE "Include/Lazy/Main/Party/WindowMember.l2c"
+INCLUDE "Include/Lazy/Main/Party/WindowMemberSorted.l2c"
+
+CLASS LAZY_PARTY NULL
+
+//-------------------------------------------------------------------------------------
+
+   VAR_START
+
+      PUBLIC NULL {MENU} 0
+
+      PUBLIC INT RUN_THREAD 0
+      PUBLIC SORTEDLIST VIEWED_OBJECTS 0
+      PUBLIC STRING CUR_WINDOW_NAME ""
+      PUBLIC NULL CUR_WINDOW_POINTER 0
+      PUBLIC INT MAX_VIEWED_MEMBERS 5
+      PUBLIC INT VIEWED_MEMBERS_START_OBJECT_ID 101000000
+
+   VAR_END
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT2 0
+
+      DEFINE NULL POINTER 0
+      THIS.CREATE_WINDOW POINTER 1 #$Noting
+      DELETE POINTER
+
+      DEFINE NULL POINTER 0
+      THIS.CREATE_WINDOW POINTER 1 #$Party
+      DELETE POINTER
+
+      THIS.SET_VIEWED_WINDOW VOID 1 #$Party
+      THIS.START_REFRESHING VOID 0
+      THIS.CLEAR_VIEWED_MEMBERS VOID 0
+
+      ENGINEX.EVENTS.ADD_CLIENTPACKET VOID 2 #i127 #$LAZY.CLASSES.#$PARTY.CLIENTEVENT_RequestPartyMatchConfig
+      ENGINEX.EVENTS.ADD_CLIENTPACKET VOID 2 #i31 #$LAZY.CLASSES.#$PARTY.CLIENTEVENT_Action
+
+      ENGINEX.EVENTS.BLOCK_CLIENT VOID 2 #i127 #$LAZY_PARTY
+      ENGINEX.EVENTS.BLOCK_CLIENT VOID 2 #i31 #$LAZY_PARTY
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+// user calls
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+
+
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC ADD_VIEWED_MEMBER 10 INVITED_FROM OBJECT_ID NAME CUR_CP MAX_CP CUR_HP MAX_HP CUR_MP MAX_MP CLASS_ID
+
+      DEFINE BYTEBUFFER BB 1024
+      BB.WRITE_BYTE #i79
+      BB.WRITE_INT32 INVITED_FROM
+      BB.WRITE_INT32 ZERO
+      BB.WRITE_INT32 OBJECT_ID
+      BB.WRITE_STRING NAME
+      BB.WRITE_INT32 CUR_CP
+      BB.WRITE_INT32 MAX_CP
+      BB.WRITE_INT32 CUR_HP
+      BB.WRITE_INT32 MAX_HP
+      BB.WRITE_INT32 CUR_MP
+      BB.WRITE_INT32 MAX_MP
+      BB.WRITE_INT32 ZERO
+      BB.WRITE_INT32 CLASS_ID
+      BB.WRITE_INT32 ZERO
+      BB.WRITE_INT32 ZERO
+      INJECTBB_CLIENT BB
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC UPDATE_VIEWED_MEMBER 9 OBJECT_ID NAME CUR_CP MAX_CP CUR_HP MAX_HP CUR_MP MAX_MP CLASS_ID
+
+      DEFINE BYTEBUFFER BB 1024
+      BB.WRITE_BYTE #i82
+      BB.WRITE_INT32 OBJECT_ID
+      BB.WRITE_STRING NAME
+      BB.WRITE_INT32 CUR_CP
+      BB.WRITE_INT32 MAX_CP
+      BB.WRITE_INT32 CUR_HP
+      BB.WRITE_INT32 MAX_HP
+      BB.WRITE_INT32 CUR_MP
+      BB.WRITE_INT32 MAX_MP
+      BB.WRITE_INT32 ZERO
+      BB.WRITE_INT32 CLASS_ID
+      INJECTBB_CLIENT BB
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CLEAR_VIEWED_MEMBERS 0
+
+      DEFINE BYTEBUFFER BB 1024
+      BB.WRITE_BYTE #i80
+      INJECTBB_CLIENT BB
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC DELETE_VIEWED_MEMBER 1 OBJECT_ID
+
+      DEFINE BYTEBUFFER BB 1024
+      BB.WRITE_BYTE #i81
+      BB.WRITE_INT32 OBJECT_ID
+      INJECTBB_CLIENT BB
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC START_REFRESHING 0
+
+      THIS.RUN_THREAD = TRUE
+      THREAD UPDATE_THREAD
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC SET_VIEWED_WINDOW 1 WINDOW_NAME
+      THIS.CUR_WINDOW_NAME = WINDOW_NAME
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+// threads
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+
+   PUBLIC UPDATE_THREAD 0
+
+      DEFINE NULL THAT 0
+      LAZY.GET_POINTER THAT 1 #$PARTY
+
+      DEFINE NULL WINDOWMEMBER 0
+      DEFINE INT VIEWED_COUNT 0
+      DEFINE INT VIEWED_OBJECT_ID 0
+      DEFINE STRING CUR_WINDOW_NAME ""
+
+      WHILE (THAT.RUN_THREAD == TRUE)
+
+         IF (THAT.CUR_WINDOW_NAME != CUR_WINDOW_NAME)
+            CUR_WINDOW_NAME = THAT.CUR_WINDOW_NAME
+            THAT.WINDOWS.CUR_WINDOW_NAME.GET_POINTER THAT.CUR_WINDOW_POINTER 0
+            THAT.VIEWED_OBJECTS.CLEAR
+            THAT.CLEAR_VIEWED_MEMBERS VOID 0
+         ENDIF
+
+         IF (THAT.CUR_WINDOW_POINTER.TYPE != NULL)
+
+            VIEWED_COUNT = ZERO
+            FOREACH I1 LAZY_PARTY_WINDOWMEMBERSORTED THAT.CUR_WINDOW_POINTER.MEMBERS_SORTED
+               IF (I1 == THAT.MAX_VIEWED_MEMBERS)
+                  BREAK 2
+               ENDIF
+               THAT.CUR_WINDOW_POINTER.MEMBERS_SORTED.I1.WINDOWMEMBER.GET_POINTER WINDOWMEMBER 0
+               VIEWED_COUNT = VIEWED_COUNT + ONE
+               VIEWED_OBJECT_ID = I1 + THAT.VIEWED_MEMBERS_START_OBJECT_ID
+
+               // need new viewed member, add it
+               IF (THAT.VIEWED_OBJECTS.COUNT == I1)
+
+                  DEFINE NULL WINDOWMEMBER_TEMP 0
+                  WINDOWMEMBER.GET_POINTER WINDOWMEMBER_TEMP 0
+                  THAT.VIEWED_OBJECTS.ADD "WINDOWMEMBER_TEMP" "<&VIEWED_OBJECT_ID&>"
+                  DELETE WINDOWMEMBER_TEMP
+                  THAT.ADD_VIEWED_MEMBER VOID 10 ZERO VIEWED_OBJECT_ID WINDOWMEMBER.NAME WINDOWMEMBER.CUR_CP WINDOWMEMBER.MAX_CP WINDOWMEMBER.CUR_HP WINDOWMEMBER.MAX_HP WINDOWMEMBER.CUR_MP WINDOWMEMBER.MAX_MP WINDOWMEMBER.CLASS_ID
+
+               // viewed member exists, update it
+               ELSE
+
+                  DEFINE NULL WINDOWMEMBER_TEMP 0
+                  WINDOWMEMBER.GET_POINTER WINDOWMEMBER_TEMP 0
+                  THAT.OVERWRITE_1 THAT.VIEWED_OBJECTS.I1 2 WINDOWMEMBER_TEMP I1
+                  DELETE WINDOWMEMBER_TEMP
+                  THAT.UPDATE_VIEWED_MEMBER VOID 9 VIEWED_OBJECT_ID WINDOWMEMBER.NAME WINDOWMEMBER.CUR_CP WINDOWMEMBER.MAX_CP WINDOWMEMBER.CUR_HP WINDOWMEMBER.MAX_HP WINDOWMEMBER.CUR_MP WINDOWMEMBER.MAX_MP WINDOWMEMBER.CLASS_ID
+               ENDIF
+
+               SLEEP 100
+            NEXTEACH
+
+            FOREACH I2 LAZY_PARTY_WINDOWMEMBER THAT.VIEWED_OBJECTS
+               IF (I2 == VIEWED_COUNT)
+                  THAT.DELETE_VIEWED_MEMBER VOID 1 "#i<&THAT.VIEWED_OBJECTS.GET_KEY I2&>"
+                  THAT.VIEWED_OBJECTS.REMOVE "<&THAT.VIEWED_OBJECTS.GET_KEY I2&>"
+               ENDIF
+            NEXTEACH
+
+         ENDIF
+
+         SLEEP 1000
+      WEND
+
+   RETURN NEW_WINDOW
+
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+// system
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+
+   PUBLIC OVERWRITE_1 2 GET I1
+   RETURN GET
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC ONCLICK_TARGET 1 OBJECT_ID
+      TARGET "<&OBJECT_ID&>"
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+// events
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CLIENTEVENT_RequestPartyMatchConfig 1 PACKET_DATA
+
+      DEFINE STRING CUR_WINDOW_NAME "<&THIS.CUR_WINDOW_POINTER.WINDOW_NAME.TO_UPPER&>"
+      DEFINE STRING CHECK_NAME ""
+      DEFINE INT I 0
+      FOREACH I LAZY_PARTY_WINDOW THIS.WINDOWS
+         CHECK_NAME = THIS.WINDOWS.I.WINDOW_NAME.TO_UPPER
+         IF (CHECK_NAME == CUR_WINDOW_NAME)
+            I = I + ONE
+            IF (I >= THIS.WINDOWS.COUNT)
+               I = ZERO
+            ENDIF
+            THIS.SET_VIEWED_WINDOW VOID 1 THIS.WINDOWS.I.WINDOW_NAME
+            LAZY.ALERT VOID 5 #$Party "#$Switched to: \n <&THIS.WINDOWS.I.WINDOW_NAME&>\n" FALSE TRUE TRUE
+            BREAK 2
+         ENDIF
+      NEXTEACH
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CLIENTEVENT_Action 1 PACKET_DATA
+
+      IF ("THIS.VIEWED_OBJECTS.CONTAINS_KEY <&PACKET_DATA.#$OBJECT_ID&>" == TRUE)
+         DEFINE STRING VIEWED_OBJECT_ID "<&PACKET_DATA.#$OBJECT_ID&>"
+         CALL "<&THIS.CUR_WINDOW_POINTER.ONCLICK&>" VOID 1 THIS.VIEWED_OBJECTS.VIEWED_OBJECT_ID.OBJECT_ID
+      ELSE
+         INJECTBB PACKET_DATA.#$__PACKET
+      ENDIF
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+END_CLASS

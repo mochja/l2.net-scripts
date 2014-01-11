@@ -1,0 +1,55 @@
+DEFINE INT CurTime 0
+DEFINE INT StartTime 0
+
+GET_TIME StartTime
+
+DEFINE INT A 10
+DEFINE INT B 20
+DEFINE INT C 15
+DEFINE INT D 15
+
+FOR I 0 5 1
+	PRINT_TEXT "I : <&i&>"
+	GET_TIME CurTIME
+	IF CurTime > StartTIME
+		PRINT_TEXT "cur time is newer"
+	ELSE
+		PRINT_TEXT "start time is newer"
+	ENDIF
+	IF D == C
+		IF C > A
+			IF A > B
+				PRINT_TEXT "a>b"
+			ELSE
+				PRINT_TEXT "a<b"
+			ENDIF
+		ENDIF
+		IF B > C
+			PRINT_TEXT "b>c"
+		ENDIF
+	ENDIF
+	SLEEP 100
+NEXT
+
+PRINT_TEXT "***NEW TEST***"
+
+IF (A < B) 
+	PRINT_TEXT "a<b"
+ELSE
+	PRINT_TEXT "a>b"
+ENDIF
+
+IF (A < B) && (C == D)
+	PRINT_TEXT "a<b && c==d"
+ELSE
+	PRINT_TEXT "a>b || C!=d"
+ENDIF
+
+IF (( A   <  B) && (C == D))&&(B < D)
+	PRINT_TEXT "a<b && c==d && b<d"
+ELSE
+	PRINT_TEXT "a>b || C!=d || b>d"
+ENDIF
+
+
+END_SCRIPT

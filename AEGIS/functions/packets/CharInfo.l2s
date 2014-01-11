@@ -1,0 +1,46 @@
+// Handle CharInfo packets.
+
+FUNCTION Packet::CharInfo 1 _bCharInfo
+
+  DEFINE SORTEDLIST CharInfo_SL 0
+  DEFINE INT ModuleHook 0
+  DEFINE STRING KeyName
+  
+  LOCK AEGIS.MUTEX.ENTITYTRACKING.PLAYERS
+   
+    CALL_EXTERN "DLIB\Packets\ReadCharInfo.l2s" DLIB::Packets::ReadCharInfo CharInfo_SL 1 _bCharInfo
+    
+    IF "AEGIS.ENTITYTRACKING.PLAYERS.CONTAINS_KEY <&CharInfo_SL.#$OBJECT_ID&>" == TRUE
+      "AEGIS.ENTITYTRACKING.PLAYERS.#$<&CharInfo_SL.#$OBJECT_ID&>.CharInfo" = CharInfo_SL.CLONE
+    ELSE
+      DEFINE CharList Object 0
+      GET_TIME Object.AGE
+      Object.CharInfo = CharInfo_SL.CLONE
+      AEGIS.ENTITYTRACKING.PLAYERS.ADD Object "<&CharInfo_SL.#$OBJECT_ID&>"
+      DELETE Object
+    ENDIF
+  UNLOCK AEGIS.MUTEX.ENTITYTRACKING.PLAYERS
+
+  IF "AEGIS.OPTIONS.CONFIG.CONTAINS_KEY TARGET_TRACKING" == TRUE
+    IF "AEGIS.OPTIONS.CONFIG.#$TARGET_TRACKING" == TRUE
+      ModuleHook = TRUE
+      CALL_EXTERN "AEGIS\functions\TargetingPerception.l2s" AEGIS::TargetPerception::ProcessCharInfo _bCharInfo 1 CharInfo_SL
+      CALL_EXTERN "DLIB\Packets\ReadCharInfo.l2s" DLIB::Packets::ReadCharInfo CharInfo_SL 1 _bCharInfo
+    ENDIF
+  ENDIF
+
+  IF "AEGIS.OPTIONS.CONFIG.CONTAINS_KEY COUNTER_HIDE" == TRUE
+    IF "AEGIS.OPTIONS.CONFIG.#$COUNTER_HIDE" == TRUE
+      IF "AEGIS.ENTITYTRACKING.PLAYERS.CONTAINS_KEY <&CharInfo_SL.#$OBJECT_ID&>" == TRUE
+        CALL_EXTERN "AEGIS\functions\CounterHide.l2s" AEGIS::CounterHide::ProcessCharInfo _bCharInfo 1 CharInfo_SL
+        CALL_EXTERN "DLIB\Packets\ReadCharInfo.l2s" DLIB::Packets::ReadCharInfo CharInfo_SL 1 _bCharInfo
+        ModuleHook = TRUE
+      ENDIF
+    ENDIF
+  ENDIF
+  
+  IF ModuleHook == TRUE
+    INJECTBB_CLIENT _bCharInfo
+  ENDIF
+  
+RETURN VOID

@@ -1,0 +1,17 @@
+// Kratky popis
+// Server: 
+// Autor: mochitto
+// Date: 
+// Special thanks for L2.NET contributors
+// rev.: 0
+PRINT_TEXT "SCRIPT STARTED!]"
+
+// Main section
+// ===============================
+
+USE_ITEM 959 //EWS
+ 
+INJECT "58 2D 45 10 10"
+	
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT

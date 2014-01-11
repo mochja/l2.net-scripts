@@ -1,0 +1,16 @@
+// Kratky popis
+// Server: 
+// Autor: mochitto
+// Date: 
+// Special thanks for L2.NET contributors
+// rev.: 0
+PRINT_TEXT "SCRIPT STARTED!]"
+
+// Main section
+// ===============================
+
+//NPC_DIALOG "bypass -h Quest 958_DeluxGatekeeper confteleport[57][15000] 47692 -115745 -3744"
+NPC_DIALOG "bypass -h Quest 958_DeluxGatekeeper gototeleport[Farm-1][0][57][15000] 47692 -115745 -3744"
+	
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT

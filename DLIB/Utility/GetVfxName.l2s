@@ -1,0 +1,98 @@
+// DLIB::Utility::GetVfxName
+//
+// Resolve am ABNORMAL_VFX to it's known string value.
+//
+// Revision 1.0 - Initial Release
+
+FUNCTION DLIB::Utility::GetVfxName 1 _iVFX
+
+  DEFINE SORTEDLIST VFX_List 0
+  DEFINE STRING _sResult
+  
+  VFX_List.ADD #I1 "Bleeding"
+  VFX_List.ADD #I2 "Poisoned"
+  VFX_List.ADD #I4 "HeatDoT"
+  VFX_List.ADD #I8 "IceDoT"
+  VFX_List.ADD #I16 "WindDoT"
+  VFX_List.ADD #I32 "EarthDoT"
+  VFX_List.ADD #I64 "Stun"
+  VFX_List.ADD #I128 "Sleep"
+  VFX_List.ADD #I256 "Mute"
+  VFX_List.ADD #I512 "Root"
+  VFX_List.ADD #I1024 "Paralyze"
+  VFX_List.ADD #I2048 "Petrify"
+  VFX_List.ADD #I4096 "Unknown1"
+  VFX_List.ADD #I8192 "BigHead"
+  VFX_List.ADD #I16384 "Flame"
+  VFX_List.ADD #I32768 "Unknown2"
+  VFX_List.ADD #I65536 "Unknown3"
+  VFX_List.ADD #I131072 "FloatingRoot"
+  VFX_List.ADD #I262144 "DancingStun"
+  VFX_List.ADD #I524288 "FireStun"
+  VFX_List.ADD #I1048576 "Stealth"
+  VFX_List.ADD #I2097152 "Imprisoned1"
+  VFX_List.ADD #I4194304 "Imprisoned2"
+  VFX_List.ADD #I8388608 "MagicCircle"
+  VFX_List.ADD #I16777216 "ColdAttack" 
+  VFX_List.ADD #I33554432 "MindQuake"
+  VFX_List.ADD #I67108864 "Unknown4"
+  VFX_List.ADD #I134217728 "UltimateDefense"
+  VFX_List.ADD #I268435456 "CursedGlow"
+  VFX_List.ADD #I536870912 "Unknown5"
+  VFX_List.ADD #I1073741824 "Unknown6"
+
+  VFX_List.ADD #I0 "null"
+  VFX_List.ADD #I1 "bleed"
+  VFX_List.ADD #I2 "poison"
+  VFX_List.ADD #I4 "redcircle"
+  VFX_List.ADD #I8 "ice"
+  VFX_List.ADD #I16 "wind"
+  VFX_List.ADD #I32 "fear"
+  VFX_List.ADD #I64 "stun"
+  VFX_List.ADD #I128 "sleep"
+  VFX_List.ADD #I256 "mute"
+  VFX_List.ADD #I512 "root"
+  VFX_List.ADD #I1024 "hold1"
+  VFX_List.ADD #I2048 "hold2"
+  VFX_List.ADD #I4096 "unknown13"
+  VFX_List.ADD #I8192 "bighead"
+  VFX_List.ADD #I16384 "flame"
+  VFX_List.ADD #I32768 "unknown16"
+  VFX_List.ADD #I65536 "grow"
+  VFX_List.ADD #I131072 "floatroot"
+  VFX_List.ADD #I262144 "dancestun"
+  VFX_List.ADD #I524288 "firerootstun"
+  VFX_List.ADD #I1048576 "stealth"
+  VFX_List.ADD #I2097152 "imprison1"
+  VFX_List.ADD #I4194304 "imprison2"
+  VFX_List.ADD #I8388608 "magiccircle"
+  VFX_List.ADD #I16777216 "ice2"
+  VFX_List.ADD #I33554432 "earthquake"
+  VFX_List.ADD #I67108864 "unknown27"
+  VFX_List.ADD #I134217728 "invulnerable"
+  VFX_List.ADD #I268435456 "vitality"
+  VFX_List.ADD #I536870912 "realtarget"
+  VFX_List.ADD #I1073741824 "deathmark"
+  VFX_List.ADD #I2147483648 "skull_fear"
+  VFX_List.ADD #I32 "confused"
+  VFX_List.ADD #I1 "invulnerable"
+  VFX_List.ADD #I2 "redglow"
+  VFX_List.ADD #I4 "redglow2"
+  VFX_List.ADD #I8 "baguettesword"
+  VFX_List.ADD #I16 "yellowafro"
+  VFX_List.ADD #I32 "pinkafro"
+  VFX_List.ADD #I64 "blackafro"
+  VFX_List.ADD #I128 "unknown8"
+  VFX_List.ADD #I105 "ShilenStigma"
+
+
+
+
+  
+  FOREACH Effect INT VFX_List
+    IF _iVFX == VFX_List.Effect
+      _sResult = "#$<&VFX_List.GET_KEY Effect&>"
+    ENDIF
+  NEXTEACH
+  
+RETURN _sResult  

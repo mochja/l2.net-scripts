@@ -1,0 +1,16 @@
+
+//-------------------------------------------------------------------------------------
+CLASS ENGINEX_SCRIPTEVENTS NULL
+//-------------------------------------------------------------------------------------
+
+   VAR_START
+      PUBLIC STRING SERVERPACKETS "Include/EngineX/ScriptEvents/ServerPackets.l2c"
+      PUBLIC STRING CLIENTPACKETS "Include/EngineX/ScriptEvents/ClientPackets.l2c"
+      PUBLIC STRING CUSTOMPACKETS "Include/EngineX/ScriptEvents/CustomPackets.l2c"
+      PUBLIC STRING SERVERPACKETSEX "Include/EngineX/ScriptEvents/ServerPacketsEx.l2c"
+      PUBLIC STRING CLIENTPACKETSEX "Include/EngineX/ScriptEvents/ClientPacketsEx.l2c"
+   VAR_END
+
+//-------------------------------------------------------------------------------------
+END_CLASS
+//-------------------------------------------------------------------------------------

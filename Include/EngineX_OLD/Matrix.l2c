@@ -1,0 +1,116 @@
+
+INCLUDE Include/EngineX/Matrix/Vector2.l2c
+INCLUDE Include/EngineX/Matrix/Vector3.l2c
+
+CLASS ENGINEX_MATRIX NULL
+
+//-------------------------------------------------------------------------------------
+
+   VAR_START
+   VAR_END
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT 0
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+	PUBLIC POINTS_DIRECTION 2 P1 P2
+		DEFINE VECTOR3 DIRECTION 0
+		DIRECTION.X = P2.X - P1.X
+		DIRECTION.Y = P2.Y - P1.Y
+		DIRECTION.Z = P2.Z - P1.Z
+		DEFINE DOUBLE DIST 0
+		DISTANCE DIST 0 0 0 DIRECTION.X DIRECTION.Y DIRECTION.Z
+		IF (DIST > ZERO)
+			DIRECTION.X = DIRECTION.X / DIST
+			DIRECTION.Y = DIRECTION.Y / DIST
+			DIRECTION.Z = DIRECTION.Z / DIST
+		ENDIF
+	RETURN DIRECTION
+
+//-------------------------------------------------------------------------------------
+
+	PUBLIC DIRECTION_ROTATE_Z 2 DIRECTION ANGLE_RAD
+		DEFINE VECTOR3 ROTATED 0
+		ROTATED.Z = "#d<&DIRECTION.Z&>"
+		DEFINE DOUBLE ROTATED_X1 0
+		DEFINE DOUBLE ROTATED_X2 0
+		ROTATED_X1 = COS ANGLE_RAD
+      ENGINEX.MATH.NORMALIZE_DOUBLE ROTATED_X1 1 ROTATED_X1
+		ROTATED_X1 = ROTATED_X1 * DIRECTION.X
+		ROTATED_X2 = SIN ANGLE_RAD
+      ENGINEX.MATH.NORMALIZE_DOUBLE ROTATED_X2 1 ROTATED_X2
+		ROTATED_X2 = ROTATED_X2 * DIRECTION.Y
+		ROTATED.X = ROTATED_X1 - ROTATED_X2
+		DEFINE DOUBLE ROTATED_Y1 0
+		DEFINE DOUBLE ROTATED_Y2 0
+		ROTATED_Y1 = COS ANGLE_RAD
+      ENGINEX.MATH.NORMALIZE_DOUBLE ROTATED_Y1 1 ROTATED_Y1
+		ROTATED_Y1 = ROTATED_Y1 * DIRECTION.Y
+		ROTATED_Y2 = SIN ANGLE_RAD
+      ENGINEX.MATH.NORMALIZE_DOUBLE ROTATED_Y2 1 ROTATED_Y2
+		ROTATED_Y2 = ROTATED_Y2 * DIRECTION.X
+		ROTATED.Y = ROTATED_Y1 + ROTATED_Y2
+	RETURN ROTATED
+
+//-------------------------------------------------------------------------------------
+
+	PUBLIC CALCULATION 3 VECTOR OPERATOR VALUE
+      DEFINE VECTOR3 NEW_V3 0
+		SWITCH VALUE.CLASSNAME
+			CASE #$INT
+				NEW_V3.X = VECTOR.X "<&OPERATOR&>" VALUE
+				NEW_V3.Y = VECTOR.Y "<&OPERATOR&>" VALUE
+				NEW_V3.Z = VECTOR.Z "<&OPERATOR&>" VALUE
+				BREAK 1
+			CASE #$DOUBLE
+				NEW_V3.X = VECTOR.X "<&OPERATOR&>" VALUE
+				NEW_V3.Y = VECTOR.Y "<&OPERATOR&>" VALUE
+				NEW_V3.Z = VECTOR.Z "<&OPERATOR&>" VALUE
+				BREAK 1
+			CASE #$VECTOR3
+				NEW_V3.X = VECTOR.X "<&OPERATOR&>" VALUE.X
+				NEW_V3.Y = VECTOR.Y "<&OPERATOR&>" VALUE.Y
+				NEW_V3.Z = VECTOR.Z "<&OPERATOR&>" VALUE.Z
+				BREAK 1
+		ENDSWITCH
+	RETURN NEW_V3
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC ADD_V2 3 POINTS X Y
+      DEFINE VECTOR2 POINT 0
+      POINT.SET VOID 2 X Y
+      POINTS.ADD POINT
+      DELETE POINT
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC ADD_V3 4 POINTS X Y Z
+      DEFINE VECTOR3 POINT 0
+      POINT.SET VOID 3 X Y Z
+      POINTS.ADD POINT
+      DELETE POINT
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC MULTIPLICATE_DISTANCE 3 P1 P2 VALUE
+      DEFINE VECTOR3 P3 0
+      P3.X = P2.X - P1.X
+      P3.Y = P2.Y - P1.Y
+      P3.Z = P2.Z - P1.Z
+      P3.X = P3.X * VALUE
+      P3.Y = P3.Y * VALUE
+      P3.Z = P3.Z * VALUE
+      P3.X = P3.X + P1.X
+      P3.Y = P3.Y + P1.Y
+      P3.Z = P3.Z + P1.Z
+   RETURN P3
+
+//-------------------------------------------------------------------------------------
+
+END_CLASS

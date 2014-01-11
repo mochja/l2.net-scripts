@@ -1,0 +1,642 @@
+INCLUDE "StdLib\inventory.l2c"
+// ===================================================================================================================
+
+// START OF EDITING PART (YOU SHOULD CHANGE THE SETTINGS FROM BELOW TO YOUR NEEDS)
+// ===================================================================================================================
+DEFINE_GLOBAL STRING item_name "Vesper Nagan"        // Here you need to change with what item you want to enchant
+DEFINE_GLOBAL STRING normal_enchant_name  "Scroll: Enchant Weapon (S)"        // The exact name of your normal enchant scroll
+DEFINE_GLOBAL STRING blessed_enchant_name "Blessed Scroll: Enchant Armor (S)"        // The exact name of you blessed enchant scroll(only for blessed enchants)
+
+DEFINE_GLOBAL INT type_of_enchanting 3              // The method of enchanting you want set from 1-7 (see below):
+         // 1 - Normal enchant each One by One;
+         // 2 - Normal enchant each One to Top;
+         // 3 - Blessed enchant only one item;
+         // 4 - Blessed enchant each One to Top;
+         // 5 - Blessed enchant each One by One an keep the highest; 
+         // 6 - Normal enchant each One by One and stop to Top;
+         // 7 - Blessed enchant each One by One and stop to Top;
+                                              
+DEFINE_GLOBAL INT keep_items_num 1            // How meny items you want to keep when enchanting One by One (for One by One enchanting + blessed)
+ 
+DEFINE_GLOBAL INT enchant_to_top 16           // The top level witch enchantig should stop at (for One to Top enchanting + blessed)
+
+DEFINE_GLOBAL INT enchant_safe 3              // Safe enchant level on witch normal anchant stop and continues with blessed (for Blessed enchanting)
+
+DEFINE_GLOBAL INT min_little_delay 210        // min_little_delay should be always lower than max_little_delay - these two are for random delay between the values.
+DEFINE_GLOBAL INT max_little_delay 247        // max_little_delay should be always higher than main_little_delay - this two will add some delay so carefull what you set.
+// ===================================================================================================================
+// END OF EDITING PART (DON'T CHANGE NOTHING FROM BELOW)
+// ===================================================================================================================
+//  
+// TEMP Auto Enchant IS temporary solution - have 7 methods of enchanting and is safe for auto kick 
+//                                                                   (don't cancel the enchant window when ingame)
+// Fully working with L2NET v37x and on L2J Gracia Final (ct2.3) servers.
+//
+// special thanks to: slothmo, mpj123, rocket666, easy2k4, trixy and everybody working for l2net project
+// made by iosc 
+// ===================================================================================================================
+// ===================================================================================================================
+
+DEFINE_GLOBAL INT min_delay 2118
+DEFINE_GLOBAL INT max_delay 2633
+DEFINE_GLOBAL INT rand_delay 0
+DEFINE_GLOBAL INT some_loop 0
+DEFINE_GLOBAL INT item_uid 0
+DEFINE_GLOBAL INT enchant_result 9999
+DEFINE_GLOBAL INT n_scroll_id 0
+DEFINE_GLOBAL INT b_scroll_id 0
+DEFINE_GLOBAL INT n_scrolls_count 0
+DEFINE_GLOBAL INT b_scrolls_count 0
+DEFINE_GLOBAL Inventory n_enchant_scroll 0
+DEFINE_GLOBAL Inventory b_enchant_scroll 0
+DEFINE_GLOBAL ARRAYLIST full_inventory 0
+DEFINE_GLOBAL ARRAYLIST remove_uid 0
+
+//ITEM_GET_ID n_scroll_id "<&normal_enchant_name&>"
+//ITEM_GET_ID b_scroll_id "<&blessed_enchant_name&>"
+
+n_scroll_id = 959 
+b_scroll_id = 6577 
+
+GET_INVENTORY full_inventory
+PRINT_TEXT "10 seconds ========================"
+PRINT_TEXT "== Temp Auto Enchant Script"
+PRINT_TEXT "================================"
+SLEEP 1000
+
+ITEM_COUNT n_scrolls_count "<&n_scroll_id&>"
+ITEM_COUNT b_scrolls_count "<&b_scroll_id&>"
+
+PRINT_TEXT "<&n_scrolls_count&>:<&b_scrolls_count&>"
+
+FOREACH x Inventory full_inventory
+    IF full_inventory.x.name == normal_enchant_name
+        n_enchant_scroll = full_inventory.x
+    ENDIF
+    IF full_inventory.x.name == blessed_enchant_name
+        b_enchant_scroll = full_inventory.x
+    ENDIF
+NEXTEACH
+
+IF n_scrolls_count == ONE
+    PRINT_TEXT "You don't have <&normal_enchant_name&>"
+    JUMP_TO_LABEL THE_END
+ENDIF
+
+SWITCH type_of_enchanting
+    CASE #i3
+    CASE #i4
+    CASE #i5
+    CASE #i7
+        IF b_scrolls_count == ONE
+            PRINT_TEXT "You don't have <&blessed_enchant_name&>"
+            JUMP_TO_LABEL THE_END
+        ENDIF
+        BREAK 1
+    DEFAULT
+        BREAK 1
+ENDSWITCH
+
+SWITCH type_of_enchanting
+    CASE #i1
+        PRINT_TEXT "== "
+        PRINT_TEXT "== You chosed the One by One method"
+        PRINT_TEXT "== Enchanting: <&item_name&>"
+        PRINT_TEXT "== Keeping: <&keep_items_num&>"
+        PRINT_TEXT "== "
+        PRINT_TEXT "9 seconds ========================="
+        SLEEP 9000
+        CALL EnchantEachOnebyOne
+        BREAK 1
+    CASE #i2
+        PRINT_TEXT "== "
+        PRINT_TEXT "== You chosed the One to Top method"
+        PRINT_TEXT "== Enchanting: <&item_name&>"
+        PRINT_TEXT "== Enchant till: +<&enchant_to_top&>"
+        PRINT_TEXT "== "
+        PRINT_TEXT "9 seconds ========================="
+        SLEEP 9000
+        CALL EnchantEachOnetoTop
+        BREAK 1
+    CASE #i3
+        PRINT_TEXT "== "
+        PRINT_TEXT "== You chosed Blessed Enchant one item"
+        PRINT_TEXT "== Enchanting: <&item_name&>"
+        PRINT_TEXT "== Enchant till: +<&enchant_to_top&>"
+        PRINT_TEXT "== Safe enchant is set to: +<&enchant_safe&>"
+        PRINT_TEXT "== "
+        PRINT_TEXT "9 seconds ========================="
+        SLEEP 9000
+        CALL BlessedEnchantOne
+        BREAK 1
+    CASE #i4
+        PRINT_TEXT "== "
+        PRINT_TEXT "== You chosed Blessed Enchant each One to Top"
+        PRINT_TEXT "== Enchanting: <&item_name&>"
+        PRINT_TEXT "== Enchant till: +<&enchant_to_top&>"
+        PRINT_TEXT "== Safe enchant is set to: +<&enchant_safe&>"
+        PRINT_TEXT "== "
+        PRINT_TEXT "9 seconds ========================="
+        SLEEP 9000
+        CALL EnchantEachOnetoTop
+        BREAK 1
+    CASE #i5
+        PRINT_TEXT "== "
+        PRINT_TEXT "== You chosed Blessed Enchant each One by One"
+        PRINT_TEXT "== Enchanting: <&item_name&>"
+        PRINT_TEXT "== Keep enchanted: <&keep_items_num&>"
+        PRINT_TEXT "== Safe enchant is set to: +<&enchant_safe&>"
+        PRINT_TEXT "== "
+        PRINT_TEXT "9 seconds ========================="
+        SLEEP 9000
+        CALL EnchantEachOnebyOne
+        BREAK 1
+    CASE #i6
+        PRINT_TEXT "== "
+        PRINT_TEXT "== You chosed each One by One and stop to Top"
+        PRINT_TEXT "== Enchanting: <&item_name&>"
+        PRINT_TEXT "== Keep - <&keep_items_num&> - items or stop to +<&enchant_to_top&>"
+        PRINT_TEXT "== "
+        PRINT_TEXT "9 seconds ========================="
+        SLEEP 9000
+        CALL EnchantEachOnebyOne
+        BREAK 1
+    CASE #i7
+        PRINT_TEXT "== "
+        PRINT_TEXT "== You chosed Blessed - One by One and stop to Top"
+        PRINT_TEXT "== Enchanting: <&item_name&>"
+        PRINT_TEXT "== Enchant till: +<&enchant_to_top&>"
+        PRINT_TEXT "== "
+        PRINT_TEXT "9 seconds ========================="
+        SLEEP 9000
+        CALL EnchantEachOnebyOne
+        BREAK 1
+    DEFAULT
+        PRINT_TEXT "Bad option chosen at Type of Enchant"
+ENDSWITCH
+
+
+LABEL THE_END
+GET_RAND rand_delay "<&min_little_delay&>" "<&max_little_delay&>"
+SLEEP "<&rand_delay&>"
+full_inventory.clear
+GET_INVENTORY full_inventory
+CALL RemoveFromInv
+PRINT_TEXT "==============================="
+PRINT_TEXT "== Thanks for using Temp Auto Enchant Script =="
+PRINT_TEXT "==============================="
+FOREACH x Inventory full_inventory
+    IF full_inventory.x.name == item_name
+        PRINT_TEXT "==  <&item_name&> +<&full_inventory.x.enchant&>" 
+    ENDIF 
+NEXTEACH
+PRINT_TEXT "=======================iosc======"
+
+END_SCRIPT
+
+
+
+FUNCTION EnchantEachOnebyOne
+
+    DEFINE ARRAYLIST current_items 0
+    
+    DEFINE INT total_items 0
+    DEFINE INT enchanting_level 0
+    DEFINE INT lag_flag1 0
+    DEFINE INT lag_flag2 0
+    DEFINE INT lag_flag6 0
+    DEFINE INT bless_start 0
+    LABEL A_FLAGS
+    current_items.clear
+    full_inventory.clear
+    GET_INVENTORY full_inventory
+    CALL RemoveFromInv
+    enchanting_level = #i65535
+    total_items = ZERO
+    ITEM_COUNT n_scrolls_count "<&n_scroll_id&>"
+    ITEM_COUNT b_scrolls_count "<&b_scroll_id&>"
+    
+    IF ( type_of_enchanting == #i5 ) && ( bless_start == ONE )
+        FOREACH x Inventory full_inventory
+            IF ( full_inventory.x.name == item_name ) && ( full_inventory.x.enchant > ZERO )
+                total_items = total_items + ONE
+                IF  full_inventory.x.enchant < enchanting_level
+                    enchanting_level = full_inventory.x.enchant
+                ENDIF
+            ENDIF 
+        NEXTEACH
+    ELSE
+        IF type_of_enchanting == #i6
+            
+            FOREACH x Inventory full_inventory
+                IF full_inventory.x.name == item_name
+                    total_items = total_items + ONE
+                    IF (full_inventory.x.enchant < enchanting_level) && ( full_inventory.x.enchant < enchant_to_top )
+                        enchanting_level = full_inventory.x.enchant
+                    ENDIF
+                ENDIF 
+            NEXTEACH
+        ELSE
+            IF type_of_enchanting == #i7
+                FOREACH x Inventory full_inventory
+                    IF full_inventory.x.name == item_name
+                        IF ( full_inventory.x.enchant < enchanting_level ) && ( full_inventory.x.enchant < enchant_to_top )
+                            enchanting_level = full_inventory.x.enchant
+                        ENDIF
+                    ENDIF 
+                NEXTEACH
+            ELSE
+                FOREACH x Inventory full_inventory
+                    IF full_inventory.x.name == item_name
+                        total_items = total_items + ONE
+                        IF full_inventory.x.enchant < enchanting_level
+                            enchanting_level = full_inventory.x.enchant
+                        ENDIF
+                    ENDIF 
+                NEXTEACH
+            ENDIF
+        ENDIF
+    ENDIF
+    FOREACH x Inventory full_inventory
+        IF full_inventory.x.name == item_name
+            IF full_inventory.x.enchant == enchanting_level
+                current_items.ADD full_inventory.x.id
+            ENDIF
+        ENDIF 
+    NEXTEACH
+    IF current_items.count == ZERO
+        lag_flag1 = lag_flag1 + ONE
+        IF lag_flag1 == #i3
+            PRINT_TEXT "No more items to echant."
+            JUMP_TO_LABEL THE_END
+        ENDIF
+        JUMP_TO_LABEL A_FLAGS
+        lag_flag1 = ZERO
+    ENDIF
+    FOREACH y INT current_items
+        IF type_of_enchanting != #i7
+            IF total_items <= keep_items_num
+                lag_flag1 = lag_flag1 + ONE
+                IF lag_flag1 == #i3
+                    PRINT_TEXT "We are done here. Your items number is <&total_items&>"
+                    JUMP_TO_LABEL THE_END
+                ENDIF
+                JUMP_TO_LABEL A_FLAGS
+            ENDIF
+        ENDIF
+        IF n_scrolls_count == ONE
+            lag_flag2 = lag_flag2 + ONE
+            IF lag_flag2 == #i3
+                PRINT_TEXT "You are out of <&normal_enchant_name&>"
+                JUMP_TO_LABEL THE_END
+            ENDIF
+            JUMP_TO_LABEL A_FLAGS
+        ENDIF
+        IF ( type_of_enchanting == #i5 ) || ( type_of_enchanting == #i7 )
+            IF b_scrolls_count == ONE
+                lag_flag6 = lag_flag6 + ONE
+                IF lag_flag6 == #i3
+                    PRINT_TEXT "You are out of <&blessed_enchant_name&>"
+                    JUMP_TO_LABEL THE_END
+                ENDIF
+                JUMP_TO_LABEL A_FLAGS
+            ENDIF
+        ENDIF
+        lag_flag1 = ZERO
+        lag_flag2 = ZERO
+        lag_flag6 = ZERO
+        
+        item_uid = current_items.y
+        
+        IF ( type_of_enchanting == #i5 ) || ( type_of_enchanting == #i7 )
+    
+            IF enchanting_level < enchant_safe
+                CALL Enchanting VOID 1 n_enchant_scroll.id
+            ELSE
+                CALL Enchanting VOID 1 b_enchant_scroll.id
+                IF type_of_enchanting == #i5
+                bless_start = ONE
+                ENDIF
+            ENDIF
+
+            ITEM_COUNT n_scrolls_count "<&n_scroll_id&>"
+            ITEM_COUNT b_scrolls_count "<&b_scroll_id&>"
+
+            IF enchant_result > ZERO
+                IF type_of_enchanting == #i5
+                    total_items = total_items - ONE
+                ELSE
+                    JUMP_TO_LABEL A_FLAGS
+                ENDIF
+                PRINT_TEXT "Enchanting <&item_name&> faild at +<&enchanting_level&>. (<&n_scrolls_count&>/<&b_scrolls_count&> scrolls left)"
+            ELSE
+                PRINT_TEXT "Enchanting <&item_name&> succeeded from +<&enchanting_level&>. (<&n_scrolls_count&>/<&b_scrolls_count&> scrolls left)"
+            ENDIF
+
+        ELSE
+                    
+            CALL Enchanting VOID 1 n_enchant_scroll.id
+            
+            ITEM_COUNT n_scrolls_count "<&n_scroll_id&>"
+            
+            IF enchant_result > ZERO
+                total_items = total_items - ONE
+                PRINT_TEXT "<&item_name&> was cristalized at +<&enchanting_level&>. (<&n_scrolls_count&> scrolls left)"
+                remove_uid.ADD "#i<&item_uid&>"
+            ELSE
+                PRINT_TEXT "Enchanting <&item_name&> succeeded from +<&enchanting_level&>. (<&n_scrolls_count&> scrolls left)"
+            ENDIF
+        ENDIF
+    NEXTEACH
+    JUMP_TO_LABEL A_FLAGS
+
+RETURN VOID
+
+
+
+FUNCTION EnchantEachOnetoTop
+
+    DEFINE INT enchant_level 0
+    DEFINE INT lag_flag3 0
+    DEFINE INT lag_flag4 0
+    DEFINE INT lag_flag5 0
+    LABEL B_FLAGS
+    
+    full_inventory.clear
+    GET_INVENTORY full_inventory
+    CALL RemoveFromInv
+    item_uid = ZERO
+    enchant_level = ZERO
+    ITEM_COUNT n_scrolls_count "<&n_scroll_id&>"
+    ITEM_COUNT b_scrolls_count "<&b_scroll_id&>"
+    
+    FOREACH x Inventory full_inventory
+        IF full_inventory.x.name == item_name
+            IF full_inventory.x.enchant < enchant_to_top
+                item_uid = full_inventory.x.id
+                enchant_level = full_inventory.x.enchant
+            ENDIF
+        ENDIF 
+    NEXTEACH
+    
+    IF item_uid == ZERO
+        lag_flag3 = lag_flag3 + ONE
+        IF lag_flag3 == #i3
+            PRINT_TEXT "We are done here. No more items to enchant."
+            JUMP_TO_LABEL THE_END
+        ENDIF
+        JUMP_TO_LABEL B_FLAGS
+    ENDIF
+    IF n_scrolls_count == ONE
+        lag_flag4 = lag_flag4 + ONE
+        IF lag_flag4 == #i3
+            PRINT_TEXT "You are out of <&normal_enchant_name&>"
+            JUMP_TO_LABEL THE_END
+        ENDIF
+        JUMP_TO_LABEL B_FLAGS
+    ENDIF
+    IF type_of_enchanting == #i4
+        IF b_scrolls_count == ONE
+            lag_flag5 = lag_flag5 + ONE
+            IF lag_flag5 == #i3
+                PRINT_TEXT "You are out of <&blessed_enchant_name&>"
+                JUMP_TO_LABEL THE_END
+            ENDIF
+            JUMP_TO_LABEL B_FLAGS
+        ENDIF
+        lag_flag5 = ZERO
+    ENDIF
+    lag_flag3 = ZERO
+    lag_flag4 = ZERO
+    
+    
+    DO
+        IF n_scrolls_count == ONE
+            PRINT_TEXT "You are out of <&normal_enchant_name&>"
+            JUMP_TO_LABEL THE_END
+        ENDIF
+    
+        IF type_of_enchanting == #i4
+
+            IF b_scrolls_count == ONE
+                PRINT_TEXT "You are out of <&blessed_enchant_name&>"
+                JUMP_TO_LABEL THE_END
+            ENDIF
+        
+            IF enchant_level < enchant_safe
+                CALL Enchanting VOID 1 n_enchant_scroll.id
+            ELSE
+                CALL Enchanting VOID 1 b_enchant_scroll.id
+            ENDIF
+
+            ITEM_COUNT n_scrolls_count "<&n_scroll_id&>"
+            ITEM_COUNT b_scrolls_count "<&b_scroll_id&>"
+
+            IF enchant_result > ZERO
+                PRINT_TEXT "Enchanting <&item_name&> faild at +<&enchant_level&>. (<&n_scrolls_count&>/<&b_scrolls_count&> scrolls left)"
+                enchant_level = ZERO
+            ELSE
+                enchant_level = enchant_level + ONE
+                PRINT_TEXT "Enchanting <&item_name&> succeeded to +<&enchant_level&>. (<&n_scrolls_count&>/<&b_scrolls_count&> scrolls left)"
+            ENDIF
+
+        ELSE
+    
+            CALL Enchanting VOID 1 n_enchant_scroll.id
+    
+            ITEM_COUNT n_scrolls_count "<&n_scroll_id&>"
+            
+            IF enchant_result > ZERO
+                PRINT_TEXT "<&item_name&> was cristalized at +<&enchant_level&>. (<&n_scrolls_count&> scrolls left)"
+                remove_uid.ADD "#i<&item_uid&>"
+                JUMP_TO_LABEL B_FLAGS
+            ELSE
+                enchant_level = enchant_level + ONE
+                PRINT_TEXT "Enchanting <&item_name&> succeeded to +<&enchant_level&>. (<&n_scrolls_count&> scrolls left)"
+            ENDIF
+        
+        ENDIF
+    
+    LOOP enchant_level < enchant_to_top
+    
+    JUMP_TO_LABEL B_FLAGS
+
+RETURN VOID
+
+
+FUNCTION BlessedEnchantOne
+
+    DEFINE INT enchant_level 0
+    DEFINE INT lag_flag8 0
+    LABEL C_FLAGS
+    
+    full_inventory.clear
+    GET_INVENTORY full_inventory
+
+    item_uid = ZERO
+    enchant_level = ZERO
+    ITEM_COUNT n_scrolls_count "<&n_scroll_id&>"
+    ITEM_COUNT b_scrolls_count "<&b_scroll_id&>"
+    
+    FOREACH x Inventory full_inventory
+        IF full_inventory.x.name == item_name
+            IF full_inventory.x.enchant < enchant_to_top
+                item_uid = full_inventory.x.id
+                enchant_level = full_inventory.x.enchant
+            ENDIF
+        ENDIF 
+    NEXTEACH
+    
+    IF item_uid == ZERO
+        lag_flag8 = lag_flag8 + ONE
+        IF lag_flag8 == #i3
+            PRINT_TEXT "No item to enchant!"
+            JUMP_TO_LABEL THE_END
+        ENDIF
+        JUMP_TO_LABEL C_FLAGS
+    ENDIF
+    lag_flag8 = ZERO
+    
+    DO
+    
+        IF n_scrolls_count == ONE
+            PRINT_TEXT "You are out of <&normal_enchant_name&>"
+            JUMP_TO_LABEL THE_END
+        ENDIF
+        IF b_scrolls_count == ONE
+            PRINT_TEXT "You are out of <&blessed_enchant_name&>"
+            JUMP_TO_LABEL THE_END
+        ENDIF
+    
+        IF enchant_level < enchant_safe
+            CALL Enchanting VOID 1 n_enchant_scroll.id
+        ELSE
+            CALL Enchanting VOID 1 b_enchant_scroll.id
+        ENDIF
+    
+        ITEM_COUNT b_scrolls_count "<&b_scroll_id&>"
+        ITEM_COUNT n_scrolls_count "<&n_scroll_id&>"
+        
+        IF enchant_result > ZERO
+            PRINT_TEXT "Enchanting <&item_name&> faild at +<&enchant_level&>. (<&n_scrolls_count&>/<&b_scrolls_count&> scrolls left)"
+            enchant_level = ZERO
+        ELSE
+            enchant_level = enchant_level + ONE
+            PRINT_TEXT "Enchanting <&item_name&> succeeded to +<&enchant_level&>. (<&n_scrolls_count&>/<&b_scrolls_count&> scrolls left)"
+        ENDIF
+    
+    LOOP enchant_level < enchant_to_top
+    
+    JUMP_TO_LABEL THE_END
+
+RETURN VOID
+
+
+FUNCTION Enchanting 1 scroll_id
+
+    enchant_result = #i9999
+    some_loop = ZERO
+    GET_RAND rand_delay "<&min_little_delay&>" "<&max_little_delay&>"
+    SLEEP "<&rand_delay&>"
+    SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" InsertItem 124
+    DEFINE BYTEBUFFER use_scroll_buffer 256
+    use_scroll_buffer.write_byte #i25
+    use_scroll_buffer.write_int32 scroll_id
+    use_scroll_buffer.write_int32 #i0
+    use_scroll_buffer.trim_to_index
+    INJECTBB use_scroll_buffer
+    DELETE use_scroll_buffer
+    
+    WHILE some_loop == ZERO
+    SLEEP 50
+    WEND
+    LOCK A
+    SLEEP 50
+    UNLOCK A
+    
+RETURN VOID
+
+
+
+FUNCTION InsertItem
+    
+    LOCK A
+    some_loop = ONE
+    
+    SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" BlankFunc 124
+    SET_EVENT "<&SCRIPTEVENT_SERVERPACKETEX&>" "<&SYSTEM_CURRENTFILE&>" ClickOK 129
+    
+    GET_RAND rand_delay "<&min_little_delay&>" "<&max_little_delay&>"
+    SLEEP "<&rand_delay&>"
+    
+    DEFINE BYTEBUFFER use_item_buffer 256
+    use_item_buffer.write_byte #i208
+    use_item_buffer.write_int16 #i76
+    use_item_buffer.write_int32 item_uid
+    use_item_buffer.trim_to_index
+    INJECTBB use_item_buffer
+    DELETE use_item_buffer
+    
+RETURN VOID
+
+
+FUNCTION ClickOK
+
+    SET_EVENT "<&SCRIPTEVENT_SERVERPACKETEX&>" "<&SYSTEM_CURRENTFILE&>" BlankFunc 129
+    SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" EnchantComplete 135
+
+    GET_RAND rand_delay "<&min_delay&>" "<&max_delay&>"
+    SLEEP "<&rand_delay&>"
+    
+    DEFINE BYTEBUFFER confirm_enchant_buffer 256
+    confirm_enchant_buffer.write_byte #i95
+    confirm_enchant_buffer.write_int32 item_uid
+    confirm_enchant_buffer.write_int32 #i0
+    confirm_enchant_buffer.trim_to_index
+    INJECTBB confirm_enchant_buffer
+    DELETE confirm_enchant_buffer
+
+RETURN VOID
+
+
+FUNCTION EnchantComplete
+
+    SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" BlankFunc 135
+    
+    DEFINE INT result_byte 0
+    
+    PACKET.READ_BYTE result_byte
+    PACKET.READ_INT32 enchant_result
+    
+    DELETE result_byte
+    
+    UNLOCK A
+
+RETURN VOID
+
+
+FUNCTION RemoveFromInv
+
+    DEFINE ARRAYLIST temp_arr 0
+    
+    FOREACH igzs Inventory full_inventory
+        FOREACH zedt INT remove_uid
+            
+            IF full_inventory.igzs.ID == remove_uid.zedt
+                full_inventory.igzs.NAME = "none"
+                full_inventory.igzs.ID = #i0
+                full_inventory.igzs.ITEM_ID = #i0
+                full_inventory.igzs.ENCHANT = #i0
+            ENDIF
+            
+        NEXTEACH
+    NEXTEACH
+
+RETURN VOID
+
+
+FUNCTION BlankFunc
+
+SLEEP 25 //e = mc^2 nonsence
+
+RETURN VOID

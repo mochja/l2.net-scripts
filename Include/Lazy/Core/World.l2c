@@ -1,0 +1,595 @@
+
+INCLUDE "StdLib/Player.l2c"
+INCLUDE "StdLib/NPC.l2c"
+
+INCLUDE "Include/Lazy/Core/World/ObjectActivity.l2c"
+INCLUDE "Include/Lazy/Core/World/ObjectActivityCasting.l2c"
+
+CLASS LAZY_WORLD NULL
+
+//-------------------------------------------------------------------------------------
+
+   VAR_START
+
+      DEFINE INT {MENU} 0
+
+      PUBLIC SORTEDLIST DEAD_OBJECTS 0
+      PUBLIC SORTEDLIST INCORRECT_OBJECTS 0
+      PUBLIC SORTEDLIST NOTSEEN_OBJECTS 0
+
+      PUBLIC INT CLEANUP_DEAD_AFTER 30000
+      PUBLIC INT CLEANUP_INCORRECT_AFTER 10000
+      PUBLIC INT CLEANUP_NOTSEEN_AFTER 20000
+
+      PUBLIC SORTEDLIST AREAS 0
+
+      PUBLIC SORTEDLIST OBJECTACTIVITIES 0
+      PUBLIC INT CLEANUP_CASTACTIVITY_AFTER 360000
+
+   VAR_END
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT2 0
+
+		ENGINEX.EVENTS.ADD_SERVERPACKET VOID 2 #i0 #$LAZY.CLASSES.#$WORLD.SERVEREVENT_DIE
+		ENGINEX.EVENTS.ADD_SERVERPACKET VOID 2 #i8 #$LAZY.CLASSES.#$WORLD.SERVEREVENT_OBJECTDELETE
+		ENGINEX.EVENTS.ADD_SERVERPACKET VOID 2 #i98 #$LAZY.CLASSES.#$WORLD.SERVEREVENT_SYSTEMMESSAGE
+      ENGINEX.EVENTS.ADD_CUSTOMPACKET VOID 2 SCRIPTEVENT_SKILLUSED #$LAZY.CLASSES.#$WORLD.CUSTOMEVENT_SKILLUSED
+      ENGINEX.EVENTS.ADD_CUSTOMPACKET VOID 2 SCRIPTEVENT_SKILLLAUNCHED #$LAZY.CLASSES.#$WORLD.CUSTOMEVENT_SKILLLAUNCHED
+
+      THREAD CLEANUP_TEMPORARY_DATA
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+// user calls
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+
+   PUBLIC GET_OBJECT_DATA 1 OBJECT_ID
+
+      DEFINE SORTEDLIST OBJECT_DATA 0
+
+      DEFINE STRING _GROUP ""
+      DEFINE STRING _NAME ""
+      DEFINE STRING _TITLE ""
+      DEFINE INT _MAX_HP 0
+      DEFINE INT _CUR_HP 0
+      DEFINE INT _MAX_MP 0
+      DEFINE INT _CUR_MP 0
+      DEFINE INT _POS_X 0
+      DEFINE INT _POS_Y 0
+      DEFINE INT _POS_Z 0
+      DEFINE VECTOR3 _POSITION 0
+      DEFINE DOUBLE _HP_PERCENT 0
+      DEFINE DOUBLE _MP_PERCENT 0
+      DEFINE INT _TARGET_ID 0
+      DEFINE DOUBLE _DISTANCE 0
+
+      DEFINE INT CUR_OBJECT 0
+      IF (OBJECT_ID == CHAR_ID)
+
+         _GROUP = "#$CHAR"
+         _NAME = "#$<&CHAR_NAME&>"
+         _TITLE = "#$<&CHAR_TITLE&>"
+         _MAX_HP = "#i<&CHAR_MAX_HP&>"
+         _CUR_HP = "#i<&CHAR_CUR_HP&>"
+         _MAX_MP = "#i<&CHAR_MAX_MP&>"
+         _CUR_MP = "#i<&CHAR_CUR_MP&>"
+         _POS_X = "#i<&CHAR_X&>"
+         _POS_Y = "#i<&CHAR_Y&>"
+         _POS_Z = "#i<&CHAR_Z&>"
+         _TARGET_ID = "#i<&TARGET_ID&>"
+
+      ELSE
+         IF (OBJECT_ID == TARGET_ID)
+
+            _GROUP = "#$TARGET"
+            _NAME = "#$<&TARGET_NAME&>"
+            _TITLE = "#$<&TARGET_TITLE&>"
+            _MAX_HP = "#i<&TARGET_MAX_HP&>"
+            _CUR_HP = "#i<&TARGET_CUR_HP&>"
+            _MAX_MP = "#i<&TARGET_MAX_MP&>"
+            _CUR_MP = "#i<&TARGET_CUR_MP&>"
+            _POS_X = "#i<&TARGET_X&>"
+            _POS_Y = "#i<&TARGET_Y&>"
+            _POS_Z = "#i<&TARGET_Z&>"
+            _TARGET_ID = "#i<&TARGET_TARGETID&>"
+         ELSE
+
+            ENGINEX.OBJECTS.GET_PARTY_OBJECT CUR_OBJECT 1 OBJECT_ID
+            IF (CUR_OBJECT.CLASSNAME == #$PLAYER)
+
+               _GROUP = "#$PARTY"
+               _NAME = "#$<&CUR_OBJECT.NAME&>"
+               _TITLE = "#$<&CUR_OBJECT.TITLE&>"
+               _MAX_HP = "#i<&CUR_OBJECT.MAX_HP&>"
+               _CUR_HP = "#i<&CUR_OBJECT.HP&>"
+               _MAX_MP = "#i<&CUR_OBJECT.MAX_MP&>"
+               _CUR_MP = "#i<&CUR_OBJECT.MP&>"
+               _POS_X = "#i<&CUR_OBJECT.X&>"
+               _POS_Y = "#i<&CUR_OBJECT.Y&>"
+               _POS_Z = "#i<&CUR_OBJECT.Z&>"
+               _TARGET_ID = "#i<&CUR_OBJECT.TARGET_ID&>"
+            ELSE
+
+               ENGINEX.OBJECTS.GET_PLAYER_OBJECT CUR_OBJECT 1 OBJECT_ID
+               IF (CUR_OBJECT.CLASSNAME == #$PLAYER)
+
+                  _GROUP = "#$PLAYER"
+                  _NAME = "#$<&CUR_OBJECT.NAME&>"
+                  _TITLE = "#$<&CUR_OBJECT.TITLE&>"
+                  _MAX_HP = "#i<&CUR_OBJECT.MAX_HP&>"
+                  _CUR_HP = "#i<&CUR_OBJECT.HP&>"
+                  _MAX_MP = "#i<&CUR_OBJECT.MAX_MP&>"
+                  _CUR_MP = "#i<&CUR_OBJECT.MP&>"
+                  _POS_X = "#i<&CUR_OBJECT.X&>"
+                  _POS_Y = "#i<&CUR_OBJECT.Y&>"
+                  _POS_Z = "#i<&CUR_OBJECT.Z&>"
+                  _TARGET_ID = "#i<&CUR_OBJECT.TARGET_ID&>"
+               ELSE
+
+                  ENGINEX.OBJECTS.GET_NPC_OBJECT CUR_OBJECT 1 OBJECT_ID
+                  IF (CUR_OBJECT.CLASSNAME == #$NPC)
+
+                     _GROUP = "#$NPC"
+                     _NAME = "#$<&CUR_OBJECT.NAME&>"
+                     _TITLE = "#$<&CUR_OBJECT.TITLE&>"
+                     _MAX_HP = "#i<&CUR_OBJECT.MAX_HP&>"
+                     _CUR_HP = "#i<&CUR_OBJECT.HP&>"
+                     _MAX_MP = "#i<&CUR_OBJECT.MAX_MP&>"
+                     _CUR_MP = "#i<&CUR_OBJECT.MP&>"
+                     _POS_X = "#i<&CUR_OBJECT.X&>"
+                     _POS_Y = "#i<&CUR_OBJECT.Y&>"
+                     _POS_Z = "#i<&CUR_OBJECT.Z&>"
+                     _TARGET_ID = "#i<&CUR_OBJECT.TARGET_ID&>"
+                  ELSE
+
+                     RETURN OBJECT_DATA
+                  ENDIF
+               ENDIF
+            ENDIF
+         ENDIF
+      ENDIF
+
+      IF (_MAX_HP > ZERO)
+         IF (_MAX_HP == _CUR_HP)
+            _HP_PERCENT = #i100
+         ELSE
+            _HP_PERCENT = #i100 / _MAX_HP
+            _HP_PERCENT = _HP_PERCENT * _CUR_HP
+         ENDIF
+      ENDIF
+      IF (_MAX_MP > ZERO)
+         IF (_MAX_MP == _CUR_MP)
+            _MP_PERCENT = #i100
+         ELSE
+            _MP_PERCENT = #i100 / _MAX_MP
+            _MP_PERCENT = _MP_PERCENT * _CUR_MP
+         ENDIF
+      ENDIF
+
+      _POSITION.SET VOID 3 _POS_X _POS_Y _POS_Z
+      DISTANCE _DISTANCE CHAR_X CHAR_Y CHAR_Z _POS_X _POS_Y _POS_Z
+
+      OBJECT_DATA.ADD "#$<&_GROUP&>" "GROUP"
+      OBJECT_DATA.ADD "#$<&_NAME&>" "NAME"
+      OBJECT_DATA.ADD "#$<&_TITLE&>" "TITLE"
+      OBJECT_DATA.ADD "#i<&_MAX_HP&>" "MAX_HP"
+      OBJECT_DATA.ADD "#i<&_CUR_HP&>" "CUR_HP"
+      OBJECT_DATA.ADD "#i<&_MAX_MP&>" "MAX_MP"
+      OBJECT_DATA.ADD "#i<&_CUR_MP&>" "CUR_MP"
+      OBJECT_DATA.ADD "#i<&_POS_X&>" "POS_X"
+      OBJECT_DATA.ADD "#i<&_POS_Y&>" "POS_Y"
+      OBJECT_DATA.ADD "#i<&_POS_Z&>" "POS_Z"
+      OBJECT_DATA.ADD "#i<&_POSITION&>" "POSITION"
+      OBJECT_DATA.ADD "#d<&_HP_PERCENT&>" "HP_PERCENT"
+      OBJECT_DATA.ADD "#d<&_MP_PERCENT&>" "MP_PERCENT"
+      OBJECT_DATA.ADD "#i<&_TARGET_ID&>" "TARGET_ID"
+      OBJECT_DATA.ADD "#i<&_DISTANCE&>" "DISTANCE"
+
+   RETURN OBJECT_DATA
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC OBJECT_IS_DEAD 1 OBJECT_ID
+
+      LOCK LAZY.CLASSES.#$WORLD.DEAD_OBJECTS
+      DEFINE INT IS_DEAD 0
+      FOREACH I INT THIS.DEAD_OBJECTS
+         IF ("THIS.DEAD_OBJECTS.GET_KEY I" == OBJECT_ID)
+            IS_DEAD = TRUE
+            BREAK 2
+         ENDIF
+      NEXTEACH
+      UNLOCK LAZY.CLASSES.#$WORLD.DEAD_OBJECTS
+
+   RETURN IS_DEAD
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC GET_DEAD_OBJECTS 0
+
+      LOCK LAZY.CLASSES.#$WORLD.DEAD_OBJECTS
+      DEFINE ARRAYLIST DEAD_OBJECTS 0
+      FOREACH I INT THIS.DEAD_OBJECTS
+         DEAD_OBJECTS.ADD "#i<&THIS.DEAD_OBJECTS.GET_KEY I&>"
+      NEXTEACH
+      UNLOCK LAZY.CLASSES.#$WORLD.DEAD_OBJECTS
+
+   RETURN DEAD_OBJECTS
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC OBJECT_IS_INCORRECT 1 OBJECT_ID
+
+      LOCK LAZY.CLASSES.#$WORLD.INCORRECT_OBJECTS
+      DEFINE INT IS_INCORRECT 0
+      FOREACH I INT THIS.INCORRECT_OBJECTS
+         IF ("THIS.INCORRECT_OBJECTS.GET_KEY I" == OBJECT_ID)
+            IS_INCORRECT = TRUE
+            BREAK 2
+         ENDIF
+      NEXTEACH
+      UNLOCK LAZY.CLASSES.#$WORLD.INCORRECT_OBJECTS
+
+   RETURN IS_INCORRECT
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC GET_INCORRECT_OBJECTS 0
+
+      LOCK LAZY.CLASSES.#$WORLD.INCORRECT_OBJECTS
+      DEFINE ARRAYLIST INCORRECT_OBJECTS 0
+      FOREACH I INT THIS.INCORRECT_OBJECTS
+         INCORRECT_OBJECTS.ADD "#i<&THIS.INCORRECT_OBJECTS.GET_KEY I&>"
+      NEXTEACH
+      UNLOCK LAZY.CLASSES.#$WORLD.INCORRECT_OBJECTS
+
+   RETURN INCORRECT_OBJECTS
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC OBJECT_IS_NOTSEEN 1 OBJECT_ID
+
+      LOCK LAZY.CLASSES.#$WORLD.NOTSEEN_OBJECTS
+      DEFINE INT IS_NOTSEEN 0
+      FOREACH I INT THIS.NOTSEEN_OBJECTS
+         IF ("THIS.NOTSEEN_OBJECTS.GET_KEY I" == OBJECT_ID)
+            IS_NOTSEEN = TRUE
+            BREAK 2
+         ENDIF
+      NEXTEACH
+      UNLOCK LAZY.CLASSES.#$WORLD.NOTSEEN_OBJECTS
+
+   RETURN IS_NOTSEEN
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC GET_NOTSEEN_OBJECTS 0
+
+      LOCK LAZY.CLASSES.#$WORLD.NOTSEEN_NOTSEEN
+      DEFINE ARRAYLIST NOTSEEN_OBJECTS 0
+      FOREACH I INT THIS.NOTSEEN_OBJECTS
+         NOTSEEN_OBJECTS.ADD "#i<&THIS.NOTSEEN_OBJECTS.GET_KEY I&>"
+      NEXTEACH
+      UNLOCK LAZY.CLASSES.#$WORLD.NOTSEEN_OBJECTS
+
+   RETURN NOTSEEN_OBJECTS
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC DELETE_DEAD_OBJECT 1 OBJECT_ID
+
+      LOCK LAZY.CLASSES.#$WORLD.DEAD_OBJECTS
+      THIS.DEAD_OBJECTS.REMOVE "<&OBJECT_ID&>"
+      UNLOCK LAZY.CLASSES.#$WORLD.DEAD_OBJECTS
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC DELETE_INCORRECT_OBJECT 1 OBJECT_ID
+
+      LOCK LAZY.CLASSES.#$WORLD.INCORRECT_OBJECTS
+      THIS.INCORRECT_OBJECTS.REMOVE "<&OBJECT_ID&>"
+      UNLOCK LAZY.CLASSES.#$WORLD.INCORRECT_OBJECTS
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC DELETE_NOTSEEN_OBJECT 1 OBJECT_ID
+
+      LOCK LAZY.CLASSES.#$WORLD.NOTSEEN_OBJECTS
+      THIS.NOTSEEN_OBJECTS.REMOVE "<&OBJECT_ID&>"
+      UNLOCK LAZY.CLASSES.#$WORLD.NOTSEEN_OBJECTS
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CLEANUP_DEAD_OBJECTS 0
+
+      LOCK LAZY.CLASSES.#$WORLD.DEAD_OBJECTS
+      DEFINE INT TIME_NOW 0
+      GET_TIME TIME_NOW
+      DEFINE INT DEAD_TIME 0
+
+      FOREACH I INT THIS.DEAD_OBJECTS
+         DEAD_TIME = TIME_NOW - LAZY.CLASSES.#$WORLD.DEAD_OBJECTS.I
+         DEAD_TIME = DEAD_TIME / #i10000
+         IF (DEAD_TIME > THIS.CLEANUP_DEAD_AFTER)
+            THIS.DEAD_OBJECTS.REMOVE "<&THIS.DEAD_OBJECTS.GET_KEY I&>"
+         ENDIF
+      NEXTEACH
+      UNLOCK LAZY.CLASSES.#$WORLD.DEAD_OBJECTS
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CLEANUP_INCORRECT_OBJECTS 0
+
+      LOCK LAZY.CLASSES.#$WORLD.INCORRECT_OBJECTS
+      DEFINE INT TIME_NOW 0
+      GET_TIME TIME_NOW
+      DEFINE INT INCORRECT_TIME 0
+
+      FOREACH I INT THIS.INCORRECT_OBJECTS
+         INCORRECT_TIME = TIME_NOW - THIS.INCORRECT_OBJECTS.I
+         INCORRECT_TIME = INCORRECT_TIME / #i10000
+         IF (INCORRECT_TIME > THIS.CLEANUP_INCORRECT_AFTER)
+            THIS.INCORRECT_OBJECTS.REMOVE "<&THIS.INCORRECT_OBJECTS.GET_KEY I&>"
+         ENDIF
+      NEXTEACH
+      UNLOCK LAZY.CLASSES.#$WORLD.INCORRECT_OBJECTS
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CLEANUP_NOTSEEN_OBJECTS 0
+
+      LOCK LAZY.CLASSES.#$WORLD.NOTSEEN_OBJECTS
+      DEFINE INT TIME_NOW 0
+      GET_TIME TIME_NOW
+      DEFINE INT NOTSEEN_TIME 0
+
+      FOREACH I INT THIS.NOTSEEN_OBJECTS
+         NOTSEEN_TIME = TIME_NOW - THIS.NOTSEEN_OBJECTS.I
+         NOTSEEN_TIME = NOTSEEN_TIME / #i10000
+         IF (NOTSEEN_TIME > THIS.CLEANUP_NOTSEEN_AFTER)
+            THIS.NOTSEEN_OBJECTS.REMOVE "<&THIS.NOTSEEN_OBJECTS.GET_KEY I&>"
+         ENDIF
+      NEXTEACH
+      UNLOCK LAZY.CLASSES.#$WORLD.NOTSEEN_OBJECTS
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CREATE_AREA 1 AREA_NAME
+
+      IF ("THIS.AREAS.CONTAINS_KEY <&AREA_NAME&>" == TRUE)
+         PRINT_TEXT "Lazy::World]: Area (<&AREA_NAME&>) already exists."
+         RETURN FALSE
+      ENDIF
+
+      DEFINE ARRAYLIST AREACORNERS 0
+      THIS.AREAS.ADD "AREACORNERS" "<&AREA_NAME&>"
+
+   RETURN TRUE
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC AREA_ADD_CORNER 3 AREA_NAME X Y
+
+      IF ("THIS.AREAS.CONTAINS_KEY <&AREA_NAME&>" == FALSE)
+         PRINT_TEXT "Lazy::World]: Area (<&AREA_NAME&>) doesnt exist."
+         RETURN FALSE
+      ENDIF
+
+      DEFINE VECTOR2 CORNER 0
+      CORNER.SET VOID 2 X Y
+      THIS.AREAS.AREA_NAME.ADD "CORNER"
+
+   RETURN TRUE
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CLEANUP_CASTACTIVITIES 0
+
+      DEFINE INT TIME_NOW 0
+      GET_TIME TIME_NOW
+      DEFINE INT LAST_TIME 0
+
+      FOREACH I1 LAZY_WORLD_OBJECTACTIVITY THIS.OBJECTACTIVITIES
+         FOREACH I2 LAZY_WORLD_OBJECTACTIVITY_CASTING THIS.OBJECTACTIVITIES.I1.CASTINGS
+
+            LAST_TIME = TIME_NOW - THIS.OBJECTACTIVITIES.I1.CASTINGS.I2.TIME_USED
+            LAST_TIME = LAST_TIME / #i10000
+            IF (LAST_TIME > THIS.CLEANUP_CASTACTIVITY_AFTER)
+               THIS.OBJECTACTIVITIES.I1.CASTINGS.REMOVE "<&I2&>"
+            ENDIF
+
+         NEXTEACH
+
+         IF (THIS.OBJECTACTIVITIES.I1.CASTINGS.COUNT == ZERO)
+            THIS.OBJECTACTIVITIES.REMOVE "<&THIS.OBJECTACTIVITIES.GET_KEY I1&>"
+         ENDIF
+
+      NEXTEACH
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+// threads
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CLEANUP_TEMPORARY_DATA 0
+
+      DEFINE INT THAT 0
+      LAZY.REGISTER THAT 1 #$WORLD
+
+      WHILE (TRUE == TRUE)
+         SLEEP 60000
+         THAT.CLEANUP_INCORRECT_OBJECTS VOID 0
+         THAT.CLEANUP_NOTSEEN_OBJECTS VOID 0
+         THAT.CLEANUP_DEAD_OBJECTS VOID 0
+         THAT.CLEANUP_CASTACTIVITIES VOID 0
+      WEND
+
+   RETURN TRUE
+
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+// server events
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+
+   PUBLIC SERVEREVENT_DIE 1 PACKET_DATA
+
+      DEFINE INT TIME_NOW 0
+      GET_TIME TIME_NOW
+
+      LOCK LAZY.CLASSES.#$WORLD.DEAD_OBJECTS
+      THIS.DEAD_OBJECTS.ADD "#i<&TIME_NOW&>" "<&PACKET_DATA.#$OBJECT_ID&>"
+      UNLOCK LAZY.CLASSES.#$WORLD.DEAD_OBJECTS
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC SERVEREVENT_OBJECTDELETE 1 PACKET_DATA
+
+      LOCK LAZY.CLASSES.#$WORLD.DEAD_OBJECTS
+      LOCK LAZY.CLASSES.#$WORLD.INCORRECT_OBJECTS
+      LOCK LAZY.CLASSES.#$WORLD.NOTSEEN_OBJECTS
+
+      DEFINE STRING DEAD_OBJECTS_KEY ""
+      FOREACH I INT THIS.DEAD_OBJECTS
+         DEAD_OBJECTS_KEY = "#$<&THIS.DEAD_OBJECTS.GET_KEY I&>"
+         IF (DEAD_OBJECTS_KEY == PACKET_DATA.#$OBJECT_ID)
+            THIS.DEAD_OBJECTS.REMOVE "<&DEAD_OBJECTS_KEY&>"
+            BREAK 2
+         ENDIF
+      NEXTEACH
+      DELETE DEAD_OBJECTS_KEY
+
+      DEFINE STRING INCORRECT_OBJECTS_KEY ""
+      FOREACH I INT THIS.INCORRECT_OBJECTS
+         INCORRECT_OBJECTS_KEY = "#$<&THIS.INCORRECT_OBJECTS.GET_KEY I&>"
+         IF (INCORRECT_OBJECTS_KEY == PACKET_DATA.#$OBJECT_ID)
+            THIS.INCORRECT_OBJECTS.REMOVE "<&INCORRECT_OBJECTS_KEY&>"
+            BREAK 2
+         ENDIF
+      NEXTEACH
+      DELETE INCORRECT_OBJECTS_KEY
+
+      DEFINE STRING NOTSEEN_OBJECTS_KEY ""
+      FOREACH I INT THIS.NOTSEEN_OBJECTS
+         NOTSEEN_OBJECTS_KEY = "#$<&THIS.NOTSEEN_OBJECTS.GET_KEY I&>"
+         IF (NOTSEEN_OBJECTS_KEY == PACKET_DATA.#$OBJECT_ID)
+            THIS.NOTSEEN_OBJECTS.REMOVE "<&NOTSEEN_OBJECTS_KEY&>"
+            BREAK 2
+         ENDIF
+      NEXTEACH
+      DELETE NOTSEEN_OBJECTS_KEY
+
+      UNLOCK LAZY.CLASSES.#$WORLD.NOTSEEN_OBJECTS
+      UNLOCK LAZY.CLASSES.#$WORLD.INCORRECT_OBJECTS
+      UNLOCK LAZY.CLASSES.#$WORLD.DEAD_OBJECTS
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC SERVEREVENT_SYSTEMMESSAGE 1 PACKET_DATA
+      SWITCH PACKET_DATA.#$MESSAGE_TYPE
+
+         CASE #i144 // That is the incorrect target.
+            LOCK LAZY.CLASSES.#$WORLD.INCORRECT_OBJECTS
+            IF ("THIS.INCORRECT_OBJECTS.CONTAINS_KEY <&TARGET_ID&>" == FALSE)
+               DEFINE INT TIME_NOW 0
+               GET_TIME TIME_NOW
+               THIS.INCORRECT_OBJECTS.ADD "#i<&TIME_NOW&>" "<&TARGET_ID&>"
+               DELETE TIME_NOW
+            ENDIF
+            UNLOCK LAZY.CLASSES.#$WORLD.INCORRECT_OBJECTS
+            BREAK 1
+
+         CASE #i181 // Cannot see target.
+            LOCK LAZY.CLASSES.#$WORLD.NOTSEEN_OBJECTS
+            IF ("THIS.NOTSEEN_OBJECTS.CONTAINS_KEY <&TARGET_ID&>" == FALSE)
+               DEFINE INT TIME_NOW 0
+               GET_TIME TIME_NOW
+               THIS.NOTSEEN_OBJECTS.ADD "#i<&TIME_NOW&>" "<&TARGET_ID&>"
+               DELETE TIME_NOW
+            ENDIF
+            UNLOCK LAZY.CLASSES.#$WORLD.NOTSEEN_OBJECTS
+            BREAK 1
+
+      ENDSWITCH
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CUSTOMEVENT_SKILLUSED 1 PACKET_DATA
+
+      DEFINE STRING OBJECT_KEY "<&CHAR_ID&>"
+      IF ("THIS.OBJECTACTIVITIES.CONTAINS_KEY <&CHAR_ID&>" == FALSE)
+         DEFINE LAZY_WORLD_OBJECTACTIVITY OBJECTACTIVITY 0
+         THIS.OBJECTACTIVITIES.ADD "OBJECTACTIVITY" "<&CHAR_ID&>"
+         DELETE OBJECTACTIVITY
+      ENDIF
+
+      DEFINE LAZY_WORLD_OBJECTACTIVITY_CASTING OBJECTCASTING 0
+      OBJECTCASTING.SKILL_ID = PACKET_DATA.#$SKILL_ID
+      OBJECTCASTING.TARGET_ID = PACKET_DATA.#$TARGET_ID
+      OBJECTCASTING.SKILL_LEVEL = PACKET_DATA.#$SKILL_LEVEL
+      GET_TIME OBJECTCASTING.TIME_USED
+
+      THIS.OBJECTACTIVITIES.OBJECT_KEY.CASTINGS.ADD "OBJECTCASTING" 
+      DELETE OBJECTCASTING
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CUSTOMEVENT_SKILLLAUNCHED 1 PACKET_DATA
+
+      DEFINE STRING OBJECT_KEY "<&CHAR_ID&>"
+      IF ("THIS.OBJECTACTIVITIES.CONTAINS_KEY <&CHAR_ID&>" == FALSE)
+         RETURN VOID
+      ENDIF
+
+      DEFINE INT LAST_CASTINGS_KEY 0
+      LAST_CASTINGS_KEY = THIS.OBJECTACTIVITIES.OBJECT_KEY.CASTINGS.COUNT - #i1
+
+      IF (THIS.OBJECTACTIVITIES.OBJECT_KEY.CASTINGS.LAST_CASTINGS_KEY.SKILL_ID != PACKET_DATA.#$SKILL_ID)
+         RETURN VOID
+      ENDIF
+
+      THIS.OBJECTACTIVITIES.OBJECT_KEY.CASTINGS.LAST_CASTINGS_KEY.HAS_LAUNCHED = TRUE
+      GET_TIME THIS.OBJECTACTIVITIES.OBJECT_KEY.CASTINGS.LAST_CASTINGS_KEY.TIME_LAUNCHED
+
+      IF (PACKET_DATA.#$TARGET_HIT == TRUE)
+         THIS.OBJECTACTIVITIES.OBJECT_KEY.CASTINGS.LAST_CASTINGS_KEY.HAS_HITTED = TRUE
+      ENDIF
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+END_CLASS

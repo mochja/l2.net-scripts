@@ -1,0 +1,23 @@
+
+	INCLUDE Include/EngineX.l2c
+	DEFINE_GLOBAL ENGINEX ENGINEX 0
+
+	PRINT_TEXT ""
+	PRINT_TEXT "-------------------------------------------------"
+
+	DEFINE STRING MYSTRING "Hello World !!!"
+	PRINT_TEXT "String: <&MYSTRING&>"
+
+	DEFINE ARRAYLIST MYARRAY 0
+
+	// splits the string.. every string-piece will have 3 letters
+	ENGINEX.STRINGS.SPLIT MYARRAY 2 MYSTRING #i3
+
+	FOR I 0 "<&MYARRAY.COUNT&>" 1
+		PRINT_TEXT "<&MYARRAY.I&>"
+	NEXT
+
+	PRINT_TEXT "-------------------------------------------------"
+	PRINT_TEXT ""
+
+END_SCRIPT

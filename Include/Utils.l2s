@@ -1,0 +1,268 @@
+/* ======================= ======================= ======================= ======================= ======================= 
+ 
+ READ_FILE <arraylist strings> 1 <string file_path>
+ READ_SECTION <arraylist strings> 2 <string file_path> <string section_name>
+
+ WRITE_FILE VOID 3 <string file_path> <string/arraylist/queue lines_to_write> <string write_type>
+ 																		write_type(w-fullwrite/ab-appendbegining/ae-appendending )
+ WRITE_SECTION VOID 3 <string file_path> <string/arraylist lines_to_write> <string section_name>
+ APPEND_TO_SECTION VOID 3 <string file_path> <string/arraylist lines_to_write> <string section_name>
+ 
+ STRING_SPLIT <arraylist strings> 2 <string to_split> <string single_char>  - THX to L2Agita for more optimal way
+ 
+ ======================= ======================= ======================= ======================= ======================= */
+
+FUNCTION READ_FILE 1 _fname
+	DEFINE STRING _linereader ""	
+	DEFINE ARRAYLIST _fcontent 0
+	DEFINE FILEREADER _fopened "<&_fname&>"
+	DO
+		_fopened.READ _linereader
+		IF _linereader == #$.
+			BREAK 2
+		ELSE
+			_fcontent.ADD "#$<&_linereader&>"
+		ENDIF
+	LOOP ONE == ONE
+	_fopened.CLOSE
+RETURN _fcontent
+
+FUNCTION READ_SECTION 2 _fname _sname
+	DEFINE STRING _linereader ""
+	DEFINE ARRAYLIST _rsection 0
+	DEFINE FILEREADER _fopened "<&_fname&>"
+	DEFINE INT _isfound 0
+	DEFINE STRING _testnewsect ""
+	DO
+		_fopened.READ _linereader
+		IF _linereader == #$.
+			BREAK 2
+		ELSE
+			IF _linereader == "#$[<&_sname&>]"
+				DO
+					_fopened.READ _linereader
+					IF _linereader != #$
+						_testnewsect = _linereader.SUBSTRING ZERO ONE
+					ENDIF
+					IF ( _linereader == #$. ) || ( _testnewsect == #$[ )
+						BREAK 5
+					ELSE
+						IF ( _linereader != #$ ) && ( _linereader != "#$ " )
+							_rsection.ADD "#$<&_linereader&>"
+							_isfound = ONE
+						ENDIF
+					ENDIF
+				LOOP ONE == ONE
+			ENDIF
+		ENDIF
+	LOOP ONE == ONE
+	IF _isfound == ZERO
+		PRINT_TEXT "The section [<&_sname&>] was not fond in <&_fname&> !"
+	ENDIF
+	_fopened.CLOSE
+RETURN _rsection
+
+FUNCTION WRITE_FILE 3 _fnamew _wdata _typeflag
+	SWITCH _typeflag
+		CASE #$w
+			CALL _FullWriteFile VOID 2 _fnamew _wdata
+			BREAK 1
+		CASE #$ab
+		CASE #$ae
+			CALL _AppendToFile VOID 3 _fnamew _wdata _typeflag
+			BREAK 1
+		DEFAULT
+			PRINT_TEXT "Invalid writing flag type! w/ab/ae"
+	ENDSWITCH
+RETURN VOID
+
+FUNCTION _FullWriteFile 2 _subfp _wdata
+	DEFINE FILEWRITER _fwopened "<&_subfp&>"
+	IF _wdata.CLASSNAME == #$QUEUE
+		WHILE _wdata.COUNT != ZERO
+			_fwopened.WRITE _wdata.POP
+		WEND
+	ELSE
+		IF _wdata.CLASSNAME == #$ARRAYLIST
+			FOREACH a STRING _wdata
+				_fwopened.WRITE _wdata.a
+			NEXTEACH
+		ELSE
+			IF _wdata.CLASSNAME == #$STRING
+				_fwopened.WRITE _wdata
+			ENDIF
+		ENDIF
+	ENDIF
+	_fwopened.WRITE #$.
+	_fwopened.FLUSH
+	_fwopened.CLOSE
+RETURN VOID
+
+FUNCTION _AppendToFile 3 _subfp _wdata _typeflag
+	DEFINE ARRAYLIST _fdatabuffer 0
+	CALL READ_FILE _fdatabuffer 1 _subfp
+	DEFINE FILEWRITER _fwopened "<&_subfp&>"
+	IF _typeflag == #$ae
+		FOREACH b STRING _fdatabuffer
+			_fwopened.WRITE _fdatabuffer.b
+		NEXTEACH
+	ENDIF
+	IF _wdata.CLASSNAME == #$QUEUE
+		WHILE _wdata.COUNT != ZERO
+			_fwopened.WRITE _wdata.POP
+		WEND
+	ELSE
+		IF _wdata.CLASSNAME == #$ARRAYLIST
+			FOREACH a STRING _wdata
+				_fwopened.WRITE _wdata.a
+			NEXTEACH
+		ELSE
+			IF _wdata.CLASSNAME == #$STRING
+				_fwopened.WRITE _wdata
+			ENDIF
+		ENDIF
+	ENDIF
+	IF _typeflag == #$ab
+		FOREACH b STRING _fdatabuffer
+			_fwopened.WRITE _fdatabuffer.b
+		NEXTEACH
+	ENDIF
+	_fwopened.WRITE #$.
+	_fwopened.FLUSH
+	_fwopened.CLOSE
+RETURN VOID
+
+FUNCTION WRITE_SECTION 3 _fnamew _wdata _sname
+	DEFINE STRING _linereader ""	
+	DEFINE ARRAYLIST _fcontent 0
+	DEFINE FILEREADER _fopened "<&_fnamew&>"
+	DEFINE STRING _testnewsect ""
+	DO
+		_fopened.READ _linereader
+		IF _linereader == #$.
+			BREAK 2
+		ELSE
+			IF _linereader == "#$[<&_sname&>]"
+				DO
+					_fopened.READ _linereader
+					IF _linereader != #$
+						_testnewsect = _linereader.SUBSTRING ZERO ONE
+					ENDIF
+					IF _linereader == #$.
+						BREAK 5
+					ENDIF
+					IF _testnewsect == #$[
+						_fcontent.ADD "#$<&_linereader&>"
+						BREAK 2
+					ENDIF
+				LOOP ONE == ONE
+			ELSE
+				_fcontent.ADD "#$<&_linereader&>"
+			ENDIF
+		ENDIF
+	LOOP ONE == ONE
+	_fopened.CLOSE
+	_fcontent.ADD "#$[<&_sname&>]"
+	IF _wdata.CLASSNAME == #$QUEUE
+		WHILE _wdata.COUNT != ZERO
+			_fcontent.ADD _wdata.POP
+		WEND
+	ELSE
+		IF _wdata.CLASSNAME == #$ARRAYLIST
+			FOREACH c STRING _wdata
+				_fcontent.ADD _wdata.c
+			NEXTEACH
+		ELSE
+			IF _wdata.CLASSNAME == #$STRING
+				_fcontent.ADD _wdata
+			ENDIF
+		ENDIF
+	ENDIF
+	CALL _FullWriteFile VOID 2 _fnamew _fcontent
+RETURN VOID
+
+FUNCTION APPEND_TO_SECTION 3 _fnamew _wdata _sname
+	DEFINE STRING _linereader ""
+	DEFINE ARRAYLIST _firstpart 0
+	DEFINE ARRAYLIST _secondpart 0
+	DEFINE INT _isfound 0
+	DEFINE FILEREADER _fopened "<&_fnamew&>"
+	DEFINE STRING _testnewsect ""
+	DO
+		_fopened.READ _linereader
+		IF _linereader == #$.
+			BREAK 2
+		ELSE
+			_firstpart.ADD "#$<&_linereader&>"
+			IF _linereader == "#$[<&_sname&>]"
+				DO
+					_isfound = ONE
+					_fopened.READ _linereader
+					IF _linereader != #$
+						_testnewsect = _linereader.SUBSTRING ZERO ONE
+					ENDIF
+					IF _linereader == #$.
+						BREAK 5
+					ENDIF
+					IF _testnewsect == #$[
+						_secondpart.ADD "#$<&_linereader&>"
+						DO
+							_fopened.READ _linereader
+							IF _linereader == #$.
+								BREAK 7
+							ELSE
+								_secondpart.ADD "#$<&_linereader&>"
+							ENDIF
+						LOOP ONE == ONE
+					ELSE
+						_firstpart.ADD "#$<&_linereader&>"
+					ENDIF
+				LOOP ONE == ONE
+			ENDIF
+		ENDIF
+	LOOP ONE == ONE
+	_fopened.CLOSE
+	IF _isfound == ZERO
+		_firstpart.ADD "#$[<&_sname&>]"
+	ENDIF
+	IF _wdata.CLASSNAME == #$QUEUE
+		WHILE _wdata.COUNT != ZERO
+			_firstpart.ADD _wdata.POP
+		WEND
+	ELSE
+		IF _wdata.CLASSNAME == #$ARRAYLIST
+			FOREACH c STRING _wdata
+				_firstpart.ADD _wdata.c
+			NEXTEACH
+		ELSE
+			IF _wdata.CLASSNAME == #$STRING
+				_firstpart.ADD _wdata
+			ENDIF
+		ENDIF
+	ENDIF
+	IF _secondpart.COUNT != ZERO
+		FOREACH d STRING _secondpart
+			_firstpart.ADD _secondpart.d
+		NEXTEACH
+	ENDIF
+	CALL _FullWriteFile VOID 2 _fnamew _firstpart
+RETURN VOID
+
+FUNCTION STRING_SPLIT 2 _strsplt _atchar
+    DEFINE INT _cursor 0
+    DEFINE ARRAYLIST _splited 0
+    DEFINE STRING _substr ""
+    DEFINE STRING _cursubst ""
+	DEFINE INT _strlen "<&_strsplt.LENGTH&>"
+    WHILE _cursor < _strlen
+        _substr = _strsplt.SUBSTRING _cursor ONE
+        IF _substr == _atchar
+            _splited.ADD "#$<&_cursubst&>"
+            _cursubst = "#$"
+        ELSE
+            _cursubst = "#$<&_cursubst&><&_substr&>"
+        ENDIF
+        _cursor = _cursor + ONE
+    WEND
+    _splited.ADD "#$<&_cursubst&>"
+RETURN _splited

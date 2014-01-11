@@ -1,0 +1,39 @@
+// DLIB::Packets::ReadPartyMemberPosition - v1.0 for Gracia 2.3
+// by d00d [09/29/09]
+//
+// Takes an byte buffer (_bInBuffer) containing the 
+// PartyMemberPosition packet and dumps the data into a sorted list
+// (_oPetInfo).
+//
+// REQUIRES STDLIB\Object.l2c in the calling script
+//
+// Version 1.0 - Initial Release
+
+FUNCTION DLIB::Packets::ReadPartyMemberPosition 1 _bInBuffer
+
+  DEFINE INT PARTY_SIZE
+  DEFINE SORTEDLIST _oPartyMemberPosition
+    
+  IF _bInBuffer.CLASSNAME == "#$BYTEBUFFER"
+    _bInBuffer.RESET_INDEX
+    _bInBuffer.READ_BYTE NULL
+    _bInBuffer.READ_INT32 PARTY_SIZE
+    
+    FOR 0 Z "<&PARTY_SIZE&>" 1
+      DEFINE Object PARTYMEMBER
+      
+      _bInBuffer.READ_INT32 PARTYMEMBER.ID
+      _bInBuffer.READ_INT32 PARTYMEMBER.X
+      _bInBuffer.READ_INT32 PARTYMEMBER.Y
+      _bInBuffer.READ_INT32 PARTYMEMBER.Z
+      
+      _oPartyMemberPosition.ADD PARTYMEMBER "<&PARTYMEMBER.OBJECT_ID&>"
+      DELETE Object
+    NEXT
+    
+    _oSOMESORTEDLIST.ADD SOMEINT "SOMEINT"
+  ELSE
+    PRINT_TEXT "_bInBuffer is not a ByteBuffer"
+  ENDIF
+  
+RETURN _oSOMEOSORTEDLIST

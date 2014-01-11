@@ -1,0 +1,38 @@
+// DLIB::Packets::ReadShortBuffStatusUpdate - v1.0 for Gracia 2.3
+// by d00d [06/22/09]
+//
+// Takes an byte buffer (_bInBuffer) containing the 
+// ShortBuffStatusUpdate packet and dumps the data into a sorted list
+// (_oShortBuffStatusUpdate).
+
+// Version 1.0 - Initial Release
+
+FUNCTION DLIB::Packets::ReadShortBuffStatusUpdate 1 _bInBuffer
+
+  DEFINE INT EFFECT_COUNT
+
+  DEFINE SORTEDLIST _oShortBuffStatusUpdate
+
+  IF _bInBuffer.CLASSNAME == "#$BYTEBUFFER"
+    _bInBuffer.RESET_INDEX
+    
+    _bInBuffer.READ_BYTE NULL
+    _bInBuffer.READ_INT16 EFFECT_COUNT
+  
+    FOR Z 0 "<&EFFECT_COUNT&>" 1
+    
+      DEFINE AbnormalStatusUpdate Effect
+      
+      _bInBuffer.READ_INT32 EFFECT.EFFECT_ID
+      _bInBuffer.READ_INT32 EFFECT.EFFECT_LEVEL
+      _bInBuffer.READ_INT32 EFFECT.EFFECT_DURATION
+      EFFECT.EFFECT_ORDER = "#I<&Z&>"
+      _oShortBuffStatusUpdate.ADD EFFECT "<&EFFECT.EFFECT_ID&>"
+      DELETE Effect
+      
+    NEXT
+    
+  ELSE
+    PRINT_TEXT "_bInBuffer is not a ByteBuffer"
+  ENDIF
+RETURN _oShortBuffStatusUpdate

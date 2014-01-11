@@ -1,0 +1,24 @@
+// DLIB - Packets::WriteSystemMessage2
+//
+// Write arbitrary string data (_sMsgBuffer) to the client as 
+// event ID 1983
+//
+// Revision 1.0 - Initial Release
+
+FUNCTION DLIB::Packets::WriteSystemMessage2 1 _sMsgBuffer
+
+  DEFINE BYTEBUFFER _bSysMsg 256
+  DEFINE INT _iSysMsgID 1983
+ 
+  _bSysMsg.WRITE_BYTE "#I98"
+  _bSysMsg.WRITE_INT32 _iSysMsgID
+  _bSysMsg.WRITE_INT32 "#I1"
+  _bSysMSg.WRITE_INT32 "#I0"
+  _bSysMsg.WRITE_STRING _sMsgBuffer
+  _bSysMsg.TRIM_TO_INDEX
+  _bSysMsg.RESET_INDEX
+  
+  INJECTBB_CLIENT _bSysMsg
+  SLEEP 200
+  
+RETURN VOID

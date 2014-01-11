@@ -1,0 +1,42 @@
+INCLUDE Tests\my_class.l2c
+
+CLASS NewSuper Super
+VAR_START
+
+PUBLIC INT C 50
+PUBLIC INT COUNT 200
+PUBLIC QUEUE TESTQ 0
+PUBLIC SORTEDLIST SSL
+
+VAR_END
+
+PUBLIC PUBLIC_FUNC 0
+	PRINT_TEXT "inside public function"
+	PRINT_TEXT "THIS.A = <&THIS.A&>"
+	PRINT_TEXT "THIS.B = <&THIS.B&>"
+	PRINT_TEXT "THIS.c = THIS.c * 2"
+	THIS.c = THIS.c * #i2
+	PRINT_TEXT "THIS.c = <&THIS.c&>"
+	PRINT_TEXT "leaving public function"
+RETURN NULL
+
+PUBLIC PUBLIC_FUNC2 0
+	PRINT_TEXT "inside public function2"
+	PRINT_TEXT "THIS.c = <&THIS.c&>"
+	PRINT_TEXT "THIS.c = THIS.c * 3"
+	THIS.c = THIS.c * #i3
+	PRINT_TEXT "THIS.c = <&THIS.c&>"
+	CALL THIS.PRIV_FUNC NULL 0
+	PRINT_TEXT "leaving public function2"
+RETURN NULL
+
+PRIVATE PRIV_FUNC 0
+	PRINT_TEXT "inside priv function"
+	PRINT_TEXT "THIS.c = <&THIS.C&>"
+	PRINT_TEXT "THIS.c = THIS.c * 5"
+	THIS.c = THIS.c * #i5
+	PRINT_TEXT "THIS.c = <&THIS.c&>"
+	PRINT_TEXT "leaving priv function"
+RETURN NULL
+
+END_CLASS

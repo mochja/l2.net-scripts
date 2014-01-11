@@ -1,0 +1,154 @@
+// Best Farm script
+// Server:  l2j freya
+// Autor: mochitto
+// Date: 28.10.2010
+// Special thanks for L2.NET contributors
+// rev.: 34
+PRINT_TEXT "SCRIPT STARTED!]"
+
+// Main section
+// ===============================
+DEFINE_GLOBAL STRING NORMAL_MOB_NAME "Baby Alpine Kookaburra"
+DEFINE_GLOBAL STRING NORMAL2_MOB_NAME "Young Kookaburra"
+DEFINE_GLOBAL STRING FINAL_MOB_NAME "Adult Kookaburra"
+DEFINE_GLOBAL STRING BANDIT1 "Beast Devourer"    
+DEFINE_GLOBAL STRING BANDIT2 "Farm Bandit"        
+DEFINE_GLOBAL STRING FINAL2_MOB_NAME "Full Grown Kookaburra" 
+DEFINE_GLOBAL INT ID_LAST_MOB
+DEFINE_GLOBAL INT RAND 0
+DEFINE_GLOBAL INT COMM 0
+
+SET_EVENT "<&SCRIPTEVENT_SELFDIE&>" "<&SYSTEM_CURRENTFILE&>" SelfDie
+
+THREAD SKILLS
+THREAD MP
+
+DO
+	LABEL HERE
+	IF TARGET_ID == 0
+		TARGET_NEAREST
+		SLEEP 1200	
+	ENDIF
+	
+	IF ( ( TARGET_NAME == NORMAL_MOB_NAME ) || ( TARGET_NAME == NORMAL2_MOB_NAME ) )
+    	USE_ITEM 15474
+    	SLEEP 800
+    ELSE
+    	IF ( ( TARGET_NAME == FINAL_MOB_NAME ) || ( TARGET_NAME == FINAL2_MOB_NAME ) )
+    		ID_LAST_MOB = TARGET_ID
+    		GET_RAND RAND 300 2000
+			SLEEP "<&RAND&>"
+    		USE_SKILL 254
+    		GET_RAND RAND 2300 3600
+			SLEEP "<&RAND&>"
+			USE_SKILL 254
+    		GET_RAND RAND 2300 3600
+			SLEEP "<&RAND&>"
+    		WHILE TARGET_CUR_HP > 0
+    			IF TARGET_ID != ID_LAST_MOB
+    				JUMP_TO_LABEL HERE
+    			ENDIF
+    			SLEEP 400          
+    		WEND
+    		GET_RAND RAND 800 2600
+			SLEEP "<&RAND&>"
+    		TARGET_NEAREST
+    	ELSE
+    		IF ( ( TARGET_NAME == BANDIT1 ) || ( TARGET_NAME == BANDIT2 ) )
+    			ID_LAST_MOB = TARGET_ID
+    			USE_SKILL 254
+    			GET_RAND RAND 2300 3600
+				SLEEP "<&RAND&>"
+    			WHILE TARGET_CUR_HP > 0
+    				IF TARGET_ID != ID_LAST_MOB
+    					JUMP_TO_LABEL HERE
+    				ENDIF  
+    				SLEEP 400          
+    			WEND
+    			GET_RAND RAND 800 2600
+				SLEEP "<&RAND&>"
+    			TARGET_NEAREST
+    		ENDIF
+    	ENDIF
+    ENDIF
+    SLEEP 600
+LOOP ONE == ONE
+
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT
+
+FUNCTION SKILLS
+	WHILE ZERO == ZERO
+	
+	IF CHAR_CUR_MP < 200
+		IF TARGET_ID != 0
+			COMMAND "/attack"
+			SLEEP 1200	
+		ENDIF        
+		//INJECT "74 68 00 65 00 61 00 6C 00 20 00 41 00 64 00 6D 00 00 00"  	
+		SLEEP 3000
+	ELSE  
+		IF TARGET_CUR_HP > 0
+		 	
+		IF ( ( TARGET_NAME == FINAL_MOB_NAME ) ) && ( ( TARGET_CUR_HP < TARGET_MAX_HP ) )
+  			USE_SKILL 190
+  			GET_RAND RAND 1800 3100
+ 			SLEEP "<&RAND&>"
+  			USE_SKILL 260
+  			GET_RAND RAND 1800 3100
+  			SLEEP "<&RAND&>"  
+		ELSE
+			IF TARGET_NAME == FINAL_MOB_NAME
+				COMMAND "/attack"
+				SLEEP 5000	
+			ELSE
+				IF ( ( TARGET_NAME == BANDIT1 ) || ( TARGET_NAME == BANDIT2 ) ) 
+					USE_SKILL 190
+  					GET_RAND RAND 1800 3100
+ 					SLEEP "<&RAND&>"
+  					USE_SKILL 260
+  					GET_RAND RAND 1800 3100
+  					SLEEP "<&RAND&>"  
+  				ENDIF
+			ENDIF     
+  		ENDIF
+  		
+  		ENDIF
+  	ENDIF
+  	
+  	SLEEP 300
+  	
+    WEND
+RETURN VOID
+
+FUNCTION MP
+	 DEFINE INT MPPOTS
+     WHILE ZERO == ZERO  
+          ITEM_COUNT MPPOTS 728
+          IF MPPOTS > #i1
+               IF ( CHAR_CUR_MP < ( ( CHAR_MAX_MP * 11 ) / 100 ) )
+                    WHILE ( CHAR_CUR_MP < ( CHAR_MAX_MP - 700 ) ) 
+                    	print_text "use mana"
+                         ITEM_COUNT MPPOTS 728
+                         IF MPPOTS > #i1
+                              USE_ITEM 728 // Mana Potion
+                         ELSE
+                              BREAK 2
+                         ENDIF
+                         SLEEP 900
+                    WEND
+               ENDIF
+          ELSE
+               SLEEP 10000
+          ENDIF
+          SLEEP 25
+     WEND
+RETURN VOID   
+        
+FUNCTION SelfDie
+	IF COMM != 1
+		COMM = 1
+		SLEEP 3000
+		TAP_TO TOWN
+	ENDIF
+RETURN VOID

@@ -1,0 +1,32 @@
+PRINT_TEXT "Started Grab NPC's names in-range test script."
+
+INCLUDE stdlib\NPC.l2c
+
+DEFINE ARRAYLIST NPC_LIST
+DEFINE STRING NPC_NAME1 ""
+DEFINE STRING NPC_NAME2 ""
+DEFINE INT NPC_ID 0
+
+GET_NPCS NPC_LIST
+
+    FOREACH A NPC NPC_LIST
+    	NPC_ID = NPC_LIST.A.NPC_ID - 1000000
+    
+        NPC_GET_NAME NPC_NAME1 "<&NPC_LIST.A.ID&>"
+        NPC_GET_NAME NPC_NAME2 "<&NPC_ID&>"
+        
+        PRINT_TEXT "NPC Name: <&NPC_LIST.A.NAME&>" //This presents name correctly.
+        
+        PRINT_TEXT "NPC Unique ID: <&NPC_LIST.A.ID&>"
+        PRINT_TEXT "NPC_NAME1: <&NPC_NAME1&>" //Shows: -unknown npc-
+        
+        PRINT_TEXT "NPC Type ID: <&NPC_ID&>"
+        PRINT_TEXT "NPC_NAME2: <&NPC_NAME2&>" //Shows: -unknown npc-
+        
+        SLEEP 300
+    
+    	BREAK 1
+    NEXTEACH
+
+PRINT_TEXT "Script Finished."
+SCRIPT_END

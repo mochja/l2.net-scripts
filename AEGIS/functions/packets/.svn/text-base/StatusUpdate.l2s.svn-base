@@ -1,0 +1,19 @@
+// Handle StatusUpdate packets.
+
+FUNCTION Packet::StatusUpdate 1 _bStatusUpdate
+
+  DEFINE SORTEDLIST StatusUpdate_SL
+  
+  CALL_EXTERN "DLIB\Packets\ReadStatusUpdate.l2s" DLIB::Packets::ReadStatusUpdate StatusUpdate_SL 1 _bStatusUpdate
+  
+  LOCK AEGIS.MUTEX.ENTITYTRACKING.CHARACTER
+  
+  IF AEGIS.ENTITYTRACKING.CHARACTER.COUNT != #I0
+    FOREACH KEY INT StatusUpdate_SL
+      "AEGIS.ENTITYTRACKING.Character.UserInfo.#$<&StatusUpdate_SL.GET_KEY KEY&>" = StatusUpdate_SL.KEY
+    NEXTEACH
+  ENDIF
+  
+  UNLOCK AEGIS.MUTEX.ENTITYTRACKING.CHARACTER
+  
+RETURN VOID

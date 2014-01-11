@@ -1,0 +1,77 @@
+// Bubble Sort Benchmark! v1.0 by d00d
+// 10/08/08
+
+DEFINE INT T_START 0
+DEFINE INT T_END 0
+DEFINE DOUBLE T_CONVERT 0.0
+DEFINE INT START 10
+
+PRINT_TEXT "starting bubblesort benchmark"
+
+FOR i 0 10 1
+
+  DEFINE_GLOBAL ARRAYLIST MyAL 0
+
+  Init MyAL 1 START
+
+  GET_TIME T_START
+
+  BubbleSort MyAL 1 MyAL
+
+  GET_TIME T_END
+  
+  //T_CONVERT =  #D0 + T_END - T_START
+  //T_CONVERT = T_CONVERT / #D10000000
+  T_CONVERT = T_END - T_START
+  T_CONVERT = T_CONVERT / #D10000000
+  PRINT_TEXT "<&START&> element bubble sort took <&T_CONVERT&> seconds"
+  
+  START = START + #I25
+  T_START = #I0
+  T_END = #I0
+  T_CONVERT = #D0.0
+
+  DELETE_GLOBAL MyAL
+  
+NEXT
+
+PRINT_TEXT "bubblesort benchmark complete"
+  
+END_SCRIPT
+
+FUNCTION Init 1 _Count
+  DEFINE INT r_Int 0
+
+  FOR i 0 "<&_Count&>" 1
+    GET_RAND r_Int -2147483647 2147483646
+
+    //MyAL.PUSH "#i<&r_Int&>"
+    MyAL.PUSH r_Int
+  NEXT
+
+RETURN MyAL
+
+FUNCTION BubbleSort 1 _Object
+
+  DEFINE INT ELEMENTS 0
+  DEFINE INT N 0
+  DEFINE INT A1 0
+  DEFINE INT TMP 0
+
+  ELEMENTS = _Object.Count
+  ELEMENTS = ELEMENTS - #I1
+    
+  FOR X 0 "<&Elements&>" 1
+    //N = ELEMENTS - #I1
+    N = ELEMENTS - X
+    FOR j 0 "<&N&>" 1
+       A1 = J + #I1       
+       IF _Object.A1 < _Object.J
+         TMP = _Object.J
+         _Object.J = _Object.A1
+         _Object.A1 = TMP
+       ENDIF
+    NEXT
+  NEXT
+
+RETURN _Object

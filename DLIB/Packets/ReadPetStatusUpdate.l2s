@@ -1,0 +1,69 @@
+// DLIB::Packets::ReadPetStatusUpdate
+// by d00d [09/29/09]
+//
+// Takes an byte buffer (_bInBuffer) containing the
+// PetStatusUpdate packet and dumps the data into a sorted list
+// (_oPetStatusUpdate).
+//
+// Version 1.0 - Initial Release
+// Version 1.1 - Typo fix for XP_TNL (thx to l2netabuser)
+
+FUNCTION DLIB::Packets::ReadPetStatusUpdate 1 _bInBuffer
+
+  DEFINE SORTEDLIST _oPetStatusUpdate
+  
+  DEFINE INT SUMMON_TYPE
+  DEFINE INT OBJECT_ID
+  DEFINE INT X
+  DEFINE INT Y
+  DEFINE INT Z
+  DEFINE STRING VISIBLE_NAME
+  DEFINE INT CUR_FOOD
+  DEFINE INT MAX_FOOD
+  DEFINE INT CUR_HP
+  DEFINE INT MAX_HP
+  DEFINE INT CUR_MP
+  DEFINE INT MAX_MP
+  DEFINE INT LEVEL
+  DEFINE INT XP
+  DEFINE INT XP_ITL
+  DEFINE INT XP_TNL
+  
+  IF _bInBuffer.CLASSNAME == "#$BYTEBUFFER"
+    _bInBuffer.READ_BYTE NULL
+    _bInBuffer.READ_INT32 SUMMON_TYPE
+    _bInBuffer.READ_INT32 X
+    _bInBuffer.READ_INT32 Y
+    _bInBuffer.READ_INT32 Z
+    _bInBuffer.READ_STRING VISIBLE_NAME
+    _bInBuffer.READ_INT32 CUR_FOOD
+    _bInBuffer.READ_INT32 MAX_FOOD
+    _bInBuffer.READ_INT32 CUR_HP
+    _bInBuffer.READ_INT32 MAX_HP
+    _bInBuffer.READ_INT32 CUR_MP
+    _bInBuffer.READ_INT32 MAX_MP
+    _bInBuffer.READ_INT32 LEVEL
+    _bInBuffer.READ_INT64 XP
+    _bInBuffer.READ_INT64 XP_ITL
+    _bInBuffer.READ_INT64 XP_TNL
+    
+    _oPetStatusUpdate.ADD SUMMON_TYPE "SUMMON_TYPE"
+    _oPetStatusUpdate.ADD X "X"
+    _oPetStatusUpdate.ADD Y "Y"
+    _oPetStatusUpdate.ADD Z "Z"
+    _oPetStatusUpdate.ADD VISIBLE_NAME "VISIBLE_NAME"
+    _oPetStatusUpdate.ADD CUR_FOOD "CUR_FOOD"
+    _oPetStatusUpdate.ADD MAX_FOOD "MAX_FOOD"
+    _oPetStatusUpdate.ADD CUR_HP "CUR_HP"
+    _oPetStatusUpdate.ADD MAX_HP "MAX_HP"
+    _oPetStatusUpdate.ADD CUR_MP "CUR_MP"
+    _oPetStatusUpdate.ADD MAX_MP "MAX_MP"
+    _oPetStatusUpdate.ADD LEVEL "LEVEL"
+    _oPetStatusUpdate.ADD XP "XP"
+    _oPetStatusUpdate.ADD XP_ITL "XP_ITL"
+    _oPetStatusUpdate.ADD X_PTNL "X_PTNL"
+  ELSE
+    PRINT_TEXT "_bInBuffer is not a ByteBuffer"
+  ENDIF
+  
+RETURN _oPartySmallWindowUpdate

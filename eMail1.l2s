@@ -1,0 +1,75 @@
+// G+ email send...
+// Server: all
+// Autor: mochitto
+// Date: 24. 6. 2010 
+// Special thanks for L2.NET contributors
+// rev.: 13
+PRINT_TEXT "SCRIPT STARTED!]"
+
+DEFINE INT COUNT 0
+DEFINE INT ADENA_UID 0
+DEFINE INT tmpid 0
+DEFINE INT tmpcount 0
+DEFINE INT tmpuid 0
+DEFINE INT CNEED 0
+DEFINE ARRAYLIST PLAYER_LIST 0
+DEFINE ARRAYLIST ITEM_LIST 0
+DEFINE ARRAYLIST COUNT_LIST 0
+
+// Main section
+// ===============================
+PLAYER_LIST.ADD "#$Cruzz"
+
+//ITEM_LIST.ADD "#$Adena"
+ITEM_LIST.ADD "#$Giant's Codex - Mastery"
+
+COUNT_LIST.ADD "#$max"
+
+FOREACH A STRING PLAYER_LIST
+	PRINT_TEXT "SEND eMail to <&PLAYER_LIST.A&>"
+	SLEEP 1000
+	INJECT "D0 67 00"
+	SLEEP 1000
+	INJECT "D0 65 00"
+	SLEEP 1000
+	DEFINE BYTEBUFFER RequestSendPost 256
+		RequestSendPost.WRITE_BYTE #i208
+		RequestSendPost.WRITE_INT16 #i102
+		RequestSendPost.WRITE_STRING "#$<&PLAYER_LIST.A&>"
+		RequestSendPost.WRITE_INT32 #i0
+		RequestSendPost.WRITE_STRING "#$Vyplata..."
+		RequestSendPost.WRITE_STRING "#$Nas craft opet neco usetril posilam ti tvoji cast <&COUNT&> Adena"
+	
+		RequestSendPost.WRITE_INT32 "<&ITEM_LIST.COUNT&>"
+		
+		FOREACH B STRING ITEM_LIST
+			ITEM_GET_ID tmpid "<&ITEM_LIST.B&>"
+			ITEM_COUNT tmpcount "<&tmpid&>" 
+			INVEN_GET_UID tmpuid "<&tmpid&>"
+			PRINT_TEXT "<&COUNT_LIST.B&>" 
+			IF (("COUNT_LIST.B.CONTAINS #$max" == TRUE) && (tmpcount > #i0) 
+				RequestSendPost.WRITE_INT32 "<&tmpuid&>" // obj_id
+				RequestSendPost.WRITE_INT64 "<&tmpcount&>" // count
+				PRINT_TEXT "Add to email <&tmpcount&> <&ITEM_LIST.B&>"
+			ELSE	
+				CNEED = COUNT_LIST.B * PLAYER_LIST.COUNT
+				IF ((tmpcount >= CNEED) && ("COUNT_LIST.B.CONTAINS #$max" == FALSE))		
+					RequestSendPost.WRITE_INT32 "<&tmpuid&>" // obj_id
+					RequestSendPost.WRITE_INT64 "<&COUNT_LIST.B&>" // count
+					PRINT_TEXT "add to email <&COUNT_LIST.B&> <&ITEM_LIST.B&>"
+				ELSE
+					RequestSendPost.WRITE_INT32 #i0 // obj_id
+					RequestSendPost.WRITE_INT64 #i0 // count
+					PRINT_TEXT "You dont have <&COUNT_LIST.B&> <&ITEM_LIST.B&>"
+				ENDIF
+			ENDIF
+		NEXTEACH
+		
+		RequestSendPost.WRITE_INT64 #i0
+		RequestSendPost.TRIM_TO_INDEX
+	//INJECTBB RequestSendPost
+	DELETE RequestSendPost
+NEXTEACH
+	
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT

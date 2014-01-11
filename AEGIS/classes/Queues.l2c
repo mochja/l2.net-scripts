@@ -1,0 +1,9 @@
+CLASS Queues null
+VAR_START
+ 
+  PUBLIC NetQueue Network
+  PUBLIC QUEUE ThreadLauncher
+  
+VAR_END
+ 
+END_CLASS

@@ -1,0 +1,39 @@
+
+CLASS LAZY_RETURNING_OR LAZY_RETURNING_BASEPIECE
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT
+
+      // the left value
+      THIS.SET_VALUE VOID 2 #$LEFT TRUE
+
+      // the right value
+      THIS.SET_VALUE VOID 2 #$RIGHT TRUE
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC _GET_RETURN 1 CALLTIME
+
+      DEFINE INT _LEFT 0
+      DEFINE INT _RIGHT 0
+
+      THIS.DATA.#$LEFT.GET_RETURN _LEFT 1 CALLTIME
+      THIS.DATA.#$RIGHT.GET_RETURN _RIGHT 1 CALLTIME
+
+      // --- --- ---
+
+      IF (_LEFT == TRUE)
+         RETURN TRUE
+      ENDIF
+      IF (_RIGHT == TRUE)
+         RETURN TRUE
+      ENDIF
+
+   RETURN FALSE
+
+//-------------------------------------------------------------------------------------
+
+END_CLASS

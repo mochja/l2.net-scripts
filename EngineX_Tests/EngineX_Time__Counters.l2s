@@ -1,0 +1,52 @@
+
+	INCLUDE Include/EngineX.l2c
+	DEFINE_GLOBAL ENGINEX ENGINEX 0
+
+	PRINT_TEXT ""
+	PRINT_TEXT "-------------------------------------------------"
+
+	// the time for each interval will be 1000
+	// the value will be increased by 1 on every interval
+	ENGINEX.TIME.COUNTER_CREATE VOID 3 #$MyTestCounterA #i1000 #i1
+
+	// the time for each interval will be 100
+	// the value will be increased by 10 on every interval
+	ENGINEX.TIME.COUNTER_CREATE VOID 3 #$MyTestCounterB #i100 #i10
+
+	ENGINEX.TIME.COUNTER_START VOID 1 #$MyTestCounterA
+	ENGINEX.TIME.COUNTER_START VOID 1 #$MyTestCounterB
+
+	SLEEP 10000
+
+	// stop counters (access-version)
+	ENGINEX.TIME.COUNTERS.#$MyTestCounterA.STOP = TRUE
+	ENGINEX.TIME.COUNTERS.#$MyTestCounterB.STOP = TRUE
+
+	// stop counters (call-version)
+	// ENGINEX.TIME.COUNTER_STOP VOID 1 #$MyTestCounterA
+	// ENGINEX.TIME.COUNTER_STOP VOID 1 #$MyTestCounterB
+
+	// print values (access-version)
+	PRINT_TEXT "<&ENGINEX.TIME.COUNTERS.#$MyTestCounterA.VALUE&>"
+	PRINT_TEXT "<&ENGINEX.TIME.COUNTERS.#$MyTestCounterB.VALUE&>"
+
+	// print values (access-version)
+	// DEFINE DOUBLE VALUEA 0
+	// DEFINE DOUBLE VALUEB 0
+	// ENGINEX.TIME.COUNTER_VALUE VALUEA 1 #$MyTestCounterA
+	// ENGINEX.TIME.COUNTER_VALUE VALUEB 1 #$MyTestCounterA
+	// PRINT_TEXT "<&VALUEA&>"
+	// PRINT_TEXT "<&VALUEB&>"
+
+	// reset values (access-version)
+	ENGINEX.TIME.COUNTERS.#$MyTestCounterA.VALUE = #i0
+	ENGINEX.TIME.COUNTERS.#$MyTestCounterB.VALUE = #i0
+
+	// reset values (call-version)
+	// ENGINEX.TIME.COUNTER_RESET VOID 1 #$MyTestCounterA
+	// ENGINEX.TIME.COUNTER_RESET VOID 1 #$MyTestCounterB
+
+	PRINT_TEXT "-------------------------------------------------"
+	PRINT_TEXT ""
+
+END_SCRIPT

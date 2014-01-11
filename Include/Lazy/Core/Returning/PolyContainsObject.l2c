@@ -1,0 +1,48 @@
+
+CLASS LAZY_RETURNING_POLYCONTAINSOBJECT LAZY_RETURNING_BASEPIECE
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT
+
+      // the polygon. the arraylist needs to contain vector2 or vector3 variables for the corners of the polygon
+      DEFINE ARRAYLIST _POLYGON 0
+      THIS.SET_VALUE VOID 2 #$POLYGON _POLYGON
+
+      // the object id
+      THIS.SET_VALUE VOID 2 #$OBJECT_ID ZERO
+
+      // the default return that will be returned when there was an error getting the data of the object
+      THIS.SET_VALUE VOID 2 #$DEFAULT_RETURN FALSE
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC _GET_RETURN 1 CALLTIME
+
+      DEFINE INT _POLYGON 0
+      DEFINE INT _OBJECT_ID 0
+      DEFINE INT _DEFAULT_RETURN 0
+
+      THIS.DATA.#$POLYGON.GET_RETURN _POLYGON 1 CALLTIME
+      THIS.DATA.#$OBJECT_ID.GET_RETURN _OBJECT_ID 1 CALLTIME
+      THIS.DATA.#$DEFAULT_RETURN.GET_RETURN _DEFAULT_RETURN 1 CALLTIME
+
+      // --- --- ---
+
+      DEFINE SORTEDLIST _OBJECT_DATA 0
+      LAZY.CLASSES.#$WORLD.GET_OBJECT_DATA _OBJECT_DATA 1 _OBJECT_ID
+
+      IF (_OBJECT_DATA.COUNT == ZERO)
+         RETURN _DEFAULT_RETURN
+      ENDIF
+
+      DEFINE INT _BOOLEAN 0
+      ENGINEX.GEO.IN_POLY _BOOLEAN 3 _POLYGON _OBJECT_DATA.#$POS_X _OBJECT_DATA.#$POS_Y
+
+   RETURN _BOOLEAN
+
+//-------------------------------------------------------------------------------------
+
+END_CLASS

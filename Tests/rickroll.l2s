@@ -1,0 +1,5 @@
+DEFINE WINDOW mywin HTML
+mywin.SET_NAME "rick rolly"
+mywin.SET_FILENAME "www.youtube.com"
+mywin.RUN_WINDOW
+END_SCRIPT

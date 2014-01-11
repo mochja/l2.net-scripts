@@ -1,0 +1,129 @@
+// DLIB::Perception::Area - Returns an arraylist containing ID's of targets
+// within _iRadius.
+
+// by d00d
+// v1.0 - Initial Release
+// v1.1 - Added type 3, non party member players only.
+
+
+FUNCTION DLIB::Perception::Area 3 _iType _iOrigin _iRadius
+
+  // _iType - Area check type
+  //
+  // 0 = All Players/NPCs in range not in party
+  // 1 = All attackable NPCs
+  // 2 = All Party Members
+  // 3 = All non party member players
+  
+  // _iOrigin - Origin of the area check
+  
+  // _iRadius - radius from the origin of the check
+  
+  DEFINE ARRAYLIST InRange 0
+  DEFINE ARRAYLIST PC_OBJECTS 0
+  DEFINE ARRAYLIST NPC_OBJECTS 0
+  DEFINE ARRAYLIST PARTY_OBJECTS 0
+  
+  DEFINE INT MyDistance 0
+  DEFINE INT ORIGIN_X 0
+  DEFINE INT ORIGIN_Y 0
+  DEFINE INT ORIGIN_Z 0
+  DEFINE INT PartyCheck 0
+  
+  GET_PLAYERS PC_OBJECTS
+  GET_NPCS NPC_OBJECTS
+  GET_PARTY PARTY_OBJECTS 
+
+  IF _iOrigin != CHAR_ID
+    IF _iOrigin != TARGET_ID
+      FOREACH Object Player PC_Objects
+        IF PC_Objects.Object.ID == _iOrigin
+          ORIGIN_X = PC_Objects.Object.X
+          ORIGIN_Y = PC_Objects.Object.Y
+          ORIGIN_Z = PC_Objects.Object.Z
+          JUMP_TO_LABEL ORIGIN_END
+        ENDIF
+      NEXTEACH
+      
+      FOREACH Object NPC NPC_OBJECTS
+        IF NPC_OBJECTS.Object.ID == _iOrigin
+          ORIGIN_X = NPC_OBJECTS.Object.X
+          ORIGIN_Y = NPC_OBJECTS.Object.Y
+          ORIGIN_Z = NPC_OBJECTS.Object.Z
+          JUMP_TO_LABEL ORIGIN_END
+        ENDIF
+      NEXTEACH
+      
+    ENDIF
+  ENDIF
+  
+  LABEL ORIGIN_END
+  
+  SWITCH _iType
+    CASE #I0
+      
+      FOREACH Object Player PC_OBJECTS
+      
+        CALL_EXTERN "DLIB\Perception\IsPartyID.l2s" DLIB::Perception::IsPartyID PartyCheck 1 PC_OBJECTS.Object.ID
+        
+        IF PartyCheck == FALSE
+          DISTANCE MyDistance CHAR_X CHAR_Y CHAR_Z PC_OBJECTS.Object.X PC_OBJECTS.Object.Y PC_OBJECTS.Object.Z
+          IF MyDistance <= _iRadius
+            InRange.ADD "#I<&PC_OBJECTS.Object.ID&>"
+          ENDIF
+        ENDIF
+        
+      NEXTEACH
+      
+      FOREACH Object NPC NPC_OBJECTS
+        IF NPC_OBJECTS.Object.ATTACKABLE == #I1
+          Distance MyDistance CHAR_X CHAR_Y CHAR_Z NPC_OBJECTS.Object.X NPC_OBJECTS.Object.Y NPC_OBJECTS.Object.Z
+          IF MyDistance <= _iRadius
+            InRange.ADD "#I<&NPC_OBJECTS.Object.ID&>"
+          ENDIF
+        ENDIF
+      NEXTEACH
+      
+      BREAK 1
+      
+    CASE #I1
+            
+      FOREACH Object NPC NPC_OBJECTS
+        IF NPC_OBJECTS.Object.ATTACKABLE == #I1
+          Distance MyDistance CHAR_X CHAR_Y CHAR_Z NPC_OBJECTS.Object.X NPC_OBJECTS.Object.Y NPC_OBJECTS.Object.Z
+          IF MyDistance <= _iRadius
+            InRange.ADD "#I<&NPC_OBJECTS.Object.ID&>"
+          ENDIF
+        ENDIF
+      NEXTEACH
+      
+      BREAK 1
+    
+    CASE #I2
+      
+      FOREACH Object Player PARTY_OBJECTS
+        DISTANCE MyDistance CHAR_X CHAR_Y CHAR_Z PC_OBJECTS.Object.X PC_OBJECTS.Object.Y PC_OBJECTS.Object.Z
+          IF MyDistance <= _iRadius
+            InRange.ADD "#I<&PC_OBJECTS.Object.ID&>"
+          ENDIF
+      NEXTEACH
+
+      BREAK 1
+      
+    CASE #I3
+    
+      FOREACH Object Player PC_OBJECTS    
+        CALL_EXTERN "DLIB\Perception\IsPartyID.l2s" DLIB::Perception::IsPartyID PartyCheck 1 PC_OBJECTS.Object.ID
+        IF PartyCheck == FALSE
+          DISTANCE MyDistance CHAR_X CHAR_Y CHAR_Z PC_OBJECTS.Object.X PC_OBJECTS.Object.Y PC_OBJECTS.Object.Z
+          IF MyDistance <= _iRadius
+            InRange.ADD "#I<&PC_OBJECTS.Object.ID&>"
+          ENDIF
+        ENDIF
+        
+      NEXTEACH
+
+  ENDSWITCH
+  
+  
+RETURN InRange

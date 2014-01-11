@@ -1,0 +1,9 @@
+//-------------------------------------------------------
+//     classkey       classname             classfile
+//-------------------------------------------------------
+       RETURNING      LAZY_RETURNING        Include/Lazy/Core/Returning.l2c
+       WORLD          LAZY_WORLD            Include/Lazy/Core/World.l2c
+       CASTING        LAZY_CASTING          Include/Lazy/Core/Casting.l2c
+       SHORTCUTS      LAZY_SHORTCUTS        Include/Lazy/Core/Shortcuts.l2c
+       TARGETING      LAZY_TARGETING        Include/Lazy/Core/Targeting.l2c
+__EOF

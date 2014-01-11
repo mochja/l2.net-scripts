@@ -1,0 +1,34 @@
+// Kratky popis
+// Server: 
+// Autor: mochitto
+// Date: 
+// Special thanks for L2.NET contributors
+// rev.: 0
+PRINT_TEXT "SCRIPT STARTED!]"
+DEFINE INT NEW_X 0
+	DEFINE INT NEW_Y 0
+
+// Main section
+// ===============================
+WHILE ZERO == ZERO
+			NEW_X = CHAR_X
+			NEW_Y = CHAR_Y			
+			IF RANDI > #i49 
+				IF RANDI > #i49 
+					NEW_X = CHAR_X - #i10
+				ELSE
+					NEW_Y = CHAR_Y - #i10
+				ENDIF
+			ELSE
+				IF RANDI > #i49 
+					NEW_X = CHAR_X + #i10
+				ELSE
+					NEW_Y = CHAR_Y + #i10
+				ENDIF
+			ENDIF
+			// Protekce proti zahaknuti za target posune se o 5 do nejakeho smeru
+			MOVE_TO "<&NEW_X&>" "<&NEW_Y&>" "<&CHAR_Z&>"
+			SLEEP 1000
+WEND
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT

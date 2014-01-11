@@ -1,0 +1,157 @@
+// DLIB::Packets::ReadStatusUpdate - v2.0 for Gracia Epilogue
+// by d00d [01/25/10]
+//
+// Takes an byte buffer (_bInBuffer) containing the 
+// StatusUpdate Packet and dumps the data into a sorted list
+// (_oStatusUpdate).
+
+// Version 1.0 - Initial Release
+// Version 2.0 - Redesign, dropped class implementation
+               - Only populate base sorted list with values that are updated
+               - Made Key names compliant with DLIB::Packets::ReadUserInfo
+
+FUNCTION DLIB::Packets::ReadStatusUpdate 1 _bInBuffer
+
+  DEFINE INT OBJECT_ID
+  DEFINE INT UPDATE_SIZE
+  DEFINE INT UPDATE_ID
+  DEFINE INT UNKNOWN
+  
+  DEFINE SORTEDLIST _oStatusUpdate
+  
+  IF _bInBuffer.CLASSNAME == "#$BYTEBUFFER"
+    
+    _bInBuffer.RESET_INDEX
+    _bInBuffer.READ_BYTE  NULL
+    _bInBuffer.READ_INT32 OBJECT_ID
+    _bInBuffer.READ_INT32 UPDATE_SIZE
+    
+    FOR Z 0 "<&UPDATE_SIZE&>" 1
+      _bInBuffer.READ_INT32 UPDATE_ID
+      SWITCH UPDATE_ID
+          _oStatusUpdate.ADD ZERO "LEVEL"
+          _bInBuffer.READ_INT32 "_oStatusUpdate.#$LEVEL"
+          BREAK 1
+        CASE #I2
+          _oStatusUpdate.ADD ZERO "XP"
+          _bInBuffer.READ_INT32 "_oStatusUpdate.#$XP"
+          BREAK 1
+        CASE #I3
+          _oStatusUpdate.ADD ZERO "STR"
+          _bInBuffer.READ_INT32 "_oStatusUpdate.#$STR"
+          BREAK 1
+        CASE #I4
+          _oStatusUpdate.ADD ZERO "DEX"
+          _bInBuffer.READ_INT32 "_oStatusUpdate.#$DEX"
+          BREAK 1
+        CASE #I5
+          _oStatusUpdate.ADD ZERO "CON"
+          _bInBuffer.READ_INT32 "_oStatusUpdate.#$CON"
+          BREAK 1
+        CASE #I6
+          _oStatusUpdate.ADD ZERO "INT"
+          _bInBuffer.READ_INT32 "_oStatusUpdate.#$INT"
+          BREAK 1
+        CASE #I7
+          _oStatusUpdate.ADD ZERO "WIT"
+          _bInBuffer.READ_INT32 "_oStatusUpdate.#$WIT"
+          BREAK 1
+        CASE #I8
+          _oStatusUpdate.ADD ZERO "MEN"
+          _bInBuffer.READ_INT32 "_oStatusUpdate.#$MEN"
+          BREAK 1
+        CASE #I9
+          _oStatusUpdate.ADD ZERO "CURRENT_HP"
+          _bInBuffer.READ_INT32 "_oStatusUpdate.#$CURRENT_HP"
+          BREAK 1
+        CASE #I10
+          _oStatusUpdate.ADD ZERO "MAX_HP"
+          _bInBuffer.READ_INT32 "_oStatusUpdate.#$MAX_HP"
+          BREAK 1
+        CASE #I11
+          _oStatusUpdate.ADD ZERO "CURRENT_MP"
+          _bInBuffer.READ_INT32 "_oStatusUpdate.#$CURRENT_MP"
+          BREAK 1
+        CASE #I12
+          _oStatusUpdate.ADD ZERO "MAX_MP"
+          _bInBuffer.READ_INT32 "_oStatusUpdate.#$MAX_MP"
+          BREAK 1
+        CASE #I13
+          _oStatusUpdate.ADD ZERO "SP"
+          _bInBuffer.READ_INT32 "_oStatusUpdate.#$SP"
+          BREAK 1
+        CASE #I14
+          _oStatusUpdate.ADD ZERO "LEVEL"
+          _bInBuffer.READ_INT32 "_oStatusUpdate.#$LEVEL"
+          BREAK 1
+        CASE #I15
+          _oStatusUpdate.ADD ZERO "CURRENT_LOAD"
+          _bInBuffer.READ_INT32 "_oStatusUpdate.#$CURRENT_WEIGHT"
+          BREAK 1
+        CASE #I16
+          _oStatusUpdate.ADD ZERO "MAX_LOAD"
+          _bInBuffer.READ_INT32 "_oStatusUpdate.#$MAX_WEIGHT"
+          BREAK 1
+        CASE #I17
+          _oStatusUpdate.ADD ZERO "PATK"
+          _bInBuffer.READ_INT32 "_oStatusUpdate.#$PATK"
+          BREAK 1
+        CASE #I18
+          _oStatusUpdate.ADD ZERO "PATKSPD"
+          _bInBuffer.READ_INT32 "_oStatusUpdate.#$PATKSPD"
+          BREAK 1
+        CASE #I19
+          _oStatusUpdate.ADD ZERO "PDEF"
+          _bInBuffer.READ_INT32 "_oStatusUpdate.#$PDEF"
+          BREAK 1
+        CASE #I20
+          _oStatusUpdate.ADD ZERO "EVASION"
+          _bInBuffer.READ_INT32 "_oStatusUpdate.#$EVASION"
+          BREAK 1
+        CASE #I21
+          _oStatusUpdate.ADD ZERO "ACCURACY"
+          _bInBuffer.READ_INT32 "_oStatusUpdate.#$ACCURACY"
+          BREAK 1
+        CASE #I22
+          _oStatusUpdate.ADD ZERO "CRITICAL"
+          _bInBuffer.READ_INT32 "_oStatusUpdate.#$CRITICAL"
+          BREAK 1
+        CASE #I23
+          _oStatusUpdate.ADD ZERO "MATK"
+          _bInBuffer.READ_INT32 "_oStatusUpdate.#$MATK"
+          BREAK 1
+        CASE #I24
+          _oStatusUpdate.ADD ZERO "MATKSPD"
+          _bInBuffer.READ_INT32 "_oStatusUpdate.#$MATKSPD"
+          BREAK 1
+        CASE #I25
+          _oStatusUpdate.ADD ZERO "MDEF"
+          _bInBuffer.READ_INT32 "_oStatusUpdate.#$MDEF"
+          BREAK 1
+        CASE #I26
+          _oStatusUpdate.ADD ZERO "PVP_FLAG"
+          _bInBuffer.READ_INT32 "_oStatusUpdate.#$PVP_FLAG"
+          BREAK 1
+        CASE #I27
+          _oStatusUpdate.ADD ZERO "KARMA"
+          _bInBuffer.READ_INT32 "_oStatusUpdate.#$KARMA"
+          BREAK 1
+        CASE #I33
+          _oStatusUpdate.ADD ZERO "CURRENT_CP"
+          _bInBuffer.READ_INT32 "_oStatusUpdate.#$CURRENT_CP"
+          BREAK 1
+        CASE #I34
+          _oStatusUpdate.ADD ZERO "MAX_CP"
+          _bInBuffer.READ_INT32 "_oStatusUpdate.#$MAX_CP"
+          BREAK 1
+        DEFAULT
+          _bInBuffer.READ_INT32 UNKNOWN
+          PRINT_TEXT "DLIB::_bInBuffers::StatusUpdate - Unknown: <&UNKNOWN&>"
+          BREAK 1
+      ENDSWITCH
+    NEXT  
+  ELSE
+    PRINT_TEXT "_bInBuffer is not a ByteBuffer"
+  ENDIF
+  
+RETURN _oStatusUpdate

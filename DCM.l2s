@@ -1,0 +1,19 @@
+// Kratky popis
+// Server: 
+// Autor: mochitto
+// Date: 
+// Special thanks for L2.NET contributors
+// rev.: 0
+PRINT_TEXT "SCRIPT STARTED!]"
+
+// Main section
+// ===============================
+do
+	if target_cur_hp == 0
+		cancel_target
+	endif
+	sleep 1000
+loop one == one
+	
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT

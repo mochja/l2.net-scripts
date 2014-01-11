@@ -1,0 +1,42 @@
+( Overriding Rule ) check ExSetCompassZoneCode to get the current area type you are in, do not do potion management within a non combat capable zone
+ 
+ 1) do not use potions if not in combat mode and if not targeted by a flagged/chaotic/siegeactive player who is not in your party
+ 2) if you are flagged/chaotic use potions if in combat mode
+ 
+Potion Strategy
+
+Healing Service Agreement
+
+
+1) Base recovery Items are defined: Lesser/Greater CP Potion, Greater Healing Potion.
+2) MAX CP and HP are divided in half, the result of each becomes the service window.
+
+CP Service Level Agreement
+---------------------------------------
+LCP = +50 CP/500ms, GCP = +200 CP/500ms
+
+HALF_MAX_CP / 500cp/sec = SLA window
+X) Dynamically check for lcp/gcp availability and calculate SLA window
+Y) If SLA window is 0 (no gcp/lcp) Use elixers based IF current_cp <= (max_cp - 2600)
+Z) If SLA window is 0 skip 3-7
+3) When CP < 100% start SLA clock
+4) IF Time from SLA clock start >= SLA window compare if current CP == 100%
+5) if current CP < 100% calculate difference
+6) if elixer reuse time == 0 then compare cp delta from 100%, if difference >= cp elixer recovery value  then use elixer and record time.
+7) if cp < 100% go to step 3
+
+
+HP Service Level Agreement
+---------------------------------------
+GHP = +150 x 15s
+
+X) Dynamically check for ghp
+Y) IF SLA Window is 0, use elixers based on if current_hp <= (max_hp - 1200)
+3) When HP < 100% start 15s sla clock
+4) IF Time from SLA clock start >= SLA window compare if current HP == 100%
+5) if current CP < 100% calculate difference
+6) if elixer reuse time == 0 then compare hp delta from 100%, if difference >= hp elixer recovery value  then use elixer and record time.
+7) if hp < 100% go to step 3
+
+Health check function is a thread object.
+Health check function is woken up by statusupdate and userinfo packets so no dumb while loop wasting cycles checking that hp is ok!

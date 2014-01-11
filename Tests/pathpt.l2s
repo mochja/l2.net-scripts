@@ -1,0 +1,4 @@
+ADD_BORDER_PT "<&CHAR_X&>" "<&CHAR_Y&>"
+PRINT_TEXT "<&CHAR_X&>"
+PRINT_TEXT "<&CHAR_Y&>"
+

@@ -1,0 +1,639 @@
+PRINT_TEXT "Autoreply script made by mpj123, this is the STAND ALONE  version v1.2"
+PRINT_TEXT "Special thanks to d00d for the packet info from his Buff  Awareness Script"
+PRINT_TEXT "Special thanks to galozeh, and Jeapordy for ideas, beta  testing and code."
+PRINT_TEXT "And ofc slothmo for his hard work, making this possible :)"
+PRINT_TEXT "More scripts at ltwonet.com! JOIN US NOW! Be a part of the  L2.NET community!"
+
+//Debug? 0 = off // 1 = on
+DEFINE_GLOBAL INT DEBUG 0
+
+//How many seconds before another message can be sent? Calculated in  SECONDS.
+//Recommended 10 to 60
+DEFINE_GLOBAL INT DelayBetweenMessages 11
+
+//Do you want to allow sound alerts for chat messages? 0 = off // 1 = on
+DEFINE_GLOBAL INT ENABLESOUND 0
+
+//Do you want to allow sound alerts when being attacked by the same  person? 0 = off // 1 = on
+DEFINE_GLOBAL INT ENABLESOUND2 0
+
+//Do you want to replys to melee skills (when a player attacks you) 0 =  off // 1 = on
+DEFINE_GLOBAL INT MELEEREPLYTOGGLE 0
+
+//Do you want to replys to any skills (when a player attacks you) 0 =  off // 1 = on
+DEFINE_GLOBAL INT SKILLREPLYTOGGLE 1
+
+//Do you want to allow alerts for when a player attacks you
+DEFINE_GLOBAL INT ENABLESOUND3 0
+
+//Do you want to replys to ANY chat? 
+//WARNING, if this is turned off, no replys will be made to ANY chat  channels! 0 = off // 1 = on
+DEFINE_GLOBAL INT CHATREPLYTOGGLE 1
+
+//Which channel should be monitored... /// 1 = enable // 0 = disable
+//All chat
+DEFINE_GLOBAL INT CHAN0 1
+//Shout
+DEFINE_GLOBAL INT CHAN1 0
+//Private message
+DEFINE_GLOBAL INT CHAN2 1
+//Party chat
+DEFINE_GLOBAL INT CHAN3 0
+//Clan chat
+DEFINE_GLOBAL INT CHAN4 0
+//GM
+DEFINE_GLOBAL INT CHAN5 1
+//Petition
+DEFINE_GLOBAL INT CHAN6 1
+//Petition2
+DEFINE_GLOBAL INT CHAN7 1
+//Trade
+DEFINE_GLOBAL INT CHAN8 0
+//Ally chat
+DEFINE_GLOBAL INT CHAN9 0
+//Announcement
+DEFINE_GLOBAL INT CHAN10 0
+//Boat chat
+DEFINE_GLOBAL INT CHAN11 0
+//partyroom chat
+DEFINE_GLOBAL INT CHAN15 0
+//PartyCommander chat
+DEFINE_GLOBAL INT CHAN16 0
+//Hero
+DEFINE_GLOBAL INT CHAN17 0
+
+
+//your nicknames.... for instance if you name is killerbeast, your  nicknames could be Kill, Beast
+//WARNING, names MUST BE IN lower case! KILLERBEAST would NEED to be  killerbeast to work.
+DEFINE_GLOBAL ARRAYLIST MyName 0
+MyName.ADD "#$kill"
+MyName.ADD "#$beast"
+MyName.ADD "#$killbeast"
+//add more if you wish
+
+//If somebody attacks you with a skill or melee
+DEFINE_GLOBAL ARRAYLIST AttackReply 0
+AttackReply.ADD "#$Yo buddy"
+AttackReply.ADD "#$Not nice :("
+AttackReply.ADD "#$WAAAA"
+//add more if you wish
+
+//This arraylist is to define all the words you wish to reply to.
+DEFINE_GLOBAL ARRAYLIST STRINGREPLY 0
+STRINGREPLY.ADD "#$bot" //1
+STRINGREPLY.ADD "#$noob" //2
+STRINGREPLY.ADD "#$naab" //3
+STRINGREPLY.ADD "#$<&CHAR_NAME&>" //4
+STRINGREPLY.ADD "#$duel" //2
+//add more if you wish
+
+//
+//Start of replys
+//
+
+DEFINE_GLOBAL ARRAYLIST Reply1 0
+Reply1.ADD "#$nope"
+Reply1.ADD "#$haha"
+//add more if you wish
+
+DEFINE_GLOBAL ARRAYLIST Reply2 0
+Reply2.ADD "#$low"
+Reply2.ADD "#$i cant say  :)"
+Reply2.ADD "#$No comprende BR mangs! JAJAJA"
+//add more if you wish
+
+DEFINE_GLOBAL ARRAYLIST Reply3 0
+Reply3.ADD "#$$low""
+Reply3.ADD "#$i cant say  :)"
+Reply3.ADD "#$No comprende BR mangs! JAJAJA"
+//add more if you wish
+
+DEFINE_GLOBAL ARRAYLIST Reply4 0
+Reply4.ADD "#$am i ^^"
+//add more if you wish
+
+//
+//End of replys
+//
+
+DEFINE_GLOBAL ARRAYLIST PHRASEREPLY 0
+
+//you will need to add more Reply(number) if you added more responses.
+PHRASEREPLY.ADD Reply1
+PHRASEREPLY.ADD Reply2
+PHRASEREPLY.ADD Reply3
+PHRASEREPLY.ADD Reply4
+//add more if you wish
+
+
+//
+//
+//
+//
+//END OF USER-SET OPTIONS
+//
+//DO NOT TOUCH
+//
+//
+//
+//
+
+//Arraylists
+DEFINE_GLOBAL ARRAYLIST SAVELIST 0
+
+//INT
+DEFINE_GLOBAL INT IsItPrivate 0
+DEFINE_GLOBAL INT PhraseToSay 0
+DEFINE_GLOBAL INT PhraseToSay2 0
+DEFINE_GLOBAL INT HowManyLines 0
+DEFINE_GLOBAL INT MESSAGEVAR 0
+DEFINE_GLOBAL INT MESSAGESENT 0
+DEFINE_GLOBAL INT CURRENTNUMBER 0
+DEFINE_GLOBAL INT TYPEMESSAGE 0
+DEFINE_GLOBAL INT LASTID 0
+DEFINE_GLOBAL INT GLOBALTIMER 10
+DEFINE_GLOBAL INT TimeCalc 0
+DEFINE_GLOBAL INT TimeCalc1 0
+DEFINE_GLOBAL INT DONOTTALK 0
+
+//STRINGS
+DEFINE_GLOBAL STRING PNAME ""
+DEFINE_GLOBAL STRING MESSAGELOWER ""
+DEFINE_GLOBAL STRING STRCURRENT ""
+DEFINE_GLOBAL STRING MESSAGEREPLY ""
+DEFINE_GLOBAL STRING MESSAGEREPLY2 ""
+DEFINE_GLOBAL STRING HowManyLines2 ""
+DEFINE_GLOBAL STRING SelfReply "-><&Char_name&>"
+
+THREAD AdenaToGB
+
+IF MELEEREPLYTOGGLE == ONE
+   //Melee Attack
+   SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>"  "<&SYSTEM_CURRENTFILE&>" Melee 51
+ENDIF
+IF SKILLREPLYTOGGLE == ONE
+   //Skill User
+   SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>"  "<&SYSTEM_CURRENTFILE&>" SkillUser 72
+   //Canceled skill
+   SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>"  "<&SYSTEM_CURRENTFILE&>" NOTHING 73
+ENDIF
+
+IF CHATREPLYTOGGLE == ONE
+   //Chat
+   SET_EVENT "<&SCRIPTEVENT_CHAT&>"  "<&SYSTEM_CURRENTFILE&>" Reply
+ENDIF
+
+//Time Counter and Infinit Loop
+IF DEBUG == ONE
+   PRINT_TEXT "TimeCounter thread started"
+ENDIF
+GLOBALTIMER = DelayBetweenMessages
+WHILE ZERO == ZERO
+   SLEEP 1000
+   GLOBALTIMER = GLOBALTIMER + ONE
+      IF DEBUG == ONE
+         //PRINT_TEXT "<&GLOBALTIMER&>"
+   ENDIF
+WEND
+************************************************************************************************************
+***************************************Functions**************************************************************
+************************************************************************************************************
+//
+//FUNCTION REPLY
+//
+
+Function REPLY
+
+IF MESSAGESENT == 1
+  IF DEBUG == 1
+    PRINT_TEXT "Already in message sending process, not applying reply"
+  ENDIF
+  RETURN VOID
+ENDIF
+
+IF SENDERNAME == SelfReply
+   IF DEBUG == ONE
+      PRINT_TEXT "Self testing.... ignoring second PM"
+   ENDIF
+   RETURN VOID
+ENDIF
+
+MESSAGELOWER = MESSAGE.TO_LOWER_INVARIANT
+TYPEMESSAGE = MESSAGETYPE
+
+IF DEBUG == ONE
+   PRINT_TEXT "in REPLY function"
+   PRINT_TEXT "This is the message: <&MESSAGE&>"
+   PRINT_TEXT "This is the message in lower caps:  <&MESSAGELOWER&>"
+   PRINT_TEXT "This is a name to ignore: <&SelfReply&>"
+ENDIF
+
+IF ENABLESOUND == ONE
+   FOREACH I STRING MyName
+      PNAME = MyName.I
+      //Print_text "<&PNAME&>"
+      IF "MESSAGELOWER.CONTAINS PNAME" == TRUE
+         PRINT_TEXT "PLAYING WAVE SOUND, <&SENDERNAME&> is  calling us!"
+         PLAYALARM
+      ENDIF
+   NEXTEACH
+ENDIF
+
+TimeCalc1 = GLOBALTIMER - TimeCalc
+IF TimeCalc1 < DelayBetweenMessages
+   IF DEBUG == ONE
+      PRINT_TEXT "Can't be spamming like crazy. User set time until next  message can be sent:<&DelayBetweenMessages&> and current  time: <&TimeCalc1&>"
+   ENDIF
+   RETURN VOID
+ENDIF
+
+MESSAGESENT = 1
+CALLSUB REPLYNOW
+MESSAGESENT = 0
+RETURN VOID
+
+//
+//Melee
+//
+
+FUNCTION Melee
+IF DEBUG == ONE
+   PRINT_TEXT "in Melee function"
+ENDIF
+DEFINE STRING TargeteeName ""
+DEFINE INT p_MSU_packet_type2 0
+DEFINE INT p_MSU_source_id2 0
+DEFINE INT p_MSU_target_id2 0
+
+PACKET.READ_BYTE p_MSU_packet_type2
+PACKET.READ_INT32 p_MSU_source_id2
+PACKET.READ_INT32 p_MSU_target_id2
+
+CHAR_GET_NAME TargeteeName "<&p_MSU_source_id2&>"
+
+IF DEBUG == ONE
+   PRINT_TEXT "This is the name of the attacker:  <&TargeteeName&>"
+ENDIF
+
+IF TargeteeName == "#$<&CHAR_NAME&>"
+   IF DEBUG == ONE
+      PRINT_TEXT "seems like this packet is from ourselves attacking,  not replying to this"
+   ENDIF
+   RETURN VOID
+ENDIF
+
+IF TargeteeName == "#$-nobody-"
+   IF DEBUG == ONE
+      PRINT_TEXT "This is a mob attacking, no need to reply"
+   ENDIF
+   RETURN VOID
+ENDIF
+
+IF DEBUG == ONE
+   PRINT_TEXT "attack coming from:<&p_MSU_source_id2&>  Hitting: <&p_MSU_target_id2&>"
+ENDIF
+
+IF ENABLESOUND3 == ONE
+   IF DEBUG == ONE
+      PRINT_TEXT "Melee function alarm activated!"
+   ENDIF
+   PLAYALARM
+ENDIF
+
+IF LASTID == p_MSU_source_id2
+   IF DEBUG == ONE
+      PRINT_TEXT "Hey, thats the same person trying to get us to talk  again! What a douche."
+   ENDIF
+   IF ENABLESOUND2 == ONE
+      IF DEBUG == ONE
+         PRINT_TEXT "ENABLESOUND2 is ringing!"
+      ENDIF
+      PLAYALARM
+   ENDIF
+ENDIF
+
+IF p_MSU_target_id2 == CHAR_ID
+   LASTID = p_MSU_source_id2
+   TimeCalc1 = GLOBALTIMER - TimeCalc
+   IF TimeCalc1 < DelayBetweenMessages
+      IF DEBUG == ONE
+         PRINT_TEXT "Can't be spamming like crazy. User set time until  next message can be sent:<&DelayBetweenMessages&> and  current time: <&TimeCalc1&>"
+      ENDIF
+      RETURN VOID
+   ENDIF
+   IF DEBUG == ONE
+      PRINT_TEXT "We are getting hit with melee or ranged."
+      PRINT_TEXT "Our char ID = <&CHAR_ID&>"
+   ENDIF
+   MESSAGESENT = 1
+   CALLSUB TALKBACK
+   MESSAGESENT = 0
+ENDIF
+
+RETURN VOID
+
+//
+//FUNCTION SkillUser
+//
+
+FUNCTION SkillUser
+IF DEBUG == ONE
+   PRINT_TEXT "in SkillUser function"
+ENDIF
+
+DEFINE INT p_MSU_packet_type 0
+DEFINE INT p_MSU_source_id 0
+DEFINE INT p_MSU_target_id 0
+DEFINE INT p_MSU_skill_id 0
+DEFINE INT p_MSU_skill_level 0
+DEFINE INT p_MSU_hit_time 0
+DEFINE INT p_MSU_reuse_delay 0
+
+PACKET.READ_BYTE p_MSU_packet_type
+PACKET.READ_INT32 p_MSU_source_id
+PACKET.READ_INT32 p_MSU_target_id
+PACKET.READ_INT32 p_MSU_skill_id
+PACKET.READ_INT32 p_MSU_skill_level
+PACKET.READ_INT32 p_MSU_hit_time
+PACKET.READ_INT32 p_MSU_reuse_delay
+
+DEFINE STRING TargeteeName ""
+CHAR_GET_NAME TargeteeName "<&p_MSU_source_id&>"
+
+IF DEBUG == ONE
+   PRINT_TEXT "This is the name of the attacker:  <&TargeteeName&>"
+ENDIF
+
+IF TargeteeName == "#$<&CHAR_NAME&>"
+   IF DEBUG == ONE
+      PRINT_TEXT "seems like this packet is from ourselves attacking,  not replying to this"
+   ENDIF
+   RETURN VOID
+ENDIF
+
+IF TargeteeName == "#$-nobody-"
+   IF DEBUG == ONE
+      PRINT_TEXT "This is a mob attacking, no need to reply"
+   ENDIF
+   RETURN VOID
+ENDIF
+
+IF ENABLESOUND3 == ONE
+   IF DEBUG == ONE
+      PRINT_TEXT "Skill function alarm activated!"
+   ENDIF
+   PLAYALARM
+ENDIF
+
+IF DEBUG == ONE
+   PRINT_TEXT "Who the caster is targetting: ID =  <&p_MSU_target_id&>"
+ENDIF
+
+IF LASTID == p_MSU_source_id
+   IF DEBUG == ONE
+      PRINT_TEXT "Hey, thats the same person trying to get us to talk  again! What a douche."
+   ENDIF
+   IF ENABLESOUND2 == ONE
+      PLAYALARM
+   ENDIF
+ENDIF
+
+IF p_MSU_target_id == CHAR_ID
+   LASTID = p_MSU_source_id
+   TimeCalc1 = GLOBALTIMER - TimeCalc
+   IF TimeCalc1 < DelayBetweenMessages
+      IF DEBUG == ONE
+         PRINT_TEXT "Can't be spamming like crazy. User set time until  next message can be sent:<&DelayBetweenMessages&> and  current time: <&TimeCalc1&>"
+      ENDIF
+   RETURN VOID
+   ENDIF
+   
+   IF DEBUG == ONE
+      PRINT_TEXT "We are getting casted on with magic by  <&p_MSU_source_id&> in <&p_MSU_hit_time&>  Milliseconds"
+      PRINT_TEXT "Our char ID = <&CHAR_ID&>"
+   ENDIF
+   MESSAGESENT = 1
+   CALLSUB SKILLWATCHFORCANCEL
+   MESSAGESENT = 0
+ENDIF
+RETURN VOID
+
+//
+//Fucntion SkillCanceled
+//
+
+FUNCTION SkillCanceled
+IF DEBUG == ONE
+   PRINT_TEXT "in SkillCanceled function"
+ENDIF
+DEFINE INT p_MSU_packet_type2 0
+DEFINE INT p_MSU_source_id2 0
+
+PACKET.READ_BYTE p_MSU_packet_type2
+PACKET.READ_INT32 p_MSU_source_id2
+
+IF DEBUG == ONE
+   PRINT_TEXT "<&p_MSU_source_id2&>"
+ENDIF
+
+IF LASTID == p_MSU_source_id2
+   IF DEBUG == ONE
+      PRINT_TEXT "User stopped his cast! We wont say anything!"
+   ENDIF
+   DONOTTALK = ONE
+ENDIF
+RETURN VOID
+
+FUNCTION NOTHING
+IF DEBUG == ONE
+   PRINT_TEXT "Function NOTHING fired up"
+ENDIF
+//does nothing
+RETURN VOID
+
+************************************************************************************************************
+***************************************SUBS**************************************************************
+************************************************************************************************************
+
+SUB REPLYNOW
+
+//
+//Pre message-code, do not touch unless you know what your doing.
+//
+IF DEBUG == ONE
+   PRINT_TEXT "in REPLYNOW sub"
+ENDIF
+
+SWITCH TYPEMESSAGE
+    CASE #i0
+        IF CHAN0 != #i1
+            RETURNSUB
+        ENDIF
+        MESSAGEVAR = #i0
+        BREAK 1
+    CASE #i1
+        IF CHAN1 != #i1
+            RETURNSUB
+        ENDIF
+        MESSAGEVAR = #i1
+        BREAK 1
+    CASE #i2
+        IF CHAN2 != #i1
+            RETURNSUB
+        ENDIF
+        MESSAGEVAR = #i2
+        BREAK 1
+    CASE  #i3
+        IF CHAN3 != #i1
+            RETURNSUB
+        ENDIF
+        MESSAGEVAR = #i3
+        BREAK 1
+    CASE #i4
+        IF CHAN4 != #i1
+            RETURNSUB
+        ENDIF
+        MESSAGEVAR = #i4
+        BREAK 1
+    CASE #i5
+        IF CHAN5 != #i1
+            RETURNSUB
+        ENDIF
+        MESSAGEVAR = #i5
+    BREAK 1
+    CASE  #i6
+        IF CHAN6 != #i1
+            RETURNSUB
+        ENDIF
+        MESSAGEVAR = #i6
+        BREAK 1
+    CASE  #i7
+        IF CHAN7 != #i1
+            RETURNSUB
+        ENDIF
+        MESSAGEVAR = #i7
+        BREAK 1
+    CASE  #i8
+        IF CHAN8 != #i1
+            RETURNSUB
+        ENDIF
+        MESSAGEVAR = #i8
+        BREAK 1
+    CASE  #i9
+        IF CHAN9 != #i1
+            RETURNSUB
+        ENDIF
+        MESSAGEVAR = #i9
+    BREAK 1
+    CASE  #i10
+        IF CHAN10 != #i1
+            RETURNSUB
+        ENDIF
+        MESSAGEVAR = #i10
+        BREAK 1
+    CASE  #i11
+        IF CHAN11 != #i1
+            RETURNSUB
+        ENDIF
+        MESSAGEVAR = #i11
+        BREAK 1
+    CASE  #i15
+        IF CHAN15 != #i1
+            RETURNSUB
+        ENDIF
+        MESSAGEVAR = #i15
+        BREAK 1
+    CASE  #i16
+        IF CHAN16 != #i1
+            RETURNSUB
+        ENDIF
+        MESSAGEVAR = #i16
+        BREAK 1
+    CASE  #i17
+        IF CHAN17 != #i1
+            RETURNSUB
+        ENDIF
+        MESSAGEVAR = #i17
+        BREAK 1
+    DEFAULT
+        RETURNSUB
+        BREAK 1
+ENDSWITCH
+
+//
+//END of pre-message code
+//
+
+FOREACH W string STRINGREPLY
+STRCURRENT = "#$<&STRINGREPLY.W&>"
+SAVELIST = PHRASEReply.W
+HowManyLines = SAVELIST.COUNT
+
+IF DEBUG == ONE
+   PRINT_TEXT "HowManyLines = <&HowManyLines&>"
+ENDIF
+
+IF "MESSAGELOWER.CONTAINS #$<&STRCURRENT&>" == TRUE
+  GET_RAND PhraseToSay 1 "<&HowManyLines&>"
+  PhraseToSay = PhraseToSay - 1
+  SLEEP 500
+  SLEEP_HUMAN_READING "<&MESSAGE&>"
+  SLEEP_HUMAN_WRITING "<&MESSAGEREPLY&>"
+  TimeCalc = GLOBALTIMER
+  SAY_TEXT "<&MESSAGEVAR&>"  "<&SAVELIST.PhraseToSay&>" "<&SENDERNAME&>"
+  RETURNSUB
+ENDIF
+NEXTEACH
+RETURNSUB
+
+
+//
+//SUB SKILLWATCHFORCANCEL
+//
+
+SUB SKILLWATCHFORCANCEL
+LOCK SkillUser
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>"  "<&SYSTEM_CURRENTFILE&>" SkillCanceled 73
+SLEEP "<&p_MSU_hit_time&>"
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>"  "<&SYSTEM_CURRENTFILE&>" NOTHING 73
+UNLOCK SkillUser
+CALLSUB TALKBACK
+RETURNSUB
+
+//
+//SUB TALKBACK
+//
+
+SUB TALKBACK
+IF DONOTTALK == ZERO
+    TimeCalc = GLOBALTIMER
+    HowManyLines2 = "AttackReply.COUNT"
+    GET_RAND PhraseToSay2 1 "<&HowManyLines2&>"
+    PhraseToSay2 = PhraseToSay2 - 1
+    MESSAGEREPLY2 = "#$AttackReply.PhraseToSay2"
+    SLEEP 2000
+    SLEEP_HUMAN_WRITING "<&MESSAGEREPLY2&>"
+    SAY_TEXT "CHANNEL_ALL"  "<&<&MESSAGEREPLY2&>&>"
+ELSE
+   IF DEBUG == ONE
+      PRINT_TEXT "Fucker canceled his skill, trying to see if were bots,  not replying."
+   ENDIF
+ENDIF
+DONOTTALK = ZERO
+RETURNSUB
+
+FUNCTION AdenaToGB
+	DEFINE INT COUNT
+	
+	WHILE ZERO == ZERO
+		ITEM_COUNT COUNT 57
+		IF COUNT > 50000000000
+			WHILE COUNT > 1000000000
+				SAY_TEXT "<&CHANNEL_ALL&>" ".deposit"
+				ITEM_COUNT COUNT 57
+				SLEEP 800
+			WEND
+		ENDIF
+		SLEEP 5000
+	WEND
+ENDIF

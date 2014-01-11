@@ -1,0 +1,18 @@
+
+//-------------------------------------------------------------------------------------
+CLASS HTMLTAG NULL
+//-------------------------------------------------------------------------------------
+
+   VAR_START
+		PUBLIC INT CLOSED 0
+		PUBLIC STRING NAME ""
+		PUBLIC STRING INNER_ALL ""
+		PUBLIC STRING INNER_VISIBLE ""
+		PUBLIC ARRAYLIST CHILDS 0
+		PUBLIC NULL PARENT 0
+		PUBLIC SORTEDLIST ATTRIBUTES 0
+   VAR_END
+
+//-------------------------------------------------------------------------------------
+END_CLASS
+//-------------------------------------------------------------------------------------

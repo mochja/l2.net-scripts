@@ -1,0 +1,49 @@
+
+	INCLUDE Include/EngineX.l2c
+	DEFINE_GLOBAL ENGINEX ENGINEX 0
+
+	PRINT_TEXT ""
+	PRINT_TEXT "-------------------------------------------------"
+
+	define_global arraylist MyAL
+	define_global sortedlist MySL
+	define_global string results
+
+	MyAL.ADD "#I5"
+	MyAL.ADD "#I6"
+	MyAL.ADD "#I2"
+	MyAL.ADD "#I7"
+	MyAL.ADD "#I5"
+	MyAL.ADD "#I5"
+	MyAL.ADD "#I0"
+	MyAL.ADD "#I1"
+
+	MySL.ADD "#$apple" "0"
+	MySL.ADD "#$apple" "1"
+	MySL.ADD "#$grape" "2"
+	MySL.ADD "#$orange" "3"
+	MySL.ADD "#$apple" "4"
+
+	print_text "Arraylist test"
+	ENGINEX.LISTS.SEARCH_OBJECT MyAL 2 MyAL "#I5"
+
+	print_text "searching for the value 5, MyAL had <&MyAL.COUNT&> instances of that value"
+	foreach loc int MyAL
+	  results = results + "#$<&MyAL.GET_KEY loc&> "
+	nexteach
+	print_text "these instances were found at positions <&results&>"
+
+	print_text "Sortedlist test"
+	ENGINEX.LISTS.SEARCH_OBJECT MySL 2 MySL "#$apple"
+
+	print_text "searching for the value apple, MySL had <&MySL.COUNT&> instances of that value"
+	results = #$
+	foreach loc string MySL
+	  results = results + "#$<&MySL.GET_KEY loc&> "
+	nexteach
+	print_text "these instances were found at keys <&results&>"
+
+	PRINT_TEXT "-------------------------------------------------"
+	PRINT_TEXT ""
+
+END_SCRIPT

@@ -1,0 +1,69 @@
+// READ NOTE: SCRIPT START AT ANT QUEEN PLACE!!
+// Queen Ant Checker
+// Server: all
+// Autor: mochitto
+// Date: 6. 6. 2010 Last Edited: 22. 11. 2010
+// Special thanks to L2.NET contributors
+// rev.: 16
+PRINT_TEXT "SCRIPT STARTED!]"
+
+// Event section
+// ===============================
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" TeleportToLocation 34
+
+// Define section
+// ===============================
+DEFINE_GLOBAL STRING MSG_ALIVE   "Queen Ant is alive!"   // Custom message for RaidBoss spawn
+DEFINE_GLOBAL INT    ALARM       1                       // if 1 - On RB spawn play l2.net alarm and show message box 
+DEFINE_GLOBAL INT    COUNTPMS    1                       // count pm then be sended
+DEFINE_GLOBAL INT    PMSINTERVAL 1000                    // inteval with pm pack send in ms (1s = 1000ms)  
+
+DEFINE_GLOBAL ARRAYLIST PLAYERS  // DONT EDIT!!!
+DEFINE_GLOBAL INT CAN_CHECK   1  // DONT EDIT!!!
+
+// Players list who will send message for RBspawn
+// You can add next playrs if put next line: PLAYERS.add "#$playerName"
+PLAYERS.ADD "#$Player1"
+PLAYERS.ADD "#$Player2"
+
+// Main section
+// =============================== 
+WHILE CAN_CHECK == #i1
+     PRINT_TEXT "== Waiting for teleport packet..."
+     SLEEP 5000
+WEND
+     
+PRINT_TEXT "END SCRIPT!]"
+END_SCRIPT
+
+// Function section
+// ===============================
+FUNCTION TeleportToLocation
+     DEFINE INT ObjId 0
+     
+     PACKET.READ_BYTE NULL
+     PACKET.READ_INT32 ObjId 
+     
+     IF ObjId == CHAR_ID
+          PRINT_TEXT "== Queen Ant ALIVE!"
+          IF ALARM == #i1
+               NMESSAGE_BOX "RaidBoss ALIVE" "RaidBoss: Queen Ant is alive!" "<&WARNING&>"
+               PLAYALARM
+          ENDIF
+          IF PLAYERS.COUNT > #i0
+               ALERT_PLAYERS
+          ENDIF
+          CAN_CHECK = #i0
+     ENDIF
+RETURN VOID
+
+FUNCTION ALERT_PLAYERS
+     FOR A 0 "<&COUNTPMS&>" 1
+          FOREACH A STRING PLAYERS
+               SAY_TEXT "<&CHANNEL_PRIVATE&>" "<&MSG_ALIVE&>" "<&PLAYERS.A&>"
+               SLEEP 1000
+          NEXTEACH
+          SLEEP "<&PMSINTERVAL&>"
+     NEXT
+     PRINT_TEXT "== MESSAGES SENDED"
+RETURN VOID

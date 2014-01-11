@@ -1,0 +1,36 @@
+
+//-------------------------------------------------------------------------------------
+CLASS ENGINEX_FUNCTIONS_MATRIX NULL
+//-------------------------------------------------------------------------------------
+
+   VAR_START
+   VAR_END
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT 0
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+	PUBLIC DIRECTION 6 P1X P1Y P1Z P2X P2Y P2Z
+		DEFINE VECTOR3 DIRECTION 0
+		DEFINE DOUBLE DIST 0
+		DISTANCE DIST P1X P1Y P1Z P2X P2Y P2Z
+		IF ( DIST != ZERO )
+         DIRECTION.X = P2X - P1X
+         DIRECTION.Y = P2Y - P1Y
+         DIRECTION.Z = P2Z - P1Z
+			DIRECTION.X = DIRECTION.X / DIST
+			DIRECTION.Y = DIRECTION.Y / DIST
+			DIRECTION.Z = DIRECTION.Z / DIST
+      ELSE
+         DIRECTION.X = ZERO
+         DIRECTION.Y = ZERO
+         DIRECTION.Z = ZERO
+		ENDIF
+	RETURN DIRECTION
+
+//-------------------------------------------------------------------------------------
+END_CLASS
+//-------------------------------------------------------------------------------------

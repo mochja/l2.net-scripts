@@ -1,0 +1,72 @@
+// Handle PartySpelled packets.
+
+FUNCTION Packet::PartySpelled 1 _bPartySpelled
+
+  DEFINE SORTEDLIST PartySpelled_SL 0
+  DEFINE INT _iTime
+  DEFINE INT _iDelta
+  DEFINE INT _iTmp
+  DEFINE STRING _sTmp
+  
+  DEFINE INT _iTmp2
+  DEFINE INT _iObjectID
+  DEFINE INT _iEffectID
+  DEFINE DOUBLE _iDuration
+  DEFINE STRING _sEffect
+  
+  CALL_EXTERN "DLIB\Packets\ReadPartySpelled.l2s" DLIB::Packets::ReadPartySpelled PartySpelled_SL 1 _bPartySpelled
+  LOCK AEGIS.MUTEX.NETWORK.PARTYSPELLED
+    _iObjectId = "PartySpelled_SL.#$OBJECT_ID"
+    
+    // Does AEGIS.EFFECTTRACKING.PARTYEFFECTS have a player entry matching objectid
+    IF "AEGIS.EFFECTTRACKING.PARTYEFFECTS.CONTAINS_KEY <&_iObjectID&>" == FALSE
+      DEFINE STRING Member "<&_iObjectID&>"
+      DEFINE SORTEDLIST "<&Member&>"
+      AEGIS.EFFECTTRACKING.PARTYEFFECTS.ADD "<&Member&>" "<&_iObjectID&>"
+      DELETE Member
+      
+      FOREACH Index PartySpelled "PartySpelled_SL.#$EFFECTS"
+        _iEffectID = "PartySpelled_SL.#$EFFECTS.#$<&PartySpelled_SL.#$EFFECTS.GET_KEY Index&>.SKILL_ID"
+        _iDuration = "PartySpelled_SL.#$EFFECTS.#$<&PartySpelled_SL.#$EFFECTS.GET_KEY Index&>.EFFECT_DURATION"
+        SKILL_GET_NAME _sEffect "<&_iEffectID&>" "<&ONE&>"
+        // Does AEGIS.EFFECTTRACKING.PARTYEFFECTS.ObjectID.Effects have a key matching our abnormal effect ?
+        IF "AEGIS.EFFECTTRACKING.PARTYEFFECTS.#$<&_iObjectID&>.CONTAINS_KEY <&_iEffectID&>" == TRUE            
+          GET_TIME _iTime
+          _sTmp = "#$<&PartySpelled_SL.#$EFFECTS.GET_KEY Index&>"
+          _iDelta = _iDuration * #I10000000
+          _iTime = _iTime + _iDelta
+          IF _iDuration >= "AEGIS.EFFECTTRACKING.PARTYEFFECTS.#$<&_iObjectID&>.#$<&_sTmp&>.EFFECT_DURATION"
+            IF _iTime > "AEGIS.EFFECTTRACKING.PARTYEFFECTS.#$<&_iObjectID&>.#$<&_sTmp&>.AGE"
+              _iDelta = _iTime - "AEGIS.EFFECTTRACKING.PARTYEFFECTS.#$<&_iObjectID&>.#$<&_sTmp&>.AGE"
+              _iDelta = _iDelta / #I10000000
+              "AEGIS.EFFECTTRACKING.PARTYEFFECTS.#$<&_iObjectID&>.#$<&_sTmp&>.AGE" = _iTime
+              "AEGIS.EFFECTTRACKING.PARTYEFFECTS.#$<&_iObjectID&>.#$<&_sTmp&>.EFFECT_DURATION" = "PartySpelled_SL.#$EFFECTS.#$<&_sTmp&>.EFFECT_DURATION"
+            ENDIF
+          ENDIF
+        ELSE
+          DEFINE PartySpelled EFFECT
+          
+          GET_TIME EFFECT.AGE
+          EFFECT.IS_DIRTY = #I0
+          EFFECT.SKILL_ID = _iEffectID
+          EFFECT.EFFECT_TYPE = "PartySpelled_SL.#$EFFECTS.#$<&_iEffectID&>.EFFECT_TYPE"
+          EFFECT.EFFECT_DURATION = "PartySpelled_SL.#$EFFECTS.#$<&_iEffectID&>.EFFECT_DURATION"
+          _iTime = EFFECT.EFFECT_DURATION * #I10000000
+          EFFECT.AGE = EFFECT.AGE + _iTime              
+          "AEGIS.EFFECTTRACKING.PARTYEFFECTS.#$<&_iObjectID&>.ADD" EFFECT "<&_iEffectID&>"
+          DELETE EFFECT
+        ENDIF
+      NEXTEACH
+    ENDIF
+  UNLOCK AEGIS.MUTEX.NETWORK.PARTYSPELLED
+  FOREACH Index PartySpelled "AEGIS.EFFECTTRACKING.PARTYEFFECTS.#$<&_iObjectId&>"
+    IF "PartySpelled_SL.#$EFFECTS.CONTAINS_KEY <&AEGIS.EFFECTTRACKING.PARTYEFFECTS.#$<&_iObjectId&>.GET_KEY Index&>" == FALSE
+      PRINT_TEXT "Effect <&AEGIS.EFFECTTRACKING.PARTYEFFECTS.#$<&_iObjectId&>.GET_KEY Index&> was not listed in the partyspelled packet, marking dirty"
+      PRINT_TEXT "Current status of IS_DIRTY <&AEGIS.EFFECTTRACKING.PARTYEFFECTS.#$<&_iObjectID&>.#$<&AEGIS.EFFECTTRACKING.PARTYEFFECTS.#$<&_iObjectId&>.GET_KEY Index&>.IS_DIRTY&>"
+      "AEGIS.EFFECTTRACKING.PARTYEFFECTS.#$<&_iObjectId&>.#$<&AEGIS.EFFECTTRACKING.PARTYEFFECTS.#$<&_iObjectId&>.GET_KEY Index&>.IS_DIRTY" = #I1
+      PRINT_TEXT "new Status of IS_DIRTY <&AEGIS.EFFECTTRACKING.PARTYEFFECTS.#$<&_iObjectID&>.#$<&AEGIS.EFFECTTRACKING.PARTYEFFECTS.#$<&_iObjectId&>.GET_KEY Index&>.IS_DIRTY&>"
+    ENDIF
+  NEXTEACH
+ 
+  
+RETURN VOID

@@ -1,0 +1,113 @@
+
+INCLUDE "Include/Lazy/Core/Returning/_BasePiece.l2c"
+INCLUDE "Include/Lazy/Core/Returning/_DataValue.l2c"
+INCLUDE "Include/Lazy/Core/Returning/_DataVariable.l2c"
+INCLUDE "Include/Lazy/Core/Returning/_DataReference.l2c"
+INCLUDE "Include/Lazy/Core/Returning/_DataList.l2c"
+
+INCLUDE "Include/Lazy/Core/Returning/DoubleComparison.l2c"
+INCLUDE "Include/Lazy/Core/Returning/BooleanComparison.l2c"
+INCLUDE "Include/Lazy/Core/Returning/StringComparison.l2c"
+INCLUDE "Include/Lazy/Core/Returning/IntegerComparison.l2c"
+
+INCLUDE "Include/Lazy/Core/Returning/IfThenElse.l2c"
+INCLUDE "Include/Lazy/Core/Returning/And.l2c"
+INCLUDE "Include/Lazy/Core/Returning/Or.l2c"
+INCLUDE "Include/Lazy/Core/Returning/Not.l2c"
+INCLUDE "Include/Lazy/Core/Returning/AndMultiple.l2c"
+INCLUDE "Include/Lazy/Core/Returning/OrMultiple.l2c"
+
+INCLUDE "Include/Lazy/Core/Returning/SubString.l2c"
+INCLUDE "Include/Lazy/Core/Returning/StringLength.l2c"
+
+INCLUDE "Include/Lazy/Core/Returning/PolyContainsPoint.l2c"
+INCLUDE "Include/Lazy/Core/Returning/PolyContainsObject.l2c"
+INCLUDE "Include/Lazy/Core/Returning/Point2d.l2c"
+INCLUDE "Include/Lazy/Core/Returning/Point3d.l2c"
+INCLUDE "Include/Lazy/Core/Returning/Distance.l2c"
+
+INCLUDE "Include/Lazy/Core/Returning/ObjectData.l2c"
+INCLUDE "Include/Lazy/Core/Returning/ObjectFound.l2c"
+INCLUDE "Include/Lazy/Core/Returning/ObjectIs.l2c"
+
+INCLUDE "Include/Lazy/Core/Returning/Percent.l2c"
+
+INCLUDE "Include/Lazy/Core/Returning/ItemCount.l2c"
+
+INCLUDE "Include/Lazy/Core/Returning/Arraylist.l2c"
+
+CLASS LAZY_RETURNING NULL
+
+//-------------------------------------------------------------------------------------
+
+   VAR_START
+
+      PUBLIC INT {MENU} 0
+      PUBLIC INT {WORLD} 0
+
+      PUBLIC SORTEDLIST PIECES 0
+      PUBLIC SORTEDLIST USEABLE 0
+
+   VAR_END
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT2 0
+
+      LAZY.REGISTER THIS.{WORLD} 1 #$WORLD
+
+      THIS.USEABLE.ADD "#$Compares the values of two doubles." "DoubleComparison"
+      THIS.USEABLE.ADD "#$Compares the values of two booleans." "BooleanComparison"
+      THIS.USEABLE.ADD "#$Compares the values of two integers." "IntegerComparison"
+      THIS.USEABLE.ADD "#$Checks the IF state, returns THEN or ELSE." "IfThenElse"
+      THIS.USEABLE.ADD "#$Compares the value of two strings." "StringComparison"
+      THIS.USEABLE.ADD "#$Returns a VECTOR2 variable." "Point2d"
+      THIS.USEABLE.ADD "#$Returns a VECTOR3 variable." "Point3d"
+      THIS.USEABLE.ADD "#$Checks if a polygon contains a point." "PolyContainsPoint"
+      THIS.USEABLE.ADD "#$Checks if a polygon contains an object." "PolyContainsObject"
+      THIS.USEABLE.ADD "#$Returns data of an object by using the object id." "ObjectData"
+      THIS.USEABLE.ADD "#$Checks if the ObjectData of an object can be found." "ObjectFound"
+      THIS.USEABLE.ADD "#$Checks if an object is DEAD, INCORRECT, or NOTSEEN." "ObjectIs"
+      THIS.USEABLE.ADD "#$Returns the percent of MAX and NOW." "Percent"
+      THIS.USEABLE.ADD "#$Returns the distance between two 3d points." "Distance"
+      THIS.USEABLE.ADD "#$Returns the substring of a string." "SubString"
+      THIS.USEABLE.ADD "#$Returns the length of a string." "StringLength"
+      THIS.USEABLE.ADD "#$Checks two values. Will return TRUE when both returns TRUE, otherwise FALSE." "And"
+      THIS.USEABLE.ADD "#$Checks two values. Returns TRUE when one of them returns TRUE, otherwise FALSE." "Or"
+      THIS.USEABLE.ADD "#$Returns the count of item ITEM_ID." "ItemCount"
+      THIS.USEABLE.ADD "#$Returns TRUE when BOOLEAN returns FALSE, otherwise FALSE." "Not"
+      THIS.USEABLE.ADD "#$Checks if all the values, variables or references are returning TRUE." "AndMultiple"
+      THIS.USEABLE.ADD "#$Checks if one of the values, variables or references are returning TRUE." "OrMultiple"
+      THIS.USEABLE.ADD "#$Returns an arraylist." "Arraylist"
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+// user calls
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+
+   PUBLIC NEW_PIECE 2 PIECE_KEY PIECE_TYPE
+
+      IF ("THIS.PIECES.CONTAINS_KEY <&PIECE_KEY&>" == TRUE)
+         PRINT_TEXT "Lazy::Returning]: Piece key (<&PIECE_KEY&>) does already exist."
+         RETURN ZERO
+      ENDIF
+
+      IF ("THIS.USEABLE.CONTAINS_KEY <&PIECE_TYPE&>" == FALSE)
+         PRINT_TEXT "Lazy::Returning]: Piece type (<&PIECE_TYPE&>) doesnt exist."
+         RETURN ZERO
+      ENDIF
+
+      DEFINE "LAZY_RETURNING_<&PIECE_TYPE&>" NEW_PIECE 0
+      NEW_PIECE.PIECE_KEY = "#$<&PIECE_KEY&>"
+      THIS.PIECES.ADD NEW_PIECE "<&PIECE_KEY&>"
+
+   RETURN NEW_PIECE
+
+//-------------------------------------------------------------------------------------
+
+END_CLASS

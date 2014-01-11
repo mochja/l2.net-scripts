@@ -1,0 +1,190 @@
+// Kratky popis
+// Server: 
+// Autor: mochitto
+// Date: 
+// Special thanks for L2.NET contributors
+// rev.: 0
+PRINT_TEXT "SCRIPT STARTED!]"
+
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" CharList 9 
+ 
+// Main section
+// ===============================    
+DEFINE STRING NAME "SuperBoy"
+DEFINE_GLOBAL STRING MAIL_TO "EmoBaby" //"dm" // "M8H6BN644N897JM"
+DEFINE_GLOBAL INT LASTID 0
+
+DEFINE_GLOBAL INT CHARS 0
+DEFINE_GLOBAL INT WCHARS 0
+DEFINE_GLOBAL INT CHARLIST 0
+DEFINE STRING NICK
+DEFINE INT TOTAL_CHARS 0
+
+DEFINE_GLOBAL STRING TITLE "a"             //The title of the mail
+DEFINE_GLOBAL STRING BODY ""               //The main message(body)
+
+DEFINE_GLOBAL INT ATTACH 1                 //Attach an Item to mail? 0 no,1 yes
+DEFINE_GLOBAL INT ATTACH_ID 57             //ItemID of item to attach to mail
+DEFINE_GLOBAL INT ATTACH_AMOUNT 1          //How Many to attach to mail?
+
+DEFINE_GLOBAL INT RELOG_DELAY 7000         //<- X 2 = 10sec default relog delay--If script messes up increase this #
+
+//--DONT CHANGE ANYTHING BELOW HERE-unless you know what you're doing--
+
+DEFINE_GLOBAL INT ATTACH_UID 0
+DEFINE_GLOBAL INT COUNT 0
+DEFINE_GLOBAL INT CHARSLOT 0
+
+
+DEFINE FILEREADER FR "last_id.ini" 
+FR.READ LASTID
+FR.CLOSE          
+
+GET_RAND_STRING NAME 1 6
+
+//INJECT "13" //Create CHAR
+WHILE CHARS < 7
+     IF CHARLIST == 1
+          INJECT "13" //Create CHAR
+          LASTID = LASTID + 1
+          NICK = "#$<&NAME&><&LASTID&>"
+          PRINT_TEXT "MAKING CHAR FOR SLOT <&CHARS&> WITH NICK <&NICK&>"
+          DEFINE BYTEBUFFER CharCreateBuffer 512
+          CharCreateBuffer.WRITE_BYTE 12
+          CharCreateBuffer.WRITE_STRING NICK
+          CharCreateBuffer.WRITE_INT32 0
+          CharCreateBuffer.WRITE_INT32 0
+          CharCreateBuffer.WRITE_INT32 0
+          CharCreateBuffer.WRITE_INT32 28
+          CharCreateBuffer.WRITE_INT32 39
+          CharCreateBuffer.WRITE_INT32 30
+          CharCreateBuffer.WRITE_INT32 27
+          CharCreateBuffer.WRITE_INT32 35
+          CharCreateBuffer.WRITE_INT32 11
+          CharCreateBuffer.WRITE_INT32 0
+          CharCreateBuffer.WRITE_INT32 0
+          CharCreateBuffer.WRITE_INT32 0
+          CharCreateBuffer.TRIM_TO_INDEX
+          INJECTBB CharCreateBuffer
+          DELETE CharCreateBuffer
+          SLEEP 1900
+     ENDIF
+     SLEEP 25
+WEND  
+
+//TOTAL_CHARS = CHARS
+WCHARS = CHARS + 1
+
+WHILE CHARSLOT < WCHARS 
+     ITEM_COUNT ATTACH_AMOUNT 57
+     IF ATTACH_AMOUNT > 2100
+          ATTACH_AMOUNT = ATTACH_AMOUNT - 2100
+          INVEN_GET_UID ATTACH_UID "<&ATTACH_ID&>"
+          DEFINE bytebuffer mail_bb 512
+          mail_bb.WRITE_BYTE #i208
+          mail_bb.WRITE_INT16 #i102
+          mail_bb.WRITE_STRING MAIL_TO
+          mail_bb.WRITE_INT32 #i0
+          mail_bb.WRITE_STRING TITLE
+          mail_bb.WRITE_STRING BODY
+          mail_bb.WRITE_INT32 ATTACH
+          mail_bb.WRITE_INT32 ATTACH_UID
+          mail_bb.WRITE_INT64 ATTACH_AMOUNT
+          mail_bb.WRITE_INT64 #i0
+          mail_bb.TRIM_TO_INDEX
+          INJECTBB mail_bb
+          DELETE mail_bb
+          PRINT_TEXT " Sended email with <&ATTACH_AMOUNT&> Adena from slot <&CHARSLOT&> ]"
+          SLEEP 3500
+     ENDIF
+     IF CHARSLOT < CHARS          
+          CALLSUB Relog
+     ELSE
+          INJECT "57"
+          CHARSLOT = WCHARS
+          SLEEP 1000
+     ENDIF 
+     SLEEP 1000
+WEND
+
+/*
+FOR A 0 "<&CHARS&>" 1
+     PRINT_TEXT "DELETING CHAR IN SLOT <&a&>"
+     INJECT "0D <&A.GET_HEX32&>"
+     SLEEP 2000
+NEXT     
+*/
+
+DEFINE FILEWRITER FW "last_id.ini"
+FW.WRITE LASTID
+FW.FLUSH
+FW.CLOSE
+
+PRINT_TEXT " Mail has finished ]"
+SCRIPT_END 
+
+FUNCTION CharList
+     PACKET.READ_BYTE NULL
+     PACKET.READ_INT32 CHARS
+     
+     PRINT_TEXT "CHARS ALIVE <&CHARS&>"
+     CHARLIST = 1
+RETURN VOID 
+
+SUB Relog
+     DEFINE BYTEBUFFER CharSelect_bb 64 
+     INJECT "57"
+     SLEEP 2000
+     print_text "loggin char <&CHARSLOT&>"
+     CharSelect_bb.WRITE_BYTE #i18
+     CharSelect_bb.WRITE_INT32 CHARSLOT
+     CharSelect_bb.WRITE_INT16 #i0
+     CharSelect_bb.WRITE_INT32 #i0
+     CharSelect_bb.WRITE_INT32 #i0
+     CharSelect_bb.WRITE_INT32 #i0
+     CharSelect_bb.TRIM_TO_INDEX
+     INJECTBB CharSelect_bb
+     DELETE CharSelect_bb 
+     CHARSLOT = CHARSLOT + 1 
+     SLEEP "<&RELOG_DELAY&>"
+RETURNSUB
+
+FUNCTION GET_RAND_STRING 1 SIZE
+     DEFINE STRING RND_STR
+     DEFINE INT RAND 0
+     DEFINE INT CNT 0
+     DEFINE ARRAYLIST Chars      
+     Chars.ADD "#$q"
+     Chars.ADD "#$w"
+     Chars.ADD "#$e"
+     Chars.ADD "#$r"
+     Chars.ADD "#$t"
+     Chars.ADD "#$z"
+     Chars.ADD "#$u"
+     Chars.ADD "#$i"
+     Chars.ADD "#$o"
+     Chars.ADD "#$p"
+     Chars.ADD "#$a"
+     Chars.ADD "#$s"
+     Chars.ADD "#$d"
+     Chars.ADD "#$f"
+     Chars.ADD "#$g"
+     Chars.ADD "#$h"
+     Chars.ADD "#$j"
+     Chars.ADD "#$k"
+     Chars.ADD "#$l"
+     Chars.ADD "#$y"
+     Chars.ADD "#$x"
+     Chars.ADD "#$c"
+     Chars.ADD "#$v"
+     Chars.ADD "#$b"
+     Chars.ADD "#$n"
+     CNT = CHARS.COUNT - 1
+     GET_RAND RAND 0 "<&CNT&>"
+     RND_STR = "#$<&Chars.RAND&>"
+     RND_STR = "#$<&RND_STR.TO_UPPER&>"
+     FOR A 0 "<&SIZE&>" 1
+          GET_RAND RAND 0 "<&CNT&>"
+          RND_STR = "#$<&RND_STR&><&Chars.RAND&>"
+     NEXT
+RETURN RND_STR

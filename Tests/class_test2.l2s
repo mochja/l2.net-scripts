@@ -1,0 +1,31 @@
+INCLUDE Tests\child_class.l2c
+
+DEFINE ARRAYLIST pooplist 0
+DEFINE SORTEDLIST peelist 0
+
+FOR A 0 10 1
+	DEFINE NewSuper nugget 0
+	nugget.COUNT = 	A + 100
+	nugget.A = A * nugget.A
+	pooplist.ADD nugget
+
+	DEFINE INT "DYNAMIC<&A&>" "<&A&>"
+	nugget.SSL.ADD "DYNAMIC<&A&>" "KEY-<&A&>"
+	DELETE "DYNAMIC<&A&>"
+
+	DELETE nugget
+
+	//////
+
+	DEFINE NewSuper stream 0
+	stream.B = A * stream.B
+	peelist.ADD stream "<&A&>"
+	DELETE stream
+NEXT
+
+DEFINE NewSuper aaa 0
+aaa.PUBLIC_FUNC2 NULL 0
+
+
+PRINT_TEXT "DONE"
+END_SCRIPT

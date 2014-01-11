@@ -1,0 +1,602 @@
+
+CLASS ENGINEX_STRINGS NULL
+
+//-------------------------------------------------------------------------------------
+
+   VAR_START
+   VAR_END
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT 0
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC EXPLODE 2 SEPARATOR GETSTRING
+      DEFINE ARRAYLIST STRINGS 0
+      DEFINE INT STRPOS 0
+      DEFINE STRING SUBSTR ""
+      IF SEPARATOR == "#$"
+			WHILE STRPOS < GETSTRING.LENGTH
+            SUBSTR = GETSTRING.SUBSTRING STRPOS #i1
+            STRINGS.ADD "#$<&SUBSTR&>"
+            STRPOS = STRPOS + #i1
+			WEND
+      ELSE
+			DEFINE INT LAST_LETTERS_COUNT 0
+			DEFINE STRING OLDSTR ""
+			WHILE STRPOS < GETSTRING.LENGTH
+            LAST_LETTERS_COUNT = GETSTRING.LENGTH - STRPOS
+            IF LAST_LETTERS_COUNT > SEPARATOR.LENGTH
+               SUBSTR = GETSTRING.SUBSTRING STRPOS "#i<&SEPARATOR.LENGTH&>"
+               IF SEPARATOR == SUBSTR
+                  STRINGS.ADD "#$<&OLDSTR&>"
+                  OLDSTR = "#$"
+                  STRPOS = STRPOS + "#i<&SEPARATOR.LENGTH&>"
+               ELSE
+                  SUBSTR = GETSTRING.SUBSTRING STRPOS #i1
+                  OLDSTR = "#$<&OLDSTR&><&SUBSTR&>"
+                  STRPOS = STRPOS + #i1
+               ENDIF
+            ELSE
+               SUBSTR = GETSTRING.SUBSTRING STRPOS "#i<&LAST_LETTERS_COUNT&>"
+               IF SEPARATOR == SUBSTR
+						STRINGS.ADD "#$<&OLDSTR&>"
+						STRINGS.ADD "#$"
+					ELSE
+						STRINGS.ADD "#$<&OLDSTR&><&SUBSTR&>"
+					ENDIF
+               STRPOS = GETSTRING.LENGTH
+            ENDIF
+			WEND
+      ENDIF
+   RETURN STRINGS
+
+//-------------------------------------------------------------------------------------
+
+	PUBLIC IMPLODE 2 SEPARATOR GETARRAY
+		DEFINE STRING NEWSTRING ""
+		IF GETARRAY.COUNT > ZERO
+			NEWSTRING = "#$<&GETARRAY.0&>"
+		ENDIF
+		IF GETARRAY.COUNT > ONE
+			FOR I 1 "<&GETARRAY.COUNT&>" 1
+				NEWSTRING = "#$<&NEWSTRING&><&SEPARATOR&><&GETARRAY.I&>"
+			NEXT
+		ENDIF
+	RETURN NEWSTRING
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC SUBSTR_COUNT 3 GETSTRING SEARCHSTRING RADICAL
+      DEFINE INT COUNT 0
+		DEFINE INT STRPOS 0
+		DEFINE STRING SUBSTR ""
+		DEFINE INT LAST_LETTERS_COUNT 0
+		WHILE STRPOS < GETSTRING.LENGTH
+			LAST_LETTERS_COUNT = GETSTRING.LENGTH - STRPOS
+			IF LAST_LETTERS_COUNT < SEARCHSTRING.LENGTH
+				STRPOS = GETSTRING.LENGTH
+			ELSE
+				SUBSTR = GETSTRING.SUBSTRING STRPOS "#i<&SEARCHSTRING.LENGTH&>"
+				IF SUBSTR == SEARCHSTRING
+					COUNT = COUNT + #i1
+					IF RADICAL == FALSE
+						STRPOS = STRPOS + SEARCHSTRING.LENGTH
+						STRPOS = STRPOS - #i1
+					ENDIF
+				ENDIF
+				STRPOS = STRPOS + #i1
+			ENDIF
+		WEND
+   RETURN COUNT
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC SPLIT 2 GETSTRING LENGTH
+      DEFINE ARRAYLIST STRINGS 0
+      DEFINE INT STRPOS 0
+      DEFINE STRING SUBSTR ""
+      DEFINE INT LAST_LETTERS_COUNT 0
+      WHILE STRPOS < GETSTRING.LENGTH
+         LAST_LETTERS_COUNT = GETSTRING.LENGTH - STRPOS
+         IF LAST_LETTERS_COUNT <= LENGTH
+            SUBSTR = GETSTRING.SUBSTRING STRPOS "#i<&LAST_LETTERS_COUNT&>"
+            STRINGS.ADD "#$<&SUBSTR&>"
+            STRPOS = GETSTRING.LENGTH
+         ELSE
+            SUBSTR = GETSTRING.SUBSTRING STRPOS "#i<&LENGTH&>"
+            STRINGS.ADD "#$<&SUBSTR&>"
+            STRPOS = STRPOS + LENGTH
+         ENDIF
+      WEND
+   RETURN STRINGS
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC REPLACE 4 GETSTRING FINDSTRING REPLACESTRING RADICAL
+      DEFINE STRING NEWSTRING "<&GETSTRING&>"
+      IF FINDSTRING.LENGTH > ZERO
+         DEFINE STRING NEWSTRING_1 ""
+         DEFINE STRING NEWSTRING_2 ""
+         DEFINE INT NEWSTRING_2_START 0
+         DEFINE INT NEWSTRING_2_LENGTH 0
+         DEFINE STRING LETTER ""
+         DEFINE STRING SUBSTR ""
+         DEFINE INT STRPOS 0
+         DEFINE STRING FIRST_FIND_LETTER ""
+         FIRST_FIND_LETTER = FINDSTRING.SUBSTRING #i0 #i1
+         DEFINE INT LAST_LETTERS_COUNT 0
+         WHILE STRPOS < NEWSTRING.LENGTH
+            LAST_LETTERS_COUNT = NEWSTRING.LENGTH - STRPOS
+            IF LAST_LETTERS_COUNT < FINDSTRING.LENGTH
+               STRPOS = NEWSTRING.LENGTH
+            ELSE
+               LETTER = NEWSTRING.SUBSTRING STRPOS #i1
+               IF LETTER == FIRST_FIND_LETTER
+                  SUBSTR = NEWSTRING.SUBSTRING STRPOS "#i<&FINDSTRING.LENGTH&>"
+                  IF SUBSTR == FINDSTRING
+                     NEWSTRING_1 = NEWSTRING.SUBSTRING 0 STRPOS
+                     NEWSTRING_2_START = STRPOS + FINDSTRING.LENGTH
+                     NEWSTRING_2_LENGTH = NEWSTRING.LENGTH - NEWSTRING_2_START
+                     NEWSTRING_2 = NEWSTRING.SUBSTRING NEWSTRING_2_START NEWSTRING_2_LENGTH
+                     NEWSTRING = "#$<&NEWSTRING_1&><&REPLACESTRING&><&NEWSTRING_2&>"
+                     IF (RADICAL == FALSE)
+                        STRPOS = STRPOS + FINDSTRING.LENGTH
+                     ENDIF
+                     BREAK 3
+                  ENDIF
+               ENDIF
+               STRPOS = STRPOS + #i1
+            ENDIF
+         WEND
+      ENDIF
+   RETURN NEWSTRING
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC REMOVE_IDENTIC 1 GETSTRING
+      DEFINE STRING NEWSTRING ""
+      DEFINE INT STRPOS 0
+      DEFINE STRING SUBSTR ""
+      DEFINE STRING LETTER ""
+      WHILE STRPOS < GETSTRING.LENGTH
+         SUBSTR = GETSTRING.SUBSTRING STRPOS #i1
+         IF (SUBSTR != LETTER)
+            LETTER = "#$<&SUBSTR&>"
+            NEWSTRING = "#$<&NEWSTRING&><&SUBSTR&>"
+         ENDIF
+         STRPOS = STRPOS + #i1
+      WEND
+   RETURN NEWSTRING
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC REPLACE_BY_LIST 2 GETSTRING GETLIST
+      DEFINE STRING NEWSTRING ""
+      DEFINE STRING LETTER ""
+      DEFINE STRING SUBSTR ""
+      DEFINE INT STRPOS 0
+      DEFINE STRING FINDSTRING ""
+      DEFINE INT __LOL 0
+      WHILE STRPOS < GETSTRING.LENGTH
+         IF (TRUE == TRUE)
+            LETTER = GETSTRING.SUBSTRING STRPOS #i1
+            IF LETTER == "#${"
+               FOR I 0 "<&GETLIST.COUNT&>" 1
+                  FINDSTRING = "#${<&I&>}"
+                  __LOL = GETSTRING.LENGTH - STRPOS
+                  __LOL = __LOL - FINDSTRING.LENGTH
+                  IF (__LOL > ZERO)
+                     SUBSTR = GETSTRING.SUBSTRING STRPOS FINDSTRING.LENGTH
+                     IF SUBSTR == FINDSTRING
+                        NEWSTRING = "#$<&NEWSTRING&><&GETLIST.I&>"
+                        STRPOS = STRPOS + FINDSTRING.LENGTH
+                        BREAK 5
+                     ENDIF
+                  ENDIF
+               NEXT
+            ENDIF
+            NEWSTRING = "#$<&NEWSTRING&><&LETTER&>"
+            STRPOS = STRPOS + #i1
+         ENDIF
+      WEND
+   RETURN NEWSTRING
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC SUBINT 3 OLD_INT POS LENGTH
+      DEFINE STRING NEW_INT "<&OLD_INT&>"
+      NEW_INT = NEW_INT.SUBSTRING "<&POS&>" "<&LENGTH&>"
+   RETURN "#i<&NEW_INT&>"
+
+//-------------------------------------------------------------------------------------
+
+	PUBLIC PARSEHTML 2 HTMLTEXT HTMLTAGS
+
+		DEFINE SORTEDLIST HTMLDATA 0
+		FOREACH I1 STRING HTMLTAGS
+			DEFINE ARRAYLIST __HTMLDATA_ARRAY 0
+			HTMLDATA.ADD __HTMLDATA_ARRAY "<&HTMLTAGS.I1&>"
+			DELETE __HTMLDATA_ARRAY
+		NEXTEACH
+
+		DEFINE INT IN_BRAKETS 0
+		DEFINE INT IN_COMMENT 0
+		DEFINE ARRAYLIST OPEN_TAGS 0
+		DEFINE STRING BRAKETS_TEXT ""
+		DEFINE ARRAYLIST BRAKETS_DATA 0
+		DEFINE INT BRAKETS_DATA_CUR_INDEX 0
+		DEFINE INT BRAKETS_DATA_VALUE_QUOTING 0
+
+		DEFINE STRING QUOTE ""
+		ENGINEX.CONVERT.DEC2ASCII QUOTE 1 #i34
+
+		DEFINE STRING SUBSTR ""
+		FOR STRPOS 0 "<&HTMLTEXT.LENGTH&>" 1
+			SUBSTR = HTMLTEXT.SUBSTRING "<&STRPOS&>" 1
+
+			// we're not in brakets ...
+			IF (IN_BRAKETS == FALSE)
+
+				// ... and brakets started ...
+				IF (SUBSTR == "#$<")
+
+					// ... then we're in brakets
+					BRAKETS_TEXT = "#$"
+					BRAKETS_DATA.CLEAR
+					BRAKETS_DATA.ADD "#$"
+					BRAKETS_DATA_CUR_INDEX = ZERO
+					IN_BRAKETS = TRUE
+				ENDIF
+
+			// we're in brakets ...
+			ELSE
+
+				// ... brakets ending appeared ...
+				IF (SUBSTR == "#$>")
+
+					// ... leave brakets
+					IN_BRAKETS = FALSE
+
+					// we're in comment ...
+					IF (IN_COMMENT == TRUE)
+
+						// leave comment
+						SUBSTR = "#$"
+						IN_COMMENT = FALSE
+
+					// we're not in a comment
+					ELSE
+
+						DEFINE INT __BRAKETS_ISCLOSING 0
+						DEFINE STRING __BRAKETS_TAG_NAME ""
+
+						// data count >= 2
+						// to check if a tag is closing
+						IF (BRAKETS_DATA.COUNT >= #i2)
+
+							// yeah, the first data value is for tag ending ...
+							IF (BRAKETS_DATA.#i0 == "#$/")
+								__BRAKETS_ISCLOSING = TRUE
+								__BRAKETS_TAG_NAME = "#$<&BRAKETS_DATA.#i1&>"
+
+							// its not for tag closing ?
+							// then it has to be a normal tag name
+							ELSE
+								__BRAKETS_TAG_NAME = "#$<&BRAKETS_DATA.#i0&>"
+							ENDIF
+
+						// data count is less then 2 ...
+						ELSE
+
+							// but more then zero
+							// so we got a tag
+							IF (BRAKETS_DATA.COUNT > ZERO)
+								__BRAKETS_TAG_NAME = "#$<&BRAKETS_DATA.#i0&>"
+							ENDIF
+						ENDIF
+
+						// tag name is not empty
+						IF (__BRAKETS_TAG_NAME != "#$")
+
+							__BRAKETS_TAG_NAME = __BRAKETS_TAG_NAME.TO_UPPER
+
+							// its not for tag closing
+							// so, its for tag starting, or a single tag like button
+							IF (__BRAKETS_ISCLOSING == FALSE)
+
+								// check if we're looking for that tag
+								DEFINE INT __VALID_TAG 0
+								FOREACH HTMLTAG_I STRING HTMLTAGS
+									IF (HTMLTAGS.HTMLTAG_I.TO_UPPER == __BRAKETS_TAG_NAME)
+										__VALID_TAG = TRUE
+									ENDIF
+								NEXTEACH
+
+								// yes, we're looking for that tag
+								IF (__VALID_TAG == TRUE)
+
+									DEFINE ARRAYLIST __SINGLES 0
+									DEFINE SORTEDLIST __ATTRIBUTES 0
+
+									// add last empty data value
+									IF (BRAKETS_DATA.BRAKETS_DATA_CUR_INDEX != "#$")
+										BRAKETS_DATA.ADD "#$"
+									ENDIF
+
+									// remove the tagname from data values
+									BRAKETS_DATA.REMOVE 0
+
+									DEFINE STRING __LAST_STRING ""
+									DEFINE INT __VALUE_EXPECTED 0
+
+									// while there are data values left to check
+									WHILE (BRAKETS_DATA.COUNT > ZERO)
+
+										// data value is attributes separator
+										IF (BRAKETS_DATA.#i0 == "#$=")
+
+											// next one has to be a value for the attribute
+											__VALUE_EXPECTED = TRUE
+
+										// its not a seperator for attributes
+										ELSE
+
+											// this one has to be a value for las attribute
+											IF (__VALUE_EXPECTED == TRUE)
+
+												// add the value to temporary attributes list
+												__ATTRIBUTES.ADD "#$<&BRAKETS_DATA.#i0&>" "<&__LAST_STRING&>"
+												__LAST_STRING = "#$"
+
+												// we're nomore expecting a value for attributes
+												__VALUE_EXPECTED = FALSE
+
+											// this one is not for an attribute
+											ELSE
+
+												// last string is not empty
+												IF (__LAST_STRING != "#$")
+
+													// means its a single attribute without value
+													__SINGLES.ADD "#$<&__LAST_STRING&>"
+												ENDIF
+
+												// set last string to current data value
+												__LAST_STRING = "#$<&BRAKETS_DATA.#i0&>"
+											ENDIF
+										ENDIF
+
+										// delete current data value from list
+										BRAKETS_DATA.REMOVE 0
+									WEND
+									DELETE __LAST_STRING
+									DELETE __VALUE_EXPECTED
+
+									// add data to opened tags
+									DEFINE SORTEDLIST __OPEN_TAG 0
+									__OPEN_TAG.ADD "#$<&__BRAKETS_TAG_NAME&>" "TAG_NAME"
+									__OPEN_TAG.ADD "#$" "INNER"
+									__OPEN_TAG.ADD __SINGLES "SINGLES"
+									__OPEN_TAG.ADD __ATTRIBUTES "ATTRIBUTES"
+									__OPEN_TAG.ADD FALSE "CLOSED"
+									OPEN_TAGS.ADD __OPEN_TAG
+									DELETE __OPEN_TAG
+
+									DELETE __ATTRIBUTES
+									DELETE __SINGLES
+
+								ENDIF
+								DELETE __VALID_TAG
+
+							// brakets is for tag closing
+							ELSE
+
+								// get the index of the tag what need to get closed
+								DEFINE INT __CLOSE_TAG_INDEX -1
+
+								// reverse opened tags, because we want to close the last opened one
+								OPEN_TAGS.REVERSE
+
+								// search now for the index
+								FOR I1 0 "<&OPEN_TAGS.COUNT&>" 1
+									IF (OPEN_TAGS.I1.#$TAG_NAME == __BRAKETS_TAG_NAME)
+										IF (OPEN_TAGS.I1.#$CLOSED == FALSE)
+											__CLOSE_TAG_INDEX = "#i<&I1&>"
+											BREAK 3
+										ENDIF
+									ENDIF
+								NEXT
+
+								// index found
+								IF (__CLOSE_TAG_INDEX >= ZERO)
+
+									// edit the inner of the opened tag
+									// remove the ">" and "</TAGNAME"
+									DEFINE INT __INNERLENGTH 0
+									__INNERLENGTH = OPEN_TAGS.__CLOSE_TAG_INDEX.#$INNER.LENGTH - BRAKETS_TEXT.LENGTH
+									__INNERLENGTH = __INNERLENGTH - #i2
+									OPEN_TAGS.__CLOSE_TAG_INDEX.#$INNER = OPEN_TAGS.__CLOSE_TAG_INDEX.#$INNER.SUBSTRING 1 __INNERLENGTH
+									DELETE __INNERLENGTH
+
+									OPEN_TAGS.__CLOSE_TAG_INDEX.#$CLOSED = TRUE
+
+								ENDIF
+
+								// reverse again to normal sorting
+								OPEN_TAGS.REVERSE
+
+								DELETE __CLOSE_TAG_INDEX
+							ENDIF
+						ENDIF
+
+						DELETE __BRAKETS_ISCLOSING
+						DELETE __BRAKETS_TAG_NAME
+					ENDIF
+
+				// char is not for brakets ending
+				ELSE
+
+					// we're not in a comment ...
+					IF (IN_COMMENT == FALSE)
+
+						// ... but comment started
+						IF (BRAKETS_TEXT == "#$!--")
+
+							BRAKETS_TEXT = "#$"
+							SUBSTR = "#$"
+							IN_COMMENT = TRUE
+
+							// delete "<!--" from all opened inners since comment started
+							DEFINE INT __RESTLENGTH 0
+							FOR I1 0 "<&OPEN_TAGS.COUNT&>" 1
+								IF (OPEN_TAGS.I1.#$CLOSED == FALSE)
+									__RESTLENGTH = OPEN_TAGS.I1.#$INNER.LENGTH - #i4
+									OPEN_TAGS.I1.#$INNER = OPEN_TAGS.I1.#$INNER.SUBSTRING 0 "<&__RESTLENGTH&>"
+								ENDIF
+							NEXT
+							DELETE __RESTLENGTH
+
+						// its not for starting a comment
+						ELSE
+
+							BRAKETS_TEXT = "#$<&BRAKETS_TEXT&><&SUBSTR&>"
+
+							// char is not empty
+							IF (SUBSTR != "#$ ")
+
+								// brakets is for tag ending
+								IF (SUBSTR == "#$/") AND (BRAKETS_DATA_CUR_INDEX == ZERO)
+									BRAKETS_DATA.#i0 = "#$/"
+									BRAKETS_DATA.ADD "#$"
+									BRAKETS_DATA_CUR_INDEX = #i1
+
+								// not for tag ending
+								ELSE
+
+									// attribute separator appeared
+									IF (SUBSTR == "#$=")
+
+										// cur data value is not empty
+										IF (BRAKETS_DATA.BRAKETS_DATA_CUR_INDEX != "#$")
+
+											// add the seperator and an empty value
+											BRAKETS_DATA.ADD "#$="
+											BRAKETS_DATA.ADD "#$"
+											BRAKETS_DATA_CUR_INDEX = BRAKETS_DATA_CUR_INDEX + #i2
+
+										// cur data value is empty
+										ELSE
+
+											// set cur data value to seperator and add just 1 new value
+											BRAKETS_DATA.BRAKETS_DATA_CUR_INDEX = "#$="
+											BRAKETS_DATA.ADD "#$"
+											BRAKETS_DATA_CUR_INDEX = BRAKETS_DATA_CUR_INDEX + #i1
+										ENDIF
+
+									// not an attribute separator
+									ELSE
+
+										// char is for quote
+										IF (SUBSTR == QUOTE)
+
+											// quote hasnt been started
+											IF (BRAKETS_DATA_VALUE_QUOTING == FALSE)
+
+												// start quoting
+												BRAKETS_DATA_VALUE_QUOTING = TRUE
+
+											// quoting is running
+											ELSE
+
+												// stop quote
+												BRAKETS_DATA_VALUE_QUOTING = FALSE
+
+												// start with new empty data value
+												BRAKETS_DATA.ADD "#$"
+												BRAKETS_DATA_CUR_INDEX = BRAKETS_DATA_CUR_INDEX + #i1
+											ENDIF
+
+										// its not for quote
+										ELSE
+
+											// add the char to cur data value
+											BRAKETS_DATA.BRAKETS_DATA_CUR_INDEX = "#$<&BRAKETS_DATA.BRAKETS_DATA_CUR_INDEX&><&SUBSTR&>"
+										ENDIF
+									ENDIF
+								ENDIF
+
+							// its an empty space
+							ELSE
+
+								// we're in quotes ...
+								IF (BRAKETS_DATA_VALUE_QUOTING == TRUE)
+
+									// ... so add the empty space to cur data value
+									BRAKETS_DATA.BRAKETS_DATA_CUR_INDEX = "#$<&BRAKETS_DATA.BRAKETS_DATA_CUR_INDEX&><&SUBSTR&>"
+
+								// we're not in quotes ...
+								ELSE
+
+									// ... cur data value is not empty
+									IF (BRAKETS_DATA.BRAKETS_DATA_CUR_INDEX != "#$")
+
+										// start new data value
+										BRAKETS_DATA.ADD "#$"
+										BRAKETS_DATA_CUR_INDEX = BRAKETS_DATA_CUR_INDEX + #i1
+									ENDIF
+
+								ENDIF
+							ENDIF
+
+						ENDIF
+					ENDIF
+
+				ENDIF
+			ENDIF
+
+			// we're not in a comment
+			IF (IN_COMMENT == FALSE)
+
+				// for each opened tag
+				FOR I1 0 "<&OPEN_TAGS.COUNT&>" 1
+
+					// opened tag is not closed, so its still opened
+					IF (OPEN_TAGS.I1.#$CLOSED == FALSE)
+
+						// add the current char to the inner
+						OPEN_TAGS.I1.#$INNER = "#$<&OPEN_TAGS.I1.#$INNER&><&SUBSTR&>"
+					ENDIF
+				NEXT
+			ENDIF
+
+		NEXT
+
+		// for each opened tag
+		FOR I1 0 "<&OPEN_TAGS.COUNT&>" 1
+
+			// opened tag has not been closed
+			IF (OPEN_TAGS.I1.#$CLOSED == FALSE)
+
+				// means: its a single tag without inner
+				OPEN_TAGS.I1.#$INNER = "#$"
+			ENDIF
+
+			// add the opened tag to htmldata
+			DEFINE SORTEDLIST __HTMLDATA_VALUES 0
+			DEFINE STRING __TAG_NAME "<&OPEN_TAGS.I1.#$TAG_NAME&>"
+			__HTMLDATA_VALUES.ADD OPEN_TAGS.I1.#$INNER "INNER"
+			__HTMLDATA_VALUES.ADD OPEN_TAGS.I1.#$SINGLES "SINGLES"
+			__HTMLDATA_VALUES.ADD OPEN_TAGS.I1.#$ATTRIBUTES "ATTRIBUTES"
+			HTMLDATA.__TAG_NAME.ADD __HTMLDATA_VALUES
+			DELETE __HTMLDATA_VALUES
+			DELETE __TAG_NAME
+		NEXT
+
+	RETURN HTMLDATA
+
+//-------------------------------------------------------------------------------------
+
+END_CLASS

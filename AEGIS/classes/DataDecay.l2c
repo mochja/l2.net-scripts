@@ -1,0 +1,15 @@
+CLASS DataDecay null
+VAR_START
+
+  PUBLIC INT Enabled 0 
+  PUBLIC INT ObjectAge
+  PUBLIC INT ObjectPruneDistance
+  PUBLIC INT NpcInfoRefresh
+  PUBLIC INT CharInfoRefresh
+  PUBLIC DOUBLE PartySpelledDecay
+  PUBLIC DOUBLE AbnormalStatusDecay
+  PUBLIC DOUBLE ShortBuffDecay
+   
+VAR_END
+ 
+END_CLASS

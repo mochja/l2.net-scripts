@@ -1,0 +1,80 @@
+
+	INCLUDE Include/EngineX.l2c
+	DEFINE_GLOBAL ENGINEX ENGINEX 0
+
+	INCLUDE Include/FastCast.l2c
+	DEFINE_GLOBAL FASTCAST FASTCAST 0
+
+
+
+	// target self
+	// ENGINEX.UTILS.TARGET_UNIQUE VOID 2 CHAR_ID #i1000 FALSE
+
+	// loads the shortcuts
+	FASTCAST.LOAD_SHORTCUTS VOID 0
+
+	// creates a castlist with the specified name
+	FASTCAST.CREATE_CASTLIST VOID 1 #$TestList1
+
+	// configurate the castlist
+	// you dont need to... look at the castlist-class-file to see the default values
+	FASTCAST.CASTLISTS.#$TestList1.TIMEOUT = #i1000
+	FASTCAST.CASTLISTS.#$TestList1.REPEATS = #i1
+	FASTCAST.CASTLISTS.#$TestList1.USE_CTRL = FALSE
+	FASTCAST.CASTLISTS.#$TestList1.USE_SHIFT = FALSE
+	FASTCAST.CASTLISTS.#$TestList1.ON_MAXREPEATS = #i99999
+	FASTCAST.CASTLISTS.#$TestList1.ON_NOTARGET = #i0
+	FASTCAST.CASTLISTS.#$TestList1.ON_WRONGTARGET = #i1
+	FASTCAST.CASTLISTS.#$TestList1.ON_CANCEL = #i1
+	FASTCAST.CASTLISTS.#$TestList1.ON_PEACEZONE = #i0
+	FASTCAST.CASTLISTS.#$TestList1.ON_FAIL = #i1
+	FASTCAST.CASTLISTS.#$TestList1.ON_COOLDOWN = #i0
+	// onerror-actions:
+	// 0 = nothing, continue trying to cast current skill
+	// 1 = next skill
+	// 2 = abort castlist (will automaticly resets the casting-position)
+
+	// add all shortcuts skills to a castlist
+	//FASTCAST.ADD_ALL_SHORTCUTS VOID 1 #$TestList1
+
+	// add the skill with the specified id to the castlist
+	FASTCAST.ADD_SKILL_BY_ID VOID 2 #$TestList1 #i1239
+
+	// this will result in an error
+	//FASTCAST.ADD_SKILL_BY_ID VOID 2 #$TestList1 #i-999
+
+	// add the skill with the specified name to the castlist
+	//FASTCAST.ADD_SKILL_BY_NAME VOID 2 #$TestList1 "#$body TO MInd"
+
+	// this will result in an error
+	//FASTCAST.ADD_SKILL_BY_NAME VOID 2 #$TestList1 "#$huhhaaaa"
+
+	// adds a single skill from shortcuts, 1. row and 4. slot
+	//FASTCAST.ADD_SHORTCUT_SLOT VOID 3 #$TestList1 #i1 #i4
+
+	// adds all skills from shortcut row 1
+	//FASTCAST.ADD_SHORTCUT_BAR VOID 2 #$TestList1 #i1
+
+	// starts (or continues) a castlist
+	FASTCAST.START_CASTLIST VOID 1 #$TestList1
+
+	// you may add you own code within this while-loop
+	WHILE (FASTCAST.IS_CASTING == TRUE)
+		SLEEP 100
+	WEND
+
+	// stops the current running castlist
+	//FASTCAST.STOP_CASTING VOID FALSE
+
+	// clears the added skills of a castlist
+	//FASTCAST.CLEAR_CASTLIST VOID 1 #$TestList1
+
+	// resets the casting-position of a castlist
+	//FASTCAST.RESET_POSITION VOID 1 #$TestList1
+	// how to use:
+	// when you stops a castlist while casting you can decide
+	// if you want to continue the castlist or if you want to start from beginning
+	// use RESET_POSITION to start from the beginning
+	// without RESET_POSITION, you will continue the castlist when you do START_CASTLIST
+
+END_SCRIPT

@@ -1,0 +1,219 @@
+
+//-------------------------------------------------------------------------------------
+CLASS ENGINEX_AUTOBOT_MOVING NULL
+//-------------------------------------------------------------------------------------
+
+   VAR_START
+
+      PUBLIC ARRAYLIST POINTS 0
+      PUBLIC INT IS_MOVING 0
+      PUBLIC INT IS_STUCKED 0
+      PUBLIC INT ABORT 0
+
+      PUBLIC INT MOVETO_OFFSET 30
+      PUBLIC INT REACH_OFFSET 30
+      PUBLIC INT OVER_OFFSET 100
+
+      PUBLIC INT UNSTUCK_MAX 3
+      PUBLIC INT UNSTUCK_TIMEOUT 2000
+
+   VAR_END
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT
+      ENGINEX.CONSTRUCT VOID 1 #$EngineX.System.Geo
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC START 0
+      IF ( THIS.IS_MOVING == TRUE )
+         RETURN FALSE
+      ENDIF
+      THIS.IS_MOVING = TRUE
+      THIS.IS_STUCKED = FALSE
+      THIS.ABORT = FALSE
+      THREAD MOVE_THREAD
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC STOP 0
+      THIS.ABORT = TRUE
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC ADD_POINT 3 X Y Z
+      DEFINE VECTOR3 NEW_POINT 0
+      NEW_POINT.X = X.CLONE
+      NEW_POINT.Y = Y.CLONE
+      NEW_POINT.Z = Z.CLONE
+      THIS.POINTS.ADD NEW_POINT
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CLEAR_POINTS 0
+      THIS.POINTS.CLEAR
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC SET_POINTS 1 POINTS
+      THIS.POINTS = POINTS.CLONE
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC SHIFT_POINT 0
+      IF ( THIS.POINTS.COUNT == ZERO )
+         RETURN NULL
+      ENDIF
+      DEFINE VECTOR3 OLD_POINT 0
+      OLD_POINT = THIS.POINTS.ZERO
+      THIS.POINTS.REMOVE 0
+   RETURN OLD_POINT
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC MOVE_THREAD 0
+
+      DEFINE NULL THAT 0
+      THAT = ENGINEX.AUTOBOT.MOVING
+
+      DEFINE INT STATUS 1
+      DEFINE VECTOR3 OFFSET_POINT 0
+      DEFINE VECTOR3 MOVETO_POINT 0
+      DEFINE VECTOR3 REACH_POINT 0
+      DEFINE INT UNSTUCKS 0
+      DEFINE DOUBLE TEMP_DISTANCE 0
+      DEFINE DOUBLE TEMP_DOUBLE 0
+      DEFINE INT UNSTUCK_TIME 0
+      DEFINE STRING UNSTUCK_CHECK ""
+
+      LABEL LOOP_START
+
+         IF ( THAT.ABORT == TRUE )
+            JUMP_TO_LABEL LOOP_END
+         ENDIF
+
+         SWITCH STATUS
+
+            CASE ONE
+
+               IF ( THAT.POINTS.COUNT == ZERO )
+                  JUMP_TO_LABEL LOOP_END
+               ENDIF
+
+               DISTANCE TEMP_DISTANCE CHAR_X CHAR_Y CHAR_Z THAT.POINTS.0.X THAT.POINTS.0.Y THAT.POINTS.0.Z
+               IF ( TEMP_DISTANCE <= THAT.REACH_OFFSET )
+                  THAT.POINTS.REMOVE 0
+                  STATUS = ONE
+                  JUMP_TO_LABEL LOOP_START
+               ENDIF
+
+               IF ( THAT.MOVETO_OFFSET > ZERO )
+                  ENGINEX.SYSTEM.GEO.RAND_OFFSET OFFSET_POINT 4 THAT.POINTS.0.X THAT.POINTS.0.Y THAT.POINTS.0.Z THAT.MOVETO_OFFSET
+                  MOVETO_POINT = OFFSET_POINT.CLONE
+                  REACH_POINT = OFFSET_POINT.CLONE
+               ELSE
+                  MOVETO_POINT = THAT.POINTS.0.CLONE
+                  REACH_POINT = THAT.POINTS.0.CLONE
+               ENDIF
+
+               IF ( THAT.OVER_OFFSET > ZERO )
+                  IF ( UNSTUCKS == ZERO )
+                     IF ( THAT.POINTS.COUNT > ONE )
+                        DISTANCE TEMP_DISTANCE CHAR_X CHAR_Y CHAR_Z REACH_POINT.X REACH_POINT.Y REACH_POINT.Z
+                        IF ( TEMP_DISTANCE > 100 )
+                           TEMP_DOUBLE = #d1 / TEMP_DISTANCE
+                           TEMP_DISTANCE = TEMP_DISTANCE + THAT.OVER_OFFSET
+                           TEMP_DOUBLE = TEMP_DOUBLE * TEMP_DISTANCE
+
+                           //ENGINEX.SYSTEM.MATRIX.MULTIDIST MOVETO_POINT 7 CHAR_X CHAR_Y CHAR_Z REACH_POINT.X REACH_POINT.Y REACH_POINT.Z TEMP_DOUBLE 
+                           MOVETO_POINT.X = REACH_POINT.X - CHAR_X
+                           MOVETO_POINT.Y = REACH_POINT.Y - CHAR_Y
+                           MOVETO_POINT.Z = REACH_POINT.Z - CHAR_Z
+                           MOVETO_POINT.X = MOVETO_POINT.X * TEMP_DOUBLE
+                           MOVETO_POINT.Y = MOVETO_POINT.Y * TEMP_DOUBLE
+                           MOVETO_POINT.Z = MOVETO_POINT.Z * TEMP_DOUBLE
+                           MOVETO_POINT.X = MOVETO_POINT.X + CHAR_X
+                           MOVETO_POINT.Y = MOVETO_POINT.Y + CHAR_Y
+                           MOVETO_POINT.Z = MOVETO_POINT.Z + CHAR_Z
+                        ENDIF
+                     ENDIF
+                  ENDIF
+               ENDIF
+
+               UNSTUCK_CHECK = "#$"
+               MOVE_TO "<&MOVETO_POINT.X&>" "<&MOVETO_POINT.Y&>" "<&MOVETO_POINT.Z&>"
+               STATUS = TWO
+
+            CASE TWO
+
+               DISTANCE TEMP_DISTANCE CHAR_X CHAR_Y CHAR_Z REACH_POINT.X REACH_POINT.Y REACH_POINT.Z
+               IF ( TEMP_DISTANCE <= THAT.REACH_OFFSET )
+
+                  THAT.POINTS.REMOVE 0
+                  STATUS = ONE
+                  JUMP_TO_LABEL LOOP_START
+
+               ELSE
+                  //IF ( TEMP_DISTANCE > 100 )
+                  //   TEMP_DISTANCE = 100
+                  //ENDIF
+                  //TEMP_DISTANCE = TEMP_DISTANCE / 2
+
+                  IF ( UNSTUCK_CHECK != "#$<&CHAR_X&>_<&CHAR_Y&>_<&CHAR_Z&>" )
+                     UNSTUCK_TIME = ZERO
+                     UNSTUCKS = ZERO
+                     SLEEP "<&TEMP_DISTANCE&>"
+                     UNSTUCK_CHECK = "#$<&CHAR_X&>_<&CHAR_Y&>_<&CHAR_Z&>"
+                  ELSE
+                     IF ( UNSTUCK_TIME < THAT.UNSTUCK_TIMEOUT )
+                        UNSTUCK_TIME = UNSTUCK_TIME + TEMP_DISTANCE
+                        SLEEP "<&TEMP_DISTANCE&>"
+                     ELSE
+                        UNSTUCKS = UNSTUCKS + ONE
+                        IF ( UNSTUCKS <= THAT.UNSTUCK_MAX )
+                           STATUS = ONE
+                           UNSTUCK_TIME = ZERO
+                        ELSE
+                           THAT.POINTS.CLEAR
+                           JUMP_TO_LABEL LOOP_END
+                        ENDIF
+                     ENDIF
+                  ENDIF
+
+
+
+               ENDIF
+               BREAK 1
+
+            DEFAULT
+               JUMP_TO_LABEL LOOP_END
+
+         ENDSWITCH
+
+      JUMP_TO_LABEL LOOP_START
+      LABEL LOOP_END
+
+      THAT.ABORT = FALSE
+      THAT.IS_MOVING = FALSE
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC SLEEP 0
+      WHILE ( THIS.IS_MOVING == TRUE )
+         SLEEP 100
+      WEND
+      SLEEP 100
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+END_CLASS
+//-------------------------------------------------------------------------------------

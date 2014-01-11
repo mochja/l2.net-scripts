@@ -1,0 +1,65 @@
+// DLIB::Packets::ReadMagicSkillUse v1.0 for Gracia Final
+// by d00d [05/23/09]
+//
+// Takes an byte buffer (_bInBuffer) containing the 
+// UserInfo packet and dumps the data into a sorted list
+// (_oMagicSkilluse).
+
+// Version 1.0 - Initial Release
+// Version 1.1 - Corrections!
+// Version 1.2 - Updates!
+// Version 1.3 - Updates
+
+FUNCTION DLIB::Packets::ReadMagicSkillUse 1 _bInBuffer
+
+  DEFINE SORTEDLIST _oMagicSkillUse
+  
+  IF _bInBuffer.CLASSNAME == "#$BYTEBUFFER"     
+      DEFINE INT Source
+      DEFINE INT Target
+      DEFINE INT Skill
+      DEFINE INT Level
+      DEFINE INT WindUp
+      DEFINE INT Reuse
+      DEFINE INT Source_X
+      DEFINE INT Source_Y
+      DEFINE INT Source_Z
+      DEFINE INT Target_X
+      DEFINE INT Target_Y
+      DEFINE INT Target_Z
+      DEFINE INT Unknown_A
+      
+      _bInBuffer.RESET_INDEX
+      _bInBuffer.READ_BYTE NULL
+      _bInBuffer.READ_INT32 Source
+      _bInBuffer.READ_INT32 Target
+      _bInBuffer.READ_INT32 Skill
+      _bInBuffer.READ_INT32 Level
+      _bInBuffer.READ_INT32 Windup
+      _bInBuffer.READ_INT32 Reuse
+      _bInBuffer.READ_INT32 Source_X
+      _bInBuffer.READ_INT32 Source_Y
+      _bInBuffer.READ_INT32 Source_Z
+      _bInBuffer.READ_INT32 Unknown_A
+      _bInBuffer.READ_INT32 Target_X
+      _bInBuffer.READ_INT32 Target_Y
+      _bInBuffer.READ_INT32 Target_Z
+      
+      _oMagicSkillUse.ADD Source "Source"
+      _oMagicSkillUse.ADD Target "Target"
+      _oMagicSkillUse.ADD Skill "Skill"
+      _oMagicSkillUse.ADD Level "Level"
+      _oMagicSkillUse.ADD Windup "Windup"
+      _oMagicSkillUse.ADD Reuse "Reuse"
+      _oMagicSkillUse.ADD Source_X "Source_X"
+      _oMagicSkillUse.ADD Source_Y "Source_Y"
+      _oMagicSkillUse.ADD Source_Z "Source_Z"
+      _oMagicSkillUse.ADD Unknown_A "Unknown_A"
+      _oMagicSkillUse.ADD Target_X "Target_X"
+      _oMagicSkillUse.ADD Target_Y "Target_Y"
+      _oMagicSkillUse.ADD Target_Z "Target_Z"
+  ELSE
+    PRINT_TEXT "_bInBuffer is not a ByteBuffer"
+  ENDIF
+  
+RETURN _oMagicSkillUse

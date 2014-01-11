@@ -1,0 +1,60 @@
+// DLIB::Utility::GetWindup v1.0 [07/2008] by d00d
+// Calculates the windup time of a skill based on
+// cast or attack speed.
+
+// Updated for DLIB v1.1
+
+FUNCTION DLIB::Utility::GetWindup 2 _iType _iWindUp
+
+  // A function to return the time in MS required to 
+  // execute a skill such as a buff, sance or song.
+  //
+  // _iType denotes if this is an active skill (0) or
+  // a magic skill (1).
+  //
+  // _iWindUP is the time required for the skill to 
+  // execute.
+  //
+  // The following is a generalization taken from 
+  // the C4 skill data:
+  // Songs           _iWindUp == 2500ms
+  // Dances          _iWindUp == 2500ms
+  // PP/EE/SE Buffs  _iWindUp == 4000ms
+  // WC/OL Buffs     _iWindUp == 2500ms
+  // Most Self Buffs _iWindUp == 1800ms
+  // These windup times are based on 300 attack or
+  // cast speed.
+  //
+  // The equation to predict the actual time required
+  // to execute the skill is:
+  //
+  // WINDUP*300/relevant speed
+  //
+  // Eg. a Blade Dancer with 560 atkspd
+  //
+  // 2500*300/560 = 1339 MS
+  //
+  // Eg. a Prophet with 923 cast speed
+  // 4000*300/923 = 1300 MS
+  //
+  // * if you are crazy you can modify that result by 
+  // -40% if you use sps to buff.
+  //
+  // Also remember to add your ping in latency to the 
+  // WINDUP time.
+  //
+  // Eg if you are 114 ms to the server add +114 to the
+  // windup value.
+  
+  DEFINE INT _iResult 0
+  DEFINE INT SPEED_CONSTANT 300
+  
+  _iResult = _iWindUp * SPEED_CONSTANT
+
+  IF _iType == ZERO
+    _iResult = _iResult / CHAR_ATTACK_SPEED
+  ELSE
+    _iResult = _iResult / CHAR_CAST_SPEED
+  ENDIF
+
+RETURN _iResult

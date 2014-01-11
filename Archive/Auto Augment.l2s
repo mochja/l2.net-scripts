@@ -1,0 +1,532 @@
+/////////////////////////////////////////////////////////////////////////////////////
+INCLUDE Include/AutoAugEngine.l2c
+INCLUDE StdLib/player.l2c
+DEFINE_GLOBAL AugEngine AA_ScrObj 0
+/////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+// CHANGE THE WEAPON NAME WITH THE EXACT NAME OF YOURS
+AA_ScrObj.WRK_ITEM.NAME = "#$Dynasty Dual Daggers"
+
+// CHANGE THE LIFE STONE NAME WITH THE EXACT NAME OF YOURS
+AA_ScrObj.WRK_LS.NAME = "#$Mid-Grade Life Stone - level 84"
+
+
+// CHANGE FOR WHAT AUGMENT CONFIGURATION YOU WANT
+// #i1 - just skills ; #i2 - just base stat
+// #i3 - skills or base stat
+// #i4 - skills and base stat <- THIS COULD NEVER HAPPEN
+AA_ScrObj.AUG_TYPE = #i1
+
+
+// ADD THE SKILL ID THAT ARE YOU LOOKING FOR(if you don't want just the base stat)
+AA_ScrObj.CHOSE_SKILL.ADD #i3240
+// ...YOU CAND ADD MORE OR REMOVE AND KEEP JUST ONE
+
+
+// #$STR - for STR+1
+// #$CON - for CON+1
+// #$MEN - for MEN+1
+// #$INT - for INT+1
+// CHANGE BELOW FOR WHAT BASE STAT YOU WANT(if you don't want just the skills)
+AA_ScrObj.BASE_STAT = #$STR	
+
+
+
+
+// CHANGE TO "TRUE" TO ADD THE 2 SECONDS DELAY, LIKE INGAME,
+// WHEN ADDING OR REMOVING AUGMENTATION
+AA_ScrObj.PROTECT_DELAY = TRUE
+
+// CHANGE TO "FALSE" IF YOU DON'T WANT TO SAVE LOGS
+AA_ScrObj.SAVE_LOG = FALSE
+// NUMBER OF LOG LINES PER FILE
+AA_ScrObj.LOG_LINES = #i2000
+
+
+// NPC DIALOG STRINGS, NEED TO CHNAGE ONLY IF THEY DIFFER (FOR RETAIL THIS IS A MUST)
+AA_ScrObj.NPC_DIAG11 = "#$bypass -h npc_<&TARGET_ID&>_Chat 1"
+AA_ScrObj.NPC_DIAG12 = "#$bypass -h npc_<&TARGET_ID&>_Augment 1"
+AA_ScrObj.NPC_DIAG21 = "#$bypass -h npc_<&TARGET_ID&>_Chat 1"
+AA_ScrObj.NPC_DIAG22 = "#$bypass -h npc_<&TARGET_ID&>_Augment 2"
+
+
+
+
+
+// DON'T CHANGE NOTHING BELOW (ONLY IF YOU KNOW WHAT ARE YOU DOING)
+/////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////
+
+//for event anti stuck
+DEFINE_GLOBAL STRING EVT_LABEL ""
+THREAD EVT_ANTI_STUCK
+LOCK ASTK
+IF AA_ScrObj.SAVE_LOG == TRUE
+	THREAD LOG_N_PROTECT
+ENDIF
+AA_ScrObj.LOAD_AND_CHECK
+
+PRINT_TEXT "====================================="
+PRINT_TEXT "== Gemstone grade and count will be verified on augmentation process."
+PRINT_TEXT "====================================="
+PRINT_TEXT "== '<&AA_ScrObj.WRK_LS.NAME&>' x <&AA_ScrObj.LS_COUNT&>"
+PRINT_TEXT "== 'Adena' x <&AA_ScrObj.ADENA_COUNT&>"
+PRINT_TEXT "== "
+PRINT_TEXT "== '<&AA_ScrObj.WRK_ITEM.NAME&>' +<&AA_ScrObj.WRK_ITEM.ENCHANT&>"
+AA_ScrObj.PRINT_AUGMENT
+PRINT_TEXT "====================================="
+PRINT_TEXT "= You have 15 seconds to stop the script if something it's wrong."
+PRINT_TEXT "====================================="
+SLEEP 15000
+
+DO
+	IF AA_ScrObj.HAS_AUG == FALSE
+		ADD_AUGMENT
+	ELSE
+		REMOVE_AUGMENT
+	ENDIF
+LOOP ONE == ONE
+
+AA_ScrObj.SCRIPT_END
+
+FUNCTION CHECK_DIAG 0
+	UNLOCK ASTK
+	EVT_SET VOID 2 #$_subdchk1 #i25
+	AA_ScrObj.S_RAND_500
+	TALK_TARGET
+	SLEEP 500
+	LOCK DIAG_EVT_CHK
+	SLEEP 50
+	UNLOCK DIAG_EVT_CHK
+RETURN VOID
+
+FUNCTION _subdchk1 0
+	UNSET_EVENT VOID 1 #i25
+	DEFINE STRING _html 0
+	PACKET.READ_BYTE NULL
+	PACKET.READ_INT32 NULL
+	PACKET.READ_STRING _html
+	IF "_html.CONTAINS AA_ScrObj.NPC_DIAG11" == FALSE
+		AA_ScrObj.NPC_DIAG_NOMATCH
+	ELSE
+		EVT_SET VOID 2 #$_subdchk2 #i25
+		AA_ScrObj.S_RAND_500
+		NPC_DIALOG "<&AA_ScrObj.NPC_DIAG11&>"
+	ENDIF
+	SLEEP 300
+RETURN VOID
+
+FUNCTION _subdchk2 0
+	UNSET_EVENT VOID 1 #i25
+	DEFINE STRING _html 0
+	PACKET.READ_BYTE NULL
+	PACKET.READ_INT32 NULL
+	PACKET.READ_STRING _html
+	IF "_html.CONTAINS AA_ScrObj.NPC_DIAG12" == FALSE
+		AA_ScrObj.NPC_DIAG_NOMATCH
+	ELSE
+		EVT_SET VOID 2 #$_subdchk3 #i25
+		AA_ScrObj.S_RAND_500
+		TALK_TARGET
+	ENDIF
+	SLEEP 300
+RETURN VOID
+
+FUNCTION _subdchk3 0
+	UNSET_EVENT VOID 1 #i25
+	DEFINE STRING _html 0
+	PACKET.READ_BYTE NULL
+	PACKET.READ_INT32 NULL
+	PACKET.READ_STRING _html
+	IF "_html.CONTAINS AA_ScrObj.NPC_DIAG21" == FALSE
+		AA_ScrObj.NPC_DIAG_NOMATCH
+	ELSE
+		EVT_SET VOID 2 #$_subdchk4 #i25
+		AA_ScrObj.S_RAND_500
+		NPC_DIALOG "<&AA_ScrObj.NPC_DIAG21&>"
+	ENDIF
+	SLEEP 300
+RETURN VOID
+
+FUNCTION _subdchk4 0
+	UNSET_EVENT VOID 1 #i25
+	DEFINE STRING _html 0
+	PACKET.READ_BYTE NULL
+	PACKET.READ_INT32 NULL
+	PACKET.READ_STRING _html
+	IF "_html.CONTAINS AA_ScrObj.NPC_DIAG22" == FALSE
+		AA_ScrObj.NPC_DIAG_NOMATCH
+	ENDIF
+	SLEEP 100
+	LOCK ASTK
+	UNLOCK DIAG_EVT_CHK
+RETURN VOID
+
+
+FUNCTION ADD_AUGMENT
+	UNLOCK ASTK
+	AA_ScrObj.CHK_STOK
+	PRINT_TEXT "== Augmenting item..."
+	PRINT_TEXT "====================================="
+	EVT_SET VOID 2 #$_add_interogate #i25
+	AA_ScrObj.S_RAND_300
+	TALK_TARGET
+	SLEEP 500
+	LOCK ADMAG
+	SLEEP 50
+	UNLOCK ADMAG
+RETURN VOID
+
+FUNCTION _add_interogate
+//	LOCK ADMAG
+	UNSET_EVENT VOID 1 #i25
+	EVT_SET VOID 2 #$_add_navdiag11 #i25
+	AA_ScrObj.S_RAND_300
+	NPC_DIALOG "<&AA_ScrObj.NPC_DIAG11&>"
+RETURN VOID
+
+FUNCTION _add_navdiag11
+	UNSET_EVENT VOID 1 #i25
+	EVTEX_SET VOID 2 #$_add_navdiag12 #i81
+	AA_ScrObj.S_RAND_300
+	NPC_DIALOG "<&AA_ScrObj.NPC_DIAG12&>"
+RETURN VOID
+
+FUNCTION _add_navdiag12
+	UNSET_EVENTEX VOID 1 #i81
+	EVTEX_SET VOID 2 #$_add_insitem #i83
+	AA_ScrObj.ADD_ITEM
+RETURN VOID
+
+FUNCTION _add_insitem
+	UNSET_EVENTEX VOID 1 #i83
+	EVTEX_SET VOID 2 #$_add_insls #i84
+	AA_ScrObj.ADD_LS
+RETURN VOID
+
+FUNCTION _add_insls
+	UNSET_EVENTEX VOID 1 #i84
+	IF AA_ScrObj.AUG_TIMES < ONE
+		PACKET.READ_BYTE NULL
+		PACKET.READ_INT16 NULL
+		PACKET.READ_INT32 NULL
+		PACKET.READ_INT32 NULL
+		PACKET.READ_INT32 AA_ScrObj.WRK_GEM.ITEM_ID
+		PACKET.READ_INT32 AA_ScrObj.GEMS_REQ
+		AA_ScrObj.LOAD_GEMINF
+		IF AA_ScrObj.GEMS_COUNT <= AA_ScrObj.GEMS_REQ
+			PRINT_TEXT "Not enough Gemstones for augmentation."
+			AA_ScrObj.SCRIPT_END
+		ENDIF
+	ENDIF
+	EVTEX_SET VOID 2 #$_add_insgems #i85
+	AA_ScrObj.ADD_GEMS
+RETURN VOID
+
+FUNCTION _add_insgems
+	UNSET_EVENTEX VOID 1 #i85
+	EVTEX_SET VOID 2 #$_add_confirm #i86
+	AA_ScrObj.CONFIRM_AUG
+RETURN VOID
+
+FUNCTION _add_confirm
+	UNSET_EVENTEX VOID 1 #i86
+	PACKET.READ_BYTE NULL
+	PACKET.READ_INT16 NULL
+	AA_ScrObj.AUG_DATA.CLEAN
+	PACKET.READ_INT32 AA_ScrObj.AUG_DATA.LVAL
+	PACKET.READ_INT32 AA_ScrObj.AUG_DATA.RVAL
+	AA_ScrObj.COMPARE
+	LOCK ASTK
+	UNLOCK ADMAG
+RETURN VOID
+
+FUNCTION REMOVE_AUGMENT
+	UNLOCK ASTK
+	PRINT_TEXT "== Removing augmentation..."
+	PRINT_TEXT "====================================="
+	EVT_SET VOID 2 #$_rem_interogate #i25
+	AA_ScrObj.S_RAND_300
+	TALK_TARGET
+	SLEEP 500
+	LOCK RVMAG
+	SLEEP 50
+	UNLOCK RVMAG
+RETURN VOID
+
+FUNCTION _rem_interogate
+	//LOCK RVMAG
+	UNSET_EVENT VOID 1 #i25
+	EVT_SET VOID 2 #$_rem_navdiag21 #i25
+	AA_ScrObj.S_RAND_300
+	NPC_DIALOG "<&AA_ScrObj.NPC_DIAG21&>"
+RETURN VOID
+
+FUNCTION _rem_navdiag21
+	UNSET_EVENT VOID 1 #i25
+	EVTEX_SET VOID 2 #$_rem_navdiag22 #i82
+	AA_ScrObj.S_RAND_300
+	NPC_DIALOG "<&AA_ScrObj.NPC_DIAG22&>"
+RETURN VOID
+
+FUNCTION _rem_navdiag22
+	UNSET_EVENTEX VOID 1 #i82
+	EVTEX_SET VOID 2 #$_rem_insitem #i87	
+	AA_ScrObj.ARM_ITEM
+RETURN VOID
+
+FUNCTION _rem_insitem
+	UNSET_EVENTEX VOID 1 #i87
+	IF AA_ScrObj.ADENA_REQ == ZERO
+		PACKET.READ_BYTE NULL
+		PACKET.READ_INT16 NULL
+		PACKET.READ_INT64 NULL
+		PACKET.READ_INT64 NULL
+		PACKET.READ_INT64 AA_ScrObj.ADENA_REQ
+	ENDIF
+	AA_ScrObj.CHK_ADENA
+	EVTEX_SET VOID 2 #$_rem_confirm #i88
+	AA_ScrObj.ARM_CONFIRM
+RETURN VOID
+
+FUNCTION _rem_confirm
+	UNSET_EVENTEX VOID 1 #i88
+	AA_ScrObj.HAS_AUG = FALSE
+	PRINT_TEXT "====================================="
+	PRINT_TEXT "== Augmentation removed successfully."
+	PRINT_TEXT "== Proceeding to re-augmenting."
+	PRINT_TEXT "====================================="
+	LOCK ASTK
+	UNLOCK RVMAG
+RETURN VOID
+
+FUNCTION LOG_WFILE
+	DEFINE INT _fcnt 1
+	DEFINE STRING _temptime ""
+	AA_ScrObj.TObj.LTIMER_START
+	AA_ScrObj.TObj.PGET_TIME _temptime
+	_temptime = "#$Auto augmentation started at <&_temptime&>, with:"
+	AA_ScrObj._logaug.PUSH _temptime
+	DO
+		IF AA_ScrObj._logaug.LENGTH >= AA_ScrObj.LOG_LINES
+			SLEEP 100
+			LOCK FLWRT
+			AA_ScrObj.TObj.SFN_DateTime AA_ScrObj._logfname
+			AA_ScrObj._logfname = "#$ALogAug_<&CHAR_NAME&>_<&_fcnt&>_<&AA_ScrObj._logfname&>"
+			PRINT_TEXT "writing augment logs to file..."
+			CALL_EXTERN "Include/Utils.l2s" WRITE_FILE VOID 3 AA_ScrObj._logfname AA_ScrObj._logaug #$w
+	//		WRITE_LOG
+			PRINT_TEXT "logs saved under <&AA_ScrObj._logfname&>.txt"
+			_fcnt = _fcnt + ONE
+			SLEEP 50
+			UNLOCK FLWRT
+		ENDIF
+		SLEEP 500
+	LOOP ONE == ONE
+RETURN VOID
+
+FUNCTION WRITE_LOG
+	PRINT_TEXT "writing augment logs to file..."
+	DEFINE FILEWRITER _fwopened "<&AA_ScrObj._logfname&>"
+	WHILE AA_ScrObj._logaug.LENGTH > ZERO
+		_fwopened.WRITE AA_ScrObj._logaug.POP
+	WEND
+	_fwopened.FLUSH
+	_fwopened.CLOSE
+	PRINT_TEXT "logs saved under <&AA_ScrObj._logfname&>.txt"
+RETURN VOID
+
+FUNCTION EVTEX_SET 2 _evt_func _evt_id
+	SET_EVENT "<&SCRIPTEVENT_SERVERPACKETEX&>" "<&SYSTEM_CURRENTFILE&>" "<&_evt_func&>" "<&_evt_id&>"
+	AA_ScrObj.S_RAND_300
+	EVT_LABEL = "#$<&_evt_func&>"
+RETURN VOID
+
+FUNCTION EVT_SET 2 _evt_func _evt_id
+	SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" "<&_evt_func&>" "<&_evt_id&>"
+	AA_ScrObj.S_RAND_300
+	EVT_LABEL = "#$<&_evt_func&>"
+	IF #$_add_interogate == "#$<&_evt_func&>"
+		LOCK ADMAG
+	ENDIF
+	IF #$_rem_interogate == "#$<&_evt_func&>"
+		LOCK RVMAG
+	ENDIF
+	IF #$_subdchk1 == "#$<&_evt_func&>"
+		LOCK DIAG_EVT_CHK
+	ENDIF
+RETURN VOID
+
+FUNCTION UNSET_EVENT 1 _evtid
+	SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" _nof "<&_evtid&>"
+	AA_ScrObj.S_RAND_100
+	EVT_LABEL = #$none
+RETURN VOID
+
+FUNCTION UNSET_EVENTEX 1 _evtid
+	SET_EVENT "<&SCRIPTEVENT_SERVERPACKETEX&>" "<&SYSTEM_CURRENTFILE&>" _nof "<&_evtid&>"
+	AA_ScrObj.S_RAND_100
+	EVT_LABEL = #$none
+RETURN VOID
+
+FUNCTION _nof
+	SLEEP 50
+RETURN VOID
+
+FUNCTION EVT_ANTI_STUCK
+	DEFINE STRING _chkstuk ""
+	WHILE ONE == ONE
+		_chkstuk = EVT_LABEL
+		SLEEP 3000
+		LOCK ASTK
+		SLEEP 50
+		UNLOCK ASTK
+		IF ( _chkstuk == EVT_LABEL ) && ( EVT_LABEL != #$none )
+			PRINT_TEXT "anti stuck action..."
+			SWITCH EVT_LABEL
+				CASE #$_add_interogate
+				CASE #$_rem_interogate
+				CASE #$_subdchk1
+				CASE #$_subdchk3
+					TALK_TARGET
+					BREAK 1
+				CASE #$_add_navdiag11
+				CASE #$_subdchk2
+					NPC_DIALOG "<&AA_ScrObj.NPC_DIAG11&>"
+					BREAK 1
+				CASE #$_add_navdiag12
+					NPC_DIALOG "<&AA_ScrObj.NPC_DIAG12&>"
+					BREAK 1
+				CASE #$_add_insitem
+					AA_ScrObj.ADD_ITEM
+					BREAK 1
+				CASE #$_add_insls
+					AA_ScrObj.ADD_LS
+					BREAK 1
+				CASE #$_add_insgems
+					AA_ScrObj.ADD_GEMS
+					BREAK 1
+				CASE #$_add_confirm
+					AA_ScrObj.CONFIRM_AUG
+					BREAK 1
+				CASE #$_rem_navdiag21
+				CASE #$_subdchk4
+					NPC_DIALOG "<&AA_ScrObj.NPC_DIAG21&>"
+					BREAK 1
+				CASE #$_rem_navdiag22
+					NPC_DIALOG "<&AA_ScrObj.NPC_DIAG22&>"
+					BREAK 1
+				CASE #$_rem_insitem
+					AA_ScrObj.ARM_ITEM
+					BREAK 1
+				CASE #$_rem_confirm
+					AA_ScrObj.ARM_CONFIRM
+					BREAK 1
+			ENDSWITCH
+		ENDIF
+	WEND
+RETURN VOID
+
+FUNCTION LOG_N_PROTECT
+	THREAD LOG_WFILE
+	AA_ScrObj.TObj.SFN_DateTime AA_ScrObj._evtlogfn
+	AA_ScrObj._evtlogfn = "#$ALogEvt_<&CHAR_NAME&>_<&AA_ScrObj._evtlogfn&>"
+	CALL_EXTERN "Include/Utils.l2s" WRITE_FILE VOID 3 AA_ScrObj._evtlogfn "#$" #$w
+	PRINT_TEXT "Log <&AA_ScrObj._evtlogfn&>.txt created"
+	SET_EVENT "<&SCRIPTEVENT_CHAT&>" "<&SYSTEM_CURRENTFILE&>" _chatter
+	SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" _ptinv 57
+	SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" _traderq 112
+	SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" _claninv 44
+	THREAD LOG_WRITER
+RETURN VOID
+
+PUBLIC LOG_WRITER
+	WHILE ONE == ONE
+		SLEEP 300000
+		AA_ScrObj.EVT_LOGS_WR
+	WEND
+RETURN VOID
+
+FUNCTION _chatter
+	IF MESSAGETYPE == TWO
+		AA_ScrObj.ADD_LMEM VOID 4 SENDERNAME MESSAGETYPE MESSAGE NULL
+	ELSE
+		IF "MESSAGE.CONTAINS CHAR_NAME" == TRUE
+			AA_ScrObj.ADD_LMEM VOID 4 SENDERNAME MESSAGETYPE MESSAGE TRUE
+			THREAD _allchtlog
+			SET_EVENT "<&SCRIPTEVENT_CHAT&>" "<&SYSTEM_CURRENTFILE&>" _logallchat
+			PRINT_TEXT "Your name was mentioned, logging all chat for 3 minutes..."
+		ENDIF
+	ENDIF
+RETURN VOID
+
+FUNCTION _allchtlog
+	SLEEP 180000
+	SET_EVENT "<&SCRIPTEVENT_CHAT&>" "<&SYSTEM_CURRENTFILE&>" _chatter
+	PRINT_TEXT "Logging all chat stopped."
+RETURN VOID
+
+FUNCTION _logallchat
+	AA_ScrObj.ADD_LMEM VOID 4 SENDERNAME MESSAGETYPE MESSAGE TRUE
+RETURN VOID
+
+FUNCTION _ptinv
+	DEFINE STRING _crtime 0
+	AA_ScrObj.TObj.PGET_TIME _crtime
+	PACKET.READ_BYTE NULL
+	DEFINE STRING _tmppers ""
+	PACKET.READ_STRING _tmppers
+	AA_ScrObj._evtlogs.PUSH "#$    [<&_crtime&>]: Party invitation by <&_tmppers&>"
+	AA_ScrObj.S_RANDL_1500
+	INJECT "43 00 00 00 00" // reject party
+RETURN VOID
+
+FUNCTION _traderq
+	DEFINE STRING _crtime 0
+	AA_ScrObj.TObj.PGET_TIME _crtime
+	DEFINE INT _astobj 0
+	PACKET.READ_BYTE NULL
+	PACKET.READ_INT32 _astobj
+	DEFINE STRING _tmppers ""
+	DEFINE ARRAYLIST _playersc 0
+	GET_PLAYERS _playersc 
+	FOREACH _ixs Player _playersc
+		IF _playersc._ixs.ID == _astobj
+			_tmppers = "#$<&_playersc._ixs.NAME&>"
+			BREAK 2
+		ENDIF
+	NEXTEACH
+	AA_ScrObj._evtlogs.PUSH "#$    [<&_crtime&>]: Trade requeste by <&_tmppers&>"
+	AA_ScrObj.S_RANDL_1500
+	INJECT "55 00 00 00 00" // reject trade
+RETURN VOID
+
+FUNCTION _claninv
+	DEFINE STRING _crtime 0
+	AA_ScrObj.TObj.PGET_TIME _crtime
+	DEFINE INT _astobj 0
+	PACKET.READ_BYTE NULL
+	PACKET.READ_INT32 _astobj
+	DEFINE STRING _tmppers ""
+	DEFINE ARRAYLIST _playersc 0
+	GET_PLAYERS _playersc 
+	FOREACH _ixs Player _playersc
+		IF _playersc._ixs.ID == _astobj
+			_tmppers = "#$<&_playersc._ixs.NAME&>"
+			BREAK 2
+		ENDIF
+	NEXTEACH
+	AA_ScrObj._evtlogs.PUSH "#$    [<&_crtime&>]: Clan invitation by <&_tmppers&>"
+	AA_ScrObj.S_RANDL_1500
+	INJECT "27 00 00 00 00" // reject clan
+RETURN VOID
+
+
+
+
+
+
+

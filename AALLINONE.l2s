@@ -1,0 +1,1455 @@
+// Server: all
+// Autor: mochitto
+// Date: 5.6.2010
+// Special thanks for L2.NET contributors
+// rev.: 64
+PRINT_TEXT "SCRIPT STARTED!]"
+INCLUDE "DLIB\Packets\Classes\SystemMessage.l2c"
+INCLUDE "DLIB\Packets\Classes\AbnormalStatusUpdate.l2c"
+INCLUDE "StdLib\Item.l2c"
+INCLUDE "StdLib\Npc.l2c"
+INCLUDE "StdLib\Player.l2c"
+INCLUDE "class\staticobject.l2c"
+// Main section
+// ========================================
+SET_EVENT "<&SCRIPTEVENT_CHATTOBOT&>"  "<&SYSTEM_CURRENTFILE&>" CHATTOBOT
+SET_EVENT "<&SCRIPTEVENT_UDPRECEIVE&>" "<&SYSTEM_CURRENTFILE&>" UDP
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" SystemMessage 98 
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" AbnormalStatusUpdate 133 
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" StaticObjectPacket 159
+SET_EVENT "<&SCRIPTEVENT_CLIENTPACKET&>" "<&SYSTEM_CURRENTFILE&>" Action 31 
+//SET_EVENT "<&SCRIPTEVENT_CLIENTPACKET&>" "<&SYSTEM_CURRENTFILE&>" RequestMagicSkillUse 57 
+
+//SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" USERINFO 50
+//BLOCK 50
+//BLOCK 98
+//BLOCK 12
+//BLOCK_CLIENT 57
+
+/*
+DEFINE_GLOBAL INT ALLOWCP 1
+DEFINE_GLOBAL INT ALLOWHP 1
+DEFINE_GLOBAL INT ALLOWMP 1
+DEFINE_GLOBAL INT ALLOWDMG 0
+DEFINE_GLOBAL INT ALLOWSPOIL 0
+DEFINE_GLOBAL INT CPMAKE 0
+DEFINE_GLOBAL INT SHOUT 0
+*/
+SetupGauge VOID 2 1 4000
+
+DEFINE_GLOBAL INT ALLOWDMG 0                   
+DEFINE_GLOBAL INT ALLOWSPOIL 0
+DEFINE_GLOBAL STRING STATUS_HTM
+
+DEFINE_GLOBAL ARRAYLIST StaticObjects 
+DEFINE_GLOBAL INT TARGET_OBJID
+
+DEFINE_GLOBAL INT Event_Lock 0
+
+DEFINE_GLOBAL THREAD THREAD_HP HP
+DEFINE_GLOBAL THREAD THREAD_MP MP
+DEFINE_GLOBAL THREAD THREAD_CP CP
+DEFINE_GLOBAL THREAD THREAD_CP1 CPNEED
+DEFINE_GLOBAL THREAD THREAD_SHOUT SHOUT
+DEFINE_GLOBAL THREAD THREAD_PICKUP PICKUP
+
+READ_FROM_FILE STATUS_HTM
+
+THREAD_MP.START
+SLEEP 200
+//THREAD_HP.START
+SLEEP 200
+//THREAD_CP.START
+SLEEP 200
+//THREAD_CP1.START  // MAKING CP
+SLEEP 200
+//THREAD_SHOUT.START // SHOUT
+THREAD_PICKUP.START
+
+//PRINT_TEXT "<&THREAD_CP.status&>"
+
+WHILE ZERO == ZERO
+     SLEEP 1000
+WEND
+     
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT
+
+FUNCTION CHATTOBOT
+     DEFINE STRING MSG 
+     DEFINE INT PACK_ID 192
+     
+     MSG = "#$<&MESSAGE&>"     
+     SWITCH MESSAGE
+     	  CASE "#$i"
+			   ItemStatusHtm
+			   break 1
+          CASE "#$open"
+               OPENDOOR
+               BREAK 1
+          CASE "#$train"
+               BLOCK 12
+               HIDE_NPCS
+               ExShowScreenMessage VOID 1 "#$Npcs DISABLED"
+               BREAK 1
+          CASE "#$train off"
+               UNBLOCK 12
+               ExShowScreenMessage VOID 1 "#$Npcs ENABLED"
+               BREAK 1
+          CASE "#$b"
+               PACK_ID = #I190 //buff
+               MSG = "#$<&TARGET_NAME&>"
+               BREAK 1
+          CASE "#$bf"
+               PACK_ID = #I191 //buff
+               MSG = "#$<&TARGET_NAME&>"
+               BREAK 1
+          CASE "#$cp"
+               IF THREAD_CP.STATE == #i1
+                    //ALLOWCP = #i0
+                    THREAD_CP.STOP
+                    ExShowScreenMessage VOID 1 "#$Automatic CP has disabled!"
+               ELSE
+                    //ALLOWCP = #i1
+                    THREAD_CP.START
+                    ExShowScreenMessage VOID 1 "#$Automatic CP has enabled!"
+               ENDIF               
+               BREAK 1
+          CASE "#$hp"
+               IF THREAD_HP.STATE == #i1
+                    //ALLOWHP = #i0
+                    THREAD_HP.STOP
+                    ExShowScreenMessage VOID 1 "#$Automatic HP has disabled!"
+               ELSE
+                    THREAD_HP.START
+                    ExShowScreenMessage VOID 1 "#$Automatic HP has enabled!"
+               ENDIF               
+               BREAK 1
+          CASE "#$mp"
+               IF THREAD_MP.STATE == #i1
+                    THREAD_MP.STOP
+                    ExShowScreenMessage VOID 1 "#$Automatic MP has disabled!"
+               ELSE
+                    THREAD_MP.START
+                    ExShowScreenMessage VOID 1 "#$Automatic MP has enabled!"
+               ENDIF               
+               BREAK 1
+          CASE "#$dmg"
+               IF ALLOWDMG == #i1
+                    ALLOWDMG = #i0
+                    ExShowScreenMessage VOID 1 "#$Show damage has disabled!"
+               ELSE
+                    ALLOWDMG = #i1
+                    ExShowScreenMessage VOID 1 "#$Show damage has enabled!"
+               ENDIF
+               BREAK 1
+          CASE "#$spoil"
+               IF ALLOWSPOIL == #i1
+                    ALLOWSPOIL = #i0
+                    ExShowScreenMessage VOID 1 "#$Show SPOIL has disabled!"
+               ELSE
+                    ALLOWSPOIL = #i1
+                    ExShowScreenMessage VOID 1 "#$Show SPOIL has enabled!"
+               ENDIF
+               BREAK 1
+          CASE "#$makecp"
+               IF THREAD_CP1.STATE == #i1
+                    THREAD_CP1.STOP
+                    ExShowScreenMessage VOID 1 "#$Automatic making CP has disabled!"
+               ELSE
+                    THREAD_CP1.START
+                    ExShowScreenMessage VOID 1 "#$Automatic making CP has enabled!"
+               ENDIF
+               BREAK 1
+          CASE "#$shout"
+               IF THREAD_SHOUT.STATE == #i1
+                    THREAD_SHOUT.STOP
+                    ExShowScreenMessage VOID 1 "#$Automatic shouting has disabled!"
+               ELSE
+                    THREAD_SHOUT.START
+                    ExShowScreenMessage VOID 1 "#$Automatic shouting has enabled!"
+               ENDIF
+               BREAK 1
+          CASE "#$all"
+               IF THREAD_CP.STATE == #i1
+                    THREAD_CP.STOP
+                    MSG VOID 1 "#$Automatic CP has disabled!"
+               ELSE
+                    THREAD_CP.START
+                    MSG VOID 1 "#$Automatic CP has enabled!"
+               ENDIF               
+               IF THREAD_HP.STATE == #i1
+                    THREAD_HP.STOP
+                    MSG VOID 1 "#$Automatic HP has disabled!"
+               ELSE
+                    THREAD_HP.START
+                    MSG VOID 1 "#$Automatic HP has enabled!"
+               ENDIF
+               IF THREAD_MP.STATE == #i1
+                    THREAD_MP.STOP
+                    MSG VOID 1 "#$Automatic MP has disabled!"
+               ELSE
+                    THREAD_MP.START
+                    MSG VOID 1 "#$Automatic MP has enabled!"
+               ENDIF
+               IF ALLOWDMG == #i1
+                    ALLOWDMG = #i0
+                    MSG VOID 1 "#$Show damage has disabled!"
+               ELSE
+                    ALLOWDMG = #i1
+                    MSG VOID 1 "#$Show damage has enabled!"
+               ENDIF                    
+               BREAK 1
+          CASE "#$on"
+               IF THREAD_CP == #i0
+                    THREAD_CP.START
+               ENDIF               
+               IF THREAD_HP == #i0
+                    THREAD_HP.START
+               ENDIF
+               IF THREAD_MP == #i0
+                    THREAD_MP.START
+               ENDIF
+               ExShowScreenMessage VOID 1 "#$All has enabled!"                              
+               BREAK 1
+          CASE "#$off"
+               IF THREAD_CP == #i1
+                    THREAD_CP.STOP
+               ENDIF               
+               IF THREAD_HP == #i1
+                    THREAD_HP.STOP
+               ENDIF
+               IF THREAD_MP == #i1
+                    THREAD_MP.STOP
+               ENDIF
+               ExShowScreenMessage VOID 1 "#$All has disabled!"                              
+               BREAK 1
+          CASE "#$skill_off"
+               SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" MagicSkillUse 72
+               BLOCK 72
+               BREAK 1
+     ENDSWITCH
+     
+     //print_text "send bb with id <&PACK_ID&>"
+     DEFINE BYTEBUFFER UDPBB 512
+     UDPBB.WRITE_BYTE PACK_ID
+     UDPBB.WRITE_STRING "#$<&MSG&>"
+     UDPBB.TRIM_TO_INDEX
+     UDP_SENDBB UDPBB
+     DELETE UDPBB
+RETURN VOID
+
+FUNCTION MP
+     DEFINE INT ASD 0
+     DEFINE INT ASD2 0
+     DEFINE INT MPPOTS 0
+     WHILE ZERO == ZERO  
+          ITEM_COUNT MPPOTS 728
+          IF MPPOTS > #i1
+               ASD = CHAR_MAX_MP * 11               
+               ASD = ASD / 100           
+               IF (CHAR_CUR_MP < ASD)
+                    ASD2 = CHAR_MAX_MP - 700
+                    WHILE (CHAR_CUR_MP < ASD2) 
+                         ITEM_COUNT MPPOTS 728
+                         IF MPPOTS > #i1
+                              USE_ITEM 728 // Mana Potion
+                         ELSE
+                              BREAK 2
+                         ENDIF
+                         SLEEP 600
+                    WEND
+               ENDIF
+          ELSE
+               SLEEP 10000
+          ENDIF
+          SLEEP 25
+     WEND
+RETURN VOID
+
+FUNCTION CPNEED
+     DEFINE INT REUSE 0
+     WHILE ZERO == ZERO      
+          SKILL_GET_REUSE REUSE 1324
+          REUSE = REUSE + 100
+          SLEEP "<&REUSE&>"
+          USE_SKILL 1324
+          SLEEP 25
+     WEND
+RETURN VOID
+
+FUNCTION HP
+     DEFINE INT ASD 0
+     DEFINE INT GHPPOTS 0
+     WHILE ZERO == ZERO 
+          ITEM_COUNT GHPPOTS 1539
+          IF GHPPOTS > #i1
+               ASD = CHAR_MAX_HP * 90
+               ASD = ASD / 100            
+               IF  CHAR_CUR_HP < ASD
+                    USE_ITEM 1539
+                    SLEEP 13000
+               ENDIF
+          ELSE
+               SLEEP 10000
+          ENDIF
+          SLEEP 25     
+     WEND
+RETURN VOID
+
+FUNCTION CP
+     DEFINE INT ASD 0
+     DEFINE INT CPPOTS 0
+     DEFINE INT GCPPOTS 0
+     WHILE ZERO == ZERO 
+          ITEM_COUNT CPPOTS 5591
+          ITEM_COUNT GCPPOTS 5592
+          ASD = CHAR_MAX_CP - #i250
+     
+          IF CHAR_CUR_CP < ASD
+               IF GCPPOTS > #i1       
+                    USE_ITEM 5592
+               ENDIF
+               SLEEP 500
+               IF CPPOTS > #i1
+                    USE_ITEM 5591
+               ENDIF
+          ENDIF
+                     
+          IF (CPPOTS < #i2) && (GCPPOTS < #i2)
+               SLEEP 10000
+          ELSE
+               SLEEP 500
+          ENDIF
+          SLEEP 25     
+     WEND
+RETURN VOID
+
+FUNCTION SystemMessage
+    LOCK MUTEX
+     DEFINE SORTEDLIST RSystemMessage
+    DEFINE ARRAYLIST Data
+    DEFINE INT TYPE_TEXT        0
+    DEFINE INT TYPE_NUMBER      1
+    DEFINE INT TYPE_NPC_NAME    2
+    DEFINE INT TYPE_ITEM_NAME   3
+    DEFINE INT TYPE_SKILL_NAME  4
+    DEFINE INT TYPE_FORTRESS    5
+    DEFINE INT TYPE_ITEM_NUMBER 6
+    DEFINE INT TYPE_ZONE_NAME   7
+    DEFINE INT TYPE_AUGMENT     8
+    DEFINE INT MESSAGE_ID
+    DEFINE INT MESSAGE_SIZE
+    DEFINE INT MESSAGE_TYPE
+    DEFINE INT INT_BUFFER0
+    DEFINE INT INT_BUFFER1
+    DEFINE INT INT_BUFFER2
+     DEFINE INT SEND 0
+     DEFINE STRING STRING_BUFFER
+     
+     DEFINE BYTEBUFFER SystemMessage 8192
+     
+    PACKET.READ_BYTE NULL
+    PACKET.READ_INT32 MESSAGE_ID
+    PACKET.READ_INT32 MESSAGE_SIZE
+
+    FOR Z 0 "<&MESSAGE_SIZE&>" 1
+    
+        DEFINE SystemMessage Message
+        PACKET.READ_INT32 Message.MESSAGE_TYPE
+      
+        SWITCH Message.MESSAGE_TYPE
+          CASE TYPE_TEXT
+            PACKET.READ_STRING Message.STRING_BUFFER
+            BREAK 1
+          CASE TYPE_ITEM_NUMBER
+            PACKET.READ_INT64 Message.INT_BUFFER0
+            BREAK 1
+          CASE TYPE_ITEM_NAME
+          CASE TYPE_FORTRESS
+          CASE TYPE_NUMBER
+          CASE TYPE_NPC_NAME
+            PACKET.READ_INT32 Message.INT_BUFFER0
+            BREAK 1
+          CASE TYPE_SKILL_NAME
+            PACKET.READ_INT32 Message.INT_BUFFER0
+            PACKET.READ_INT32 Message.INT_BUFFER1
+            BREAK 1
+          CASE TYPE_ZONE_NAME
+            PACKET.READ_INT32 Message.INT_BUFFER0
+            PACKET.READ_INT32 Message.INT_BUFFER1
+            PACKET.READ_INT32 Message.INT_BUFFER2
+            BREAK 1
+          CASE TYPE_AUGMENT
+            PACKET.READ_INT32 Message.INT_BUFFER0
+            BREAK 1
+          DEFAULT
+            PACKET.READ_INT32 Message.INT_BUFFER0
+        ENDSWITCH
+        
+        Data.ADD Message
+        DELETE Message
+    NEXT
+    
+    RSystemMessage.ADD MESSAGE_ID "MESSAGE_ID"
+    RSystemMessage.ADD MESSAGE_SIZE "MESSAGE_SIZE"
+    RSystemMessage.ADD Data "DATA"
+
+     SWITCH RSystemMessage.#$MESSAGE_ID
+          CASE #i1987
+               IF ("RSystemMessage.#$DATA.0.STRING_BUFFER.CONTAINS #$defeated" == TRUE) || ("RSystemMessage.#$DATA.0.STRING_BUFFER.CONTAINS #$slaughtered" == TRUE)
+                    SEND = 0
+               ENDIF
+               BREAK 1
+          CASE #i342
+          CASE #i533
+               SEND = 0
+               BREAK 1
+     ENDSWITCH
+
+     IF SEND == 1
+     //write
+     SystemMessage.WRITE_BYTE #I98
+    SystemMessage.WRITE_INT32 "RSystemMessage.#$MESSAGE_ID"
+    SystemMessage.WRITE_INT32 "RSystemMessage.#$MESSAGE_SIZE"
+
+    FOREACH Obj SystemMessage RSystemMessage.#$DATA
+    
+      SystemMessage.WRITE_INT32 "RSystemMessage.#$DATA.Obj.MESSAGE_TYPE"
+      
+      SWITCH "RSystemMessage.#$DATA.Obj.MESSAGE_TYPE"
+        CASE TYPE_TEXT
+          SystemMessage.WRITE_STRING "RSystemMessage.#$DATA.Obj.STRING_BUFFER"
+          BREAK 1
+        CASE TYPE_ITEM_NUMBER
+          SystemMessage.WRITE_INT64 "RSystemMessage.#$DATA.Obj.INT_BUFFER0"
+          BREAK 1
+        CASE TYPE_ITEM_NAME
+        CASE TYPE_FORTRESS
+        CASE TYPE_NUMBER
+        CASE TYPE_NPC_NAME
+          SystemMessage.WRITE_INT32 "RSystemMessage.#$DATA.Obj.INT_BUFFER0"
+          BREAK 1
+        CASE TYPE_SKILL_NAME
+          SystemMessage.WRITE_INT32 "RSystemMessage.#$DATA.Obj.INT_BUFFER0"
+          SystemMessage.WRITE_INT32 "RSystemMessage.#$DATA.Obj.INT_BUFFER1"
+          BREAK 1
+        CASE TYPE_ZONE_NAME
+          SystemMessage.WRITE_INT32 "RSystemMessage.#$DATA.Obj.INT_BUFFER0"
+          SystemMessage.WRITE_INT32 "RSystemMessage.#$DATA.Obj.INT_BUFFER1"
+          SystemMessage.WRITE_INT32 "RSystemMessage.#$DATA.Obj.INT_BUFFER2"
+          BREAK 1
+      ENDSWITCH      
+    NEXTEACH
+    SystemMessage.TRIM_TO_INDEX
+    SystemMessage.RESET_INDEX  
+     INJECTBB_CLIENT SystemMessage
+        DELETE SystemMessage 
+     ENDIF
+     
+     IF ALLOWDMG == 1     
+          IF "RSystemMessage.#$MESSAGE_ID" == #i2261
+               ExShowScreenMessage VOID 1 "#$HIT: <&RSystemMessage.#$DATA.2.INT_BUFFER0&>"
+          ENDIF
+          IF "RSystemMessage.#$MESSAGE_ID" == #i2262
+               ExShowScreenMessage VOID 1 "#$DMG: <&RSystemMessage.#$DATA.2.INT_BUFFER0&>"
+          ENDIF
+     ENDIF
+     
+     UNLOCK MUTEX
+RETURN VOID
+
+FUNCTION UDP      
+     IF ALLOWSPOIL == 1
+          IF PARAM1 == 1
+               ExShowScreenMessage VOID 1 "#$Spoiled can KILL!!!"
+               SLEEP 3000
+          ENDIF
+     ENDIF
+RETURN VOID
+
+FUNCTION ExShowScreenMessage 1 TEXT
+     DEFINE BYTEBUFFER ExShowScreenMessage 256
+     ExShowScreenMessage.WRITE_BYTE #i254
+     ExShowScreenMessage.WRITE_INT16 #i57
+     ExShowScreenMessage.WRITE_INT32 #i1 // 1 inan wiad --- 0 sys mas
+     ExShowScreenMessage.WRITE_INT32 #i2 // system ssg id
+     ExShowScreenMessage.WRITE_INT32 #i2 // DEST
+     ExShowScreenMessage.WRITE_INT32 #i0
+     ExShowScreenMessage.WRITE_INT32 #i1 // font size
+     ExShowScreenMessage.WRITE_INT32 #i0
+     ExShowScreenMessage.WRITE_INT32 #i0
+     ExShowScreenMessage.WRITE_INT32 #i0 //effect
+     ExShowScreenMessage.WRITE_INT32 #i1500 // TIME
+     ExShowScreenMessage.WRITE_INT32 #i0
+     ExShowScreenMessage.WRITE_STRING "#$<&TEXT&>"
+     ExShowScreenMessage.TRIM_TO_INDEX
+     INJECTBB_CLIENT ExShowScreenMessage
+     DELETE ExShowScreenMessage
+RETURN VOID
+
+FUNCTION MSG 1 TEXT
+     DEFINE BYTEBUFFER SystemMessage 256
+     SystemMessage.WRITE_BYTE #i98
+     SystemMessage.WRITE_INT32 #i1987
+     SystemMessage.WRITE_INT32 TEXT.LENGTH
+     SystemMessage.WRITE_INT32 #i0
+     SystemMessage.WRITE_STRING TEXT
+     SystemMessage.TRIM_TO_INDEX
+     INJECTBB_CLIENT SystemMessage
+     DELETE SystemMessage
+RETURN VOID
+
+FUNCTION MagicSkillUse
+     DEFINE INT charObjId 0
+     DEFINE INT targetId 0
+     DEFINE INT skillId 0
+     DEFINE INT skillLevel 0
+     DEFINE INT hitTime 0
+     DEFINE INT reuseDelay 0
+     DEFINE INT x 0
+     DEFINE INT y 0
+     DEFINE INT z 0
+     DEFINE INT tx 0
+     DEFINE INT ty 0
+     DEFINE INT tz 0 
+     DEFINE STRING SKILL_NAME 0      
+
+     PACKET.READ_BYTE NULL
+     PACKET.READ_INT32 charObjId
+     PACKET.READ_INT32 targetId
+     PACKET.READ_INT32 skillId
+     PACKET.READ_INT32 skillLevel
+     PACKET.READ_INT32 hitTime
+     PACKET.READ_INT32 reuseDelay
+     PACKET.READ_INT32 x
+     PACKET.READ_INT32 y
+     PACKET.READ_INT32 z
+     PACKET.READ_INT32 NULL
+     PACKET.READ_INT32 tx
+     PACKET.READ_INT32 ty
+     PACKET.READ_INT32 tz      
+     
+     SWITCH skillId
+          CASE #i5495
+          CASE #i5496
+          CASE #i5497
+          CASE #i5498
+          CASE #i5499
+          CASE #i5531
+          CASE #i5532
+          CASE #i5533
+          CASE #i1015
+          CASE #i2153
+          CASE #i2154
+          CASE #i2164
+               BREAK 1
+          DEFAULT
+               DEFINE BYTEBUFFER MagicSkillUseCLIENT 512
+               MagicSkillUseCLIENT.WRITE_BYTE #i72
+               MagicSkillUseCLIENT.WRITE_INT32 charObjId
+               MagicSkillUseCLIENT.WRITE_INT32 targetId
+               MagicSkillUseCLIENT.WRITE_INT32 skillId
+               MagicSkillUseCLIENT.WRITE_INT32 skillLevel
+               MagicSkillUseCLIENT.WRITE_INT32 hitTime
+               MagicSkillUseCLIENT.WRITE_INT32 reuseDelay
+               MagicSkillUseCLIENT.WRITE_INT32 x
+               MagicSkillUseCLIENT.WRITE_INT32 y
+               MagicSkillUseCLIENT.WRITE_INT32 z
+               MagicSkillUseCLIENT.WRITE_INT32 #i0
+               MagicSkillUseCLIENT.WRITE_INT32 tx
+               MagicSkillUseCLIENT.WRITE_INT32 ty
+               MagicSkillUseCLIENT.WRITE_INT32 tz
+               //SKILL_GET_NAME SKILL_NAME skillId
+               //PRINT_TEXT "SKILL USED: <&skillId&>"
+               INJECTBB_CLIENT MagicSkillUseCLIENT
+               DELETE MagicSkillUseCLIENT
+     ENDSWITCH     
+RETURN VOID
+
+FUNCTION SHOUT
+     DEFINE ARRAYLIST TEXT 0
+     DEFINE INT RAND 0
+
+     TEXT.ADD "#$WTT - Dynasty Tunic"
+
+     // Main section
+     // ===============================
+
+     WHILE ZERO == ZERO
+          FOREACH A STRING TEXT
+               SLEEP_HUMAN_WRITING "<&TEXT.A&>"
+               SAY_TEXT "<&CHANNEL_SHOUT&>" "<&TEXT.A&>"
+               SLEEP 1000
+               SAY_TEXT "<&CHANNEL_TRADE&>" "<&TEXT.A&>"
+               GET_RAND RAND 30000 60000
+               SLEEP "<&RAND&>"
+          NEXTEACH
+          SLEEP 25
+     WEND
+RETURN VOID
+
+FUNCTION USERINFO
+     DEFINE INT X 0
+     DEFINE INT Y 0
+     DEFINE INT Z 0
+     DEFINE INT AIRSHIP 0
+     DEFINE INT UID
+     DEFINE STRING NAME ""
+     DEFINE INT RACE 0
+     DEFINE INT SEX 0
+     DEFINE INT CLASS 0
+     DEFINE INT LVL 0
+     DEFINE INT EXP 0 // UNSIGNED
+     DEFINE INT STR 0
+     DEFINE INT DEX 0
+     DEFINE INT CON 0
+     DEFINE INT INT 0
+     DEFINE INT WIT 0
+     DEFINE INT MEN 0
+     DEFINE INT MAX_HP 0
+     DEFINE INT CUR_HP 0
+     DEFINE INT MAX_MP 0
+     DEFINE INT CUR_MP 0
+     DEFINE INT SP 0
+     DEFINE INT CUR_LOAD 0
+     DEFINE INT MAX_LOAD 0
+     DEFINE INT ACTIVE_WEP 0
+     DEFINE INT UID_UNDER
+     DEFINE INT UID_REAR
+     DEFINE INT UID_LEAR
+     DEFINE INT UID_NECK
+     DEFINE INT UID_RFINGER
+     DEFINE INT UID_LFINGER
+     DEFINE INT UID_HEAD
+     DEFINE INT UID_RHAND
+     DEFINE INT UID_LHAND
+     DEFINE INT UID_GLOVES
+     DEFINE INT UID_CHEST
+     DEFINE INT UID_LEGS
+     DEFINE INT UID_FEET
+     DEFINE INT UID_BACK
+     DEFINE INT UID_LRHAND
+     DEFINE INT UID_HAIR
+     DEFINE INT UID_HAIR2
+     DEFINE INT UID_RBRACELET
+     DEFINE INT UID_LBRACELET
+     DEFINE INT UID_DECO1
+     DEFINE INT UID_DECO2
+     DEFINE INT UID_DECO3
+     DEFINE INT UID_DECO4
+     DEFINE INT UID_DECO5
+     DEFINE INT UID_DECO6
+     DEFINE INT UID_BELT
+     DEFINE INT ID_UNDER
+     DEFINE INT ID_REAR
+     DEFINE INT ID_LEAR
+     DEFINE INT ID_NECK
+     DEFINE INT ID_RFINGER
+     DEFINE INT ID_LFINGER
+     DEFINE INT ID_HEAD
+     DEFINE INT ID_RHAND
+     DEFINE INT ID_LHAND
+     DEFINE INT ID_GLOVES
+     DEFINE INT ID_CHEST
+     DEFINE INT ID_LEGS
+     DEFINE INT ID_FEET
+     DEFINE INT ID_BACK
+     DEFINE INT ID_LRHAND
+     DEFINE INT ID_HAIR
+     DEFINE INT ID_HAIR2
+     DEFINE INT ID_RBRACELET
+     DEFINE INT ID_LBRACELET
+     DEFINE INT ID_DECO1
+     DEFINE INT ID_DECO2
+     DEFINE INT ID_DECO3
+     DEFINE INT ID_DECO4
+     DEFINE INT ID_DECO5
+     DEFINE INT ID_DECO6
+     DEFINE INT ID_BELT
+     DEFINE INT AUG_ID_UNDER
+     DEFINE INT AUG_ID_REAR
+     DEFINE INT AUG_ID_LEAR
+     DEFINE INT AUG_ID_NECK
+     DEFINE INT AUG_ID_RFINGER
+     DEFINE INT AUG_ID_LFINGER
+     DEFINE INT AUG_ID_HEAD
+     DEFINE INT AUG_ID_RHAND
+     DEFINE INT AUG_ID_LHAND
+     DEFINE INT AUG_ID_GLOVES
+     DEFINE INT AUG_ID_CHEST
+     DEFINE INT AUG_ID_LEGS
+     DEFINE INT AUG_ID_FEET
+     DEFINE INT AUG_ID_BACK
+     DEFINE INT AUG_ID_LRHAND
+     DEFINE INT AUG_ID_HAIR
+     DEFINE INT AUG_ID_HAIR2
+     DEFINE INT AUG_ID_RBRACELET
+     DEFINE INT AUG_ID_LBRACELET
+     DEFINE INT AUG_ID_DECO1
+     DEFINE INT AUG_ID_DECO2
+     DEFINE INT AUG_ID_DECO3
+     DEFINE INT AUG_ID_DECO4
+     DEFINE INT AUG_ID_DECO5
+     DEFINE INT AUG_ID_DECO6
+     DEFINE INT AUG_ID_BELT
+     DEFINE INT TAL_COUNT
+     DEFINE INT CLO_STATUS
+     DEFINE INT PATAK
+     DEFINE INT PATAKSPD // HMM DZIWNE 2X ?
+     DEFINE INT PDEF
+     DEFINE INT EVASION
+     DEFINE INT ACCU
+     DEFINE INT CRIT
+     DEFINE INT MATAK
+     DEFINE INT MATAKSPD
+     // TU 2 RAZ ATAK SPED ?
+     DEFINE INT MDEF
+     DEFINE INT PVPFLAG
+     DEFINE INT KARMA
+     DEFINE INT RUNSPD
+     DEFINE INT WALKSPD
+     DEFINE INT IS_FLYING_RUN
+     DEFINE INT IS_FLYING_WALK
+     DEFINE DOUBLE MOVE_MULT // F TYPE ?
+     DEFINE DOUBLE ATAK_SPD_MULT // FTYPE ?
+     DEFINE DOUBLE COLI_RADIOUS //FTYPE
+     DEFINE DOUBLE COLI_HEIGH //FTYPE
+     DEFINE INT HAIRSTYLE
+     DEFINE INT HAIRCOLOR
+     DEFINE INT FACE
+     DEFINE INT IS_GM
+     DEFINE STRING TITLE ""
+     DEFINE INT CLANID
+     DEFINE INT CLANCRESTID
+     DEFINE INT ALYID
+     DEFINE INT ALYCRESTID
+     DEFINE INT RELATION
+     DEFINE INT MOUNT_TYPE
+     DEFINE INT STORETYPE
+     DEFINE INT DWARVENCRAFT
+     DEFINE INT PKKILLS
+     DEFINE INT PVPKILLS
+     DEFINE INT CUB_SIZE //PETLA
+          DEFINE INT CUB_0_ID
+          DEFINE INT CUB_1_ID
+          DEFINE INT CUB_2_ID
+          DEFINE INT CUB_3_ID
+     DEFINE INT FIND_PT
+     DEFINE INT ABNORMALEFFECT
+     DEFINE INT FLYMOUNTED //CTYPE
+     DEFINE INT CLAN_PRIV
+     DEFINE INT RECLEFT
+     DEFINE INT RECHAVE
+     DEFINE INT MOUNT_NPC_ID
+     DEFINE INT INV_LIMIT
+     DEFINE INT CLASS_ID
+     DEFINE INT SEFFECT // EFEKTY DUELA
+     DEFINE INT MAX_CP
+     DEFINE INT CUR_CP
+     DEFINE INT ISMOUNTED
+     // TEAM KOLA
+     DEFINE INT TEAM // 1 NIEBIESKIE 2 RED
+     DEFINE INT CLANCRESTLARGEID
+     DEFINE INT NOBLES
+     DEFINE INT HERO
+     DEFINE INT ISFISHING //CTYPE
+     DEFINE INT FISHX
+     DEFINE INT FISHY
+     DEFINE INT FISHZ
+     DEFINE INT NAMECOLOR
+     DEFINE INT ISRUNNING //CTYPE
+     DEFINE INT PLEDGECLASS
+     DEFINE INT PLEDGETYPE
+     DEFINE INT APPEARANCE //TITLE COLOR
+     DEFINE INT CURSEDWEP
+     DEFINE INT TRANS_ID
+     DEFINE INT ATTACK_ATT //HTYPE
+     DEFINE INT ATTACK_ELEM //HTYPE
+     DEFINE INT DEF_FIRE //HTYPE
+     DEFINE INT DEF_WATER //HTYPE
+     DEFINE INT DEF_WIND //HTYPE
+     DEFINE INT DEF_EARTH //HTYPE
+     DEFINE INT DEF_HOLY //HTYPE
+     DEFINE INT DEF_DARK //HTYPE
+     DEFINE INT AGH_ID
+     DEFINE INT FAME
+     DEFINE INT MINI_MAP
+     DEFINE INT VITAL
+     DEFINE INT EFFECT
+     DEFINE INT TERIT_ID
+     DEFINE INT XX_CT23
+     
+     PACKET.READ_BYTE NULL
+     PACKET.READ_INT32 X
+     PACKET.READ_INT32 Y
+     PACKET.READ_INT32 Z
+     PACKET.READ_INT32 AIRSHIP
+     PACKET.READ_INT32 UID
+     PACKET.READ_STRING NAME
+     PACKET.READ_INT32 RACE
+     PACKET.READ_INT32 SEX
+     PACKET.READ_INT32 CLASS
+     PACKET.READ_INT32 LVL
+     PACKET.READ_INT64 EXP
+     PACKET.READ_INT32 STR
+     PACKET.READ_INT32 DEX
+     PACKET.READ_INT32 CON
+     PACKET.READ_INT32 INT
+     PACKET.READ_INT32 WIT
+     PACKET.READ_INT32 MEN
+     PACKET.READ_INT32 MAX_HP
+     PACKET.READ_INT32 CUR_HP
+     PACKET.READ_INT32 MAX_MP
+     PACKET.READ_INT32 CUR_MP
+     PACKET.READ_INT32 SP
+     PACKET.READ_INT32 CUR_LOAD
+     PACKET.READ_INT32 MAX_LOAD
+     PACKET.READ_INT32 ACTIVE_WEP
+     PACKET.READ_INT32 UID_UNDER
+     PACKET.READ_INT32 UID_REAR
+     PACKET.READ_INT32 UID_LEAR
+     PACKET.READ_INT32 UID_NECK
+     PACKET.READ_INT32 UID_RFINGER
+     PACKET.READ_INT32 UID_LFINGER
+     PACKET.READ_INT32 UID_HEAD
+     PACKET.READ_INT32 UID_RHAND
+     PACKET.READ_INT32 UID_LHAND
+     PACKET.READ_INT32 UID_GLOVES
+     PACKET.READ_INT32 UID_CHEST
+     PACKET.READ_INT32 UID_LEGS
+     PACKET.READ_INT32 UID_FEET
+     PACKET.READ_INT32 UID_BACK
+     PACKET.READ_INT32 UID_LRHAND
+     PACKET.READ_INT32 UID_HAIR
+     PACKET.READ_INT32 UID_HAIR2
+     PACKET.READ_INT32 UID_RBRACELET
+     PACKET.READ_INT32 UID_LBRACELET
+     PACKET.READ_INT32 UID_DECO1
+     PACKET.READ_INT32 UID_DECO2
+     PACKET.READ_INT32 UID_DECO3
+     PACKET.READ_INT32 UID_DECO4
+     PACKET.READ_INT32 UID_DECO5
+     PACKET.READ_INT32 UID_DECO6
+     PACKET.READ_INT32 UID_BELT
+     PACKET.READ_INT32 ID_UNDER
+     PACKET.READ_INT32 ID_REAR
+     PACKET.READ_INT32 ID_LEAR
+     PACKET.READ_INT32 ID_NECK
+     PACKET.READ_INT32 ID_RFINGER
+     PACKET.READ_INT32 ID_LFINGER
+     PACKET.READ_INT32 ID_HEAD
+     PACKET.READ_INT32 ID_RHAND
+     PACKET.READ_INT32 ID_LHAND
+     PACKET.READ_INT32 ID_GLOVES
+     PACKET.READ_INT32 ID_CHEST
+     PACKET.READ_INT32 ID_LEGS
+     PACKET.READ_INT32 ID_FEET
+     PACKET.READ_INT32 ID_BACK
+     PACKET.READ_INT32 ID_LRHAND
+     PACKET.READ_INT32 ID_HAIR
+     PACKET.READ_INT32 ID_HAIR2
+     PACKET.READ_INT32 ID_RBRACELET
+     PACKET.READ_INT32 ID_LBRACELET
+     PACKET.READ_INT32 ID_DECO1
+     PACKET.READ_INT32 ID_DECO2
+     PACKET.READ_INT32 ID_DECO3
+     PACKET.READ_INT32 ID_DECO4
+     PACKET.READ_INT32 ID_DECO5
+     PACKET.READ_INT32 ID_DECO6
+     PACKET.READ_INT32 ID_BELT
+     PACKET.READ_INT32 AUG_ID_UNDER
+     PACKET.READ_INT32 AUG_ID_REAR
+     PACKET.READ_INT32 AUG_ID_LEAR
+     PACKET.READ_INT32 AUG_ID_NECK
+     PACKET.READ_INT32 AUG_ID_RFINGER
+     PACKET.READ_INT32 AUG_ID_LFINGER
+     PACKET.READ_INT32 AUG_ID_HEAD
+     PACKET.READ_INT32 AUG_ID_RHAND
+     PACKET.READ_INT32 AUG_ID_LHAND
+     PACKET.READ_INT32 AUG_ID_GLOVES
+     PACKET.READ_INT32 AUG_ID_CHEST
+     PACKET.READ_INT32 AUG_ID_LEGS
+     PACKET.READ_INT32 AUG_ID_FEET
+     PACKET.READ_INT32 AUG_ID_BACK
+     PACKET.READ_INT32 AUG_ID_LRHAND
+     PACKET.READ_INT32 AUG_ID_HAIR
+     PACKET.READ_INT32 AUG_ID_HAIR2
+     PACKET.READ_INT32 AUG_ID_RBRACELET
+     PACKET.READ_INT32 AUG_ID_LBRACELET
+     PACKET.READ_INT32 AUG_ID_DECO1
+     PACKET.READ_INT32 AUG_ID_DECO2
+     PACKET.READ_INT32 AUG_ID_DECO3
+     PACKET.READ_INT32 AUG_ID_DECO4
+     PACKET.READ_INT32 AUG_ID_DECO5
+     PACKET.READ_INT32 AUG_ID_DECO6
+     PACKET.READ_INT32 AUG_ID_BELT
+     PACKET.READ_INT32 TAL_COUNT
+     PACKET.READ_INT32 CLO_STATUS
+     PACKET.READ_INT32 PATAK
+     PACKET.READ_INT32 PATAKSPD // OBADAC
+     PACKET.READ_INT32 PDEF
+     PACKET.READ_INT32 EVASION
+     PACKET.READ_INT32 ACCU
+     PACKET.READ_INT32 CRIT
+     PACKET.READ_INT32 MATAK
+     PACKET.READ_INT32 MATAKSPD
+     PACKET.READ_INT32 NULL
+     PACKET.READ_INT32 MDEF
+     PACKET.READ_INT32 PVPFLAG
+     PACKET.READ_INT32 KARMA
+     PACKET.READ_INT32 RUNSPD
+     PACKET.READ_INT32 WALKSPD
+     PACKET.READ_INT32 RUNSPD // SWIMING
+     PACKET.READ_INT32 WALKSPD //SWIMING
+     PACKET.READ_INT32 NULL
+     PACKET.READ_INT32 NULL
+     PACKET.READ_INT32 IS_FLYING_RUN
+     PACKET.READ_INT32 IS_FLYING_WALK
+     PACKET.READ_DOUBLE MOVE_MULT // DOUBLE ?
+     PACKET.READ_DOUBLE ATAK_SPD_MULT //DOUBLE?
+     PACKET.READ_DOUBLE COLI_RADIOUS //DOUBLE
+     PACKET.READ_DOUBLE COLI_HEIGH //DOUBLE
+     PACKET.READ_INT32 HAIRSTYLE
+     PACKET.READ_INT32 HAIRCOLOR
+     PACKET.READ_INT32 FACE
+     PACKET.READ_INT32 IS_GM
+     PACKET.READ_STRING TITLE
+     PACKET.READ_INT32 CLANID
+     PACKET.READ_INT32 CLANCRESTID
+     PACKET.READ_INT32 ALYID
+     PACKET.READ_INT32 ALYCRESTID
+     PACKET.READ_INT32 RELATION
+     PACKET.READ_BYTE MOUNT_TYPE
+     PACKET.READ_BYTE STORETYPE
+     PACKET.READ_BYTE DWARVENCRAFT
+     PACKET.READ_INT32 PKKILLS
+     PACKET.READ_INT32 PVPKILLS // DEBUG
+     PACKET.READ_INT16 CUB_SIZE
+     IF CUB_SIZE > 0
+          FOR A 0 "<&CUB_SIZE&>" 1
+               PACKET.READ_INT16 "CUB_<&A&>_ID"
+          NEXT
+     ENDIF
+     PACKET.READ_BYTE FIND_PT
+     PACKET.READ_INT32 ABNORMALEFFECT
+     PACKET.READ_BYTE FLYMOUNTED
+     PACKET.READ_INT32 CLAN_PRIV
+     PACKET.READ_INT16 RECLEFT
+     PACKET.READ_INT16 RECHAVE
+     PACKET.READ_INT32 MOUNT_NPC_ID
+     PACKET.READ_INT16 INV_LIMIT
+     PACKET.READ_INT32 CLASS_ID
+     PACKET.READ_INT32 SEFFECT //EFEKT DUELA ?
+     PACKET.READ_INT32 MAX_CP
+     PACKET.READ_INT32 CUR_CP
+     PACKET.READ_BYTE ISMOUNTED
+     PACKET.READ_BYTE TEAM // 1 NIEB - 2 RED
+     PACKET.READ_INT32 CLANCRESTLARGEID
+     PACKET.READ_BYTE NOBLES
+     PACKET.READ_BYTE HERO
+     PACKET.READ_BYTE ISFISHING
+     PACKET.READ_INT32 FISHX
+     PACKET.READ_INT32 FISHY
+     PACKET.READ_INT32 FISHZ
+     PACKET.READ_INT32 NAMECOLOR
+     PACKET.READ_BYTE ISRUNNING
+     PACKET.READ_INT32 PLEDGECLASS
+     PACKET.READ_INT32 PLEDGETYPE
+     PACKET.READ_INT32 APPEARANCE
+     PACKET.READ_INT32 CURSEDWEP
+     PACKET.READ_INT32 TRANS_ID
+     PACKET.READ_INT16 ATTACK_ATT
+     PACKET.READ_INT16 ATTACK_ELEM
+     PACKET.READ_INT16 DEF_FIRE 
+     PACKET.READ_INT16 DEF_WATER 
+     PACKET.READ_INT16 DEF_WIND 
+     PACKET.READ_INT16 DEF_EARTH 
+     PACKET.READ_INT16 DEF_HOLY 
+     PACKET.READ_INT16 DEF_DARK 
+     PACKET.READ_INT32 AGH_ID
+     PACKET.READ_INT32 FAME
+     PACKET.READ_INT32 MINI_MAP
+     PACKET.READ_INT32 VITAL
+     PACKET.READ_INT32 EFFECT
+     PACKET.READ_INT32 TERIT_ID
+     PACKET.READ_INT32 XX_CT23
+     PACKET.READ_INT32 TERIT_ID
+     
+     SWITCH ID_CHEST
+          CASE #i9436
+               ID_BACK = #i13687
+               UID_BACK = #i271963696
+               BREAK 1
+     ENDSWITCH 
+     
+     DEFINE BYTEBUFFER UserInfo 1024
+     UserInfo.WRITE_BYTE 50
+     UserInfo.WRITE_INT32 X
+     UserInfo.WRITE_INT32 Y
+     UserInfo.WRITE_INT32 Z
+     UserInfo.WRITE_INT32 AIRSHIP
+     UserInfo.WRITE_INT32 UID
+     UserInfo.WRITE_STRING NAME
+     UserInfo.WRITE_INT32 RACE
+     UserInfo.WRITE_INT32 SEX
+     UserInfo.WRITE_INT32 CLASS
+     UserInfo.WRITE_INT32 LVL
+     UserInfo.WRITE_INT64 EXP
+     UserInfo.WRITE_INT32 STR
+     UserInfo.WRITE_INT32 DEX
+     UserInfo.WRITE_INT32 CON
+     UserInfo.WRITE_INT32 INT
+     UserInfo.WRITE_INT32 WIT
+     UserInfo.WRITE_INT32 MEN
+     UserInfo.WRITE_INT32 MAX_HP
+     UserInfo.WRITE_INT32 CUR_HP
+     UserInfo.WRITE_INT32 MAX_MP
+     UserInfo.WRITE_INT32 CUR_MP
+     UserInfo.WRITE_INT32 SP
+     UserInfo.WRITE_INT32 CUR_LOAD
+     UserInfo.WRITE_INT32 MAX_LOAD
+     UserInfo.WRITE_INT32 ACTIVE_WEP
+     UserInfo.WRITE_INT32 UID_UNDER
+     UserInfo.WRITE_INT32 UID_REAR
+     UserInfo.WRITE_INT32 UID_LEAR
+     UserInfo.WRITE_INT32 UID_NECK
+     UserInfo.WRITE_INT32 UID_RFINGER
+     UserInfo.WRITE_INT32 UID_LFINGER
+     UserInfo.WRITE_INT32 UID_HEAD
+     UserInfo.WRITE_INT32 UID_RHAND
+     UserInfo.WRITE_INT32 UID_LHAND
+     UserInfo.WRITE_INT32 UID_GLOVES
+     UserInfo.WRITE_INT32 UID_CHEST
+     UserInfo.WRITE_INT32 UID_LEGS
+     UserInfo.WRITE_INT32 UID_FEET
+     UserInfo.WRITE_INT32 UID_BACK
+     UserInfo.WRITE_INT32 UID_LRHAND
+     UserInfo.WRITE_INT32 UID_HAIR
+     UserInfo.WRITE_INT32 UID_HAIR2
+     UserInfo.WRITE_INT32 UID_RBRACELET
+     UserInfo.WRITE_INT32 UID_LBRACELET
+     UserInfo.WRITE_INT32 UID_DECO1
+     UserInfo.WRITE_INT32 UID_DECO2
+     UserInfo.WRITE_INT32 UID_DECO3
+     UserInfo.WRITE_INT32 UID_DECO4
+     UserInfo.WRITE_INT32 UID_DECO5
+     UserInfo.WRITE_INT32 UID_DECO6
+     UserInfo.WRITE_INT32 UID_BELT
+     UserInfo.WRITE_INT32 ID_UNDER
+     UserInfo.WRITE_INT32 ID_REAR
+     UserInfo.WRITE_INT32 ID_LEAR
+     UserInfo.WRITE_INT32 ID_NECK
+     UserInfo.WRITE_INT32 ID_RFINGER
+     UserInfo.WRITE_INT32 ID_LFINGER
+     UserInfo.WRITE_INT32 ID_HEAD
+     UserInfo.WRITE_INT32 ID_RHAND
+     UserInfo.WRITE_INT32 ID_LHAND
+     UserInfo.WRITE_INT32 ID_GLOVES
+     UserInfo.WRITE_INT32 ID_CHEST
+     UserInfo.WRITE_INT32 ID_LEGS
+     UserInfo.WRITE_INT32 ID_FEET
+     UserInfo.WRITE_INT32 id_back
+     UserInfo.WRITE_INT32 ID_LRHAND
+     UserInfo.WRITE_INT32 ID_HAIR
+     UserInfo.WRITE_INT32 ID_HAIR2
+     UserInfo.WRITE_INT32 ID_RBRACELET
+     UserInfo.WRITE_INT32 ID_LBRACELET
+     UserInfo.WRITE_INT32 ID_DECO1
+     UserInfo.WRITE_INT32 ID_DECO2
+     UserInfo.WRITE_INT32 ID_DECO3
+     UserInfo.WRITE_INT32 ID_DECO4
+     UserInfo.WRITE_INT32 ID_DECO5
+     UserInfo.WRITE_INT32 ID_DECO6
+     UserInfo.WRITE_INT32 ID_BELT
+     UserInfo.WRITE_INT32 AUG_ID_UNDER
+     UserInfo.WRITE_INT32 AUG_ID_REAR
+     UserInfo.WRITE_INT32 AUG_ID_LEAR
+     UserInfo.WRITE_INT32 AUG_ID_NECK
+     UserInfo.WRITE_INT32 AUG_ID_RFINGER
+     UserInfo.WRITE_INT32 AUG_ID_LFINGER
+     UserInfo.WRITE_INT32 AUG_ID_HEAD
+     UserInfo.WRITE_INT32 AUG_ID_RHAND
+     UserInfo.WRITE_INT32 AUG_ID_LHAND
+     UserInfo.WRITE_INT32 AUG_ID_GLOVES
+     UserInfo.WRITE_INT32 AUG_ID_CHEST
+     UserInfo.WRITE_INT32 AUG_ID_LEGS
+     UserInfo.WRITE_INT32 AUG_ID_FEET
+     UserInfo.WRITE_INT32 AUG_ID_BACK
+     UserInfo.WRITE_INT32 AUG_ID_LRHAND
+     UserInfo.WRITE_INT32 AUG_ID_HAIR
+     UserInfo.WRITE_INT32 AUG_ID_HAIR2
+     UserInfo.WRITE_INT32 AUG_ID_RBRACELET
+     UserInfo.WRITE_INT32 AUG_ID_LBRACELET
+     UserInfo.WRITE_INT32 AUG_ID_DECO1
+     UserInfo.WRITE_INT32 AUG_ID_DECO2
+     UserInfo.WRITE_INT32 AUG_ID_DECO3
+     UserInfo.WRITE_INT32 AUG_ID_DECO4
+     UserInfo.WRITE_INT32 AUG_ID_DECO5
+     UserInfo.WRITE_INT32 AUG_ID_DECO6
+     UserInfo.WRITE_INT32 AUG_ID_BELT
+     UserInfo.WRITE_INT32 TAL_COUNT
+     UserInfo.WRITE_INT32 CLO_STATUS
+     UserInfo.WRITE_INT32 PATAK
+     UserInfo.WRITE_INT32 PATAKSPD // OBADAC
+     UserInfo.WRITE_INT32 PDEF
+     UserInfo.WRITE_INT32 EVASION
+     UserInfo.WRITE_INT32 ACCU
+     UserInfo.WRITE_INT32 CRIT
+     UserInfo.WRITE_INT32 MATAK
+     UserInfo.WRITE_INT32 MATAKSPD
+     UserInfo.WRITE_INT32 NULL
+     UserInfo.WRITE_INT32 MDEF
+     UserInfo.WRITE_INT32 PVPFLAG
+     UserInfo.WRITE_INT32 KARMA
+     UserInfo.WRITE_INT32 RUNSPD
+     UserInfo.WRITE_INT32 WALKSPD
+     UserInfo.WRITE_INT32 RUNSPD // SWIMING
+     UserInfo.WRITE_INT32 WALKSPD //SWIMING
+     UserInfo.WRITE_INT32 NULL
+     UserInfo.WRITE_INT32 NULL
+     UserInfo.WRITE_INT32 IS_FLYING_RUN
+     UserInfo.WRITE_INT32 IS_FLYING_WALK
+     UserInfo.WRITE_DOUBLE MOVE_MULT // DOUBLE ?
+     UserInfo.WRITE_DOUBLE ATAK_SPD_MULT //DOUBLE?
+     UserInfo.WRITE_DOUBLE COLI_RADIOUS //DOUBLE
+     UserInfo.WRITE_DOUBLE COLI_HEIGH //DOUBLE
+     UserInfo.WRITE_INT32 HAIRSTYLE
+     UserInfo.WRITE_INT32 HAIRCOLOR
+     UserInfo.WRITE_INT32 FACE
+     UserInfo.WRITE_INT32 IS_GM
+     UserInfo.WRITE_STRING TITLE
+     UserInfo.WRITE_INT32 CLANID
+     UserInfo.WRITE_INT32 CLANCRESTID
+     UserInfo.WRITE_INT32 ALYID
+     UserInfo.WRITE_INT32 ALYCRESTID
+     UserInfo.WRITE_INT32 RELATION
+     UserInfo.WRITE_BYTE MOUNT_TYPE
+     UserInfo.WRITE_BYTE STORETYPE
+     UserInfo.WRITE_BYTE DWARVENCRAFT
+     UserInfo.WRITE_INT32 PKKILLS
+     UserInfo.WRITE_INT32 PVPKILLS // DEBUG
+     UserInfo.WRITE_INT16 CUB_SIZE
+     IF CUB_SIZE > 0
+          FOR A 0 "<&CUB_SIZE&>" 1
+               UserInfo.WRITE_INT16 "CUB_<&A&>_ID"
+          NEXT
+     ENDIF
+     UserInfo.WRITE_BYTE FIND_PT
+     UserInfo.WRITE_INT32 ABNORMALEFFECT
+     UserInfo.WRITE_BYTE FLYMOUNTED
+     UserInfo.WRITE_INT32 CLAN_PRIV
+     UserInfo.WRITE_INT16 RECLEFT
+     UserInfo.WRITE_INT16 RECHAVE
+     UserInfo.WRITE_INT32 MOUNT_NPC_ID
+     UserInfo.WRITE_INT16 INV_LIMIT
+     UserInfo.WRITE_INT32 CLASS_ID
+     UserInfo.WRITE_INT32 SEFFECT //EFEKT DUELA ?
+     UserInfo.WRITE_INT32 MAX_CP
+     UserInfo.WRITE_INT32 CUR_CP
+     UserInfo.WRITE_BYTE ISMOUNTED
+     UserInfo.WRITE_BYTE TEAM // 1 NIEB - 2 RED
+     UserInfo.WRITE_INT32 CLANCRESTLARGEID
+     UserInfo.WRITE_BYTE NOBLES
+     UserInfo.WRITE_BYTE HERO
+     UserInfo.WRITE_BYTE ISFISHING
+     UserInfo.WRITE_INT32 FISHX
+     UserInfo.WRITE_INT32 FISHY
+     UserInfo.WRITE_INT32 FISHZ
+     UserInfo.WRITE_INT32 NAMECOLOR
+     UserInfo.WRITE_BYTE ISRUNNING
+     UserInfo.WRITE_INT32 PLEDGECLASS
+     UserInfo.WRITE_INT32 PLEDGETYPE
+     UserInfo.WRITE_INT32 APPEARANCE
+     UserInfo.WRITE_INT32 CURSEDWEP
+     UserInfo.WRITE_INT32 TRANS_ID
+     UserInfo.WRITE_INT16 ATTACK_ATT
+     UserInfo.WRITE_INT16 ATTACK_ELEM
+     UserInfo.WRITE_INT16 DEF_FIRE 
+     UserInfo.WRITE_INT16 DEF_WATER 
+     UserInfo.WRITE_INT16 DEF_WIND 
+     UserInfo.WRITE_INT16 DEF_EARTH 
+     UserInfo.WRITE_INT16 DEF_HOLY 
+     UserInfo.WRITE_INT16 DEF_DARK 
+     UserInfo.WRITE_INT32 AGH_ID
+     UserInfo.WRITE_INT32 FAME
+     UserInfo.WRITE_INT32 MINI_MAP
+     UserInfo.WRITE_INT32 VITAL
+     UserInfo.WRITE_INT32 EFFECT
+     UserInfo.WRITE_INT32 TERIT_ID
+     UserInfo.WRITE_INT32 XX_CT23
+     UserInfo.WRITE_INT32 TERIT_ID
+     INJECTBB_CLIENT UserInfo
+     DELETE UserInfo 
+RETURN VOID 
+
+FUNCTION PICKUP
+     DEFINE ARRAYLIST ITEMS
+     WHILE ZERO == ZERO
+          LABEL O
+          GET_ITEMS ITEMS
+          FOREACH I ITEM ITEMS
+               SWITCH ITEMS.I.ITEM_ID
+                    CASE #i6660 //Ring of Queen Ant
+                    CASE #i6659 //Zaken's Earring
+                    CASE #i6656 //Earring of Antharas
+                    CASE #i6658 //Ring of Baium
+                    CASE #i6662 //Ring of Core
+                    CASE #i6661 //Earring of Orfen
+                    CASE #i6657 //Necklace of Valakas
+                    CASE #i10486
+                    CASE #i9576
+                    CASE #i14169
+                    CASE #i13028
+                    //CASE #i57
+                         DEFINE BYTEBUFFER Action 256
+                         Action.WRITE_BYTE #i31 // 1F
+                         Action.WRITE_INT32 ITEMS.I.ID // Object ID
+                         Action.WRITE_INT32 ITEMS.I.X
+                         Action.WRITE_INT32 ITEMS.I.Y
+                         Action.WRITE_INT32 ITEMS.I.Z
+                         Action.WRITE_BYTE #i0 // normal or shift
+                         Action.TRIM_TO_INDEX
+                         INJECTBB Action
+                         DELETE Action  
+                         SLEEP 500
+                         JUMP_TO_LABEL O 
+               ENDSWITCH
+          NEXTEACH
+          SLEEP 500
+     WEND 
+RETURN VOID
+
+FUNCTION SetupGauge 2 COLOR TIME
+     DEFINE BYTEBUFFER B_SetupGauge 256
+     B_SetupGauge.WRITE_BYTE #i107
+     B_SetupGauge.WRITE_INT32 COLOR
+     B_SetupGauge.WRITE_INT32 TIME
+     B_SetupGauge.WRITE_INT32 TIME
+     B_SetupGauge.TRIM_TO_INDEX
+     INJECTBB_CLIENT B_SetupGauge
+     DELETE B_SetupGauge
+RETURN VOID
+
+FUNCTION AbnormalStatusUpdate 
+    DEFINE INT EFFECT_COUNT
+    
+    PACKET.READ_BYTE NULL
+    PACKET.READ_INT16 EFFECT_COUNT
+  
+	FOR Z 0 "<&EFFECT_COUNT&>" 1        
+		DEFINE AbnormalStatusUpdate Effect
+      
+		PACKET.READ_INT32 EFFECT.EFFECT_ID
+		PACKET.READ_INT16 EFFECT.EFFECT_LEVEL
+		PACKET.READ_INT32 EFFECT.EFFECT_DURATION
+		EFFECT.EFFECT_ORDER = "#i<&Z&>"
+
+		SWITCH EFFECT.EFFECT_ID
+			CASE #i6059  // CC TRIGGER   [6059]
+			CASE #i5428  // Counter Dash [5428]
+			CASE #i789   // SOS           [789]
+			CASE #i785   // FLAME ICON    [785]
+          //CASE #i5576  // Bariera      [5576]
+				RequestDispel VOID 2 EFFECT.EFFECT_ID EFFECT.EFFECT_LEVEL
+				BREAK 1
+		ENDSWITCH  
+				
+		DELETE Effect         
+    NEXT
+RETURN VOID
+
+FUNCTION RequestDispel 2 _iSkill _iLevel
+    DEFINE BYTEBUFFER _bInject 256
+    _bInject.WRITE_BYTE #I208 // Request Dispel
+    _bInject.WRITE_BYTE #I75  // Unknown
+    _bInject.WRITE_BYTE #I0   // Unknown
+    _bInject.WRITE_INT32 _iSkill // Skill ID
+    _bInject.WRITE_INT32 _iLevel // Skill Level
+    _bInject.TRIM_TO_INDEX
+    SLEEP 100
+    INJECTBB _bInject
+    DELETE _bInject 
+RETURN VOID
+
+FUNCTION HIDE_NPCS
+    DEFINE arraylist npc_list
+	GET_NPCS npc_list
+	FOREACH B NPC npc_list
+        DEFINE BYTEBUFFER DeleteObject 256
+        DeleteObject.WRITE_BYTE 8
+        DeleteObject.WRITE_INT32 npc_list.B.ID
+        DeleteObject.WRITE_INT32 0
+        DeleteObject.TRIM_TO_INDEX
+        INJECTBB_CLIENT DeleteObject
+        DELETE DeleteObject
+    NEXTEACH
+RETURN VOID
+
+FUNCTION OPENDOOR  
+    FOREACH F StaticObject StaticObjects
+        IF StaticObjects.F.TYPE == 1 //IS DOOR
+            IF StaticObjects.F.objectId == TARGET_OBJID
+                DEFINE BYTEBUFFER DoorStatusUpdate 512
+                DoorStatusUpdate.WRITE_BYTE 77 //writeC(0x4d);
+	            DoorStatusUpdate.WRITE_INT32 StaticObjects.F.objectId //writeD(_door.getObjectId());
+				DoorStatusUpdate.WRITE_INT32 0 //writeD(_isClosed ? 1 : 0); 
+            	DoorStatusUpdate.WRITE_INT32 0 //writeD(_door.getDamage());
+            	DoorStatusUpdate.WRITE_INT32 StaticObjects.F.isEnemy //writeD(_door.isEnemy() ? 1 : 0);
+              	DoorStatusUpdate.WRITE_INT32 StaticObjects.F.staticObjectId //writeD(_door.getDoorId());
+            	DoorStatusUpdate.WRITE_INT32 StaticObjects.F.currentHp //writeD((int)_door.getCurrentHp());
+            	DoorStatusUpdate.WRITE_INT32 StaticObjects.F.maxHp //writeD(_door.getMaxVisibleHp());
+                DoorStatusUpdate.TRIM_TO_INDEX
+                INJECTBB_CLIENT DoorStatusUpdate  
+                DELETE DoorStatusUpdate     
+				
+				DEFINE BYTEBUFFER StaticObjBB 512
+				StaticObjBB.WRITE_BYTE 159 //(0x9f);
+				StaticObjBB.WRITE_INT32 StaticObjects.F.staticObjectId //writeD(_staticObjectId);
+				StaticObjBB.WRITE_INT32 StaticObjects.F.objectId //writeD(_objectId);
+				StaticObjBB.WRITE_INT32 StaticObjects.F.type //writeD(_type);
+				StaticObjBB.WRITE_INT32 StaticObjects.F.isTargetable //writeD(_isTargetable ? 1 : 0);
+				StaticObjBB.WRITE_INT32 StaticObjects.F.meshIndex //writeD(_meshIndex);
+				StaticObjBB.WRITE_INT32 0  //writeD(_isClosed ? 1 : 0);
+				StaticObjBB.WRITE_INT32 StaticObjects.F.isEnemy //writeD(_isEnemy ? 1 : 0);
+				StaticObjBB.WRITE_INT32 StaticObjects.F.currentHp //writeD(_currentHp);
+				StaticObjBB.WRITE_INT32 StaticObjects.F.maxHp //writeD(_maxHp);
+				StaticObjBB.WRITE_INT32 StaticObjects.F.showHp //writeD(_showHp ? 1 : 0);
+				StaticObjBB.WRITE_INT32 StaticObjects.F.damageGrade //writeD(_damageGrade); 
+				StaticObjBB.TRIM_TO_INDEX
+				INJECTBB_CLIENT StaticObjBB  
+				DELETE StaticObjBB     				 
+            ENDIF    
+        ENDIF  
+    NEXTEACH  
+RETURN VOID    
+
+FUNCTION StaticObjectPacket
+    DEFINE StaticObject StaticObj   
+    PACKET.READ_BYTE NULL //(0x9f);
+	PACKET.READ_INT32 StaticObj.staticObjectId //writeD(_staticObjectId);
+	PACKET.READ_INT32 StaticObj.objectId       //writeD(_objectId);
+	PACKET.READ_INT32 StaticObj.type           //writeD(_type);
+	PACKET.READ_INT32 StaticObj.isTargetable   //writeD(_isTargetable ? 1 : 0);
+	PACKET.READ_INT32 StaticObj.meshIndex      //writeD(_meshIndex);
+	PACKET.READ_INT32 StaticObj.isClosed       //writeD(_isClosed ? 1 : 0);
+	PACKET.READ_INT32 StaticObj.isEnemy        //writeD(_isEnemy ? 1 : 0);
+	PACKET.READ_INT32 StaticObj.currentHp      //writeD(_currentHp);
+	PACKET.READ_INT32 StaticObj.maxHp          //writeD(_maxHp);
+	PACKET.READ_INT32 StaticObj.showHp         //writeD(_showHp ? 1 : 0);
+	PACKET.READ_INT32 StaticObj.damageGrade    //writeD(_damageGrade);   
+    
+	FOREACH D StaticObject StaticObjects
+		IF StaticObjects.D.objectId == StaticObj.objectId
+        	StaticObjects.REMOVE "<&D&>" 
+		ENDIF
+    NEXTEACH  
+	    
+    StaticObjects.ADD StaticObj
+    DELETE StaticObj   
+RETURN VOID
+
+FUNCTION Action
+    PACKET.READ_BYTE NULL
+    PACKET.READ_INT32 TARGET_OBJID
+RETURN VOID
+
+FUNCTION NpcHtmlMessage 1 HTM
+     DEFINE BYTEBUFFER b_npchtmlmessage 9999
+     b_npchtmlmessage.WRITE_BYTE 25 // 0x19
+     b_npchtmlmessage.WRITE_INT32 #i1
+     b_npchtmlmessage.WRITE_STRING HTM
+     b_npchtmlmessage.WRITE_INT32 #i0
+     b_npchtmlmessage.TRIM_TO_INDEX
+     INJECTBB_CLIENT b_npchtmlmessage
+     DELETE b_npchtmlmessage
+RETURN VOID
+
+FUNCTION ItemStatusHtm
+	DEFINE STRING HTM
+	DEFINE INT COUNT1 0
+	DEFINE INT COUNT2 0
+	DEFINE INT COUNT3 0
+	DEFINE INT COUNT4 0
+	DEFINE INT COUNT5 0
+	
+	ITEM_COUNT COUNT1 728
+	ITEM_COUNT COUNT2 3952
+	ITEM_COUNT COUNT3 3031
+	ITEM_COUNT COUNT4 1785
+	ITEM_COUNT COUNT5 8874
+	
+	HTM = STATUS_HTM.REPLACE "#$%count1%" "#$<&count1&>"
+	HTM = HTM.REPLACE "#$%count2%" "#$<&count2&>"
+	HTM = HTM.REPLACE "#$%count3%" "#$<&count3&>"
+	HTM = HTM.REPLACE "#$%count4%" "#$<&count4&>"
+	HTM = HTM.REPLACE "#$%count5%" "#$<&count5&>"
+	
+	NpcHtmlMessage VOID 1 HTM
+RETURN VOID
+
+FUNCTION READ_FROM_FILE
+  DEFINE FILEREADER FR "AAFarm.htm"
+  DEFINE STRING HEADER "<html>"
+  DEFINE STRING FOOTER "</html>"
+  DEFINE STRING BUFFER
+  DEFINE STRING BODY
+  FR.READ BUFFER
+  
+  IF "BUFFER.CONTAINS HEADER" == TRUE
+    BODY = BUFFER
+    IF "BUFFER.CONTAINS FOOTER" != TRUE
+    
+    WHILE ONE == ONE
+      IF "BUFFER.CONTAINS FOOTER" == TRUE
+        BREAK 2
+      ELSE
+      	FR.READ BUFFER
+      	BODY = "#$<&BODY&><&BUFFER&>"
+      ENDIF   
+    WEND                     
+  ELSE
+    PRINT_TEXT "Not valid htm"
+  ENDIF  
+  	ENDIF
+    
+  FR.CLOSE  
+RETURN BODY
+
+FUNCTION RequestMagicSkillUse
+	
+	DEFINE INT PacketID
+	DEFINE INT skillID
+	DEFINE INT CtrlPressed 
+	DEFINE INT ShiftPressed
+	 
+	PACKET.READ_BYTE PacketID
+	PACKET.READ_INT32 skillID
+	PACKET.READ_INT32 CtrlPressed
+	PACKET.READ_BYTE ShiftPressed
+	
+	DEFINE BYTEBUFFER RequestMagicSkillUseBB 256
+	RequestMagicSkillUseBB.WRITE_BYTE PacketID
+	RequestMagicSkillUseBB.WRITE_INT32 skillID
+	RequestMagicSkillUseBB.WRITE_INT32 CtrlPressed
+	RequestMagicSkillUseBB.WRITE_BYTE ShiftPressed
+	RequestMagicSkillUseBB.TRIM_TO_INDEX
+	
+	IF (skillID == 1218) || (skillID == 1409)
+	//PRINT_TEXT "<&TARGET_ALLY&>"
+
+	IF TARGET_NAME == CHAR_NAME
+		INJECTBB RequestMagicSkillUseBB
+        Event_Lock = ZERO
+		RETURN VOID   
+	ENDIF 
+		
+	IF (TARGET_TYPE == 2) && (TARGET_CLAN == "#$Company") 
+		INJECTBB RequestMagicSkillUseBB     	
+	ENDIF
+
+	ELSE
+		INJECTBB RequestMagicSkillUseBB
+	ENDIF
+	                                                                                                        
+RETURN VOID

@@ -1,0 +1,220 @@
+// DLIB::Packets::WriteUserInfo - v3.0 for Gracia 2.3
+// by d00d [06/06/09]
+//
+// Creates a UserInfo packet based on a sorted list
+// template of values.
+
+// Version 1.0 - Initial Release
+// Version 2.0 - Updated for Gracia Final (CT2.3)
+// Version 3.0 - Updated for Gracia +
+// Version 3.1 - Updated for Gracia +
+
+FUNCTION DLIB::Packets::WriteUserInfo 1 _oUserInfo
+
+  DEFINE BYTEBUFFER _bOutBuffer 1024
+  
+  IF _oUserInfo.CLASSNAME == "#$SORTEDLIST"
+
+    _bOutBuffer.WRITE_BYTE #I50 
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$X"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$Y"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$Z"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$IN_AIRSHIP"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$OBJECT_ID"
+    _bOutBuffer.WRITE_STRING "_oUserInfo.#$NAME"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$RACE"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$GENDER"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$ROOT_CLASS_ID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$LEVEL"
+    _bOutBuffer.WRITE_INT64 "_oUserInfo.#$XP"
+    _bOutBuffer.WRITE_DOUBLE ZERO
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$STR"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$DEX"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$CON"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$INT"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$WIT"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$MEN"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$MAX_HP"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$CURRENT_HP"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$MAX_MP"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$CURRENT_MP"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$SP"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$CURRENT_WEIGHT"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$MAX_WEIGHT"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$IS_WEAPON_EQUIPPED"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$UNDERWEAR_SLOT_OID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$R_EAR_SLOT_OID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$L_EAR_SLOT_OID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$NECKLACE_SLOT_OID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$R_RINGER_SLOT_OID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$L_FINGER_SLOT_OID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$HEAD_SLOT_OID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$R_HAND_SLOT_OID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$L_HAND_SLOT_OID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$GLOVES_SLOT_OID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$CHEST_SLOT_OID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$LEGS_SLOT_OID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$FEET_SLOT_OID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$BACK_SLOT_OID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$LRHAND_SLOT_OID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$HAIR_SLOT_OID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$HAIR2_SLOT_OID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$R_BRACELET_SLOT_OID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$L_BRACELET_SLOT_OID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$TALISMAN1_SLOT_OID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$TALISMAN2_SLOT_OID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$TALISMAN3_SLOT_OID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$TALISMAN4_SLOT_OID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$TALISMAN5_SLOT_OID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$TALISMAN6_SLOT_OID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$BELT_OID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$UNDERWEAR_SLOT_IID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$R_EAR_SLOT_IID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$L_EAR_SLOT_IID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$NECKLACE_SLOT_IID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$R_RINGER_SLOT_IID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$L_FINGER_SLOT_IID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$HEAD_SLOT_IID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$R_HAND_SLOT_IID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$L_HAND_SLOT_IID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$GLOVES_SLOT_IID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$CHEST_SLOT_IID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$LEGS_SLOT_IID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$FEET_SLOT_IID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$BACK_SLOT_IID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$LRHAND_SLOT_IID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$HAIR_SLOT_IID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$HAIR2_SLOT_IID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$R_BRACELET_SLOT_IID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$L_BRACELET_SLOT_IID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$TALISMAN1_SLOT_IID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$TALISMAN2_SLOT_IID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$TALISMAN3_SLOT_IID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$TALISMAN4_SLOT_IID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$TALISMAN5_SLOT_IID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$TALISMAN6_SLOT_IID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$BELT_IID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$UNDERWEAR_SLOT_AID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$R_EAR_SLOT_AID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$L_EAR_SLOT_AID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$NECKLACE_SLOT_AID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$R_RINGER_SLOT_AID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$L_FINGER_SLOT_AID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$HEAD_SLOT_AID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$R_HAND_SLOT_AID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$L_HAND_SLOT_AID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$GLOVES_SLOT_AID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$CHEST_SLOT_AID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$LEGS_SLOT_AID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$FEET_SLOT_AID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$BACK_SLOT_AID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$LRHAND_SLOT_AID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$HAIR_SLOT_AID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$HAIR2_SLOT_AID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$R_BRACELET_SLOT_AID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$L_BRACELET_SLOT_AID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$TALISMAN1_SLOT_AID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$TALISMAN2_SLOT_AID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$TALISMAN3_SLOT_AID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$TALISMAN4_SLOT_AID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$TALISMAN5_SLOT_AID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$TALISMAN6_SLOT_AID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$BELT_AID"    
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$MAX_TALISMAN_COUNT"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$CLOAK_STATUS"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$PATK"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$PATKSPD"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$PDEF"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$EVASION"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$ACCURACY"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$CRITICAL_RATE"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$MATK"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$MATKSPD"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$PATKSPD2"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$MDEF"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$PVP_FLAG"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$KARMA"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$RUNSPD"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$WALKSPD"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$SWIMRUNSPD"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$SWIMWALKSPD"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$FLRUNSPD"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$FLWALKSPD"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$FLYRUNSPD"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$FLYWALKSPD"
+    _bOutBuffer.WRITE_DOUBLE "_oUserInfo.#$MOVEMULTI"
+    _bOutBuffer.WRITE_DOUBLE "_oUserInfo.#$ATKSPDMULTI"
+    _bOutBuffer.WRITE_DOUBLE "_oUserInfo.#$COLLISON_RADIUS"
+    _bOutBuffer.WRITE_DOUBLE "_oUserInfo.#$COLLISON_HEIGHT"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$HAIRSTYLE"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$HAIRCOLOR"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$FACESTYLE"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$GM_STATUS"
+    _bOutBuffer.WRITE_STRING "_oUserInfo.#$TITLE"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$CLAN_ID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$CLAN_CREST_ID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$ALLY_ID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$ALLY_CREST_ID"
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$LEADER_RIGHTS"              // 597
+    _bOutBuffer.WRITE_BYTE "_oUserInfo.#$MOUNT_TYPE"                  // 601
+    _bOutBuffer.WRITE_BYTE "_oUserInfo.#$PRIVATE_STORE_TYPE"          // 602
+    _bOutBuffer.WRITE_BYTE "_oUserInfo.#$HAS_DWARVEN_CRAFT"           // 603
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$PK_KILLS"                   // 604
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$PVP_KILLS"                  // 608
+    _bOutBuffer.WRITE_INT16 "_oUserInfo.#$MAX_CUBICS"                 // 612
+    IF _oUserInfo.#$MAX_CUBICS > #I0
+     _bOutBuffer.WRITE_INT16 "_oUserInfo.#$CURRENT_CUBICS"
+    ENDIF
+    _bOutBuffer.WRITE_BYTE "_oUserInfo.#$LOOKING_FOR_PARTY"           // 614
+    _bOutBuffer.WRITE_UINT32 "_oUserInfo.#$ABNORMAL_VFX"              // 615
+    _bOutBuffer.WRITE_BYTE "_oUserInfo.#$SWIMMING"                    // 619
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$CLAN_RIGHTS"                // 620
+    _bOutBuffer.WRITE_INT16 "_oUserInfo.#$EVALUATIONS_REMAINING"      // 624
+    _bOutBuffer.WRITE_INT16 "_oUserInfo.#$EVALUATIONS_RECEIVED"       // 626
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$MOUNT_NPC_ID"               // 628
+    _bOutBuffer.WRITE_INT16 "_oUserInfo.#$MAX_INVENTORY"              // 632
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$CURRENT_CLASS_ID"           // 634
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$SPECIAL_VFX"                // 638
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$MAX_CP"                     // 642
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$CURRENT_CP"                 // 646
+    _bOutBuffer.WRITE_BYTE "_oUserInfo.#$IS_MOUNTED"                  // 650
+    _bOutBuffer.WRITE_BYTE "_oUserInfo.#$TEAM_CIRCLE"                 // 651
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$LARGE_CLAN_CREST_ID"        // 652
+    _bOutBuffer.WRITE_BYTE "_oUserInfo.#$IS_NOBLE"                    // 656
+    _bOutBuffer.WRITE_BYTE "_oUserInfo.#$IS_HERO"                     // 657
+    _bOutBuffer.WRITE_BYTE "_oUserInfo.#$IS_FISHING"                  // 658
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$FISHING_X"                  // 659
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$FISHING_Y"                  // 663
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$FISHING_Z"                  // 667
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$NAME_COLOR"                 // 671
+    _bOutBuffer.WRITE_BYTE "_oUserInfo.#$RUN_MODE"                    // 675
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$PLEDGE_CLASS"               // 676
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$PLEDGE_TYPE"                // 680
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$TITLE_COLOR"                // 684
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$CURSED_WEAPON"              // 688
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$TRANSFORMATION_ID"          // 692
+    _bOutBuffer.WRITE_INT16 "_oUserInfo.#$ATTACK_ELEMENT"             // 696
+    _bOutBuffer.WRITE_INT16 "_oUserInfo.#$ATTACK_ELEMENT_VALUE"       // 698
+    _bOutBuffer.WRITE_INT16 "_oUserInfo.#$FIRE_DEFENSE"               // 700
+    _bOutBuffer.WRITE_INT16 "_oUserInfo.#$WATER_DEFENSE"              // 702
+    _bOutBuffer.WRITE_INT16 "_oUserInfo.#$WIND_DEFENSE"               // 704
+    _bOutBuffer.WRITE_INT16 "_oUserInfo.#$EARTH_DEFENSE"              // 706
+    _bOutBuffer.WRITE_INT16 "_oUserInfo.#$HOLY_DEFENSE"               // 708
+    _bOutBuffer.WRITE_INT16 "_oUserInfo.#$UNHOLY_DEFENSE"             // 710
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$AGATHION_ID"                // 712
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$FAME"                       // 716
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$MINIMAP_ALLOWED"            // 720
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$VITALITY_POINTS"            // 724
+    _bOutBuffer.WRITE_UINT32 "_oUserInfo.#$EXTENDED_VFX"              // 726
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$TWAR_ID_00"                 // 730
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$IS_DISGUISED"               // 734
+    _bOutBuffer.WRITE_INT32 "_oUserInfo.#$TWAR_ID_00"                 // 738
+
+    _bOutBuffer.TRIM_TO_INDEX
+    _bOutBuffer.RESET_INDEX
+    
+  ELSE
+    PRINT_TEXT "_oUserInfo is not a Sorted List"    
+  ENDIF
+  
+RETURN _bOutBuffer

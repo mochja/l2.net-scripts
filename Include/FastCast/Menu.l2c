@@ -1,0 +1,787 @@
+
+CLASS FASTCAST_MENU NULL
+
+   /***************************\
+   \***************************/
+
+	VAR_START
+
+      PUBLIC INT FAKE_NPC_ID 0
+
+	VAR_END
+
+   /***************************\
+   \***************************/
+
+	PUBLIC CONSTRUCT 0
+
+      ENGINEX.EVENTS.ADD_CUSTOMPACKET VOID 2 SCRIPTEVENT_CHATTOBOT #$FASTCAST.MENU.CHAT_TO_BOT
+      ENGINEX.EVENTS.ADD_CLIENTPACKET VOID 2 #i35 #$FASTCAST.MENU.INTERCEPT_ACTION
+
+      BLOCK_CLIENT 35
+
+	RETURN VOID
+
+   /***************************\
+   \***************************/
+
+   PUBLIC SHOW 1 REQUESTDATA
+      DEFINE STRING HTML ""
+      DEFINE STRING QUOTE ""
+      ENGINEX.CONVERT.DEC2ASCII QUOTE 1 #i34
+
+      WHILE (TRUE == TRUE)
+         HTML = "#$"
+
+         SWITCH REQUESTDATA.#i0
+
+            /***************************\
+            \***************************/
+
+            // main menu
+            CASE "#$0"
+
+               DEFINE INT ACTION 0
+               IF (REQUESTDATA.COUNT >= #i2)
+                  ACTION = "#i<&REQUESTDATA.#i1&>"
+               ENDIF
+               DEFINE STRING VALUE ""
+               IF (REQUESTDATA.COUNT >= #i3)
+                  VALUE = "#$<&REQUESTDATA.#i2&>"
+               ENDIF
+
+               HTML = "#$<&HTML&><html>"
+               HTML = "#$<&HTML&><title>FastCast</title>"
+               HTML = "#$<&HTML&><body>"
+
+               IF (ACTION == #i1)
+                  FASTCAST.LOAD_SHORTCUTS VOID 0
+               ENDIF
+               IF (ACTION == #i2) && (VALUE != "#$")
+                  DEFINE INT ERROR 0
+                  FASTCAST.CREATE_CASTLIST ERROR 1 VALUE
+               ENDIF
+
+               HTML = "#$<&HTML&><center>"
+               HTML = "#$<&HTML&><table>"
+               HTML = "#$<&HTML&><tr>"
+               HTML = "#$<&HTML&><td width=110><font color=ffcc00>Castlists</font></td>"
+               HTML = "#$<&HTML&><td width=110><button"
+               HTML = "#$<&HTML&> value=<&QUOTE&>Load shortcuts<&QUOTE&> width=105 height=20"
+               HTML = "#$<&HTML&> action=<&QUOTE&>bypass -h FastCast 0 1<&QUOTE&>"
+               HTML = "#$<&HTML&> back=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&> fore=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&>"
+               HTML = "#$<&HTML&>></td>"
+               HTML = "#$<&HTML&><td width=50></td>"
+               HTML = "#$<&HTML&></tr>"
+               HTML = "#$<&HTML&></table>"
+               HTML = "#$<&HTML&></center><br>"
+
+               IF (ACTION == #i1)
+                  HTML = "#$<&HTML&><font color=00ff00>Loaded (<font color=ffffff><&FASTCAST.SHORTCUTS.COUNT&></font>) skills from shortcuts</font><br>"
+               ENDIF
+
+               IF (ACTION == #i3)
+                  DEFINE INT CASTLIST_ID "<&VALUE&>"
+                  IF (FASTCAST.CASTLISTS.COUNT > ZERO)
+                     IF (FASTCAST.CASTLISTS.COUNT > CASTLIST_ID)
+                        HTML = "#$<&HTML&><font color=00ff00>Castlist (<font color=ffffff><&FASTCAST.CASTLISTS.CASTLIST_ID.NAME&></font>) has been deleted</color><br>"
+                        FASTCAST.CASTLISTS.REMOVE "<&FASTCAST.CASTLISTS.GET_KEY CASTLIST_ID&>"
+                     ENDIF
+                  ENDIF
+                  DELETE CASTLIST_ID
+               ENDIF
+
+               IF (FASTCAST.CASTLISTS.COUNT > ZERO)
+                  HTML = "#$<&HTML&><center>"
+                  HTML = "#$<&HTML&><table>"
+                  HTML = "#$<&HTML&><tr>"
+                  IF (FASTCAST.CASTLISTS.COUNT > ZERO)
+                     DEFINE INT I 0
+                     FOREACH I1 CASTLIST FASTCAST.CASTLISTS
+                        IF (I == #i2)
+                           I = #i0
+                           HTML = "#$<&HTML&></tr>"
+                           HTML = "#$<&HTML&><tr>"
+                        ENDIF
+                        HTML = "#$<&HTML&><td>"
+                        HTML = "#$<&HTML&><button"
+                        HTML = "#$<&HTML&> value=<&QUOTE&><&FASTCAST.CASTLISTS.I1.NAME&> (<&FASTCAST.CASTLISTS.I1.SKILLLIST.COUNT&>)<&QUOTE&> width=128 height=20"
+                        HTML = "#$<&HTML&> action=<&QUOTE&>bypass -h FastCast 2 <&I1&><&QUOTE&>"
+                        HTML = "#$<&HTML&> back=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&> fore=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&>"
+                        HTML = "#$<&HTML&>>"
+                        HTML = "#$<&HTML&></td>"
+                        I = I + #i1
+                     NEXTEACH
+                     DELETE I
+                  ENDIF
+                  HTML = "#$<&HTML&></tr>"
+                  HTML = "#$<&HTML&></table>"
+                  HTML = "#$<&HTML&></center><br>"
+               ENDIF
+
+               HTML = "#$<&HTML&><center>"
+               HTML = "#$<&HTML&><table>"
+               HTML = "#$<&HTML&><tr>"
+               HTML = "#$<&HTML&><td><edit var=<&QUOTE&>Name<&QUOTE&> width=128></td>"
+               HTML = "#$<&HTML&><td>"
+               HTML = "#$<&HTML&><button"
+               HTML = "#$<&HTML&> value=<&QUOTE&>Create Castlist<&QUOTE&> width=128 height=20"
+               HTML = "#$<&HTML&> action=<&QUOTE&>bypass -h FastCast 0 2 $Name<&QUOTE&>"
+               HTML = "#$<&HTML&> back=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&> fore=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&>"
+               HTML = "#$<&HTML&>>"
+               HTML = "#$<&HTML&></td>"
+               HTML = "#$<&HTML&></tr>"
+               HTML = "#$<&HTML&></table>"
+               HTML = "#$<&HTML&></center><br>"
+               IF (ACTION == #i2) && (VALUE != "#$")
+                  SWITCH ERROR
+                     CASE #i0
+                        HTML = "#$<&HTML&><font color=00ff00>Castlist (<font color=ffffff><&VALUE&></font>) created</font>"
+                        BREAK 1
+                     CASE #i1
+                        HTML = "#$<&HTML&><font color=ff0000>Castlist (<font color=ffffff><&VALUE&></font>) already exists</font>"
+                        BREAK 1
+                  ENDSWITCH
+                  DELETE ERROR
+               ENDIF
+
+               HTML = "#$<&HTML&></body>"
+               HTML = "#$<&HTML&></html>"
+
+               DELETE ACTION
+               DELETE VALUE
+               BREAK 2
+
+            /***************************\
+            \***************************/
+
+            // show castlist
+            CASE "#$2"
+
+               IF (FASTCAST.CASTLISTS.COUNT <= "#i<&REQUESTDATA.#i1&>")
+                  REQUESTDATA.CLEAR
+                  REQUESTDATA.ADD "#$0"
+                  BREAK 2
+               ENDIF
+               DEFINE INT CASTLIST_ID "<&REQUESTDATA.#i1&>"
+
+               // 1 = start castlist
+               // 2 = stopp casting
+               // 3 = reset castlist
+               DEFINE INT ACTION 0
+               IF (REQUESTDATA.COUNT >= #i3)
+                  ACTION = "#i<&REQUESTDATA.#i2&>"
+               ENDIF
+
+               HTML = "#$<&HTML&><html>"
+               HTML = "#$<&HTML&><title>FastCast</title>"
+               HTML = "#$<&HTML&><body>"
+
+               HTML = "#$<&HTML&><center>"
+               HTML = "#$<&HTML&><table>"
+               HTML = "#$<&HTML&><tr>"
+               HTML = "#$<&HTML&><td width=210><font color=ffcc00>Castlist :: <&FASTCAST.CASTLISTS.CASTLIST_ID.NAME&></font></td>"
+               HTML = "#$<&HTML&><td width=50><button"
+               HTML = "#$<&HTML&> value=<&QUOTE&>Back<&QUOTE&> width=45 height=20"
+               HTML = "#$<&HTML&> action=<&QUOTE&>bypass -h FastCast 0<&QUOTE&>"
+               HTML = "#$<&HTML&> back=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&> fore=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&>"
+               HTML = "#$<&HTML&>></td>"
+               HTML = "#$<&HTML&></tr>"
+               HTML = "#$<&HTML&></table>"
+               HTML = "#$<&HTML&></center>"
+
+               SWITCH ACTION
+                  CASE #i1
+                     DEFINE INT ERROR 0
+                     FASTCAST.START_CASTLIST ERROR 1 FASTCAST.CASTLISTS.CASTLIST_ID.NAME
+                     SWITCH ERROR
+                        CASE #i0
+                           HTML = "#$<&HTML&><br><font color=00ff00>Casting started</font><br>"
+                           BREAK 1
+                        CASE #i1
+                           HTML = "#$<&HTML&><br><font color=ff0000>Castlist doesnt exist</font><br>"
+                           BREAK 1
+                        CASE #i2
+                           HTML = "#$<&HTML&><br><font color=ff0000>Fastcast is already casting</font><br>"
+                           BREAK 1
+                     ENDSWITCH
+                     DELETE ERROR
+                     BREAK 1
+                  CASE #i2
+                     DEFINE INT ERROR 0
+                     FASTCAST.STOP_CASTING ERROR 1 TRUE
+                     SWITCH ERROR
+                        CASE #i0
+                           HTML = "#$<&HTML&><br><font color=00ff00>Casting stopped</font><br>"
+                           BREAK 1
+                        CASE #i1
+                           HTML = "#$<&HTML&><br><font color=ff0000>Fastcast is not casting</font><br>"
+                           BREAK 1
+                     ENDSWITCH
+                     DELETE ERROR
+                     BREAK 1
+                  CASE #i3
+                     DEFINE INT ERROR 0
+                     FASTCAST.RESET_POSITION ERROR 1 FASTCAST.CASTLISTS.CASTLIST_ID.NAME
+                     SWITCH ERROR
+                        CASE #i0
+                           HTML = "#$<&HTML&><br><font color=00ff00>Position reseted</font><br>"
+                           BREAK 1
+                        CASE #i1
+                           HTML = "#$<&HTML&><br><font color=ff0000>Castlist doesnt exist</font><br>"
+                           BREAK 1
+                     ENDSWITCH
+                     DELETE ERROR
+                     BREAK 1
+               ENDSWITCH
+
+               HTML = "#$<&HTML&><center>"
+               HTML = "#$<&HTML&><table>"
+               HTML = "#$<&HTML&><tr>"
+               HTML = "#$<&HTML&><td width=190></td>"
+               HTML = "#$<&HTML&><td width=70></td>"
+               HTML = "#$<&HTML&></tr>"
+               HTML = "#$<&HTML&><tr>"
+               HTML = "#$<&HTML&><td><button"
+               HTML = "#$<&HTML&> value=<&QUOTE&>Start Casting<&QUOTE&> width=150 height=20"
+               HTML = "#$<&HTML&> action=<&QUOTE&>bypass -h FastCast 2 <&CASTLIST_ID&> 1<&QUOTE&>"
+               HTML = "#$<&HTML&> back=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&> fore=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&>"
+               HTML = "#$<&HTML&>></td>"
+               HTML = "#$<&HTML&><td><button"
+               HTML = "#$<&HTML&> value=<&QUOTE&>Skills<&QUOTE&> width=65 height=20"
+               HTML = "#$<&HTML&> action=<&QUOTE&>bypass -h FastCast 3 <&CASTLIST_ID&><&QUOTE&>"
+               HTML = "#$<&HTML&> back=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&> fore=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&>"
+               HTML = "#$<&HTML&>></td>"
+               HTML = "#$<&HTML&></tr>"
+               HTML = "#$<&HTML&><tr>"
+               HTML = "#$<&HTML&><td><button"
+               HTML = "#$<&HTML&> value=<&QUOTE&>Stop Casting<&QUOTE&> width=150 height=20"
+               HTML = "#$<&HTML&> action=<&QUOTE&>bypass -h FastCast 2 <&CASTLIST_ID&> 2<&QUOTE&>"
+               HTML = "#$<&HTML&> back=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&> fore=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&>"
+               HTML = "#$<&HTML&>></td>"
+               HTML = "#$<&HTML&><td><button"
+               HTML = "#$<&HTML&> value=<&QUOTE&>Values<&QUOTE&> width=65 height=20"
+               HTML = "#$<&HTML&> action=<&QUOTE&>bypass -h FastCast 6 <&CASTLIST_ID&><&QUOTE&>"
+               HTML = "#$<&HTML&> back=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&> fore=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&>"
+               HTML = "#$<&HTML&>></td>"
+               HTML = "#$<&HTML&></tr>"
+               HTML = "#$<&HTML&><tr>"
+               HTML = "#$<&HTML&><td><button"
+               HTML = "#$<&HTML&> value=<&QUOTE&>Reset position<&QUOTE&> width=150 height=20"
+               HTML = "#$<&HTML&> action=<&QUOTE&>bypass -h FastCast 2 <&CASTLIST_ID&> 3<&QUOTE&>"
+               HTML = "#$<&HTML&> back=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&> fore=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&>"
+               HTML = "#$<&HTML&>></td>"
+               HTML = "#$<&HTML&><td><button"
+               HTML = "#$<&HTML&> value=<&QUOTE&>Delete<&QUOTE&> width=65 height=20"
+               HTML = "#$<&HTML&> action=<&QUOTE&>bypass -h FastCast 0 3 <&CASTLIST_ID&><&QUOTE&>"
+               HTML = "#$<&HTML&> back=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&> fore=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&>"
+               HTML = "#$<&HTML&>></td>"
+               HTML = "#$<&HTML&></tr>"
+               HTML = "#$<&HTML&></table>"
+               HTML = "#$<&HTML&></center>"
+
+               HTML = "#$<&HTML&></body>"
+               HTML = "#$<&HTML&></html>"
+
+               DELETE CASTLIST_ID
+               BREAK 2
+
+            /***************************\
+            \***************************/
+
+            // castlist skills
+            CASE "#$3"
+
+               IF (FASTCAST.CASTLISTS.COUNT <= "#i<&REQUESTDATA.#i1&>")
+                  REQUESTDATA.CLEAR
+                  REQUESTDATA.ADD "#$0"
+                  BREAK 2
+               ENDIF
+               DEFINE INT CASTLIST_ID "<&REQUESTDATA.#i1&>"
+
+               // 1 = delete skill
+               // 2 = move skill up
+               // 3 = move skill down
+               DEFINE INT ACTION 0
+               IF (REQUESTDATA.COUNT >= #i3)
+                  ACTION = "#i<&REQUESTDATA.#i2&>"
+               ENDIF
+
+               DEFINE INT VALUE 0
+               IF (REQUESTDATA.COUNT >= #i4)
+                  VALUE = "#i<&REQUESTDATA.#i3&>"
+               ENDIF
+
+               HTML = "#$<&HTML&><html>"
+               HTML = "#$<&HTML&><title>FastCast</title>"
+               HTML = "#$<&HTML&><body>"
+
+               HTML = "#$<&HTML&><center>"
+               HTML = "#$<&HTML&><table>"
+               HTML = "#$<&HTML&><tr>"
+               HTML = "#$<&HTML&><td width=210><font color=ffcc00>Castlist :: <&FASTCAST.CASTLISTS.CASTLIST_ID.NAME&> :: Skills</font></td>"
+               HTML = "#$<&HTML&><td width=50><button"
+               HTML = "#$<&HTML&> value=<&QUOTE&>Back<&QUOTE&> width=45 height=20"
+               HTML = "#$<&HTML&> action=<&QUOTE&>bypass -h FastCast 2 <&CASTLIST_ID&><&QUOTE&>"
+               HTML = "#$<&HTML&> back=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&> fore=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&>"
+               HTML = "#$<&HTML&>></td>"
+               HTML = "#$<&HTML&></tr>"
+               HTML = "#$<&HTML&></table>"
+               HTML = "#$<&HTML&></center>"
+
+               IF (ACTION != ZERO)
+                  IF (VALUE < FASTCAST.CASTLISTS.CASTLIST_ID.SKILLLIST.COUNT)
+                     IF (FASTCAST.CASTLISTS.CASTLIST_ID.SKILLLIST.COUNT > ZERO)
+                        SWITCH ACTION
+                           CASE #i1
+                              FASTCAST.CASTLISTS.CASTLIST_ID.SKILLLIST.REMOVE "<&VALUE&>"
+                              BREAK 1
+                           CASE #i2
+                              DEFINE INT NEW_I 0
+                              NEW_I = VALUE - #i1
+                              IF (NEW_I < ZERO)
+                                 NEW_I = FASTCAST.CASTLISTS.CASTLIST_ID.SKILLLIST.COUNT - #i1
+                              ENDIF
+                              DEFINE INT FROM_SKILL "<&FASTCAST.CASTLISTS.CASTLIST_ID.SKILLLIST.VALUE&>"
+                              DEFINE INT TO_SKILL "<&FASTCAST.CASTLISTS.CASTLIST_ID.SKILLLIST.NEW_I&>"
+                              FASTCAST.CASTLISTS.CASTLIST_ID.SKILLLIST.VALUE = "#i<&TO_SKILL&>"
+                              FASTCAST.CASTLISTS.CASTLIST_ID.SKILLLIST.NEW_I = "#i<&FROM_SKILL&>"
+                              DELETE NEW_I
+                              DELETE FROM_SKILL
+                              DELETE TO_SKILL
+                              BREAK 1
+                           CASE #i3
+                              DEFINE INT NEW_I 0
+                              NEW_I = VALUE + #i1
+                              IF (NEW_I >= FASTCAST.CASTLISTS.CASTLIST_ID.SKILLLIST.COUNT)
+                                 NEW_I = #i0
+                              ENDIF
+                              DEFINE INT FROM_SKILL "<&FASTCAST.CASTLISTS.CASTLIST_ID.SKILLLIST.VALUE&>"
+                              DEFINE INT TO_SKILL "<&FASTCAST.CASTLISTS.CASTLIST_ID.SKILLLIST.NEW_I&>"
+                              FASTCAST.CASTLISTS.CASTLIST_ID.SKILLLIST.VALUE = "#i<&TO_SKILL&>"
+                              FASTCAST.CASTLISTS.CASTLIST_ID.SKILLLIST.NEW_I = "#i<&FROM_SKILL&>"
+                              DELETE NEW_I
+                              DELETE FROM_SKILL
+                              DELETE TO_SKILL
+                              BREAK 1
+                        ENDSWITCH
+                     ENDIF
+                  ENDIF
+               ENDIF
+
+               HTML = "#$<&HTML&><center>"
+               HTML = "#$<&HTML&><table>"
+               HTML = "#$<&HTML&><tr>"
+               HTML = "#$<&HTML&><td width=35><button"
+               HTML = "#$<&HTML&> value=<&QUOTE&>Add<&QUOTE&> width=32 height=20"
+               HTML = "#$<&HTML&> action=<&QUOTE&>bypass -h FastCast 9 <&CASTLIST_ID&> 0<&QUOTE&>"
+               HTML = "#$<&HTML&> back=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&> fore=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&>"
+               HTML = "#$<&HTML&>></td>"
+               HTML = "#$<&HTML&><td width=125></td>"
+               HTML = "#$<&HTML&><td width=25></td>"
+               HTML = "#$<&HTML&><td width=25></td>"
+               HTML = "#$<&HTML&><td width=50></td>"
+               HTML = "#$<&HTML&></tr>"
+               DEFINE STRING SKILL_NAME ""
+               DEFINE INT SKILL_ID 0
+               FOREACH I1 INT FASTCAST.CASTLISTS.CASTLIST_ID.SKILLLIST
+                  SKILL_ID = "#i<&FASTCAST.CASTLISTS.CASTLIST_ID.SKILLLIST.I1&>"
+                  SKILL_GET_NAME SKILL_NAME "<&SKILL_ID&>" 1
+                  HTML = "#$<&HTML&><tr>"
+                  HTML = "#$<&HTML&><td><img src=<&QUOTE&>Icon.Skill<&SKILL_ID&><&QUOTE&> width=32 height=32></td>"
+                  HTML = "#$<&HTML&><td><&SKILL_NAME&></td>"
+                  HTML = "#$<&HTML&><td><button"
+                  HTML = "#$<&HTML&> value=<&QUOTE&>^<&QUOTE&> width=20 height=20"
+                  HTML = "#$<&HTML&> action=<&QUOTE&>bypass -h FastCast 3 <&CASTLIST_ID&> 2 <&I1&><&QUOTE&>"
+                  HTML = "#$<&HTML&> back=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&> fore=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&>"
+                  HTML = "#$<&HTML&>></td>"
+                  HTML = "#$<&HTML&><td><button"
+                  HTML = "#$<&HTML&> value=<&QUOTE&>v<&QUOTE&> width=20 height=20"
+                  HTML = "#$<&HTML&> action=<&QUOTE&>bypass -h FastCast 3 <&CASTLIST_ID&> 3 <&I1&><&QUOTE&>"
+                  HTML = "#$<&HTML&> back=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&> fore=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&>"
+                  HTML = "#$<&HTML&>></td>"
+                  HTML = "#$<&HTML&><td><button"
+                  HTML = "#$<&HTML&> value=<&QUOTE&>Delete<&QUOTE&> width=45 height=20"
+                  HTML = "#$<&HTML&> action=<&QUOTE&>bypass -h FastCast 3 <&CASTLIST_ID&> 1 <&I1&><&QUOTE&>"
+                  HTML = "#$<&HTML&> back=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&> fore=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&>"
+                  HTML = "#$<&HTML&>></td>"
+                  HTML = "#$<&HTML&></tr>"
+               NEXTEACH
+               DELETE SKILL_NAME
+               DELETE SKILL_ID
+               HTML = "#$<&HTML&></table>"
+               HTML = "#$<&HTML&></center>"
+
+               HTML = "#$<&HTML&></body>"
+               HTML = "#$<&HTML&></html>"
+
+               DELETE CASTLIST_ID
+               BREAK 2
+
+            /***************************\
+            \***************************/
+
+            // castlist skills add
+            CASE "#$9"
+
+               IF (FASTCAST.CASTLISTS.COUNT <= "#i<&REQUESTDATA.#i1&>")
+                  REQUESTDATA.CLEAR
+                  REQUESTDATA.ADD "#$0"
+                  BREAK 2
+               ENDIF
+               DEFINE INT CASTLIST_ID "<&REQUESTDATA.#i1&>"
+               DEFINE INT SHORTCUT_ROW 0
+               IF (REQUESTDATA.COUNT >= #i3)
+                  SHORTCUT_ROW = "#i<&REQUESTDATA.#i2&>"
+               ENDIF
+               DEFINE INT ADD_SKILL_ID 0
+               IF (REQUESTDATA.COUNT >= #i4)
+                  ADD_SKILL_ID = "#i<&REQUESTDATA.#i3&>"
+               ENDIF
+
+               HTML = "#$<&HTML&><html>"
+               HTML = "#$<&HTML&><title>FastCast</title>"
+               HTML = "#$<&HTML&><body>"
+
+               HTML = "#$<&HTML&><center>"
+               HTML = "#$<&HTML&><table>"
+               HTML = "#$<&HTML&><tr>"
+               HTML = "#$<&HTML&><td width=210><font color=ffcc00>Castlist :: <&FASTCAST.CASTLISTS.CASTLIST_ID.NAME&> :: Skills :: Add</font></td>"
+               HTML = "#$<&HTML&><td width=50><button"
+               HTML = "#$<&HTML&> value=<&QUOTE&>Back<&QUOTE&> width=45 height=20"
+               HTML = "#$<&HTML&> action=<&QUOTE&>bypass -h FastCast 3 <&CASTLIST_ID&><&QUOTE&>"
+               HTML = "#$<&HTML&> back=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&> fore=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&>"
+               HTML = "#$<&HTML&>></td>"
+               HTML = "#$<&HTML&></tr>"
+               HTML = "#$<&HTML&></table>"
+               HTML = "#$<&HTML&></center>"
+
+               IF (FASTCAST.SHORTCUTS.COUNT > ZERO)
+                  HTML = "#$<&HTML&><center>"
+                  HTML = "#$<&HTML&><table>"
+                  HTML = "#$<&HTML&><tr>"
+                  HTML = "#$<&HTML&><td width=80>Shortcut row:</td>"
+                  HTML = "#$<&HTML&><td width=25><edit var=<&QUOTE&>ShortcutRow<&QUOTE&> width=20></td>"
+                  HTML = "#$<&HTML&><td width=50><button"
+                  HTML = "#$<&HTML&> value=<&QUOTE&>List<&QUOTE&> width=45 height=20"
+                  HTML = "#$<&HTML&> action=<&QUOTE&>bypass -h FastCast 9 <&CASTLIST_ID&> $ShortcutRow<&QUOTE&>"
+                  HTML = "#$<&HTML&> back=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&> fore=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&>"
+                  HTML = "#$<&HTML&>></td>"
+                  IF (SHORTCUT_ROW != ZERO)
+                     HTML = "#$<&HTML&><td width=100>Current row: <&SHORTCUT_ROW&></td>"
+                  ELSE
+                     HTML = "#$<&HTML&><td width=100></td>"
+                  ENDIF
+                  HTML = "#$<&HTML&></tr>"
+                  HTML = "#$<&HTML&></table>"
+                  HTML = "#$<&HTML&></center>"
+               ELSE
+                  HTML = "#$<&HTML&><br><font color=ff0000><table width=280>"
+                  HTML = "#$<&HTML&><tr><td>There are no loaded shortcut-skills...</td></tr>"
+                  HTML = "#$<&HTML&><tr><td>Or did you forgot to load them?</td></tr>"
+                  HTML = "#$<&HTML&></table></font>"
+               ENDIF
+
+               IF (ADD_SKILL_ID != ZERO)
+                  DEFINE STRING SKILL_NAME ""
+                  DEFINE INT ERROR 0
+                  FASTCAST.ADD_SKILL_BY_ID ERROR 2 FASTCAST.CASTLISTS.CASTLIST_ID.NAME ADD_SKILL_ID
+                  SKILL_GET_NAME SKILL_NAME "<&ADD_SKILL_ID&>" 1
+                  SWITCH ERROR
+                     CASE #i0
+                        HTML = "#$<&HTML&><br><font color=00ff00><table width=280>"
+                        HTML = "#$<&HTML&><tr><td>Added skill (<font color=ffffff><&SKILL_NAME&></font>)</td></tr>"
+                        HTML = "#$<&HTML&><tr><td>to castlist (<font color=ffffff><&FASTCAST.CASTLISTS.CASTLIST_ID.NAME&></font>)</td></tr>"
+                        HTML = "#$<&HTML&></table></font>"
+                        BREAK 1
+                     CASE #i1
+                        HTML = "#$<&HTML&><br><font color=ff0000><table width=280>"
+                        HTML = "#$<&HTML&><tr><td>Castlist (<font color=ffffff><&FASTCAST.CASTLISTS.CASTLIST_ID.NAME&></font>) doesnt exist</td></tr>"
+                        HTML = "#$<&HTML&></table></font>"
+                        BREAK 1
+                     CASE #i2
+                        HTML = "#$<&HTML&><br><font color=ff0000><table width=280>"
+                        HTML = "#$<&HTML&><tr><td>Skill id (<font color=ffffff><&ADD_SKILL_ID&></font>) doesnt exist</td></tr>"
+                        HTML = "#$<&HTML&></table></font>"
+                        BREAK 1
+                  ENDSWITCH
+                  DELETE ERROR
+                  DELETE SKILL_NAME
+               ENDIF
+
+               IF (FASTCAST.SHORTCUTS.COUNT > ZERO)
+                  HTML = "#$<&HTML&><center>"
+                  HTML = "#$<&HTML&><table>"
+                  HTML = "#$<&HTML&><tr>"
+                  HTML = "#$<&HTML&><td width=35></td>"
+                  HTML = "#$<&HTML&><td width=175></td>"
+                  HTML = "#$<&HTML&><td width=50></td>"
+                  HTML = "#$<&HTML&></tr>"
+                  DEFINE INT SLOT_ID 0
+                  DEFINE STRING SLOT_KEY ""
+                  DEFINE STRING SKILL_NAME ""
+                  FOR I 1 13 1
+                     ENGINEX.UTILS.GET_SLOT_ID SLOT_ID 2 SHORTCUT_ROW I
+                     SLOT_KEY = "#$<&SLOT_ID&>"
+                     IF ("FASTCAST.SHORTCUTS.CONTAINS_KEY <&SLOT_KEY&>" == TRUE)
+                        ADD_SKILL_ID = "#i<&FASTCAST.SHORTCUTS.SLOT_KEY&>"
+                        SKILL_GET_NAME SKILL_NAME "<&ADD_SKILL_ID&>" 1
+                        HTML = "#$<&HTML&><tr>"
+                        HTML = "#$<&HTML&><td><img src=<&QUOTE&>Icon.Skill<&ADD_SKILL_ID&><&QUOTE&> width=32 height=32></td>"
+                        HTML = "#$<&HTML&><td><&SKILL_NAME&></td>"
+                        HTML = "#$<&HTML&><td><button"
+                        HTML = "#$<&HTML&> value=<&QUOTE&>Add<&QUOTE&> width=45 height=20"
+                        HTML = "#$<&HTML&> action=<&QUOTE&>bypass -h FastCast 9 <&CASTLIST_ID&> <&SHORTCUT_ROW&> <&ADD_SKILL_ID&><&QUOTE&>"
+                        HTML = "#$<&HTML&> back=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&> fore=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&>"
+                        HTML = "#$<&HTML&>></td>"
+                        HTML = "#$<&HTML&></tr>"
+                     ENDIF
+                  NEXT
+                  DELETE SLOT_ID
+                  DELETE SLOT_KEY
+                  DELETE SKILL_NAME
+                  HTML = "#$<&HTML&></table>"
+                  HTML = "#$<&HTML&></center>"
+               ENDIF
+
+               HTML = "#$<&HTML&></body>"
+               HTML = "#$<&HTML&></html>"
+
+               DELETE CASTLIST_ID
+               DELETE SHORTCUT_ROW
+               DELETE ADD_SKILL_ID
+               BREAK 2
+
+            /***************************\
+            \***************************/
+
+            // castlist values
+            CASE "#$6"
+
+               IF (FASTCAST.CASTLISTS.COUNT <= "#i<&REQUESTDATA.#i1&>")
+                  REQUESTDATA.CLEAR
+                  REQUESTDATA.ADD "#$0"
+                  BREAK 2
+               ENDIF
+               DEFINE INT CASTLIST_ID "<&REQUESTDATA.#i1&>"
+               DEFINE INT CFG 0
+               IF (REQUESTDATA.COUNT >= #i3)
+                  CFG = "#i<&REQUESTDATA.#i2&>"
+               ENDIF
+               DEFINE INT VALUE 0
+               IF (REQUESTDATA.COUNT >= #i4)
+                  VALUE = "#i<&REQUESTDATA.#i3&>"
+               ENDIF
+
+               HTML = "#$<&HTML&><html>"
+               HTML = "#$<&HTML&><title>FastCast</title>"
+               HTML = "#$<&HTML&><body>"
+
+               HTML = "#$<&HTML&><center>"
+               HTML = "#$<&HTML&><table>"
+               HTML = "#$<&HTML&><tr>"
+               HTML = "#$<&HTML&><td width=210><font color=ffcc00>Castlist :: <&FASTCAST.CASTLISTS.CASTLIST_ID.NAME&> :: Values</font></td>"
+               HTML = "#$<&HTML&><td width=50><button"
+               HTML = "#$<&HTML&> value=<&QUOTE&>Back<&QUOTE&> width=45 height=20"
+               HTML = "#$<&HTML&> action=<&QUOTE&>bypass -h FastCast 2 <&CASTLIST_ID&><&QUOTE&>"
+               HTML = "#$<&HTML&> back=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&> fore=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&>"
+               HTML = "#$<&HTML&>></td>"
+               HTML = "#$<&HTML&></tr>"
+               HTML = "#$<&HTML&></table>"
+               HTML = "#$<&HTML&></center>"
+
+               SWITCH CFG
+                  CASE #i1
+                     FASTCAST.CASTLISTS.CASTLIST_ID.TIMEOUT = "#i<&VALUE&>"
+                     BREAK 1
+                  CASE #i2
+                     FASTCAST.CASTLISTS.CASTLIST_ID.REPEATS = "#i<&VALUE&>"
+                     BREAK 1
+                  CASE #i3
+                     FASTCAST.CASTLISTS.CASTLIST_ID.ON_MAXREPEATS = "#i<&VALUE&>"
+                     BREAK 1
+                  CASE #i4
+                     FASTCAST.CASTLISTS.CASTLIST_ID.ON_NOTARGET = "#i<&VALUE&>"
+                     BREAK 1
+                  CASE #i5
+                     FASTCAST.CASTLISTS.CASTLIST_ID.ON_WRONGTARGET = "#i<&VALUE&>"
+                     BREAK 1
+                  CASE #i6
+                     FASTCAST.CASTLISTS.CASTLIST_ID.ON_CANCEL = "#i<&VALUE&>"
+                     BREAK 1
+                  CASE #i7
+                     FASTCAST.CASTLISTS.CASTLIST_ID.ON_PEACEZONE = "#i<&VALUE&>"
+                     BREAK 1
+                  CASE #i8
+                     FASTCAST.CASTLISTS.CASTLIST_ID.ON_FAIL = "#i<&VALUE&>"
+                     BREAK 1
+                  CASE #i9
+                     FASTCAST.CASTLISTS.CASTLIST_ID.ON_COOLDOWN = "#i<&VALUE&>"
+                     BREAK 1
+               ENDSWITCH
+
+               HTML = "#$<&HTML&><br><center>"
+               HTML = "#$<&HTML&><table>"
+               HTML = "#$<&HTML&><tr>"
+               HTML = "#$<&HTML&><td width=110></td>"
+               HTML = "#$<&HTML&><td width=50><font color=aaaaaa>Cur</font></td>"
+               HTML = "#$<&HTML&><td width=50><font color=aaaaaa>New</font></td>"
+               HTML = "#$<&HTML&><td width=50></td>"
+               HTML = "#$<&HTML&></tr>"
+               HTML = "#$<&HTML&><tr>"
+               HTML = "#$<&HTML&><td>Try timeout</td>"
+               HTML = "#$<&HTML&><td><&FASTCAST.CASTLISTS.CASTLIST_ID.TIMEOUT&></td>"
+               HTML = "#$<&HTML&><td><edit var=<&QUOTE&>1<&QUOTE&> width=45></td>"
+               HTML = "#$<&HTML&><td><button"
+               HTML = "#$<&HTML&> value=<&QUOTE&>Save<&QUOTE&> width=45 height=20"
+               HTML = "#$<&HTML&> action=<&QUOTE&>bypass -h FastCast 6 <&CASTLIST_ID&> 1 $1<&QUOTE&>"
+               HTML = "#$<&HTML&> back=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&> fore=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&>"
+               HTML = "#$<&HTML&>></td>"
+               HTML = "#$<&HTML&></tr>"
+               HTML = "#$<&HTML&><tr>"
+               HTML = "#$<&HTML&><td>Try repeats</td>"
+               HTML = "#$<&HTML&><td><&FASTCAST.CASTLISTS.CASTLIST_ID.REPEATS&></td>"
+               HTML = "#$<&HTML&><td><edit var=<&QUOTE&>2<&QUOTE&> width=45></td>"
+               HTML = "#$<&HTML&><td><button"
+               HTML = "#$<&HTML&> value=<&QUOTE&>Save<&QUOTE&> width=45 height=20"
+               HTML = "#$<&HTML&> action=<&QUOTE&>bypass -h FastCast 6 <&CASTLIST_ID&> 2 $2<&QUOTE&>"
+               HTML = "#$<&HTML&> back=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&> fore=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&>"
+               HTML = "#$<&HTML&>></td>"
+               HTML = "#$<&HTML&></tr>"
+               HTML = "#$<&HTML&><tr>"
+               HTML = "#$<&HTML&><td>On max-repeats</td>"
+               HTML = "#$<&HTML&><td><&FASTCAST.CASTLISTS.CASTLIST_ID.ON_MAXREPEATS&></td>"
+               HTML = "#$<&HTML&><td><edit var=<&QUOTE&>3<&QUOTE&> width=15></td>"
+               HTML = "#$<&HTML&><td><button"
+               HTML = "#$<&HTML&> value=<&QUOTE&>Save<&QUOTE&> width=45 height=20"
+               HTML = "#$<&HTML&> action=<&QUOTE&>bypass -h FastCast 6 <&CASTLIST_ID&> 3 $3<&QUOTE&>"
+               HTML = "#$<&HTML&> back=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&> fore=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&>"
+               HTML = "#$<&HTML&>></td>"
+               HTML = "#$<&HTML&></tr>"
+               HTML = "#$<&HTML&><tr>"
+               HTML = "#$<&HTML&><td>On no-target</td>"
+               HTML = "#$<&HTML&><td><&FASTCAST.CASTLISTS.CASTLIST_ID.ON_NOTARGET&></td>"
+               HTML = "#$<&HTML&><td><edit var=<&QUOTE&>4<&QUOTE&> width=15></td>"
+               HTML = "#$<&HTML&><td><button"
+               HTML = "#$<&HTML&> value=<&QUOTE&>Save<&QUOTE&> width=45 height=20"
+               HTML = "#$<&HTML&> action=<&QUOTE&>bypass -h FastCast 6 <&CASTLIST_ID&> 4 $4<&QUOTE&>"
+               HTML = "#$<&HTML&> back=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&> fore=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&>"
+               HTML = "#$<&HTML&>></td>"
+               HTML = "#$<&HTML&></tr>"
+               HTML = "#$<&HTML&><tr>"
+               HTML = "#$<&HTML&><td>On wrong-target</td>"
+               HTML = "#$<&HTML&><td><&FASTCAST.CASTLISTS.CASTLIST_ID.ON_WRONGTARGET&></td>"
+               HTML = "#$<&HTML&><td><edit var=<&QUOTE&>5<&QUOTE&> width=15></td>"
+               HTML = "#$<&HTML&><td><button"
+               HTML = "#$<&HTML&> value=<&QUOTE&>Save<&QUOTE&> width=45 height=20"
+               HTML = "#$<&HTML&> action=<&QUOTE&>bypass -h FastCast 6 <&CASTLIST_ID&> 5 $5<&QUOTE&>"
+               HTML = "#$<&HTML&> back=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&> fore=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&>"
+               HTML = "#$<&HTML&>></td>"
+               HTML = "#$<&HTML&></tr>"
+               HTML = "#$<&HTML&><tr>"
+               HTML = "#$<&HTML&><td>On cancel</td>"
+               HTML = "#$<&HTML&><td><&FASTCAST.CASTLISTS.CASTLIST_ID.ON_CANCEL&></td>"
+               HTML = "#$<&HTML&><td><edit var=<&QUOTE&>6<&QUOTE&> width=15></td>"
+               HTML = "#$<&HTML&><td><button"
+               HTML = "#$<&HTML&> value=<&QUOTE&>Save<&QUOTE&> width=45 height=20"
+               HTML = "#$<&HTML&> action=<&QUOTE&>bypass -h FastCast 6 <&CASTLIST_ID&> 6 $6<&QUOTE&>"
+               HTML = "#$<&HTML&> back=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&> fore=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&>"
+               HTML = "#$<&HTML&>></td>"
+               HTML = "#$<&HTML&></tr>"
+               HTML = "#$<&HTML&><tr>"
+               HTML = "#$<&HTML&><td>On peacezone</td>"
+               HTML = "#$<&HTML&><td><&FASTCAST.CASTLISTS.CASTLIST_ID.ON_PEACEZONE&></td>"
+               HTML = "#$<&HTML&><td><edit var=<&QUOTE&>7<&QUOTE&> width=15></td>"
+               HTML = "#$<&HTML&><td><button"
+               HTML = "#$<&HTML&> value=<&QUOTE&>Save<&QUOTE&> width=45 height=20"
+               HTML = "#$<&HTML&> action=<&QUOTE&>bypass -h FastCast 6 <&CASTLIST_ID&> 7 $7<&QUOTE&>"
+               HTML = "#$<&HTML&> back=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&> fore=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&>"
+               HTML = "#$<&HTML&>></td>"
+               HTML = "#$<&HTML&></tr>"
+               HTML = "#$<&HTML&><tr>"
+               HTML = "#$<&HTML&><td>On failed</td>"
+               HTML = "#$<&HTML&><td><&FASTCAST.CASTLISTS.CASTLIST_ID.ON_FAIL&></td>"
+               HTML = "#$<&HTML&><td><edit var=<&QUOTE&>8<&QUOTE&> width=15></td>"
+               HTML = "#$<&HTML&><td><button"
+               HTML = "#$<&HTML&> value=<&QUOTE&>Save<&QUOTE&> width=45 height=20"
+               HTML = "#$<&HTML&> action=<&QUOTE&>bypass -h FastCast 6 <&CASTLIST_ID&> 8 $8<&QUOTE&>"
+               HTML = "#$<&HTML&> back=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&> fore=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&>"
+               HTML = "#$<&HTML&>></td>"
+               HTML = "#$<&HTML&></tr>"
+               HTML = "#$<&HTML&><tr>"
+               HTML = "#$<&HTML&><td>On cooldown</td>"
+               HTML = "#$<&HTML&><td><&FASTCAST.CASTLISTS.CASTLIST_ID.ON_COOLDOWN&></td>"
+               HTML = "#$<&HTML&><td><edit var=<&QUOTE&>9<&QUOTE&> width=15></td>"
+               HTML = "#$<&HTML&><td><button"
+               HTML = "#$<&HTML&> value=<&QUOTE&>Save<&QUOTE&> width=45 height=20"
+               HTML = "#$<&HTML&> action=<&QUOTE&>bypass -h FastCast 6 <&CASTLIST_ID&> 9 $9<&QUOTE&>"
+               HTML = "#$<&HTML&> back=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&> fore=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&>"
+               HTML = "#$<&HTML&>></td>"
+               HTML = "#$<&HTML&></tr>"
+               HTML = "#$<&HTML&></table>"
+               HTML = "#$<&HTML&></center>"
+
+               HTML = "#$<&HTML&><br><font color=aaaaaa>Error actions:"
+               HTML = "#$<&HTML&><table width=260>"
+               HTML = "#$<&HTML&><tr><td><font color=ffffff>0</font> = nothing, continue current skill</td></tr>"
+               HTML = "#$<&HTML&><tr><td><font color=ffffff>1</font> = skip, on to next skill</td></tr>"
+               HTML = "#$<&HTML&><tr><td><font color=ffffff>2</font> = stop, abort casting</td></tr>"
+               HTML = "#$<&HTML&></table></font>"
+
+               HTML = "#$<&HTML&></body>"
+               HTML = "#$<&HTML&></html>"
+
+               DELETE CASTLIST_ID
+               BREAK 2
+
+            /***************************\
+            \***************************/
+
+            // default
+            DEFAULT
+               REQUESTDATA.CLEAR
+               REQUESTDATA.ADD "#$0"
+               BREAK 1
+
+            /***************************\
+            \***************************/
+
+         ENDSWITCH
+      WEND
+      DEFINE BYTEBUFFER BB 9999
+      BB.WRITE_BYTE #i25
+      BB.WRITE_INT32 FASTCAST.MENU.FAKE_NPC_ID
+      BB.WRITE_STRING HTML
+      INJECTBB_CLIENT BB
+   RETURN VOID
+
+   /***************************\
+   \***************************/
+
+   FUNCTION INTERCEPT_ACTION 1 PACKET_DATA
+      IF ("PACKET_DATA.#$ACTION.STARTSWITH #$FastCast" == TRUE)
+         DEFINE ARRAYLIST REQUESTDATA 0
+         ENGINEX.STRINGS.EXPLODE REQUESTDATA 2 "#$ " PACKET_DATA.#$ACTION
+         REQUESTDATA.REMOVE 0
+         FASTCAST.MENU.SHOW VOID 1 REQUESTDATA
+      ELSE
+         INJECTBB PACKET_DATA.#$__PACKET
+      ENDIF
+   RETURN VOID
+
+   /***************************\
+   \***************************/
+
+   FUNCTION CHAT_TO_BOT 1 PACKET_DATA
+PRINT_TEXT "<&PACKET_DATA.#$MESSAGE&>"
+      IF (PACKET_DATA.#$MESSAGE.TO_UPPER == #$FASTCAST)
+         DEFINE ARRAYLIST REQUESTDATA 0
+         REQUESTDATA.ADD "#$0"
+         FASTCAST.MENU.SHOW VOID 1 REQUESTDATA
+      ENDIF
+   RETURN VOID
+
+   /***************************\
+   \***************************/
+
+END_CLASS

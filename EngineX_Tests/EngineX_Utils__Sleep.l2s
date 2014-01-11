@@ -1,0 +1,16 @@
+
+	INCLUDE Include/EngineX.l2c
+	DEFINE_GLOBAL ENGINEX ENGINEX 0
+
+	PRINT_TEXT ""
+	PRINT_TEXT "-------------------------------------------------"
+
+	FOR I 0 10 1
+		PRINT_TEXT "Sleep random time between 0 and 4 seconds"
+		ENGINEX.UTILS.SLEEP VOID 2 #i0 #i4000
+	NEXT
+
+	PRINT_TEXT "-------------------------------------------------"
+	PRINT_TEXT ""
+
+END_SCRIPT

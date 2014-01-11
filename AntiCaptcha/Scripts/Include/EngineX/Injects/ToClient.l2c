@@ -1,0 +1,103 @@
+
+//-------------------------------------------------------------------------------------
+CLASS ENGINEX_INJECTS_TOCLIENT NULL
+//-------------------------------------------------------------------------------------
+
+   VAR_START
+   VAR_END
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT 0
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+	// token from trixy
+	// original created by darusOo
+	// thx to both
+	PUBLIC SCREENMESSAGE 6 MESSAGE POSITION SMALLFONT DURATION EFFECT FADING
+		DEFINE BYTEBUFFER PACKET 1024
+		PACKET.WRITE_BYTE #i254
+		PACKET.WRITE_INT16 #i57
+		PACKET.WRITE_INT32 #i1
+		PACKET.WRITE_INT32 #i0
+		PACKET.WRITE_INT32 POSITION
+		PACKET.WRITE_INT32 #i0
+		PACKET.WRITE_INT32 SMALLFONT
+		PACKET.WRITE_INT32 #i0
+		PACKET.WRITE_INT32 #i0
+		PACKET.WRITE_INT32 EFFECT
+		PACKET.WRITE_INT32 DURATION
+		PACKET.WRITE_INT32 FADING
+		PACKET.WRITE_STRING MESSAGE
+		INJECTBB_CLIENT PACKET
+	RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC AIMLOC 3 X Y Z
+      DEFINE BYTEBUFFER BB 1024
+      BB.WRITE_BYTE 241
+      BB.WRITE_INT32 0
+      BB.WRITE_INT32 1
+      BB.WRITE_INT32 X
+      BB.WRITE_INT32 Y
+      BB.WRITE_INT32 Z
+      INJECTBB_CLIENT BB
+      DELETE BB
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC UNAIMLOC 0
+      DEFINE BYTEBUFFER BB 1024
+      BB.WRITE_BYTE 241
+      BB.WRITE_INT32 0
+      BB.WRITE_INT32 1
+      BB.WRITE_INT32 CHAR_X
+      BB.WRITE_INT32 CHAR_Y
+      BB.WRITE_INT32 CHAR_Z
+      INJECTBB_CLIENT BB
+      DELETE BB
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC HTML2CLIENT_NPC 2 HTML NPC_ID
+      DEFINE BYTEBUFFER BB 19999
+      BB.WRITE_BYTE #i25
+      BB.WRITE_INT32 NPC_ID
+      BB.WRITE_STRING HTML
+      INJECTBB_CLIENT BB
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC HTML2CLIENT_TUTORIAL 1 HTML
+      DEFINE BYTEBUFFER BB 19999
+      BB.WRITE_BYTE #i166
+      BB.WRITE_STRING HTML
+      INJECTBB_CLIENT BB
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CHAT2CLIENT 4 OBJECT_ID CHANNEL OBJECT_NAME TEXT
+      DEFINE BYTEBUFFER BB 1024
+      BB.WRITE_BYTE #i74
+      BB.WRITE_INT32 OBJECT_ID
+      BB.WRITE_INT32 CHANNEL
+      BB.WRITE_STRING OBJECT_NAME
+      BB.WRITE_STRING TEXT
+      INJECTBB_CLIENT BB
+   RETURN VOID
+//-------------------------------------------------------------------------------------
+
+   PUBLIC SHOW_TUT_ICON 0
+      INJECT_CLIENT "A7 "
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+END_CLASS
+//-------------------------------------------------------------------------------------

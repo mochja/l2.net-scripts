@@ -1,0 +1,123 @@
+PRINT_TEXT "SCRIPT STARTED!]"
+PRINT_TEXT "== Raidboss checker specially for L2EasyFun"
+PRINT_TEXT "== Created by mochitto, ver 0.1 (14. 4. 2011)"
+
+DEFINE_GLOBAL INT COMM 0
+
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" NpcHtmlMessage 25
+
+WHILE ZERO == ZERO
+	COMM = 0
+	IF TARGET_NAME != #$Ermian
+		COMMAND "/target Ermian"
+	ELSE	
+		TALK_TARGET
+	ENDIF
+	SLEEP 5000 
+WEND    
+	
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT
+
+FUNCTION NpcHtmlMessage
+	DEFINE STRING HTML
+	PACKET.READ_BYTE  NULL
+	PACKET.READ_INT32 NULL
+	PACKET.READ_STRING HTML
+	SLEEP 800
+	
+	DEFINE STRING Link0 "bypass -h npc_<&TARGET_ID&>_Quest BossRespawn"
+	DEFINE STRING Link1 "bypass -h Quest BossRespawn grandbosses"
+	
+	SWITCH COMM
+		CASE #i0
+			IF "HTML.CONTAINS Link0" == TRUE
+				NPC_DIALOG "<&Link0&>"
+				PRINT_TEXT "Click: <&Link0&>"
+				COMM = #i1
+			ENDIF
+			BREAK 1
+		CASE #i1
+			IF "HTML.CONTAINS Link1" == TRUE
+				NPC_DIALOG "<&Link1&>"
+				PRINT_TEXT "Click: <&Link1&>"
+				COMM = #i2
+			ENDIF
+			BREAK 1
+		CASE #i2
+				PARSE_HTML VOID 1 HTML
+				COMM = #i-1123123
+	ENDSWITCH
+RETURN VOID
+
+FUNCTION PARSE_HTML 1 HTML
+	DEFINE ARRAYLIST TMP1 0
+	DEFINE ARRAYLIST TMP2 0
+	DEFINE ARRAYLIST FINAL 0
+	
+	HTML = HTML.REPLACE "#$<font color=\"00C3FF\">" "#$"
+	HTML = HTML.REPLACE "#$<font color=\"9CC300\">" "#$"
+	HTML = HTML.REPLACE "#$<font color=\"32C332\">" "#$"
+	HTML = HTML.REPLACE "#$</color>" "#$"
+	HTML = HTML.REPLACE "#$</tr>" "#$"
+	HTML = HTML.REPLACE "#$</td>" "#$"
+	HTML = HTML.REPLACE "#$:" "#$"
+	HTML = HTML.REPLACE "#$</table><img src=\"L2UI_CH3.herotower_deco\" width=256 height=32><br></center></body></html>" "#$"  
+	HTML = HTML.TO_LOWER
+	
+	EXPLODE TMP1 2 "#$<tr>" HTML
+	FOR A 1 "<&TMP1.COUNT&>" 1
+		EXPLODE TMP2 2 "#$<td>" TMP1.A
+		IF ( ( TMP2.COUNT >= 3 ) && ( TMP2.2 == "#$is alive" ) && ( TMP2.1 != "#$frintezza" ) )
+			FINAL.ADD TMP2.1	
+		ENDIF
+	NEXT
+	DEFINE STRING FINALS ""
+	FOR A 0 "<&FINAL.COUNT&>" 1 
+		FINALS = FINALS + FINAL.A + "#$ "		
+	NEXT
+	IF FINALS != "#$"
+		SAY_TEXT "<&CHANNEL_CLAN&>" "<&FINALS&>up.." 
+		SLEEP 300000
+	ENDIF
+RETURN VOID
+
+   FUNCTION EXPLODE 2 SEPARATOR GETSTRING
+      DEFINE ARRAYLIST STRINGS 0
+      DEFINE INT STRPOS 0
+      DEFINE STRING SUBSTR ""
+      IF SEPARATOR == "#$"
+			WHILE STRPOS < GETSTRING.LENGTH
+            SUBSTR = GETSTRING.SUBSTRING STRPOS #i1
+            STRINGS.ADD "#$<&SUBSTR&>"
+            STRPOS = STRPOS + #i1
+			WEND
+      ELSE
+			DEFINE INT LAST_LETTERS_COUNT 0
+			DEFINE STRING OLDSTR ""
+			WHILE STRPOS < GETSTRING.LENGTH
+            LAST_LETTERS_COUNT = GETSTRING.LENGTH - STRPOS
+            IF LAST_LETTERS_COUNT > SEPARATOR.LENGTH
+               SUBSTR = GETSTRING.SUBSTRING STRPOS "#i<&SEPARATOR.LENGTH&>"
+               IF SEPARATOR == SUBSTR
+                  STRINGS.ADD "#$<&OLDSTR&>"
+                  OLDSTR = "#$"
+                  STRPOS = STRPOS + "#i<&SEPARATOR.LENGTH&>"
+               ELSE
+                  SUBSTR = GETSTRING.SUBSTRING STRPOS #i1
+                  OLDSTR = "#$<&OLDSTR&><&SUBSTR&>"
+                  STRPOS = STRPOS + #i1
+               ENDIF
+            ELSE
+               SUBSTR = GETSTRING.SUBSTRING STRPOS "#i<&LAST_LETTERS_COUNT&>"
+               IF SEPARATOR == SUBSTR
+						STRINGS.ADD "#$<&OLDSTR&>"
+						STRINGS.ADD "#$"
+					ELSE
+						STRINGS.ADD "#$<&OLDSTR&><&SUBSTR&>"
+					ENDIF
+               STRPOS = GETSTRING.LENGTH
+            ENDIF
+			WEND
+      ENDIF
+   RETURN STRINGS

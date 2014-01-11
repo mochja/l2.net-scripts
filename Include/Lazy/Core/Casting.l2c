@@ -1,0 +1,462 @@
+
+INCLUDE "Include/Lazy/Core/Casting/CharacterSkill.l2c"
+INCLUDE "Include/Lazy/Core/Casting/Castlist.l2c"
+INCLUDE "Include/Lazy/Core/Casting/CastlistSkill.l2c"
+INCLUDE "Include/Lazy/Core/Casting/CastlistSkillByValue.l2c"
+INCLUDE "Include/Lazy/Core/Casting/CastlistSkillByPiece.l2c"
+
+CLASS LAZY_CASTING NULL
+
+//-------------------------------------------------------------------------------------
+
+   VAR_START
+
+      PUBLIC INT {MENU} 0
+      PUBLIC INT {RETURNING} 0
+
+      PUBLIC SORTEDLIST CHARACTER_SKILLS 0
+      PUBLIC INT CHARACTER_SKILLS_LOADING 0
+      PUBLIC INT CHARACTER_SKILLS_LOADED 0
+
+      PUBLIC SORTEDLIST CASTLISTS 0
+      PUBLIC INT IS_CASTING 0
+
+      PUBLIC STRING CASTING_CASTLIST ""
+      PUBLIC STRING CASTING_STATUS ""
+      PUBLIC INT CASTING_BREAK 0
+      PUBLIC INT CASTING_SKILL_I 0
+      PUBLIC INT CASTING_SKILL_ID 0
+      PUBLIC INT CASTING_REPEAT 0
+
+      PUBLIC INT USE_CTRL 0
+      PUBLIC INT USE_SHIFT 0
+      PUBLIC INT TRY_TIMEOUT 1000
+      PUBLIC INT TRY_REPEATS 1
+      PUBLIC INT SLEEP_MIN 250
+      PUBLIC INT SLEEP_MAX 500
+
+   VAR_END
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT2 0
+
+      // get pointers
+      LAZY.REGISTER THIS.{RETURNING} 1 #$RETURNING
+
+      // set event handlers
+      ENGINEX.EVENTS.ADD_SERVERPACKET VOID 2 #i95 #$LAZY.CLASSES.#$CASTING.SERVEREVENT_SKILLLISTPACKET
+      ENGINEX.EVENTS.ADD_CUSTOMPACKET VOID 2 SCRIPTEVENT_SKILLUSED #$LAZY.CLASSES.#$CASTING.CUSTOMEVENT_SKILLUSED
+      ENGINEX.EVENTS.ADD_CUSTOMPACKET VOID 2 SCRIPTEVENT_SKILLLAUNCHED #$LAZY.CLASSES.#$CASTING.CUSTOMEVENT_SKILLLAUNCHED
+      ENGINEX.EVENTS.ADD_SERVERPACKET VOID 2 #i31 #$LAZY.CLASSES.#$CASTING.SERVEREVENT_ACTIONFAILED
+      ENGINEX.EVENTS.ADD_SERVERPACKET VOID 2 #i98 #$LAZY.CLASSES.#$CASTING.SERVEREVENT_SYSTEMMESSAGE
+		ENGINEX.EVENTS.ADD_SERVERPACKET VOID 2 #i114 #$LAZY.CLASSES.#$CASTING.SERVEREVENT_MOVETOPAWN
+      ENGINEX.EVENTS.ADD_CUSTOMPACKET VOID 2 SCRIPTEVENT_SKILLCANCELED #$LAZY.CLASSES.#$CASTING.CUSTOMEVENT_SKILLCANCELED
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+// user calls
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+
+   ///
+   /// loads the character skills to the array of this class
+   /// will sleep the script
+   ///
+   PUBLIC LOAD_CHARACTER_SKILLS 0
+
+      THIS.CHARACTER_SKILLS_LOADING = TRUE
+      INJECT "50 "
+      INJECT "A6 "
+      DEFINE INT TIMEOUT 0
+      WHILE (THIS.CHARACTER_SKILLS_LOADING == TRUE)
+         IF (TIMEOUT >= #i3000)
+            RETURN FALSE
+         ENDIF
+         SLEEP 100
+         TIMEOUT = TIMEOUT + #i100
+      WEND
+      THIS.CHARACTER_SKILLS_LOADED = TRUE
+
+   RETURN TRUE
+
+//-------------------------------------------------------------------------------------
+
+   ///
+   /// creates a new castlist with a specified name
+   /// returns the pointer to the castlist
+   ///
+   PUBLIC CREATE_CASTLIST 1 CASTLIST_NAME
+
+      IF ("THIS.CASTLISTS.CONTAINS_KEY <&CASTLIST_NAME&>" == TRUE)
+         PRINT_TEXT "Lazy::Casting]: Castlist (<&CASTLIST_NAME&>) does already exist."
+         RETURN ZERO
+      ENDIF
+
+      DEFINE LAZY_CASTING_CASTLIST CASTLIST 0
+      CASTLIST.CASTLIST_NAME = "#$<&CASTLIST_NAME&>"
+      THIS.CASTLISTS.ADD "CASTLIST" "<&CASTLIST_NAME&>"
+
+   RETURN CASTLIST
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC START 1 CASTLIST_NAME
+
+      IF ("THIS.CASTLISTS.CONTAINS_KEY <&CASTLIST_NAME&>" == FALSE)
+         PRINT_TEXT "Lazy::Casting]: Castlist (<&CASTLIST_NAME&>) doesnt exist."
+         RETURN FALSE
+      ENDIF
+
+      IF (THIS.CASTING_CASTLIST != "#$")
+         PRINT_TEXT "Lazy::Casting]: Your character is already casting (<&LAZY.CLASSES.#$CASTING.CASTING_CASTLIST&>)."
+         RETURN FALSE
+      ENDIF
+
+      THIS.CASTING_CASTLIST = "#$<&CASTLIST_NAME&>"
+      THIS.IS_CASTING = TRUE
+      THIS.CASTING_BREAK = ZERO
+      THIS.CASTING_STATUS = "#$"
+      THIS.CASTING_REPEAT = TRUE
+
+      THREAD CASTING_THREAD
+   RETURN TRUE
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC SLEEP 0
+      WHILE (THIS.IS_CASTING == TRUE)
+         SLEEP 100
+      WEND
+      SLEEP 100
+   RETURN TRUE
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC ABORT 1 BREAK_COUNT
+
+      IF (THIS.CASTING_CASTLIST == "#$")
+         PRINT_TEXT "Lazy::Casting]: Your character is not casting."
+         RETURN FALSE
+      ENDIF
+
+      THIS.CASTING_BREAK = "#i<&BREAK_COUNT&>"
+
+   RETURN TRUE
+
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+// threads
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CASTING_THREAD 0
+
+      DEFINE INT THAT 0
+      LAZY.REGISTER THAT 1 #$CASTING
+
+      DEFINE STRING CASTLIST_NAME "<&THAT.CASTING_CASTLIST&>"
+      DEFINE INT DELAY_TIME 0
+      DEFINE INT USED_REPEATS 0
+      DEFINE INT USED_TIME 0
+      DEFINE INT SKILL_I 0
+      DEFINE INT SKILL_ID 0
+      DEFINE INT MOVED_TO_PAWN 0
+      DEFINE STRING PIECE_KEY ""
+      DEFINE INT PIECE_BREAK 0
+      DEFINE INT BREAK_COUNT 0
+      DEFINE INT ALL_FAILED 0
+
+      WHILE (THAT.CASTING_REPEAT == TRUE)
+         THAT.CASTING_REPEAT = "#i<&THAT.CASTLISTS.CASTLIST_NAME.REPEAT&>"
+
+         FOR THAT.CASTING_SKILL_I "<&THAT.CASTING_SKILL_I&>" "<&THAT.CASTLISTS.CASTLIST_NAME.SKILLS.COUNT&>" 1
+
+            IF (TRUE == TRUE)
+
+               SKILL_I = "#i<&THAT.CASTING_SKILL_I&>"
+               THAT.CASTLISTS.CASTLIST_NAME.CUR_SKILL_I = "#i<&SKILL_I&>"
+
+               THAT.CASTLISTS.CASTLIST_NAME.SKILLS.SKILL_I.SKILL.GET_ID SKILL_ID 0
+               IF (SKILL_ID == ZERO)
+                  THAT.CASTLISTS.CASTLIST_NAME.SKILLS.SKILL_I.FAIL_COUNT = #i3
+                  BREAK 2
+               ENDIF
+
+               THAT.CASTING_SKILL_ID = "#i<&SKILL_ID&>"
+               THAT.CASTING_STATUS = "#$STARTED"
+
+               PIECE_KEY = "#$<&THAT.CASTLISTS.CASTLIST_NAME.SKILLS.SKILL_I.BREAK_PIECE&>"
+
+               LABEL CASTING_LOOP
+
+               IF ("THAT.{RETURNING}.PIECES.CONTAINS_KEY <&PIECE_KEY&>" == TRUE)
+                  THAT.{RETURNING}.PIECES.PIECE_KEY.GET_RETURN PIECE_BREAK 0
+                  IF (PIECE_BREAK != ZERO)
+                     THAT.CASTING_BREAK = PIECE_BREAK
+                  ENDIF
+               ENDIF
+
+               IF (THAT.CASTING_BREAK > ZERO)
+                  IF (THAT.CASTING_STATUS == "#$WAIT_FOR_LAUNCHED")
+                     CANCEL_TARGET
+                  ENDIF
+                  SWITCH THAT.CASTING_BREAK
+                     CASE #i1
+                        THAT.CASTING_STATUS = "#$STARTED"
+                        THAT.CASTING_BREAK = ZERO
+                        BREAK 1
+                     CASE #i2
+                        THAT.CASTING_STATUS = "#$FINISHED"
+                        THAT.CASTING_BREAK = ZERO
+                        BREAK 1
+                     CASE #i3
+                        THAT.CASTING_BREAK = ZERO
+                        BREAK 4
+                     CASE #i4
+                        THAT.CASTING_BREAK = ZERO
+                        THAT.CASTING_REPEAT = FALSE
+                        BREAK 4
+                  ENDSWITCH
+               ENDIF
+
+               SWITCH THAT.CASTING_STATUS
+
+                  CASE #$STARTED
+                     DELAY_TIME = ZERO
+                     USED_REPEATS = #i0
+                     MOVED_TO_PAWN = FALSE
+                     THAT.CASTING_STATUS = "#$USE_SKILL"
+                     BREAK 1
+
+                  CASE #$USE_SKILL
+                     SLEEP "<&DELAY_TIME&>"
+                     USED_TIME = #i0
+                     DEFINE BYTEBUFFER BB 1024
+                     BB.WRITE_BYTE #i57
+                     BB.WRITE_INT32 SKILL_ID
+                     BB.WRITE_INT32 THAT.USE_CTRL
+                     BB.WRITE_BYTE THAT.USE_SHIFT
+                     BB.TRIM_TO_INDEX
+                     BB.RESET_INDEX
+                     INJECTBB BB
+                     DELETE BB
+                     THAT.CASTING_STATUS = "#$WAIT_FOR_USED"
+                     BREAK 1
+
+                  CASE #$WAIT_FOR_USED
+                     IF (USED_TIME <= THAT.TRY_TIMEOUT)
+                        SLEEP 100
+                        USED_TIME = USED_TIME + #i100
+                     ELSE
+                        IF (USED_REPEATS < THAT.TRY_REPEATS)
+                           THAT.CASTING_STATUS = "#$USE_SKILL"
+                           IF (MOVED_TO_PAWN == FALSE)
+                              USED_REPEATS = USED_REPEATS + #i1
+                           ENDIF
+                           MOVED_TO_PAWN = FALSE
+                        ELSE
+                           THAT.CASTING_STATUS = "#$FINISHED"
+                        ENDIF
+                     ENDIF
+                     BREAK 1
+
+                  CASE #$WAIT_FOR_LAUNCHED
+                     SLEEP 100
+                     BREAK 1
+
+                  CASE #$LAUNCHED
+                     ENGINEX.UTILS.SLEEP VOID 2 THAT.SLEEP_MIN THAT.SLEEP_MAX
+                     THAT.CASTING_STATUS = "#$FINISHED"
+                     BREAK 1
+
+                  CASE #$WAIT_FOR_DELAY
+                     SKILL_GET_REUSE DELAY_TIME "<&SKILL_ID&>"
+                     THAT.CASTING_STATUS = "#$USE_SKILL"
+                     BREAK 1
+
+                  CASE #$WAIT_FOR_MOVED
+                     MOVED_TO_PAWN = TRUE
+                     THAT.CASTING_STATUS = "#$WAIT_FOR_USED"
+                     BREAK 1
+
+                  CASE #$FINISHED
+                     BREAK 2
+
+               ENDSWITCH
+
+               JUMP_TO_LABEL CASTING_LOOP
+
+            ENDIF
+
+            THAT.CASTING_STATUS = "#$"
+            SLEEP 100
+         NEXT
+
+         THAT.CASTLISTS.CASTLIST_NAME.CUR_SKILL_I = ZERO
+         THAT.CASTING_SKILL_I = ZERO
+         THAT.CASTING_STATUS = "#$"
+
+         ALL_FAILED = TRUE
+         FOR I1 0 "<&THAT.CASTLISTS.CASTLIST_NAME.SKILLS.COUNT&>" 1
+            IF (THAT.CASTLISTS.CASTLIST_NAME.SKILLS.I1.FAIL_COUNT < #i3)
+               ALL_FAILED = FALSE
+               BREAK 2
+            ENDIF
+         NEXT
+         FOR I1 0 "<&THAT.CASTLISTS.CASTLIST_NAME.SKILLS.COUNT&>" 1
+            THAT.CASTLISTS.CASTLIST_NAME.SKILLS.I1.FAIL_COUNT = ZERO
+         NEXT
+         IF (ALL_FAILED == TRUE)
+            BREAK 2
+         ENDIF
+
+      WEND
+
+      THAT.IS_CASTING = FALSE
+      THAT.CASTING_CASTLIST = "#$"
+      THAT.CASTING_BREAK = ZERO
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+// server events
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+
+   PUBLIC SERVEREVENT_SKILLLISTPACKET 1 PACKET_DATA
+
+      LOCK LAZY.CLASSES.#$CASTING.CHARACTER_SKILLS
+      LAZY.CLASSES.#$CASTING.CHARACTER_SKILLS.CLEAR
+
+      FOREACH I SORTEDLIST PACKET_DATA.#$SKILLS
+         DEFINE LAZY_CASTING_CHARACTERSKILL CHARACTERSKILL 0
+         CHARACTERSKILL.SKILL_TYPE = "#i<&PACKET_DATA.#$SKILLS.I.#$SKILL_TYPE&>"
+         CHARACTERSKILL.SKILL_LEVEL = "#i<&PACKET_DATA.#$SKILLS.I.#$SKILL_LEVEL&>"
+         CHARACTERSKILL.SKILL_ID = "#i<&PACKET_DATA.#$SKILLS.I.#$SKILL_ID&>"
+         LAZY.CLASSES.#$CASTING.CHARACTER_SKILLS.ADD CHARACTERSKILL "<&PACKET_DATA.#$SKILLS.I.#$SKILL_ID&>"
+         DELETE CHARACTERSKILL
+      NEXTEACH
+
+      LAZY.CLASSES.#$CASTING.CHARACTER_SKILLS_LOADING = FALSE
+      UNLOCK LAZY.CLASSES.#$CASTING.CHARACTER_SKILLS
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CUSTOMEVENT_SKILLUSED 1 PACKET_DATA
+
+      IF (THIS.CASTING_STATUS == "#$WAIT_FOR_USED")
+         DEFINE STRING CASTLIST_NAME "<&THIS.CASTING_CASTLIST&>"
+         DEFINE INT SKILL_I "<&THIS.CASTING_SKILL_I&>"
+         THIS.CASTLISTS.CASTLIST_NAME.SKILLS.SKILL_I.FAIL_COUNT = ZERO
+         THIS.CASTING_STATUS = "#$WAIT_FOR_LAUNCHED"
+      ENDIF
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CUSTOMEVENT_SKILLLAUNCHED 1 PACKET_DATA
+
+      IF (THIS.CASTING_STATUS == "#$WAIT_FOR_LAUNCHED")
+         THIS.CASTING_STATUS = "#$LAUNCHED"
+      ENDIF
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC SERVEREVENT_SYSTEMMESSAGE 1 PACKET_DATA
+
+      IF (THIS.CASTING_STATUS == "#$WAIT_FOR_USED")
+
+         SWITCH PACKET_DATA.#$MESSAGE_TYPE
+
+            // You cannot move while sitting.
+            CASE #i31
+               THIS.CASTING_BREAK = #i4
+               BREAK 1
+
+            // That is the incorrect target.
+            CASE #i144
+               //THIS.CASTING_BREAK = #i4
+               BREAK 1
+
+            // You may not attack this target in a peaceful zone.
+            CASE #i85
+               //THIS.CASTING_BREAK = #i4
+               BREAK 1
+
+            // Your target cannot be found.
+            CASE #i50
+               LAZY.CLASSES.#$CASTING.CASTING_BREAK = #i4
+               BREAK 1
+
+            // <&SKILL_ID&> is not available at this time: being prepared for reuse.
+            CASE #i48
+               THIS.CASTING_STATUS = "#$WAIT_FOR_DELAY"
+               ENDIF
+               BREAK 1
+
+            // Cannot see target.
+            CASE #i181
+               //THIS.CASTING_BREAK = #i4
+               ENDIF
+               BREAK 1
+
+         ENDSWITCH
+      ENDIF
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC SERVEREVENT_MOVETOPAWN 1 PACKET_DATA
+
+      IF (PACKET_DATA.#$OBJECT_ID == CHAR_ID)
+         IF (THIS.CASTING_STATUS == "#$WAIT_FOR_USED")
+            THIS.CASTING_STATUS = "#$WAIT_FOR_MOVED"
+         ENDIF
+      ENDIF
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CUSTOMEVENT_SKILLCANCELED 1 PACKET_DATA
+
+      IF (THIS.CASTING_STATUS == "#$WAIT_FOR_LAUNCHED")
+         DEFINE STRING CASTLIST_NAME "<&THIS.CASTING_CASTLIST&>"
+         THIS.CASTING_BREAK = THIS.CASTLISTS.CASTLIST_NAME.ON_CANCEL
+         THIS.CASTING_STATUS = "#$FINISHED"
+      ENDIF
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC SERVEREVENT_ACTIONFAILED 1 PACKET_DATA
+
+      IF (THIS.CASTING_STATUS == "#$WAIT_FOR_USED")
+         DEFINE STRING CASTLIST_NAME "<&THIS.CASTING_CASTLIST&>"
+         DEFINE INT SKILL_I "<&THIS.CASTING_SKILL_I&>"
+         THIS.CASTLISTS.CASTLIST_NAME.SKILLS.SKILL_I.FAIL_COUNT = THIS.CASTLISTS.CASTLIST_NAME.SKILLS.SKILL_I.FAIL_COUNT + #i1
+         THIS.CASTING_STATUS = "#$FINISHED"
+      ENDIF
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+END_CLASS

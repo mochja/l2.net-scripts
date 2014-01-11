@@ -1,0 +1,84 @@
+// Kratky popis
+// Server: 
+// Autor: mochitto
+// Date: 
+// Special thanks for L2.NET contributors
+// rev.: 0
+PRINT_TEXT "SCRIPT STARTED!]"
+ SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" StaticObjectPacket 159
+SET_EVENT "<&SCRIPTEVENT_CLIENTPACKET&>" "<&SYSTEM_CURRENTFILE&>" Action 31 
+SET_EVENT "<&SCRIPTEVENT_CHATTOBOT&>"  "<&SYSTEM_CURRENTFILE&>" CHATTOBOT
+INCLUDE "class\staticobject.l2c"
+// Main section
+// ===============================
+DEFINE_GLOBAL ARRAYLIST StaticObjects 
+DEFINE_GLOBAL INT TARGET_OBJID
+		  sleep 47456564
+	
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT
+
+FUNCTION CHATTOBOT  
+     SWITCH MESSAGE
+          CASE "#$open"
+               OPENDOOR
+               //BREAK 1
+        endswitch
+return void
+
+FUNCTION OPENDOOR  
+
+    FOREACH F StaticObject StaticObjects
+        IF StaticObjects.F.TYPE == 1 //IS DOOR
+            IF StaticObjects.F.objectId == TARGET_OBJID
+                SAY_TO_CLIENT 0 "Opening door!"  
+                DEFINE BYTEBUFFER DoorStatusUpdate 512
+                DoorStatusUpdate.WRITE_BYTE 77 //writeC(0x4d);
+	            DoorStatusUpdate.WRITE_INT32 StaticObjects.F.objectId //writeD(_door.getObjectId());
+            	DoorStatusUpdate.WRITE_INT32 0 //writeD(_door.getOpen() ? 0 : 1);
+            	DoorStatusUpdate.WRITE_INT32 0 //writeD(_door.getDamage());
+            	DoorStatusUpdate.WRITE_INT32 StaticObjects.F.isEnemy //writeD(_door.isEnemy() ? 1 : 0);
+              	DoorStatusUpdate.WRITE_INT32 StaticObjects.F.staticObjectId //writeD(_door.getDoorId());
+            	DoorStatusUpdate.WRITE_INT32 StaticObjects.F.currentHp //writeD((int)_door.getCurrentHp());
+            	DoorStatusUpdate.WRITE_INT32 StaticObjects.F.maxHp //writeD(_door.getMaxVisibleHp());
+                DoorStatusUpdate.TRIM_TO_INDEX
+                INJECTBB_CLIENT DoorStatusUpdate  
+                DELETE DoorStatusUpdate     
+				
+			 
+            ENDIF    
+        ENDIF  
+        
+    NEXTEACH
+RETURN VOID  
+
+FUNCTION StaticObjectPacket
+    DEFINE StaticObject StaticObj   
+    PACKET.READ_BYTE NULL //(0x9f);
+	PACKET.READ_INT32 StaticObj.staticObjectId //writeD(_staticObjectId);
+	PACKET.READ_INT32 StaticObj.objectId //writeD(_objectId);
+	PACKET.READ_INT32 StaticObj.type //writeD(_type);
+	PACKET.READ_INT32 StaticObj.isTargetable //writeD(_isTargetable ? 1 : 0);
+	PACKET.READ_INT32 StaticObj.meshIndex //writeD(_meshIndex);
+	PACKET.READ_INT32 StaticObj.isClosed  //writeD(_isClosed ? 1 : 0);
+	PACKET.READ_INT32 StaticObj.isEnemy //writeD(_isEnemy ? 1 : 0);
+	PACKET.READ_INT32 StaticObj.currentHp //writeD(_currentHp);
+	PACKET.READ_INT32 StaticObj.maxHp //writeD(_maxHp);
+	PACKET.READ_INT32 StaticObj.showHp //writeD(_showHp ? 1 : 0);
+	PACKET.READ_INT32 StaticObj.damageGrade //writeD(_damageGrade);   
+    
+	FOREACH D StaticObject StaticObjects
+		IF StaticObjects.D.objectId == StaticObj.objectId
+        	StaticObjects.remove D 
+		ENDIF
+    NEXTEACH  
+	    
+    StaticObjects.ADD StaticObj
+    DELETE StaticObj      
+RETURN NULL
+
+FUNCTION Action
+    PACKET.READ_BYTE NULL
+    PACKET.READ_INT32 TARGET_OBJID
+    SAY_TO_CLIENT 0 "<&TARGET_OBJID&>"
+RETURN NULL

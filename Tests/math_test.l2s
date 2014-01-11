@@ -1,0 +1,13 @@
+DEFINE DOUBLE D 0
+DEFINE INT I 0
+
+D = 1 + #D1.2
+
+PRINT_TEXT "<&D&>"
+
+D = #D1.2 + 1
+
+PRINT_TEXT "<&D&>"
+
+
+END_SCRIPT

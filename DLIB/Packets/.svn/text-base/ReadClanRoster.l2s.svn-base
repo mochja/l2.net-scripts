@@ -1,0 +1,66 @@
+// DLIB::Packets::ReadClanRoster v1.0 for Gracia 2.2
+// by d00d [02/19/09]
+//
+// Takes an byte buffer (_bInBuffer) containing the 
+// ClanRoster packet and dumps the data into a sorted list
+// (_oClanRoster).
+//
+//
+// REQUIRES - ClanRoster.l2c - placed in calling script
+//
+// Version 1.0 - Initial Release
+// Version 1.1 - Changed function args
+// Version 1.2 - typo fixes
+
+FUNCTION DLIB::Packets::ReadClanRoster 1 _bInBuffer
+  
+  DEFINE SORTEDLIST _oClanRoster
+
+  IF _bInBuffer.CLASSNAME == "#$BYTEBUFFER"
+    
+    _bInBuffer.RESET_INDEX
+  
+    DEFINE ClanRoster CLAN 0
+    
+    _bInBuffer.READ_BYTE NULL    
+    _bInBuffer.READ_INT32 CLAN.CLAN_UNIT
+    _bInBuffer.READ_INT32 CLAN.CLAN_ID
+    _bInBuffer.READ_INT32 CLAN.UNIT_TYPE
+    _bInBuffer.READ_STRING CLAN.CLAN_UNIT_NAME
+    _bInBuffer.READ_STRING CLAN.CLAN_LEADER
+    _bInBuffer.READ_INT32 CLAN.CLAN_CREST_ID
+    _bInBuffer.READ_INT32 CLAN.CLAN_LEVEL
+    _bInBUffer.READ_INT32 CLAN.HAS_CASTLE
+    _bInBuffer.READ_INT32 CLAN.HAS_HIDEOUT
+    _bInBuffer.READ_INT32 CLAN.HAS_FORT
+    _bInBuffer.READ_INT32 CLAN.CLAN_RANK
+    _bInBuffer.READ_INT32 CLAN.REP_SCORE
+    _bInBuffer.READ_INT32 NULL
+    _bInBuffer.READ_INT32 NULL
+    _bInBuffer.READ_INT32 CLAN.ALLY_ID
+    _bInBuffer.READ_STRING CLAN.ALLY_NAME
+    _bInBuffer.READ_INT32 CLAN.ALLY_CREST_ID
+    _bInBuffer.READ_INT32 CLAN.CLAN_WAR_STATUS
+    _bInBuffer.READ_INT32 CLAN.PLEDGE_MEMBER_COUNT
+    
+    FOR Z 0 "<&CLAN.PLEDGE_MEMBER_COUNT&>" 1
+      DEFINE ClanMember MEMBER 0
+      
+      _bInBuffer.READ_STRING MEMBER.MEMBER_NAME
+      _bInBuffer.READ_INT32 MEMBER.MEMBER_LEVEL
+      _bInBuffer.READ_INT32 MEMBER.MEMBER_CLASS
+      _bInBuffer.READ_INT32 MEMBER.MEMBER_GENDER
+      _bInBuffer.READ_INT32 MEMBER.MEMBER_RACE
+      _bInBuffer.READ_INT32 MEMBER.IS_ONLINE
+      _bInBUffer.READ_INT32 MEMBER.IS_SPONSORED
+  
+      CLAN.UNIT_MEMBERS.ADD MEMBER "<&MEMBER.MEMBER_NAME&>"
+      DELETE MEMBER
+      
+    NEXT
+    
+    _oClanRoster.ADD CLAN "<&CLAN.CLAN_UNIT_NAME&>"
+    DELETE CLAN
+  ENDIF
+  
+RETURN _oClanRoster

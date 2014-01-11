@@ -1,0 +1,22 @@
+
+	INCLUDE Include/EngineX.l2c
+	DEFINE_GLOBAL ENGINEX ENGINEX 0
+
+	PRINT_TEXT ""
+	PRINT_TEXT "-------------------------------------------------"
+
+	DEFINE STRING MYSTRING "haaaaalloooooooo"
+	DEFINE INT MYINTEGER 0
+
+	PRINT_TEXT "String: <&MYSTRING&>"
+	ENGINEX.STRINGS.SUBSTR_COUNT MYINTEGER 3 MYSTRING "#$aa" FALSE
+	PRINT_TEXT "<&MYINTEGER&>x 'aa' found (radical: false)"
+
+	PRINT_TEXT "String: <&MYSTRING&>"
+	ENGINEX.STRINGS.SUBSTR_COUNT MYINTEGER 3 MYSTRING "#$aa" TRUE
+	PRINT_TEXT "<&MYINTEGER&>x 'aa' found (radical: true)"
+
+	PRINT_TEXT "-------------------------------------------------"
+	PRINT_TEXT ""
+
+END_SCRIPT

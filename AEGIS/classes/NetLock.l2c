@@ -1,0 +1,18 @@
+CLASS NetLock null
+VAR_START
+ 
+  PUBLIC STRING Attack                "lock"
+  PUBLIC STRING MagicSkillUse         "lock"
+  PUBLIC STRING CharInfo              "lock"
+  PUBLIC STRING NpcInfo               "lock"
+  PUBLIC STRING UserInfo              "lock"
+  PUBLIC STRING SkillList             "lock"
+  PUBLIC STRING PartySpelled          "lock"
+  PUBLIC STRING AbnormalStatusUpdate  "lock"
+  PUBLIC STRING StatusUpdate          "lock"
+  PUBLIC STRING MagicSkillUse         "lock"
+  PUBLIC STRING MagicSkillCanceld     "lock"
+  
+VAR_END
+
+END_CLASS

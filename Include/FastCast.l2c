@@ -1,0 +1,489 @@
+
+// (c) L2Agita
+// version: 12
+// released: 25.04.2010
+
+INCLUDE Include/FastCast/CastList.l2c
+INCLUDE Include/FastCast/Menu.l2c
+CLASS FASTCAST NULL
+
+   /***************************\
+   \***************************/
+
+   VAR_START
+
+      PUBLIC INT LOADER_SLOT_ID 119
+      PUBLIC INT LOADER_ACTION_ID 0
+      PUBLIC INT LOADER_SLEEPTIME 300
+
+      PUBLIC SORTEDLIST SHORTCUTS 0
+      PUBLIC SORTEDLIST CASTLISTS 0
+
+      PUBLIC INT IS_CASTING 0
+      PUBLIC INT SHORTCUTS_LOADED 0
+      PUBLIC STRING CUR_CASTLIST ""
+
+      PUBLIC INT CASTING_SKILL_ID 0
+      PUBLIC INT CASTING_STATUS 0
+      PUBLIC INT CASTING_ERROR 0
+      PUBLIC INT CASTING_ABORT 0
+
+      PUBLIC FASTCAST_MENU MENU 0
+
+   VAR_END
+
+   /***************************\
+   \***************************/
+
+   PUBLIC CONSTRUCT 0
+
+      FASTCAST.MENU.CONSTRUCT VOID 0
+
+      ENGINEX.EVENTS.ADD_SERVERPACKET VOID 2 #i69 #$FASTCAST.LOAD_SHORTCUTS_RESPONSE
+      ENGINEX.EVENTS.ADD_SERVERPACKET VOID 2 #i98 #$FASTCAST.CASTING_SYSTEMMESSAGE
+      ENGINEX.EVENTS.ADD_SERVERPACKET VOID 2 #i31 #$FASTCAST.CASTING_ACTIONFAILED
+      ENGINEX.EVENTS.ADD_CUSTOMPACKET VOID 2 SCRIPTEVENT_SKILLUSED #$FASTCAST.CASTING_SKILLUSED
+      ENGINEX.EVENTS.ADD_CUSTOMPACKET VOID 2 SCRIPTEVENT_SKILLLAUNCHED #$FASTCAST.CASTING_SKILLLAUNCHED
+      ENGINEX.EVENTS.ADD_CUSTOMPACKET VOID 2 SCRIPTEVENT_SKILLCANCELED #$FASTCAST.CASTING_SKILLCANCELED
+
+   RETURN VOID
+
+   /***************************\
+   \***************************/
+
+   PUBLIC LOAD_SHORTCUTS 0
+
+      FASTCAST.SHORTCUTS_LOADED = FALSE
+
+      DEFINE BYTEBUFFER BB 1024
+      BB.WRITE_BYTE #i61
+      BB.WRITE_INT32 #i3
+      BB.WRITE_INT32 FASTCAST.LOADER_SLOT_ID
+      BB.WRITE_INT32 FASTCAST.LOADER_ACTION_ID
+      BB.WRITE_INT32 #i0
+      BB.WRITE_INT32 #i1
+      BB.TRIM_TO_INDEX
+      BB.RESET_INDEX
+      INJECTBB BB
+      DELETE BB
+
+      SLEEP "<&FASTCAST.LOADER_SLEEPTIME&>"
+
+      DEFINE BYTEBUFFER BB 1024
+      BB.WRITE_BYTE #i63
+      BB.WRITE_INT32 FASTCAST.LOADER_SLOT_ID
+      BB.TRIM_TO_INDEX
+      BB.RESET_INDEX
+      INJECTBB BB
+      DELETE BB
+
+      WHILE (FASTCAST.SHORTCUTS_LOADED == FALSE)
+         SLEEP 100
+      WEND
+
+   RETURN VOID
+
+   /***************************\
+   \***************************/
+
+   PUBLIC LOAD_SHORTCUTS_RESPONSE 1 PACKET_DATA
+      FASTCAST.SHORTCUTS.CLEAR
+      FOREACH I SORTEDLIST PACKET_DATA.#$SHORTCUTS
+         IF (PACKET_DATA.#$SHORTCUTS.I.#$TYPE == SHORTCUT_SKILL)
+            FASTCAST.SHORTCUTS.ADD PACKET_DATA.#$SHORTCUTS.I.#$SKILL_ID "<&PACKET_DATA.#$SHORTCUTS.I.#$SLOT_ID&>"
+         ENDIF
+      NEXTEACH
+      FASTCAST.SHORTCUTS_LOADED = TRUE
+   RETURN VOID
+
+   /***************************\
+   \***************************/
+
+   PUBLIC CREATE_CASTLIST 1 CASTLIST_NAME
+      IF ("FASTCAST.CASTLISTS.CONTAINS_KEY <&CASTLIST_NAME&>" == TRUE)
+         RETURN #i1
+      ENDIF
+      DEFINE CASTLIST CASTLIST 0
+      CASTLIST.NAME = "#$<&CASTLIST_NAME&>"
+      FASTCAST.CASTLISTS.ADD "CASTLIST" "<&CASTLIST_NAME&>"
+   RETURN #i0
+
+   /***************************\
+   \***************************/
+
+   PUBLIC CLEAR_CASTLIST 1 CASTLIST_NAME
+      IF ("FASTCAST.CASTLISTS.CONTAINS_KEY <&CASTLIST_NAME&>" == FALSE)
+         RETURN #i1
+      ENDIF
+      FASTCAST.CASTLISTS.CASTLIST_NAME.SKILLLIST.CLEAR
+      FASTCAST.CASTLISTS.CASTLIST_NAME.POSITION = ZERO
+   RETURN #i0
+
+   /***************************\
+   \***************************/
+
+   PUBLIC RESET_POSITION 1 CASTLIST_NAME
+      IF ("FASTCAST.CASTLISTS.CONTAINS_KEY <&CASTLIST_NAME&>" == FALSE)
+         RETURN #i1
+      ENDIF
+      FASTCAST.CASTLISTS.CASTLIST_NAME.POSITION = ZERO
+   RETURN #i0
+
+   /***************************\
+   \***************************/
+
+   PUBLIC ADD_SKILL_BY_ID 2 CASTLIST_NAME SKILL_ID
+      IF ("FASTCAST.CASTLISTS.CONTAINS_KEY <&CASTLIST_NAME&>" == FALSE)
+         RETURN #i1
+      ENDIF
+      DEFINE STRING SKILL_NAME ""
+      SKILL_GET_NAME SKILL_NAME "<&SKILL_ID&>" 1
+      IF (SKILL_NAME == "#$-unknown skill-")
+         RETURN #i2
+      ENDIF
+      FASTCAST.CASTLISTS.CASTLIST_NAME.SKILLLIST.ADD "#i<&SKILL_ID&>"
+   RETURN #i0
+
+   /***************************\
+   \***************************/
+
+   PUBLIC ADD_SKILL_BY_NAME 2 CASTLIST_NAME SKILL_NAME
+      IF ("FASTCAST.CASTLISTS.CONTAINS_KEY <&CASTLIST_NAME&>" == FALSE)
+         RETURN #i1
+      ENDIF
+      DEFINE INT SKILL_ID 0
+      SKILL_GET_ID SKILL_ID "<&SKILL_NAME&>"
+      IF (SKILL_ID == ZERO)
+         RETURN #i2
+      ENDIF
+      FASTCAST.CASTLISTS.CASTLIST_NAME.SKILLLIST.ADD "#i<&SKILL_ID&>"
+   RETURN #i0
+
+   /***************************\
+   \***************************/
+
+   PUBLIC ADD_SHORTCUT_SLOT 3 CASTLIST_NAME BAR SLOT
+      IF ("FASTCAST.CASTLISTS.CONTAINS_KEY <&CASTLIST_NAME&>" == FALSE)
+         RETURN #i1
+      ENDIF
+      IF (FASTCAST.SHORTCUTS_LOADED == FALSE)
+         RETURN #i2
+      ENDIF
+      DEFINE INT SLOT_ID 0
+      ENGINEX.UTILS.GET_SLOT_ID SLOT_ID 2 BAR SLOT
+      DEFINE STRING SLOT_KEY "<&SLOT_ID&>"
+      IF ("FASTCAST.SHORTCUTS.CONTAINS_KEY <&SLOT_KEY&>" == FALSE)
+         RETURN #i3
+      ENDIF
+      FASTCAST.CASTLISTS.CASTLIST_NAME.SKILLLIST.ADD "#i<&FASTCAST.SHORTCUTS.SLOT_KEY&>"
+   RETURN #i0
+
+   /***************************\
+   \***************************/
+
+   PUBLIC ADD_SHORTCUT_BAR 2 CASTLIST_NAME BAR
+      IF ("FASTCAST.CASTLISTS.CONTAINS_KEY <&CASTLIST_NAME&>" == FALSE)
+         RETURN #i1
+      ENDIF
+      DEFINE INT SLOT_ID 0
+      DEFINE STRING SLOT_KEY ""
+      FOR I 1 13 1
+         ENGINEX.UTILS.GET_SLOT_ID SLOT_ID 2 BAR I
+         SLOT_KEY = "#$<&SLOT_ID&>"
+         IF ("FASTCAST.SHORTCUTS.CONTAINS_KEY <&SLOT_KEY&>" == TRUE)
+            FASTCAST.CASTLISTS.CASTLIST_NAME.SKILLLIST.ADD "#i<&FASTCAST.SHORTCUTS.SLOT_KEY&>"
+         ENDIF
+      NEXT
+   RETURN #i0
+
+   /***************************\
+   \***************************/
+
+   PUBLIC ADD_ALL_SHORTCUTS 1 CASTLIST_NAME
+      IF ("FASTCAST.CASTLISTS.CONTAINS_KEY <&CASTLIST_NAME&>" == FALSE)
+         RETURN #i1
+      ENDIF
+      DEFINE INT SLOT_ID 0
+      DEFINE STRING SLOT_KEY ""
+      FOR I 0 120 1
+         SLOT_KEY = "#$<&I&>"
+         IF ("FASTCAST.SHORTCUTS.CONTAINS_KEY <&SLOT_KEY&>" == TRUE)
+            FASTCAST.CASTLISTS.CASTLIST_NAME.SKILLLIST.ADD "#i<&FASTCAST.SHORTCUTS.SLOT_KEY&>"
+         ENDIF
+      NEXT
+   RETURN #i0
+
+   /***************************\
+   \***************************/
+
+   PUBLIC START_CASTLIST 1 CASTLIST_NAME
+      IF ("FASTCAST.CASTLISTS.CONTAINS_KEY <&CASTLIST_NAME&>" == FALSE)
+         RETURN #i1
+      ENDIF
+      IF (FASTCAST.CUR_CASTLIST != "#$")
+         RETURN #i2
+      ENDIF
+      FASTCAST.CUR_CASTLIST = "#$<&CASTLIST_NAME&>"
+      FASTCAST.IS_CASTING = TRUE
+      FASTCAST.CASTING_ABORT = FALSE
+      THREAD START_CASTLIST_THREAD
+   RETURN #i0
+
+   /***************************\
+   \***************************/
+
+   PUBLIC START_CASTLIST_THREAD 0
+
+      DEFINE STRING CASTLIST_NAME "<&FASTCAST.CUR_CASTLIST&>"
+      DEFINE INT DELAY_TIME 0
+      DEFINE INT ERROR_ACTION 0
+      DEFINE INT CASTING_USEDTIME 0
+      DEFINE INT CASTING_USEDREPEATS 0
+
+      FOR I "<&FASTCAST.CASTLISTS.CASTLIST_NAME.POSITION&>" "<&FASTCAST.CASTLISTS.CASTLIST_NAME.SKILLLIST.COUNT&>" 1
+         FASTCAST.CASTLISTS.CASTLIST_NAME.POSITION = I + #i1
+         FASTCAST.CASTING_SKILL_ID = "#i<&FASTCAST.CASTLISTS.CASTLIST_NAME.SKILLLIST.I&>"
+         FASTCAST.CASTING_STATUS = #i1
+         DELAY_TIME = ZERO
+         WHILE (FASTCAST.CASTING_STATUS != ZERO)
+
+            IF (FASTCAST.CASTING_ABORT == TRUE)
+               BREAK 3
+            ENDIF
+
+            IF (FASTCAST.CASTING_ERROR == ZERO)
+
+               SWITCH FASTCAST.CASTING_STATUS
+
+                  // skill finished
+                  CASE #i0
+                     BREAK 3
+
+                  // start skill
+                  CASE #i1
+                     CASTING_USEDREPEATS = #i0
+                     FASTCAST.CASTING_STATUS = #i2
+                     BREAK 1
+
+                  // use skill
+                  CASE #i2
+                     SLEEP "<&DELAY_TIME&>"
+                     CASTING_USEDTIME = #i0
+                     DEFINE BYTEBUFFER BB 1024
+                     BB.WRITE_BYTE #i57
+                     BB.WRITE_INT32 FASTCAST.CASTING_SKILL_ID
+                     BB.WRITE_INT32 FASTCAST.CASTLISTS.CASTLIST_NAME.USE_CTRL
+                     BB.WRITE_BYTE FASTCAST.CASTLISTS.CASTLIST_NAME.USE_SHIFT
+                     BB.TRIM_TO_INDEX
+                     BB.RESET_INDEX
+                     INJECTBB BB
+                     DELETE BB
+                     FASTCAST.CASTING_STATUS = #i3
+                     BREAK 1
+
+                  // wait for skill beeing used
+                  CASE #i3
+                     IF (CASTING_USEDTIME <= FASTCAST.CASTLISTS.CASTLIST_NAME.TIMEOUT)
+                        SLEEP 10
+                        CASTING_USEDTIME = CASTING_USEDTIME + #i10
+                     ELSE
+                        IF (CASTING_USEDREPEATS < FASTCAST.CASTLISTS.CASTLIST_NAME.REPEATS)
+                           CASTING_USEDREPEATS = CASTING_USEDREPEATS + #i1
+                           FASTCAST.CASTING_STATUS = #i2
+                        ELSE
+                           FASTCAST.CASTING_ERROR = #i1
+                        ENDIF
+                     ENDIF
+                     BREAK 1
+
+                  // skill is launching
+                  CASE #i4
+                     SLEEP 10
+                     BREAK 1
+
+                  // skill launched
+                  CASE #i5
+                     FASTCAST.CASTING_STATUS = ZERO
+                     BREAK 1
+
+                  // wait for skill reuse
+                  CASE #i6
+                     SKILL_GET_REUSE DELAY_TIME "<&FASTCAST.CASTING_SKILL_ID&>"
+                     FASTCAST.CASTING_ERROR = #i7
+                     BREAK 1
+
+               ENDSWITCH
+
+            ELSE
+
+               SWITCH FASTCAST.CASTING_ERROR
+
+                  // on max repeats
+                  CASE #i1
+                     ERROR_ACTION = "#i<&FASTCAST.CASTLISTS.CASTLIST_NAME.ON_MAXREPEATS&>"
+                     BREAK 1
+
+                  // skill canceled
+                  CASE #i2
+                     ERROR_ACTION = "#i<&FASTCAST.CASTLISTS.CASTLIST_NAME.ON_CANCEL&>"
+                     BREAK 1
+
+                  // That is the incorrect target.
+                  CASE #i3
+                     ERROR_ACTION = "#i<&FASTCAST.CASTLISTS.CASTLIST_NAME.ON_WRONGTARGET&>"
+                     BREAK 1
+
+                  // You may not attack this target in a peaceful zone.
+                  CASE #i4
+                     ERROR_ACTION = "#i<&FASTCAST.CASTLISTS.CASTLIST_NAME.ON_PEACEZONE&>"
+                     BREAK 1
+
+                  // Your target cannot be found.
+                  CASE #i5
+                     ERROR_ACTION = "#i<&FASTCAST.CASTLISTS.CASTLIST_NAME.ON_NOTARGET&>"
+                     BREAK 1
+
+                  // action failed
+                  CASE #i6
+                     ERROR_ACTION = "#i<&FASTCAST.CASTLISTS.CASTLIST_NAME.ON_FAIL&>"
+                     BREAK 1
+
+                  // cooldown
+                  CASE #i7
+                     ERROR_ACTION = "#i<&FASTCAST.CASTLISTS.CASTLIST_NAME.ON_COOLDOWN&>"
+                     BREAK 1
+
+               ENDSWITCH
+
+               SWITCH ERROR_ACTION
+                  CASE ZERO
+                     FASTCAST.CASTING_STATUS = #i1
+                     BREAK 1
+                  CASE ONE
+                     FASTCAST.CASTING_STATUS = #i0
+                     BREAK 1
+                  CASE TWO
+                     FASTCAST.CASTING_ABORT = TRUE
+                     BREAK 1
+                  DEFAULT
+                     BREAK 1
+               ENDSWITCH
+               FASTCAST.CASTING_ERROR = ZERO
+
+            ENDIF
+         WEND
+      NEXT
+
+      IF (FASTCAST.CASTING_ABORT == FALSE)
+         FASTCAST.CASTLISTS.CASTLIST_NAME.POSITION = ZERO
+      ENDIF
+      FASTCAST.IS_CASTING = FALSE
+      FASTCAST.CUR_CASTLIST = "#$"
+
+   RETURN VOID
+
+   /***************************\
+   \***************************/
+
+   PUBLIC CASTING_SKILLUSED 1 PACKET_DATA
+      IF (FASTCAST.CASTING_SKILL_ID == PACKET_DATA.#$SKILL_ID)
+         FASTCAST.CASTING_STATUS = #i4
+      ENDIF
+   RETURN VOID
+
+   /***************************\
+   \***************************/
+
+   PUBLIC CASTING_SKILLLAUNCHED 1 PACKET_DATA
+      IF (FASTCAST.CASTING_SKILL_ID == PACKET_DATA.#$SKILL_ID)
+         FASTCAST.CASTING_STATUS = #i5
+      ENDIF
+   RETURN VOID
+
+   /***************************\
+   \***************************/
+
+   PUBLIC CASTING_SKILLCANCELED 1 PACKET_DATA
+      IF (FASTCAST.CUR_CASTLIST != "#$")
+         FASTCAST.CASTING_ERROR = #i2
+      ENDIF
+   RETURN VOID
+
+   /***************************\
+   \***************************/
+
+   PUBLIC CASTING_SYSTEMMESSAGE 1 PACKET_DATA
+      SWITCH PACKET_DATA.#$MESSAGE_TYPE
+
+         // That is the incorrect target.
+         CASE #i144
+            IF (FASTCAST.CASTING_STATUS == #i3)
+               IF (FASTCAST.CASTING_ERROR == #i0)
+                  FASTCAST.CASTING_ERROR = #i3
+               ENDIF
+            ENDIF
+            BREAK 1
+
+         // You may not attack this target in a peaceful zone.
+         CASE #i85
+            IF (FASTCAST.CASTING_STATUS == #i3)
+               IF (FASTCAST.CASTING_ERROR == #i0)
+                  FASTCAST.CASTING_ERROR = #i4
+               ENDIF
+            ENDIF
+            BREAK 1
+
+         // Your target cannot be found.
+         CASE #i50
+            IF (FASTCAST.CASTING_STATUS == #i3)
+               IF (FASTCAST.CASTING_ERROR == #i0)
+                  FASTCAST.CASTING_ERROR = #i5
+               ENDIF
+            ENDIF
+            BREAK 1
+
+         // <&SKILL_ID&> is not available at this time: being prepared for reuse.
+         CASE #i48
+            IF (FASTCAST.CASTING_STATUS == #i3)
+               IF (FASTCAST.CASTING_SKILL_ID == PACKET_DATA.#$DATA.#$SKILL_ID)
+                  IF (FASTCAST.CASTING_ERROR == #i0)
+                     FASTCAST.CASTING_STATUS = #i6
+                  ENDIF
+               ENDIF
+            ENDIF
+            BREAK 1
+
+      ENDSWITCH
+   RETURN VOID
+
+   /***************************\
+   \***************************/
+
+   PUBLIC CASTING_ACTIONFAILED 1 PACKET_DATA
+      IF (FASTCAST.CASTING_STATUS == #i3)
+         IF (FASTCAST.CASTING_ERROR == #i0)
+            FASTCAST.CASTING_ERROR = #i6
+         ENDIF
+      ENDIF
+   RETURN VOID
+
+   /***************************\
+   \***************************/
+
+   PUBLIC STOP_CASTING 1 SENDESC
+      IF (FASTCAST.CUR_CASTLIST == "#$")
+         RETURN #i1
+      ENDIF
+      FASTCAST.CASTING_ABORT = TRUE
+      WHILE (FASTCAST.CUR_CASTLIST != "#$")
+         SLEEP 10
+      WEND
+      IF (SENDESC == TRUE)
+         CANCEL_TARGET
+      ENDIF
+   RETURN #i9
+
+   /***************************\
+   \***************************/
+
+END_CLASS

@@ -1,0 +1,21 @@
+
+	INCLUDE Include/EngineX.l2c
+	DEFINE_GLOBAL ENGINEX ENGINEX 0
+
+	PRINT_TEXT ""
+	PRINT_TEXT "-------------------------------------------------"
+
+	DEFINE ARRAYLIST MYPOINTS 0
+
+	PRINT_TEXT "create a circle with 4 points."
+	PRINT_TEXT "center will be 0/0 and the radius 100"
+	ENGINEX.GEO.CIRCLE_POINTS MYPOINTS 4 #i0 #i0 #i4 #i100
+
+	FOREACH I VECTOR2 MYPOINTS
+		PRINT_TEXT "New Point at: <&MYPOINTS.I.X&>/<&MYPOINTS.I.Y&>"
+	NEXTEACH
+
+	PRINT_TEXT "-------------------------------------------------"
+	PRINT_TEXT ""
+
+END_SCRIPT

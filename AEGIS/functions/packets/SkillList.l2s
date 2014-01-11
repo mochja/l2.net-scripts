@@ -1,0 +1,25 @@
+// Handle SkillInfo packets.
+
+FUNCTION Packet::SkillList 1 _bSkillList
+
+  DEFINE BYTEBUFFER _bMySkill 16384
+  
+  CALL_EXTERN "DLIB\Packets\ReadSkillList.l2s" DLIB::Packets::ReadSkillList AEGIS.ENTITYTRACKING.Skills 1 _bSkillList
+  
+  IF "AEGIS.OPTIONS.CONFIG.CONTAINS_KEY IG_UI" == TRUE
+    IF "AEGIS.OPTIONS.CONFIG.#$IG_UI" == TRUE
+      CALL_EXTERN "AEGIS\functions\interface.l2s" InterfaceHook _bMySkill 1 AEGIS.ENTITYTRACKING.SKILLS
+      CALL_EXTERN "DLIB\Packets\ReadSkillList.l2s" DLIB::Packets::ReadSkillList AEGIS.ENTITYTRACKING.Skills 1 _bMySkill
+    ENDIF
+  ENDIF
+  
+  IF "AEGIS.OPTIONS.CONFIG.CONTAINS_KEY SMART_SKILLS" == TRUE
+    IF "AEGIS.OPTIONS.CONFIG.#$SMART_SKILLS" == TRUE
+      CALL_EXTERN "AEGIS\functions\SmartSkills.l2s" AEGIS::SmartSkills::Process::SkillList _bMySkill 1 AEGIS.ENTITYTRACKING.SKILLS
+      CALL_EXTERN "DLIB\Packets\ReadSkillList.l2s" DLIB::Packets::ReadSkillList AEGIS.ENTITYTRACKING.Skills 1 _bMySkill
+    ENDIF
+  ENDIF
+
+  INJECTBB_CLIENT _bMySkill
+  
+RETURN VOID

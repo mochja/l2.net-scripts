@@ -1,0 +1,18 @@
+INCLUDE Tests\Child.l2c
+INCLUDE Tests\Child2.l2c
+INCLUDE Tests\Child3.l2c
+
+	DEFINE Base b 0
+	DEFINE Child c 0
+	DEFINE Child2 d 0
+	DEFINE Child3 e 0
+
+	PRINT_TEXT "b <&b.CLASSNAME&>"
+	b.MethodName VOID 0
+	PRINT_TEXT "c <&c.CLASSNAME&>"
+	c.MethodName VOID 0
+	PRINT_TEXT "d <&d.CLASSNAME&>"
+	d.MethodName VOID 0
+	PRINT_TEXT "e <&e.CLASSNAME&>"
+	e.MethodName VOID 0
+END_SCRIPT

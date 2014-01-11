@@ -1,0 +1,27 @@
+// Invite reputation chars
+// version 0.1
+// by mochitto 2010
+DEFINE STRING DefaultName "Gal"
+DEFINE INT COUNT 2
+
+
+DEFINE INT RINT 0
+GET_RAND RINT 2000 3000
+COUNT = COUNT + #i1
+
+PRINT_TEXT "start"
+FOR A 1 "<&COUNT&>" 1
+	PRINT_TEXT "===== Inviting player to party: <&DefaultName&><&A&>] <&RINT&>"
+	COMMAND "/invite <&DefaultName&><&A&>"
+	SLEEP 2000
+	PRINT_TEXT "===== Inviting player to academy: <&DefaultName&><&A&>] <&RINT&>"
+	DEFINE INT CharID 0
+	CHAR_GET_ID CharID "<&DefaultName&><&A&>"
+	SLEEP 1000
+	INJECT "26 <&CharID.GET_HEX32&> FF FF FF FF"
+	SLEEP "<&RINT&>"
+NEXT
+PRINT_TEXT "done"
+
+SLEEP 100
+END_SCRIPT

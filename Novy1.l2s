@@ -1,0 +1,24 @@
+// Kratky popis
+// Server: 
+// Autor: mochitto
+// Date: 
+// Special thanks for L2.NET contributors
+// rev.: 0
+PRINT_TEXT "SCRIPT STARTED!]"
+
+// Main section
+// ===============================
+inject "87 E9 03 00 00"
+SLEEP 1000
+inject "85 43 00 4F 00 37 00 00 00"
+SLEEP 1000
+INJECT "57 00 00 00 00"
+SLEEP 2000
+INJECT "12 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00"
+SLEEP 5000 
+inject "87 E9 03 00 00"
+SLEEP 1000
+inject "85 43 00 4F 00 39 00 00 00"
+	
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT

@@ -1,0 +1,74 @@
+// Handle RequestMagicSkillUse packets.
+
+FUNCTION Packet::RequestMagicSkillUse 1 _bRequestMagicSkillUse
+  
+  DEFINE INT ID
+  DEFINE INT FORCE_ATTACK
+  DEFINE INT HOLD_POSITION
+  DEFINE INT RESULT 0
+  
+    _bRequestMagicSkillUse.READ_BYTE NULL
+    _bRequestMagicSkillUse.READ_INT32 ID
+    IF "AEGIS.OPTIONS.CONFIG.#$SMART_SKILLS" == TRUE
+      IF "AEGIS.OPTIONS.CONFIG.CONTAINS_KEY FORCE_SKILLS" == TRUE
+        IF "AEGIS.OPTIONS.CONFIG.#$FORCE_SKILLS" == TRUE
+          _bRequestMagicSkillUse.WRITE_INT32 TRUE
+          FORCE_ATTACK = TRUE
+        ELSE
+          _bRequestMagicSkillUse.READ_INT32 FORCE_ATTACK
+        ENDIF
+      ENDIF
+      IF "AEGIS.OPTIONS.CONFIG.CONTAINS_KEY HOLD_POSITION" == TRUE
+        IF "AEGIS.OPTIONS.CONFIG.#$HOLD_POSITION" == TRUE
+          _bRequestMagicSkillUse.WRITE_INT32 TRUE
+          HOLD_POSITION = TRUE
+        ELSE
+          _bRequestMagicSkillUse.READ_INT32 HOLD_POSITION
+        ENDIF
+      ENDIF
+    ENDIF
+    _bRequestMagicSkillUse.RESET_INDEX
+    
+    SWITCH ID
+      CASE #I6055
+        CALL_EXTERN "AEGIS\functions\interface.l2s" IG_Window VOID 0
+        BREAK 1
+      DEFAULT
+        IF "AEGIS.OPTIONS.CONFIG.#$SMART_SKILLS" == TRUE
+          IF "AEGIS.OPTIONS.CONFIG.CONTAINS_KEY FORCE_SKILLS" == TRUE
+            IF "AEGIS.OPTIONS.CONFIG.#$FORCE_SKILLS" == TRUE
+              FORCE_ATTACK = TRUE
+            ENDIF
+          ENDIF
+          IF "AEGIS.OPTIONS.CONFIG.CONTAINS_KEY HOLD_POSITION" == TRUE
+            IF "AEGIS.OPTIONS.CONFIG.#$HOLD_POSITION" == TRUE
+              HOLD_POSITION = TRUE
+            ENDIF
+          ENDIF         
+          CALL_EXTERN "AEGIS\functions\SmartSkills.l2s" AEGIS::SmartSkills::Process::RMSU RESULT 2 ID _bRequestMagicSkillUse
+        ENDIF
+        SWITCH RESULT
+          CASE #I0
+            _bRequestMagicSkillUse.RESET_INDEX
+            INJECTBB _bRequestMagicSkillUse
+            BREAK 1
+          CASE #I1 // Recycle rmsu
+            BREAK 1
+          DEFAULT
+            TARGET_SELF
+            SLEEP 150
+            DEFINE BYTEBUFFER _bRMSU 1024
+            _bRMSU.WRITE_BYTE #I57
+            _bRMSU.WRITE_INT32 RESULT
+            _bRMSU.WRITE_INT32 FORCE_ATTACK
+            _bRMSU.WRITE_INT32 HOLD_POSITION
+            _bRMSU.TRIM_TO_INDEX
+            _bRMSU.RESET_INDEX
+            AEGIS.PIPELINE.NETWORK.CLIENT.ADD _bRMSU          
+            AEGIS.THREADS.#$Pipeline::CQ.START
+            BREAK 1
+        ENDSWITCH
+        BREAK 1
+    ENDSWITCH
+ 
+RETURN VOID

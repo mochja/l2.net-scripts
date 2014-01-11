@@ -1,0 +1,4 @@
+INCLUDE stdlib\Inventory.l2c
+INCLUDE stdlib\Player.l2c
+
+CALL_EXTERN L2Vision.l2s L2V_init VOID 1 "#$127.0.0.1"

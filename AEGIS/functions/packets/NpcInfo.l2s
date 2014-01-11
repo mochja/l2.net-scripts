@@ -1,0 +1,46 @@
+// Handle NpcInfo packets.
+
+FUNCTION Packet::NpcInfo 1 _bNpcInfo
+
+  DEFINE SORTEDLIST NpcInfo_SL 0
+  DEFINE INT ModuleHook 0
+  DEFINE STRING KeyName
+
+  CALL_EXTERN "DLIB\Packets\ReadNpcInfo.l2s" DLIB::Packets::ReadNpcInfo NpcInfo_SL 1 _bNpcInfo
+  
+  IF "AEGIS.ENTITYTRACKING.NPCS.CONTAINS_KEY <&NpcInfo_SL.#$OBJECT_ID&>" == TRUE
+   
+    "AEGIS.ENTITYTRACKING.NPCS.#$<&NpcInfo_SL.#$OBJECT_ID&>.NpcInfo" = NpcInfo_SL.CLONE
+   
+    FOR A 0 "<&NpcInfo_SL.COUNT&>" 1
+        KeyName = "#$<&NpcInfo_SL.GET_KEY <&A&>&>"
+        "AEGIS.ENTITYTRACKING.NPCS.#$<&NpcInfo_SL.#$OBJECT_ID&>.<&KeyName&>" = NpcInfo_SL.A
+    NEXT
+  
+  ELSE
+   
+    DEFINE MobList Object 0
+    GET_TIME Object.AGE
+    
+    Object.NpcInfo = NpcInfo_SL.CLONE
+    FOR A 0 "<&NpcInfo_SL.COUNT&>" 1
+        KeyName = "#$<&NpcInfo_SL.GET_KEY <&A&>&>"              
+        "Object.<&KeyName&>" = NpcInfo_SL.A
+    NEXT
+    
+    AEGIS.ENTITYTRACKING.NPCS.ADD Object "<&NpcInfo_SL.#$OBJECT_ID&>"
+    DELETE Object
+  ENDIF
+
+/*
+  IF "AEGIS.OPTIONS.CONFIG.#$TARGET_TRACKING" == TRUE
+    ModuleHook = TRUE
+    CALL_EXTERN "AEGIS\functions\TargetingPerception.l2s" AEGIS::TargetPerception::ProcessNpcInfo _bNpcInfo 1 NpcInfo_SL
+  ENDIF
+       
+  IF ModuleHook == TRUE
+    INJECTBB_CLIENT _bNpcInfo
+  ENDIF
+*/
+
+RETURN VOID

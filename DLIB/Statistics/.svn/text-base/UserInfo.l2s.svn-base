@@ -1,0 +1,65 @@
+// DLIB - Statistics::UserInfo Collection
+//
+// Args - _oUserInfo_SL, supplied UserInfo sorted list populated by
+//        DLIB::Packet::UserInfo::Collect
+//
+//        _sKey, name of attribute in _oUserInfo_SL to generate differential
+//        statistics on.
+//
+//        Returns a function status of 0 on success, and 1 on initialization
+//        error.
+//
+//        Revision 1.0 - Initial Release
+
+FUNCTION DLIB::Statistics::UserInfo 2 _sUI_Name _sKey
+
+  DEFINE INT _iFunctionStatus 0
+
+  IF "DLIB::Statistics::<&_sKey&>::ON" VARIABLE_DEFINED ""
+    PRINT_TEXT "DLIB::Statistics::UserInfo::ON exists, duplicate thread may exist!"
+    _iFunctionStatus = #I1
+    JUMP_TO_LABEL DLIB::Statistics::UserInfo::EXIT
+  ENDIF
+  
+  IF "DLIB::Statistics::<&_sKey&>::Results" VARIABLE_DEFINED ""
+    PRINT_TEXT "DLIB::Statistics::<&_sKey&>::Results exists, duplicate thread may exist!"
+    _iFunctionStatus = #I1
+    JUMP_TO_LABEL DLIB::Statistics::UserInfo::EXIT
+  ENDIF
+	
+  
+  DEFINE_GLOBAL INT "DLIB::Statistics::<&_sKey&>::ON" 1
+  DEFINE_GLOBAL DOUBLE "DLIB::Statistics::<&_sKey&>::Results" 0.0
+  
+  DEFINE INT "_iTestKey::<&_sKey&>" 0
+  DEFINE INT "_iStartTime::<&_sKey&>" 0
+  DEFINE INT "_iCurrentTime::<&_sKey&>" 0
+  DEFINE INT "_iStartKey::<&_sKey&>" 0
+  DEFINE INT "_iCurrentKey::<&_sKey&>" 0
+
+  DEFINE DOUBLE "_dResolvedKey::<&_sKey&>" 0.0
+  DEFINE DOUBLE "_dResolvedTime::<&_sKey&>" 0.0
+  DEFINE DOUBLE "_dKeyPH::<&_sKey&>" 0.0
+  
+  WHILE "_iTestKey::<&_sKey&>" == ZERO
+    "_iTestKey::<&_sKey&>" = "#I<&<&_sUI_Name&>.CONTAINS_KEY <&_sKey&>&>"
+    SLEEP 1000
+  WEND
+  
+  "_iStartKey::<&_sKey&>" = "<&_sUI_Name&>.#$<&_sKey&>"
+  GET_TIME "_iStartTime::<&_sKey&>"
+
+  WHILE "DLIB::Statistics::<&_sKey&>::ON" == #I1
+    "_iCurrentKey::<&_sKey&>" = "<&_sUI_Name&>.#$<&_sKey&>"
+    GET_TIME "_iCurrentTime::<&_sKey&>"
+    "_dResolvedKey::<&_sKey&>" = "_iCurrentKey::<&_sKey&>" - "_iStartKey::<&_sKey&>"
+    "_dResolvedTime::<&_sKey&>" = "_iCurrentTime::<&_sKey&>" - "_iStartTime::<&_sKey&>"
+    "_dResolvedTime::<&_sKey&>" = "_dResolvedTime::<&_sKey&>" / #I36000000000
+    "_dKeyPH::<&_sKey&>" = "_dResolvedKey::<&_sKey&>" / "_dResolvedTime::<&_sKey&>"
+    "DLIB::Statistics::<&_sKey&>::Results" = "_dKeyPH::<&_sKey&>"
+    SLEEP 1000
+  WEND
+  
+  LABEL DLIB::Statistics::UserInfo::EXIT
+  
+RETURN _iFunctionStatus

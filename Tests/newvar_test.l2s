@@ -1,0 +1,40 @@
+DEFINE INT A 10
+DEFINE INT B 20
+DEFINE INT C 15
+DEFINE INT D 15
+DEFINE STRING S1 "hello"
+DEFINE STRING S2 "ThIs IS a TeSt"
+
+PRINT_TEXT "test 1"
+IF A == #i10
+	PRINT_TEXT "a (<&a&>) == #i10"
+ENDIF
+
+PRINT_TEXT "test 2"
+IF B == #d20
+	PRINT_TEXT "b (<&b&>) == #d20"
+ENDIF
+
+PRINT_TEXT "test 3"
+IF C != #i10
+	PRINT_TEXT "c (<&c&>) != #i10"
+ENDIF
+
+PRINT_TEXT "test 4"
+IF D != #d10
+	PRINT_TEXT "d (<&d&>) != #d10"
+ENDIF
+
+PRINT_TEXT "test 5"
+IF S1 == #$hello
+	PRINT_TEXT "s1 (<&s1&>) == hello"
+ENDIF
+
+PRINT_TEXT "test 6"
+IF S2 == "#$ThIs IS a TeSt"
+	PRINT_TEXT "s2 (<&s2&>) == ThIs IS a TeSt"
+ENDIF
+
+PRINT_TEXT "done"
+
+END_SCRIPT

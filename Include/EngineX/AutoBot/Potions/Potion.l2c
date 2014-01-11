@@ -1,0 +1,46 @@
+
+//-------------------------------------------------------------------------------------
+CLASS ENGINEX_AUTOBOT_POTIONS_POTION NULL
+//-------------------------------------------------------------------------------------
+
+   VAR_START
+
+      PUBLIC STRING POTKEY ""
+
+      // 1 = hp
+      // 2 = mp
+      PUBLIC INT STAT 0
+
+      PUBLIC DOUBLE PERCENT_BAD_MIN 0
+      PUBLIC DOUBLE PERCENT_BAD_MAX 0
+      PUBLIC DOUBLE PERCENT_GOOD_MAX 0
+
+      PUBLIC INT ITEM_ID 0
+
+      PUBLIC INT CHECK_SLEEP_MIN 100
+      PUBLIC INT CHECK_SLEEP_MAX 500
+
+      PUBLIC INT USE_SLEEP_MIN 100
+      PUBLIC INT USE_SLEEP_MAX 500
+
+      PUBLIC INT RUNNING 0
+
+   VAR_END
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC START 0
+      DEFINE INT STARTRETURN 0
+      ENGINEX.AUTOBOT.POTIONS.START STARTRETURN 1 THIS.POTKEY
+   RETURN STARTRETURN
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC STOP 0
+      DEFINE INT STOPRETURN 0
+      ENGINEX.AUTOBOT.POTIONS.STOP STOPRETURN 1 THIS.POTKEY
+   RETURN STOPRETURN
+
+//-------------------------------------------------------------------------------------
+END_CLASS
+//-------------------------------------------------------------------------------------

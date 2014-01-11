@@ -1,0 +1,82 @@
+Init::GlobalVars VOID 0
+Init::MutexDefinitions VOID 0
+Init::EventDefinitions VOID 0
+
+THREAD Statistics::XP
+
+DEFINE DOUBLE XPH 0.0
+DEFINE STRING XPH_SHORT
+DEFINE STRING INJECT_MSG " "
+
+WHILE ONE == ONE
+
+  WHILE UserInfo_SL.COUNT == ZERO
+    PRINT_TEXT "Open inventory to start recording"
+    CALL_EXTERN "DLIB\Packets\WriteSystemMessage2.l2s" DLIB::Packets::WriteSystemMessage2 VOID 1 "#$Open inventory to start recording"
+    SLEEP 1000
+  WEND
+  
+  IF DLIB::Statistics::XP::Results VARIABLE_DEFINED ""
+    XPH = DLIB::Statistics::XP::Results
+    IF XPH >= #I1000000
+      XPH = XPH / #I1000000
+      XPH_SHORT = "#$<&XPH&>"
+      IF XPH_SHORT.COUNT > #I5
+        XPH_SHORT = "XPH_SHORT.SUBSTRING #I0 #I5"
+      ENDIF
+      INJECT_MSG = "#$XP Rate == <&XPH_SHORT&>M per hour"
+      CALL_EXTERN "DLIB\Packets\WriteSystemMessage2.l2s" DLIB::Packets::WriteSystemMessage2 VOID 1 INJECT_MSG
+      PRINT_TEXT "XP Rate == <&XPH_SHORT&>/M per hour "
+    ELSE
+      XPH = XPH / #I1000
+      XPH_SHORT = "#$<&XPH&>"
+
+      IF XPH_SHORT.COUNT > #I5
+        XPH_SHORT = "XPH_SHORT.SUBSTRING #I0 #I5"
+      ENDIF
+      INJECT_MSG = "#$XP Rate == <&XPH_SHORT&>K per hour"
+      CALL_EXTERN "DLIB\Packets\WriteSystemMessage2.l2s" DLIB::Packets::WriteSystemMessage2 VOID 1 INJECT_MSG
+      PRINT_TEXT "XP Rate == <&XPH_SHORT&>/K per hour "
+    ENDIF
+  ENDIF
+  
+  SLEEP 1000
+WEND
+
+END_SCRIPT
+
+FUNCTION Init::GlobalVars
+
+  DEFINE_GLOBAL SORTEDLIST UserInfo_SL 0
+  
+RETURN VOID
+
+FUNCTION Init::MutexDefinitions
+
+  DEFINE_GLOBAL STRING Packet::UserInfo::Mutex "Mutex"
+
+RETURN VOID
+
+FUNCTION Init::EventDefinitions
+
+  SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" Packet::UserInfo 50
+  
+RETURN VOID
+
+FUNCTION Statistics::XP
+
+  WHILE UserInfo_SL.COUNT == ZERO
+    SLEEP 1000
+  WEND
+  
+  CALL_EXTERN "DLIB\Statistics\UserInfo.l2s" DLIB::Statistics::UserInfo VOID 2 "#$UserInfo_SL" "#$XP"
+  
+RETURN VOID
+  
+FUNCTION Packet::UserInfo
+
+  LOCK Packet::UserInfo::Mutex
+    CALL_EXTERN "DLIB\Packets\ReadUserInfo.l2s" DLIB::Packets::ReadUserInfo UserInfo_SL 2 PACKET UserInfo_SL
+  UNLOCK Packet::userInfo::Mutex
+  
+RETURN VOID

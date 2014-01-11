@@ -1,0 +1,32 @@
+// DLIB::Packets::WritePartyMemberPosition - v1.0 for Gracia 2.3
+// by d00d [09/29/09]
+//
+// Creates a PartyMemberPosition packet based on a sorted list
+// template of values.
+
+// Version 1.0 - Initial Release
+
+FUNCTION DLIB::Packets::WritePartyMemberPosition 1 _oPartyMemberPosition
+
+  DEFINE BYTEBUFFER _bOutBuffer 1024
+
+  IF _oCharInfo.CLASSNAME == "#$SORTEDLIST"
+  
+    _bOutBuffer.WRITE_BYTE #I186
+    _bOutBuffer.WRITE_INT32 _oPartyMemberPosition.COUNT
+    
+    FOR 0 Z "<&_oPartyMemberPosition.COUNT&>" 1    
+      _bOutBuffer.WRITE_INT32 "_oPartyMemberPosition.Z.#$ID"
+      _bOutBuffer.WRITE_INT32 "_oPartyMemberPosition.Z.#$X"
+      _bOutBuffer.WRITE_INT32 "_oPartyMemberPosition.Z.#$Y"
+      _bOutBuffer.WRITE_INT32 "_oPartyMemberPosition.Z.#$Z"      
+    NEXT
+    
+    _bOutBuffer.TRIM_TO_INDEX
+    _bOutBuffer.RESET_INDEX
+    
+  ELSE
+    PRINT_TEXT "_bPartyMemberPosition is not a Sorted List"
+  ENDIF
+
+RETURN _bOutBuffer

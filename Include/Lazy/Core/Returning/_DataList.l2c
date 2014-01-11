@@ -1,0 +1,29 @@
+
+CLASS LAZY_RETURNING_DATALIST NULL
+
+//-------------------------------------------------------------------------------------
+//
+// DONT USE OR EDIT THIS CLASS !!!
+//
+//-------------------------------------------------------------------------------------
+
+	VAR_START
+      PUBLIC ARRAYLIST DATALIST 0
+	VAR_END
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC ADD 1 DATALIST_ADD
+      THIS.DATALIST.ADD "DATALIST_ADD"
+   RETURN VOID
+
+   PUBLIC GET_RETURN 0
+   RETURN THIS.DATALIST
+
+   PUBLIC CLEAR 0
+      THIS.DATALIST.CLEAR
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+END_CLASS

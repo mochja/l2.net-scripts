@@ -1,0 +1,14 @@
+LABEL HERE
+SAY_TEXT "<&CHANNEL_CLAN&>" "~~~~~~~~OZNAMENI~~~~~~~~"
+SLEEP 500
+SAY_TEXT "<&CHANNEL_CLAN&>" "Kazdy hrac by mel odevzdavat Seeds of Evil do CWH, Dynasty sety se budou stavet klanove."
+SLEEP 500
+SAY_TEXT "<&CHANNEL_CLAN&>" "Kazdy protahne min. jednu postavu tydne akademkou."
+SLEEP 500
+SAY_TEXT "<&CHANNEL_CLAN&>" "Jednou za dva tydny da 100kk do CWH."
+SLEEP 500
+SAY_TEXT "<&CHANNEL_CLAN&>" "TS3: ts3.hernihosting.cz, @@@@@@@@ - kokos"
+SLEEP 180000
+JUMP_TO_LABEL HERE
+RETURN VOID
+

@@ -1,0 +1,47 @@
+
+CLASS LAZY_RETURNING_SUBSTRING LAZY_RETURNING_BASEPIECE
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT
+
+      // the string
+      THIS.SET_VALUE VOID 2 #$STRING "#$"
+
+      // the start position
+      THIS.SET_VALUE VOID 2 #$START #i0
+
+      // the substring length
+      THIS.SET_VALUE VOID 2 #$LENGTH #i0
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC _GET_RETURN 1 CALLTIME
+
+      DEFINE INT _STRING 0
+      DEFINE INT _START 0
+      DEFINE INT _LENGTH 0
+
+      THIS.DATA.#$STRING.GET_RETURN _STRING 1 CALLTIME
+      THIS.DATA.#$START.GET_RETURN _START 1 CALLTIME
+      THIS.DATA.#$LENGTH.GET_RETURN _LENGTH 1 CALLTIME
+
+      // --- --- ---
+
+      DEFINE INT _CHECK_LENGTH 0
+      _CHECK_LENGTH = _START + _LENGTH
+      IF (_CHECK_LENGTH > _STRING.LENGTH)
+         _LENGTH = _STRING.LENGTH - _START
+      ENDIF
+      DELETE _CHECK_LENGTH
+
+      DEFINE STRING _SUBSTR ""
+      _SUBSTR = _STRING.SUBSTRING "<&_START&>" "<&_LENGTH&>"
+
+   RETURN _SUBSTR
+
+//-------------------------------------------------------------------------------------
+
+END_CLASS

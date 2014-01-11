@@ -1,0 +1,57 @@
+// Dump Item Augments Test for DLIB v1.0
+// by d00d
+//
+// Requires DLIB 0.6+
+// The ability to resolve augment ids directly in l2net will be added soon but
+// for now decrypt/disassemble optiondata_client.dat with l2encdec/l2disasm.
+
+Init::Includes VOID 0
+Init::GlobalVariables VOID 0
+Init::Events VOID 0
+
+PRINT_TEXT "Waiting for a ItemList packet, open your inventory to force one to be sent..."
+
+WHILE ItemList_SL.COUNT == #I0
+  SLEEP 1000
+WEND
+
+PRINT_TEXT "Captured ItemList packet, dumping augment id's"
+
+DEFINE INT ALPHA 
+DEFINE INT BETA
+
+FOREACH ITEM ItemList ItemList_SL
+  IF ItemList_SL.ITEM.AUGMENT_ID1 > ZERO
+    ALPHA = ItemList_SL.ITEM.AUGMENT_ID1 / #I65536
+    BETA = ItemList_SL.ITEM.AUGMENT_ID1 % #I65536
+    PRINT_TEXT "<&ItemList_SL.ITEM.ITEM_NAME&> Primary: <&ALPHA&> Secondary: <&BETA&>"
+  ENDIF
+NEXTEACH
+
+PRINT_TEXT "Exiting ItemList Demo!"
+
+END_SCRIPT
+
+FUNCTION Init::GlobalVariables
+
+  DEFINE_GLOBAL SORTEDLIST ItemList_SL
+  
+RETURN VOID
+
+FUNCTION Init::Events
+
+  SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" Packet::ItemList 17
+
+RETURN VOID
+
+FUNCTION Init::Includes
+
+  INCLUDE DLIB\Packets\Classes\ItemList.l2c
+  
+RETURN VOID
+
+FUNCTION Packet::ItemList
+  
+  CALL_EXTERN "DLIB\Packets\ReadItemList.l2s" DLIB::Packets::ReadItemList ItemList_SL 2 PACKET ItemList_SL
+  
+RETURN VOID

@@ -1,0 +1,15 @@
+
+	INCLUDE Include/EngineX.l2c
+	DEFINE_GLOBAL ENGINEX ENGINEX 0
+
+	PRINT_TEXT ""
+	PRINT_TEXT "-------------------------------------------------"
+
+   DEFINE STRING RETURN_STRING ""
+   ENGINEX.CONVERT.DEC2BIN RETURN_STRING 1 #i123
+   PRINT_TEXT "value '123' to binary = <&RETURN_STRING&> (should be 1111011)"
+
+	PRINT_TEXT "-------------------------------------------------"
+	PRINT_TEXT ""
+
+END_SCRIPT

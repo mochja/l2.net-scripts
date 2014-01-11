@@ -1,0 +1,86 @@
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" Packet::UserInfo 50
+
+DEFINE_GLOBAL SORTEDLIST UserInfo_SL 0
+DEFINE_GLOBAL BYTEBUFFER _bInject 1024
+DEFINE_GLOBAL SORTEDLIST ABNORMAL_VFX
+DEFINE_GLOBAL SORTEDLIST EXTENDED_VFX
+
+
+ABNORMAL_VFX.ADD "#I1" "bleed"
+ABNORMAL_VFX.ADD "#I2" "poison"
+ABNORMAL_VFX.ADD "#I4" "redcircle"
+ABNORMAL_VFX.ADD "#I8" "ice"
+ABNORMAL_VFX.ADD "#I16" "wind"
+ABNORMAL_VFX.ADD "#I32" "fear"
+ABNORMAL_VFX.ADD "#I64" "stun"
+ABNORMAL_VFX.ADD "#I128" "sleep"
+ABNORMAL_VFX.ADD "#I256" "mute"
+ABNORMAL_VFX.ADD "#I512" "root"
+ABNORMAL_VFX.ADD "#I1024" "paralysis"
+ABNORMAL_VFX.ADD "#I2048" "petrification"
+ABNORMAL_VFX.ADD "#I4096" "unknown13"
+ABNORMAL_VFX.ADD "#I8192" "bighead"
+ABNORMAL_VFX.ADD "#I16384" "flame"
+ABNORMAL_VFX.ADD "#I32768" "unknown16"
+ABNORMAL_VFX.ADD "#I65536" "grow"
+ABNORMAL_VFX.ADD "#I131072" "floatroot"
+ABNORMAL_VFX.ADD "#I262144" "dancestun"
+ABNORMAL_VFX.ADD "#I524288" "firerootstun"
+ABNORMAL_VFX.ADD "#I1048576" "stealth"
+ABNORMAL_VFX.ADD "#I2097152" "imprison1"
+ABNORMAL_VFX.ADD "#I4194304" "imprison2"
+ABNORMAL_VFX.ADD "#I8388608" "magiccircle"
+ABNORMAL_VFX.ADD "#I16777216" "ice2"
+ABNORMAL_VFX.ADD "#I33554432" "earthquake"
+ABNORMAL_VFX.ADD "#I67108864" "unknown27"
+ABNORMAL_VFX.ADD "#I134217728" "ultimate_defense"
+ABNORMAL_VFX.ADD "#I268435456" "vitality"
+ABNORMAL_VFX.ADD "#I536870912" "realtarget"
+ABNORMAL_VFX.ADD "#I1073741824" "deathmark"
+ABNORMAL_VFX.ADD "#I2147483648" "skull_fear"
+
+EXTENDED_VFX.ADD "#I1" "invulnerable"
+EXTENDED_VFX.ADD "#I2" "redglow"
+EXTENDED_VFX.ADD "#I4" "redglow2"
+EXTENDED_VFX.ADD "#I8" "baguettesword"
+EXTENDED_VFX.ADD "#I16" "yellowafro"
+EXTENDED_VFX.ADD "#I32" "pinkafro"
+EXTENDED_VFX.ADD "#I64" "blackafro"
+EXTENDED_VFX.ADD "#I128" "unknown8"
+EXTENDED_VFX.ADD "#I256" "stigma"
+
+PRINT_TEXT "Waiting for a UserInfo packet, open your inventory to force one to be sent..."
+  
+WHILE UserInfo_SL.COUNT == ZERO
+  SLEEP 1000
+WEND
+
+PRINT_TEXT "Showcasing all the the ABNORMAL_VFX's, sleeping 5000ms inbetween."
+
+FOREACH X INT ABNORMAL_VFX
+  PRINT_TEXT "<&ABNORMAL_VFX.GET_KEY X&>"
+  UserInfo_SL.#$ABNORMAL_VFX = ABNORMAL_VFX.X
+  CALL_EXTERN "DLIB\Packets\WriteUserInfo.l2s" DLIB::Packets::WriteUserInfo _bInject 1 UserInfo_SL
+  INJECTBB_CLIENT _bInject
+  SLEEP 5000
+NEXTEACH
+
+PRINT_TEXT "Showcasing all the the EXTENDED_VFX's, sleeping 5000ms inbetween."
+
+FOREACH X INT EXTENDED_VFX
+  PRINT_TEXT "<&EXTENDED_VFX.GET_KEY X&>"
+  UserInfo_SL.#$EXTENDED_VFX = EXTENDED_VFX.X
+  CALL_EXTERN "DLIB\Packets\WriteUserInfo.l2s" DLIB::Packets::WriteUserInfo _bInject 1 UserInfo_SL
+  INJECTBB_CLIENT _bInject
+  SLEEP 5000
+NEXTEACH
+
+PRINT_TEXT "Complete!"
+
+END_SCRIPT
+
+FUNCTION Packet::UserInfo
+
+  CALL_EXTERN "DLIB\Packets\ReadUserInfo.l2s" DLIB::Packets::ReadUserInfo UserInfo_SL 2 PACKET UserInfo_SL
+  
+RETURN VOID

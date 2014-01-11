@@ -1,0 +1,30 @@
+// Kratky popis
+// Server: 
+// Autor: mochitto
+// Date: 
+// Special thanks for L2.NET contributors
+// rev.: 0
+PRINT_TEXT "SCRIPT STARTED!]"
+DEFINE STRING GOOD "Olala"
+
+// Main section
+// ===============================
+// Ex Function with 0 parameters
+FUNCTION MYFUNC
+	// Function commands
+	PRINT_TEXT "Function: MYFUNC"
+RETURN VOID
+
+// Ex Function with 2 parameters
+FUNCTION MYFUNC1 2 VAR1 VAR2
+	// Function commands
+	PRINT_TEXT "VAR1: <&VAR1&> VAR2: <&VAR2&>"
+RETURN VOID
+
+// Function Call
+MYFUNC
+// Function Call
+MyFunc1 2 ONE GOOD
+	
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT

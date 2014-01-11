@@ -1,0 +1,21 @@
+
+   // if you change this, you need to change the vars in l2net script as well!
+   UdpPacketName1 = L2NetAntiCaptcha1
+   UdpPacketName2 = L2NetAntiCaptcha2
+   UdpPacketName3 = L2NetAntiCaptcha3
+   UdpPacketName4 = L2NetAntiCaptcha4
+   UdpPacketName5 = L2NetAntiCaptcha5
+
+   UseChars = abcdefghijklmnopqrstuvwxyz0123456789
+   UseFont = /Fonts/arial.ttf
+   UseFont = /Fonts/arialbd.ttf
+   UseFont = /Fonts/ariblk.ttf
+   UseFont = /Fonts/verdana.ttf
+   UseFont = /Fonts/verdanab.ttf
+
+   // system vars. Dont change anything if you dont know anything
+   InitImageWidth = 30
+   InitImageHeight = 35
+   InitColorDistance = 100
+   InitFontSize = 15
+   CrackMinHitValue = 70

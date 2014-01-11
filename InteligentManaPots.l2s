@@ -1,0 +1,164 @@
+// Inteligenti Mana Potiony - pod 30%MP se mana doplni na 90%
+// Server: all (for l2-divinity)
+// Autor: mochitto
+// Date: 5.6.2010
+// Special thanks for L2.NET contributors
+// rev.: 7
+PRINT_TEXT "SCRIPT STARTED!]"
+
+// Main section
+// ===============================
+SET_EVENT "<&SCRIPTEVENT_CHATTOBOT&>" "<&SYSTEM_CURRENTFILE&>" CHATTOBOT
+
+DEFINE_GLOBAL INT ALLOWCP 1
+DEFINE_GLOBAL INT ALLOWHP 1
+DEFINE_GLOBAL INT ALLOWMP 1
+
+THREAD MP
+SLEEP 200
+THREAD HP
+SLEEP 200
+THREAD CP
+
+WHILE ZERO == ZERO
+	SLEEP 60000
+WEND
+	
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT
+
+FUNCTION CHATTOBOT
+	SWITCH MESSAGE
+		CASE "#$cp"
+			IF ALLOWCP == #i1
+				ALLOWCP = #i0
+				MSG VOID 1 "#$Automatic CP has disabled!"
+			ELSE
+				ALLOWCP = #i1
+				MSG VOID 1 "#$Automatic CP has enabled!"
+			ENDIF			
+			BREAK 1
+		CASE "#$hp"
+			IF ALLOWHP == #i1
+				ALLOWHP = #i0
+				MSG VOID 1 "#$Automatic HP has disabled!"
+			ELSE
+				ALLOWHP = #i1
+				MSG VOID 1 "#$Automatic HP has enabled!"
+			ENDIF			
+			BREAK 1
+		CASE "#$mp"
+			IF ALLOWMP == #i1
+				ALLOWMP = #i0
+				MSG VOID 1 "#$Automatic MP has disabled!"
+			ELSE
+				ALLOWMP = #i1
+				MSG VOID 1 "#$Automatic MP has enabled!"
+			ENDIF			
+			BREAK 1
+		CASE "#$all"
+			IF ALLOWCP == #i1
+				ALLOWCP = #i0
+				MSG VOID 1 "#$Automatic CP has disabled!"
+			ELSE
+				ALLOWCP = #i1
+				MSG VOID 1 "#$Automatic CP has enabled!"
+			ENDIF			
+			IF ALLOWHP == #i1
+				ALLOWHP = #i0
+				MSG VOID 1 "#$Automatic HP has disabled!"
+			ELSE
+				ALLOWHP = #i1
+				MSG VOID 1 "#$Automatic HP has enabled!"
+			ENDIF
+			IF ALLOWMP == #i1
+				ALLOWMP = #i0
+				MSG VOID 1 "#$Automatic MP has disabled!"
+			ELSE
+				ALLOWMP = #i1
+				MSG VOID 1 "#$Automatic MP has enabled!"
+			ENDIF			
+			BREAK 1
+	ENDSWITCH
+RETURN VOID
+
+FUNCTION MP
+	DEFINE INT ASD 0
+	DEFINE INT MPPOTS 0
+	WHILE ZERO == ZERO  
+		ITEM_COUNT MPPOTS 728
+		IF (MPPOTS > #i1) && (ALLOWMP == #i1) 
+			ASD = CHAR_MAX_MP * 11			
+			ASD = ASD / 100 		
+			IF (CHAR_CUR_MP < ASD)
+				ASD = CHAR_MAX_MP * 80	
+				ASD = ASD / 100 		
+				WHILE (CHAR_CUR_MP < ASD) 
+					USE_ITEM 728 // Mana Potion
+					SLEEP 500
+				WEND
+			ENDIF
+		ELSE
+			SLEEP 10000
+		ENDIF
+		SLEEP 1000	
+	WEND
+RETURN VOID
+
+FUNCTION HP
+	DEFINE INT ASD 0
+	DEFINE INT GHPPOTS 0
+	WHILE ZERO == ZERO 
+		ITEM_COUNT GHPPOTS 1539
+		IF (GHPPOTS > #i1) && (ALLOWHP == #i1)  
+			ASD = CHAR_MAX_HP * 90
+			ASD = ASD / 100  		
+			IF  CHAR_CUR_HP < ASD
+				USE_ITEM 1539
+				SLEEP 13000
+			ENDIF
+		ELSE
+			SLEEP 10000
+		ENDIF
+		SLEEP 1000	
+	WEND
+RETURN VOID
+
+FUNCTION CP
+	DEFINE INT ASD 0
+	DEFINE INT CPPOTS 0
+	DEFINE INT GCPPOTS 0
+	WHILE ZERO == ZERO 
+		ITEM_COUNT CPPOTS 5591
+		ITEM_COUNT GCPPOTS 5592
+		ASD = CHAR_MAX_CP - #i250
+	
+		IF (CHAR_CUR_CP < ASD) && (ALLOWCP == #i1)
+			IF GCPPOTS > #i1  	
+				USE_ITEM 5592
+			ENDIF
+			SLEEP 500
+			IF CPPOTS > #i1
+				USE_ITEM 5591
+			ENDIF
+		ENDIF
+		 		
+		IF (CPPOTS < #i2) && (GCPPOTS < #i2)
+			SLEEP 10000
+		ELSE
+			SLEEP 500
+		ENDIF	
+	WEND
+RETURN VOID
+
+FUNCTION MSG 1 TEXT
+	DEFINE BYTEBUFFER SystemMessage 256
+	SystemMessage.WRITE_BYTE #i98
+	SystemMessage.WRITE_INT32 #i1987
+	SystemMessage.WRITE_INT32 TEXT.LENGTH
+	SystemMessage.WRITE_INT32 #i0
+	SystemMessage.WRITE_STRING TEXT
+	SystemMessage.TRIM_TO_INDEX
+	INJECTBB_CLIENT SystemMessage
+	DELETE SystemMessage
+RETURN VOID

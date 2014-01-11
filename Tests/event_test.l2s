@@ -1,0 +1,11 @@
+SET_EVENT "<&SCRIPTEVENT_CHAT&>" Tests\event_test.l2s t
+
+SLEEP 700000000
+PRINT_TEXT "end script"
+END_SCRIPT
+
+FUNCTION t
+PRINT_TEXT "text from <&SenderName&> says <&Message&>"
+PRINT_TEXT "id <&SENDERID&> type <&MESSAGETYPE&>"
+RETURN VOID
+

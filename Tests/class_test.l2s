@@ -1,0 +1,70 @@
+INCLUDE Tests\child_class.l2c
+//INCLUDE Tests\my_class.l2c
+
+DEFINE Super a 0
+PRINT_TEXT "defined class object a"
+PRINT_TEXT "a.A = <&a.A&>"
+a.A = a.A * #i2
+PRINT_TEXT "a.A * 2 = <&a.A&>"
+Print_TEXT "---"
+PRINT_TEXT "a.B = <&a.B&>"
+a.B = a.B * #d2
+PRINT_TEXT "a.B * 2 = <&a.B&>"
+
+PRINT_TEXT "---"
+DEFINE Super z 0
+PRINT_TEXT "defined class object z"
+PRINT_TEXT "a.A = <&a.A&>"
+PRINT_TEXT "a.B = <&a.B&>"
+PRINT_TEXT "z.A = <&z.A&>"
+PRINT_TEXT "z.B = <&z.B&>"
+
+PRINT_TEXT "---"
+DEFINE NewSuper gg 0
+gg.SS = "#$ss for gg"
+PRINT_TEXT "defined class object gg"
+PRINT_TEXT "gg.A = <&gg.A&>"
+PRINT_TEXT "gg.B = <&gg.B&>"
+PRINT_TEXT "gg.C = <&gg.C&>"
+
+PRINT_TEXT "---"
+PRINT_TEXT "gg.C = <&gg.C&>"
+PRINT_TEXT "--calling public function"
+gg.PUBLIC_FUNC NULL 0
+PRINT_TEXT "--public function complete"
+PRINT_TEXT "gg.C = <&gg.C&>"
+
+PRINT_TEXT "---"
+DEFINE NewSuper hh 0
+hh.SS = "#$ss for hh"
+PRINT_TEXT "defined class object hh"
+PRINT_TEXT "hh.A = <&hh.A&>"
+PRINT_TEXT "hh.B = <&hh.B&>"
+PRINT_TEXT "hh.C = <&hh.C&>"
+
+PRINT_TEXT "---"
+PRINT_TEXT "hh.C = <&hh.C&>"
+PRINT_TEXT "--calling public function2"
+hh.PUBLIC_FUNC2 NULL 0
+PRINT_TEXT "--public function2 complete"
+PRINT_TEXT "hh.C = <&hh.C&>"
+
+PRINT_TEXT "---"
+DEFINE NewSuper ii 0
+ii.SS = "#$ss for ii"
+PRINT_TEXT "defined class object ii"
+PRINT_TEXT "ii.A = <&ii.A&>"
+PRINT_TEXT "ii.B = <&ii.B&>"
+PRINT_TEXT "ii.C = <&ii.C&>"
+
+PRINT_TEXT "---"
+PRINT_TEXT "ii.C = <&ii.C&>"
+PRINT_TEXT "--calling private function"
+ii.PRIV_FUNC NULL 0
+PRINT_TEXT "ii.C = <&ii.C&>"
+
+PRINT_TEXT "---"
+PRINT_TEXT "now pausing to give a chance to take a debug snapshot"
+PAUSE
+PRINT_TEXT "DONE"
+END_SCRIPT

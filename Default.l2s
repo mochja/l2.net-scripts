@@ -1,0 +1,46 @@
+/* This Scipt was created with JingJing IDE. 
+ * Author: mochitto-PC
+ * @ 2010.december.11 at 05:30 PM 
+*/
+DEFINE STRING RND_STR
+DEFINE INT RAND
+DEFINE ARRAYLIST Chars 
+Chars.ADD "#$q"
+Chars.ADD "#$w"
+Chars.ADD "#$e"
+Chars.ADD "#$r"
+Chars.ADD "#$t"
+Chars.ADD "#$z"
+Chars.ADD "#$u"
+Chars.ADD "#$i"
+Chars.ADD "#$o"
+Chars.ADD "#$p"
+Chars.ADD "#$a"
+Chars.ADD "#$s"
+Chars.ADD "#$d"
+Chars.ADD "#$f"
+Chars.ADD "#$g"
+Chars.ADD "#$h"
+Chars.ADD "#$j"
+Chars.ADD "#$k"
+Chars.ADD "#$l"
+Chars.ADD "#$y"
+Chars.ADD "#$x"
+Chars.ADD "#$c"
+Chars.ADD "#$v"
+Chars.ADD "#$b"
+Chars.ADD "#$n"
+
+FOR A 0 10 1
+     GET_RAND RAND 0 "<&CHARS.COUNT&>"
+     PRINT_TEXT "<&RAND&>"
+     IF RND_STR.LENGTH == 0
+          RND_STR = Chars.RAND
+          RND_STR = RND_STR.TO_UPPER
+     ELSE
+          RND_STR = "#$<&RND_STR&><&Chars.RAND&>"          
+     ENDIF
+NEXT
+
+PRINT_TEXT "<&RND_STR&>" 
+END_SCRIPT

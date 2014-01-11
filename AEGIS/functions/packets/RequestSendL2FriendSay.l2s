@@ -1,0 +1,30 @@
+// Handle RequestSendL2FriendSay packets
+
+FUNCTION Packet::RequestSendL2FriendSay 1 _bRequestSendL2FriendSay
+
+  DEFINE STRING RECEIVER
+  DEFINE STRING MSG
+  
+  _bRequestSendL2FriendSay.READ_BYTE NULL
+  _bRequestSendL2FriendSay.READ_STRING MSG
+  _bRequestSendL2FriendSay.READ_STRING RECEIVER
+  
+  SWITCH RECEIVER
+    CASE "#$SKILL_RECON"
+      PRINT_TEXT "Message from client!"
+      SWITCH MSG
+        CASE "#$Oly"
+          AEGIS.OPTIONS.CONFIG.#$SKILL_RECON_MODE = #I1
+          BREAK 1
+        CASE "#$Normal"
+          AEGIS.OPTIONS.CONFIG.#$SKILL_RECON_MODE = #I0
+          BREAK 1
+      ENDSWITCH
+      BREAK 1
+    DEFAULT
+      _bRequestSendL2FriendSay.RESET_INDEX
+      INJECTBB _bRequestSendL2FriendSay
+      BREAK 1
+  ENDSWITCH
+  
+RETURN VOID

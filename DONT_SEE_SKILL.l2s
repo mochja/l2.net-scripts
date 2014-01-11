@@ -1,0 +1,79 @@
+// Kratky popis
+// Server: 
+// Autor: mochitto
+// Date: 
+// Special thanks for L2.NET contributors
+// rev.: 0
+PRINT_TEXT "SCRIPT STARTED!]"
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" MagicSkillUse 72
+// Main section
+// ===============================
+
+BLOCK 72
+//BLOCK 84
+
+SLEEP 12121212121212
+	
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT
+
+FUNCTION MagicSkillUse
+	DEFINE INT charObjId 0
+	DEFINE INT targetId 0
+	DEFINE INT skillId 0
+	DEFINE INT skillLevel 0
+	DEFINE INT hitTime 0
+	DEFINE INT reuseDelay 0
+	DEFINE INT x 0
+	DEFINE INT y 0
+	DEFINE INT z 0
+	DEFINE INT tx 0
+	DEFINE INT ty 0
+	DEFINE INT tz 0  	
+
+	PACKET.READ_BYTE NULL
+	PACKET.READ_INT32 charObjId
+	PACKET.READ_INT32 targetId
+	PACKET.READ_INT32 skillId
+	PACKET.READ_INT32 skillLevel
+	PACKET.READ_INT32 hitTime
+	PACKET.READ_INT32 reuseDelay
+	PACKET.READ_INT32 x
+	PACKET.READ_INT32 y
+	PACKET.READ_INT32 z
+	PACKET.READ_INT32 NULL
+	PACKET.READ_INT32 tx
+	PACKET.READ_INT32 ty
+	PACKET.READ_INT32 tz
+	
+	
+	SWITCH skillId
+		CASE #i5495
+		CASE #i5496
+		CASE #i5497
+		CASE #i5498
+		CASE #i5499
+		CASE #i5531
+		CASE #i5532
+		CASE #i5533
+			BREAK 1
+		DEFAULT
+			DEFINE BYTEBUFFER MagicSkillUseCLIENT 512
+			MagicSkillUseCLIENT.WRITE_BYTE #i72
+			MagicSkillUseCLIENT.WRITE_INT32 charObjId
+			MagicSkillUseCLIENT.WRITE_INT32 targetId
+			MagicSkillUseCLIENT.WRITE_INT32 skillId
+			MagicSkillUseCLIENT.WRITE_INT32 skillLevel
+			MagicSkillUseCLIENT.WRITE_INT32 hitTime
+			MagicSkillUseCLIENT.WRITE_INT32 reuseDelay
+			MagicSkillUseCLIENT.WRITE_INT32 x
+			MagicSkillUseCLIENT.WRITE_INT32 y
+			MagicSkillUseCLIENT.WRITE_INT32 z
+			MagicSkillUseCLIENT.WRITE_INT32 #i0
+			MagicSkillUseCLIENT.WRITE_INT32 tx
+			MagicSkillUseCLIENT.WRITE_INT32 ty
+			MagicSkillUseCLIENT.WRITE_INT32 tz
+			INJECTBB_CLIENT MagicSkillUseCLIENT
+			DELETE MagicSkillUseCLIENT
+	ENDSWITCH	
+RETURN VOID

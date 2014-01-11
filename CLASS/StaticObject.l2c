@@ -1,0 +1,21 @@
+// Kratky popis
+// Server: 
+// Autor: mochitto
+// Date: 
+// Special thanks for L2.NET contributors
+// rev.: 0
+CLASS StaticObject null
+	VAR_START
+    PUBLIC INT staticObjectId   0
+    PUBLIC INT objectId         0
+    PUBLIC INT type             0
+    PUBLIC INT isTargetable     0
+    PUBLIC INT meshIndex        0
+    PUBLIC INT isClosed         0
+    PUBLIC INT isEnemy          0
+    PUBLIC INT currentHp        0
+    PUBLIC INT maxHp            0
+    PUBLIC INT showHp           0
+    PUBLIC INT damageGrade      0
+	VAR_END
+END_CLASS

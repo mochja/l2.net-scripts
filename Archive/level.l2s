@@ -1,0 +1,69 @@
+//lets make a variable to store the hp to rest when we drop below
+DEFINE INT HP 2
+HP = CHAR_MAX_HP / HP
+//we make it equal to half our max
+
+//let set a range to pick up loot
+DEFINE INT loot_range 100
+
+PRINT_TEXT "rest below <&HP&>"
+
+//lets make sure we start with decent hp
+IF CHAR_CUR_HP < HP
+	CALLSUB Rest
+ENDIF
+
+DO 
+	DO 
+		CALLSUB Target
+
+		//if we got a target
+		IF TARGET_CUR_HP > ZERO
+			//lets kill it
+			CALLSUB KillTarget
+		ENDIF
+
+		//PRINT_TEXT "target dead"
+
+		//now our target is dead
+		//PRINT_TEXT "<&NEAREST_ITEM_DISTANCE&>"
+		WHILE NEAREST_ITEM_DISTANCE < loot_range
+			//PRINT_TEXT "loot is nearby"
+			CALLSUB pickup
+		WEND
+	//do we need to rest? if not lets keep fighting
+	LOOP CHAR_CUR_HP > HP 
+
+	PRINT_TEXT "lower than <&HP&>, resting"
+	CALLSUB Rest
+	PRINT_TEXT "hp is full, starting to fight again"
+LOOP ZERO == ZERO
+
+END_SCRIPT
+
+////////SUBS//////////
+
+SUB Target
+	TARGET_NEAREST
+	SLEEP 750
+RETURNSUB
+
+SUB pickup
+	CLICK_NEAREST_ITEM
+	SLEEP 200
+RETURNSUB
+
+SUB KillTarget
+	DO
+		ATTACK_TARGET
+		SLEEP 200
+	LOOP TARGET_CUR_HP > ZERO
+	//PRINT_TEXT "killtarget sub finished"
+RETURNSUB
+
+SUB Rest
+	DO
+	SLEEP 1000
+	LOOP CHAR_CUR_HP != CHAR_MAX_HP
+RETURNSUB
+

@@ -1,0 +1,33 @@
+DEFINE INT ia 255
+DEFINE INT ib 65280
+DEFINE INT ic 16711680
+DEFINE INT id 4278190080
+
+DEFINE INT oa 0
+DEFINE INT ob 0
+DEFINE INT oc 0
+DEFINE INT od 0
+
+DEFINE BYTEBUFFER bb 100
+
+bb.WRITE_INT32 ia
+bb.WRITE_INT32 ib
+bb.WRITE_INT32 ic
+//on purpuse error here... writing a value larger than 32 bits as a 32 bit value.  Using WRITE_INT64 would fix this error
+bb.WRITE_INT32 id
+
+bb.RESET_INDEX
+
+bb.READ_INT32 oa
+bb.READ_INT32 ob
+bb.READ_INT32 oc
+bb.READ_INT32 od
+
+PRINT_TEXT "oa = <&oa&> ... ia = <&ia&>"
+PRINT_TEXT "ob = <&ob&> ... ib = <&ib&>"
+PRINT_TEXT "oc = <&oc&> ... ic = <&ic&>"
+PRINT_TEXT "od = <&od&> ... id = <&id&>"
+
+PRINT_TEXT "index/count: <&bb.INDEX&>/<&bb.count&>"
+
+END_SCRIPT

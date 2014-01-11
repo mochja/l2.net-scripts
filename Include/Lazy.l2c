@@ -1,0 +1,170 @@
+
+CLASS LAZY NULL
+
+//-------------------------------------------------------------------------------------
+
+   VAR_START
+
+      PUBLIC INT VERSION 5
+      PUBLIC SORTEDLIST CLASSES 0
+      PUBLIC INT MENU_NPC_ID 111000000
+      PUBLIC SORTEDLIST CLASSDATA 0
+
+   VAR_END
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT 0
+
+      //DEFINE INT STATUS 0
+      //TEST_WEBSITE STATUS "http://pokeplay.org/L2Agita/Lazy/index.php?CheckVersion=<&LAZY.VERSION&>"
+      //IF (STATUS == FALSE)
+      //   DEFINE WINDOW LAZY_WINDOW HTML
+      //   LAZY_WINDOW.SET_NAME "Lazy"
+      //   LAZY_WINDOW.SET_FILENAME  "http://pokeplay.org/L2Agita/Lazy/index.php?OldVersion"
+      //   LAZY_WINDOW.RUN_WINDOW
+      //   PRINT_TEXT "Lazy]: A new version is available !!!"
+      //ENDIF
+
+      ENGINEX.EVENTS.ADD_CUSTOMPACKET VOID 2 SCRIPTEVENT_CHATTOBOT #$LAZY.CUSTOMEVENT_CHATTOBOT
+      ENGINEX.EVENTS.ADD_CLIENTPACKET VOID 2 #i35 #$LAZY.CLIENTEVENT_BYPASSACTION
+
+      BLOCK_CLIENT 35
+
+      LAZY.LOAD_CLASSDATA VOID 1 "#$Core"
+      LAZY.LOAD_CLASSDATA VOID 1 "#$Custom"
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC LOAD_CLASSDATA 1 FILENAME
+
+      DEFINE STRING FILELINE ""
+      DEFINE FILEREADER FROPEN "../Include/Lazy/<&FILENAME&>.txt"
+      WHILE (TRUE == TRUE)
+         FROPEN.READ FILELINE
+         FILELINE = FILELINE.TRIM
+         FILELINE = FILELINE.TO_UPPER
+         IF (FILELINE == #$__EOF)
+            BREAK 2
+         ENDIF
+         IF ("FILELINE.STARTSWITH #$//" == FALSE)
+            DEFINE ARRAYLIST FILELINEWORDS 0
+            ENGINEX.STRINGS.REPLACE FILELINE 4 FILELINE "#$  " "#$ " TRUE
+            ENGINEX.STRINGS.EXPLODE FILELINEWORDS 2 "#$ " FILELINE
+            IF (FILELINEWORDS.COUNT == #i3)
+               DEFINE SORTEDLIST NEWCLASSDATA 0
+               NEWCLASSDATA.ADD "#$<&FILELINEWORDS.#i1&>" "CLASSNAME"
+               NEWCLASSDATA.ADD "#$<&FILELINEWORDS.#i2&>" "CLASSFILE"
+               LAZY.CLASSDATA.ADD "NEWCLASSDATA" "<&FILELINEWORDS.#i0&>"
+               DELETE NEWCLASSDATA
+            ENDIF
+            DELETE FILELINEWORDS
+         ENDIF
+      WEND
+      FROPEN.CLOSE
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC REGISTER 1 CLASSKEY
+
+      IF ("LAZY.CLASSES.CONTAINS_KEY <&CLASSKEY&>" == TRUE)
+         RETURN LAZY.CLASSES.CLASSKEY
+      ENDIF
+
+      IF ("LAZY.CLASSDATA.CONTAINS_KEY <&CLASSKEY&>" == TRUE)
+         INCLUDE "<&LAZY.CLASSDATA.CLASSKEY.#$CLASSFILE&>"
+         DEFINE "<&LAZY.CLASSDATA.CLASSKEY.#$CLASSNAME&>" TEMPCLASS 0
+         LAZY.CLASSES.ADD TEMPCLASS "<&CLASSKEY&>"
+         TEMPCLASS.CONSTRUCT2 VOID 0
+         RETURN TEMPCLASS
+      ENDIF
+
+   RETURN ZERO
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CUSTOMEVENT_CHATTOBOT 1 PACKET_DATA
+
+      IF (PACKET_DATA.#$MESSAGE.TO_UPPER == #$LAZY)
+         LAZY.SHOW_MENU VOID 0
+      ENDIF
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC SHOW_MENU 0
+
+      DEFINE STRING QUOTE ""
+      ENGINEX.CONVERT.DEC2ASCII QUOTE 1 #i34
+      DEFINE STRING HTML ""
+      HTML = "#$<&HTML&><html>"
+      HTML = "#$<&HTML&><title>Welcome to the Lazy-menu</title>"
+      HTML = "#$<&HTML&><body>"
+      HTML = "#$<&HTML&><center>Choose a Lazy-Class</center><br>"
+      FOR I 0 "<&LAZY.CLASSES.COUNT&>" 1
+         IF (LAZY.CLASSES.I.{MENU}.CLASSNAME != #$INT)
+            HTML = "#$<&HTML&><center><button"
+            HTML = "#$<&HTML&> value=<&QUOTE&><&LAZY.CLASSES.GET_KEY I&><&QUOTE&> width=150 height=20"
+            HTML = "#$<&HTML&> action=<&QUOTE&>bypass -h LAZY <&LAZY.CLASSES.GET_KEY I&><&QUOTE&>"
+            HTML = "#$<&HTML&> back=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&> fore=<&QUOTE&>L2UI_ct1.button_df<&QUOTE&>"
+            HTML = "#$<&HTML&>></center><br>"
+         ENDIF
+      NEXT
+      HTML = "#$<&HTML&></body>"
+      HTML = "#$<&HTML&></html>"
+      LAZY.INJECT_MENU VOID 1 HTML
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CLIENTEVENT_BYPASSACTION 1 PACKET_DATA
+
+      DEFINE STRING BYPASS_STRING "<&PACKET_DATA.#$ACTION&>"
+      BYPASS_STRING = BYPASS_STRING.TRIM
+      IF ("BYPASS_STRING.STARTSWITH #$LAZY" == TRUE)
+         ENGINEX.STRINGS.REPLACE BYPASS_STRING 4 BYPASS_STRING "#$  " "#$ " TRUE
+         DEFINE ARRAYLIST BYPASS_DATA 0
+         ENGINEX.STRINGS.EXPLODE BYPASS_DATA 2 "#$ " BYPASS_STRING
+         BYPASS_DATA.REMOVE 0
+         IF (BYPASS_DATA.COUNT != ZERO)
+            DEFINE STRING REQUESTED_CHILD "<&BYPASS_DATA.#i0&>"
+            BYPASS_DATA.REMOVE 0
+            IF ("LAZY.CLASSES.CONTAINS_KEY <&REQUESTED_CHILD&>" == TRUE)
+               IF (LAZY.CLASSES.REQUESTED_CHILD.{MENU}.CLASSNAME != #$INT)
+                  LAZY.CLASSES.REQUESTED_CHILD.{MENU}.SHOW VOID 1 BYPASS_DATA
+               ELSE
+                  LAZY.SHOW_MENU VOID 0
+               ENDIF
+            ELSE
+               LAZY.SHOW_MENU VOID 0
+            ENDIF
+         ELSE
+            LAZY.SHOW_MENU VOID 0
+         ENDIF
+      ELSE
+         INJECTBB PACKET_DATA.#$__PACKET
+      ENDIF
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC INJECT_MENU 1 HTML
+
+      DEFINE BYTEBUFFER BB 19999
+      BB.WRITE_BYTE #i25
+      BB.WRITE_INT32 LAZY.MENU_NPC_ID
+      BB.WRITE_STRING HTML
+      INJECTBB_CLIENT BB
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+END_CLASS

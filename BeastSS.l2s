@@ -1,0 +1,36 @@
+// Auto uncompress soulshots
+// Server: ALL
+// Autor: mochitto
+// Date: 6.2.2011 
+// Special thanks for L2.NET contributors
+// rev.: 1
+PRINT_TEXT "SCRIPT STARTED!]"
+
+THREAD CHECK_PET_SHOTS
+
+DO
+	SLEEP 97283423
+LOOP 1 == 1
+	
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT
+
+FUNCTION CHECK_PET_SHOTS
+	DEFINE INT TMP_COUNT
+	DO
+		ITEM_COUNT TMP_COUNT 6645  // Beast Soulshot
+		IF TMP_COUNT < 500
+			PRINT_TEXT "I have out of Beast Soulshot, need uncommpress..."
+			ITEM_COUNT TMP_COUNT 10515  // Beast Soulshot Compressed Pack
+			IF TMP_COUNT > 0 
+				PRINT_TEXT "I use a pack for next shots ;)"
+				USE_ITEM 10515 // Beast Soulshot Compressed Pack
+				SLEEP 1000
+			ELSE
+				PRINT_TEXT "You dont have a Beast Soulshot Compressed Pack."
+				BREAK 3
+			ENDIF
+		ENDIF
+		SLEEP 500
+	LOOP 1 == 1
+RETURN VOID

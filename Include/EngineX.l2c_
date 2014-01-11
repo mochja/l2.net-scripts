@@ -1,0 +1,66 @@
+
+INCLUDE Include/EngineX/Convert.l2c
+INCLUDE Include/EngineX/Events.l2c
+INCLUDE Include/EngineX/Files.l2c
+INCLUDE Include/EngineX/Geo.l2c
+INCLUDE Include/EngineX/Lists.l2c
+INCLUDE Include/EngineX/Math.l2c
+INCLUDE Include/EngineX/Matrix.l2c
+INCLUDE Include/EngineX/Objects.l2c
+INCLUDE Include/EngineX/Strings.l2c
+INCLUDE Include/EngineX/Time.l2c
+INCLUDE Include/EngineX/Utils.l2c
+
+CLASS ENGINEX NULL
+
+//-------------------------------------------------------------------------------------
+//
+// (c) L2Agita
+// version: 13 (08.06.2010)
+//
+//-------------------------------------------------------------------------------------
+
+   VAR_START
+
+      PUBLIC INT VERSION 13
+      PUBLIC ENGINEX_CONVERT CONVERT 0
+      PUBLIC ENGINEX_EVENTS EVENTS 0
+      PUBLIC ENGINEX_FILES FILES 0
+      PUBLIC ENGINEX_GEO GEO 0
+      PUBLIC ENGINEX_LISTS LISTS 0
+      PUBLIC ENGINEX_MATH MATH 0
+      PUBLIC ENGINEX_MATRIX MATRIX 0
+      PUBLIC ENGINEX_OBJECTS OBJECTS 0
+      PUBLIC ENGINEX_STRINGS STRINGS 0
+      PUBLIC ENGINEX_TIME TIME 0
+      PUBLIC ENGINEX_UTILS UTILS 0
+
+   VAR_END
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT 0
+
+      DEFINE INT STATUS 0
+      TEST_WEBSITE STATUS "http://pokeplay.org/L2Agita/EngineX/index.php?CheckVersion=<&ENGINEX.VERSION&>"
+      IF (STATUS == FALSE)
+         PRINT_TEXT "EngineX]: A new version is available !!!"
+      ENDIF
+
+      ENGINEX.CONVERT.CONSTRUCT VOID 0
+      ENGINEX.EVENTS.CONSTRUCT VOID 0
+      ENGINEX.FILES.CONSTRUCT VOID 0
+      ENGINEX.GEO.CONSTRUCT VOID 0
+      ENGINEX.LISTS.CONSTRUCT VOID 0
+      ENGINEX.MATH.CONSTRUCT VOID 0
+      ENGINEX.MATRIX.CONSTRUCT VOID 0
+      ENGINEX.OBJECTS.CONSTRUCT VOID 0
+      ENGINEX.STRINGS.CONSTRUCT VOID 0
+      ENGINEX.TIME.CONSTRUCT VOID 0
+      ENGINEX.UTILS.CONSTRUCT VOID 0
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+END_CLASS

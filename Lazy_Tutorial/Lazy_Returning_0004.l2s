@@ -1,0 +1,89 @@
+
+	INCLUDE "Include/EngineX.l2c"
+	DEFINE_GLOBAL ENGINEX ENGINEX 0
+
+	INCLUDE "Include/Lazy.l2c"
+	DEFINE_GLOBAL LAZY LAZY 0
+
+//-------------------------------------------------------------------------------------
+
+   // Test:
+   // - Point2d
+   // - PolyContainsPoint
+
+   DEFINE INT RETURNING 0
+   LAZY.REGISTER RETURNING 1 #$RETURNING
+
+//-------------------------------------------------------------------------------------
+
+   DEFINE_GLOBAL ARRAYLIST MYPOLY 0
+
+   DEFINE VECTOR2 MYPOLYPOINT 0
+   MYPOLYPOINT.SET VOID 2 #i100 #i100
+   MYPOLY.ADD MYPOLYPOINT
+   DELETE MYPOLYPOINT
+
+   DEFINE VECTOR2 MYPOLYPOINT 0
+   MYPOLYPOINT.SET VOID 2 #i100 #i-100
+   MYPOLY.ADD MYPOLYPOINT
+   DELETE MYPOLYPOINT
+
+   DEFINE VECTOR2 MYPOLYPOINT 0
+   MYPOLYPOINT.SET VOID 2 #i-100 #i-100
+   MYPOLY.ADD MYPOLYPOINT
+   DELETE MYPOLYPOINT
+
+   DEFINE VECTOR2 MYPOLYPOINT 0
+   MYPOLYPOINT.SET VOID 2 #i-100 #i100
+   MYPOLY.ADD MYPOLYPOINT
+   DELETE MYPOLYPOINT
+
+//-------------------------------------------------------------------------------------
+
+   DEFINE_GLOBAL INT MY_X 0
+   DEFINE_GLOBAL INT MY_Y 0
+
+   DEFINE INT MYPOINT 0
+   RETURNING.NEW_PIECE MYPOINT 2 #$MyPoint #$Point2d
+   MYPOINT.SET_VARIABLE VOID 2 #$X #$MY_X
+   MYPOINT.SET_VARIABLE VOID 2 #$Y #$MY_Y
+   DELETE MYPOINT
+
+   DEFINE INT MYPIECE 0
+   RETURNING.NEW_PIECE MYPIECE 2 #$MyPiece #$PolyContainsPoint
+   MYPIECE.SET_VARIABLE VOID 2 #$POLYGON #$MYPOLY
+   MYPIECE.SET_REFERENCE VOID 2 #$POINT #$MyPoint
+   DELETE MYPIECE
+
+//-------------------------------------------------------------------------------------
+
+   DEFINE INT MYRETURN 0
+
+   MY_X = #i0
+   MY_Y = #i0
+   RETURNING.PIECES.#$MyPiece.GET_RETURN MYRETURN 0
+   PRINT_TEXT "<&MYRETURN&> (should be 1)"
+
+   MY_X = #i50
+   MY_Y = #i50
+   RETURNING.PIECES.#$MyPiece.GET_RETURN MYRETURN 0
+   PRINT_TEXT "<&MYRETURN&> (should be 1)"
+
+   MY_X = #i99
+   MY_Y = #i99
+   RETURNING.PIECES.#$MyPiece.GET_RETURN MYRETURN 0
+   PRINT_TEXT "<&MYRETURN&> (should be 1)"
+
+   MY_X = #i101
+   MY_Y = #i50
+   RETURNING.PIECES.#$MyPiece.GET_RETURN MYRETURN 0
+   PRINT_TEXT "<&MYRETURN&> (should be 0)"
+
+   MY_X = #i123
+   MY_Y = #i456
+   RETURNING.PIECES.#$MyPiece.GET_RETURN MYRETURN 0
+   PRINT_TEXT "<&MYRETURN&> (should be 0)"
+
+//-------------------------------------------------------------------------------------
+
+END_SCRIPT

@@ -1,0 +1,24 @@
+﻿<html>
+	<title>Grand Boss Info</title>
+<body>
+	<br>
+	<center>
+		<img src="L2UI_CH3.herotower_deco" width=256 height=32>
+		<table width=260>
+			<tr>
+				<td><font color="00C3FF">Raid Bosses</color>:</td>
+				<td><font color="32C332"><a action="bypass -h Quest BossRespawn raidbosses">Click Here</a></color></td>
+			</tr>
+<br>
+<br>
+<br>
+			<tr>
+				<td><font color="00C3FF">Grand Bosses</color>:</td>
+				<td><font color="32C332"><a action="bypass -h Quest BossRespawn grandbosses">Click Here</a></color></td>
+			</tr>
+		</table>
+		<img src="L2UI_CH3.herotower_deco" width=256 height=32>
+		<br>
+	</center>
+</body>
+</html>

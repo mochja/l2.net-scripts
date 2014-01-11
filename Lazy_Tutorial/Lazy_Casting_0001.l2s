@@ -1,0 +1,48 @@
+
+	INCLUDE "Include/EngineX.l2c"
+	DEFINE_GLOBAL ENGINEX ENGINEX 0
+
+	INCLUDE "Include/Lazy.l2c"
+	DEFINE_GLOBAL LAZY LAZY 0
+
+//-------------------------------------------------------------------------------------
+
+   // if you want to get use of automatic and especially FLAWLESS and FLUENTLY casting
+   // you may use the CASTING subclass of LAZY
+
+   DEFINE INT CASTING 0
+   LAZY.REGISTER CASTING 1 #$CASTING
+
+//-------------------------------------------------------------------------------------
+
+   // CASTING is working with castlists
+   // each castlist has got its own list of skill ids
+
+   // this will be our pointer to the castlist we'll create
+   DEFINE INT CASTLIST 0
+
+   // this is how to create a castlist an get the pointer to it
+   CASTING.CREATE_CASTLIST CASTLIST 1 #$MyCastlist
+
+   // with the pointer we can configurate this castlist.
+
+   // we dont want to repeat the castlist
+   CASTLIST.REPEAT = TRUE
+
+   // add the skill "self heal" to the castlist
+   CASTING.ADD_SKILL VOID 2 #$MyCastlist #i1216
+
+   // run the castlist 3 times
+  // FOR I 0 3 1
+
+      // start the casting thread
+      CASTING.START VOID 1 #$MyCastlist
+
+      // sleep this script while the thread is running
+      CASTING.SLEEP VOID 0
+
+  // NEXT
+
+//-------------------------------------------------------------------------------------
+
+END_SCRIPT

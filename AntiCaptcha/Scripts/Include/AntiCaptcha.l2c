@@ -1,0 +1,223 @@
+
+//-------------------------------------------------------------------------------------
+//
+// udp_Packets:
+// 1: start send crest to tool
+//   1|crest_id
+// 2: send crest to tool
+//   2|crest_id|crest_size|crest_data
+// 3: send crest finished
+//   3|crest_id|crest_size
+// 4: receive confirm
+//   4|crest_id
+// 5: receive cracked crest captcha
+//   5|crest_id|captcha_result
+//
+//-------------------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------------------
+CLASS ANTICAPTCHA NULL
+//-------------------------------------------------------------------------------------
+
+   VAR_START
+
+      PUBLIC SORTEDLIST UDPPACKETNAMES 0
+      PUBLIC SORTEDLIST SEND_LOCKS 0
+      PUBLIC INT SEND_TIMEOUT 3000
+      PUBLIC INT SEND_SIZE 512
+      PUBLIC SORTEDLIST CAPTCHA 0
+
+   VAR_END
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT 0
+
+      THIS.UDPPACKETNAMES.ADD "#$" "UdpPacketName1"
+      THIS.UDPPACKETNAMES.ADD "#$" "UdpPacketName2"
+      THIS.UDPPACKETNAMES.ADD "#$" "UdpPacketName3"
+      THIS.UDPPACKETNAMES.ADD "#$" "UdpPacketName4"
+      THIS.UDPPACKETNAMES.ADD "#$" "UdpPacketName5"
+
+      SET_EVENT "<&SCRIPTEVENT_UDPRECEIVEBB&>" "<&SYSTEM_CURRENTFILE&>" RECEIVE_UDP
+      SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" RECEIVE_CREST 106
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC RECEIVE_UDP
+
+      DEFINE STRING UDPPACKETNAME ""
+      BBUFF.READ_STRING UDPPACKETNAME
+      SWITCH UDPPACKETNAME
+
+         CASE ANTICAPTCHA.UDPPACKETNAMES.#$UdpPacketName4
+            DEFINE INT CREST_ID 0
+            DEFINE STRING GOTCHA ""
+            BBUFF.READ_INT32 CREST_ID
+            ANTICAPTCHA.UNLOCK_SENDING VOID 1 CREST_ID
+            BREAK 1
+
+         CASE ANTICAPTCHA.UDPPACKETNAMES.#$UdpPacketName5
+            DEFINE INT CREST_ID 0
+            DEFINE STRING GOTCHA ""
+            BBUFF.READ_INT32 CREST_ID
+            BBUFF.READ_STRING GOTCHA
+            ANTICAPTCHA.UNLOCK_SENDING VOID 1 CREST_ID
+            IF ( "ANTICAPTCHA.CAPTCHA.CONTAINS_KEY <&CREST_ID&>" == FALSE )
+               ANTICAPTCHA.CAPTCHA.ADD GOTCHA "<&CREST_ID&>"
+            ELSE
+               DEFINE STRING CREST_ID_STR "<&CREST_ID&>"
+               ANTICAPTCHA.CAPTCHA.CREST_ID = GOTCHA
+            ENDIF
+            BREAK 1
+
+      ENDSWITCH
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC LOCK_SENDING 1 CREST_ID
+      THIS.SEND_LOCKS.ADD TRUE "_<&CREST_ID&>"
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC UNLOCK_SENDING 1 CREST_ID
+      THIS.SEND_LOCKS.REMOVE "_<&CREST_ID&>"
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC SLEEP_SENDING_LOCK 1 CREST_ID
+      DEFINE INT TIMEDOUT 0
+      DEFINE INT SLEEPED_TIME 0
+      WHILE ( "THIS.SEND_LOCKS.CONTAINS_KEY _<&CREST_ID&>" == TRUE )
+         SLEEP 100
+         SLEEPED_TIME = SLEEPED_TIME + 100
+         IF ( SLEEPED_TIME > THIS.SEND_TIMEOUT )
+            TIMEDOUT = TRUE
+            THIS.UNLOCK_SENDING VOID 1 CREST_ID
+         ENDIF
+      WEND
+   RETURN TIMEDOUT
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC RECEIVE_CREST
+      ANTICAPTCHA.SEND_CREST VOID 1 PACKET
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC SEND_CREST 1 CREST_BB
+
+      DEFINE INT PACKET_TYPE 0
+      DEFINE INT CREST_ID 0
+      DEFINE INT CREST_SIZE 0
+
+      CREST_BB.READ_BYTE PACKET_TYPE
+      CREST_BB.READ_INT32 CREST_ID
+      CREST_BB.READ_INT32 CREST_SIZE
+
+      DEFINE INT TIMEDOUT 0
+
+      ANTICAPTCHA.LOCK_SENDING VOID 1 CREST_ID
+
+      DEFINE BYTEBUFFER SEND_BB 1014
+      SEND_BB.WRITE_STRING ANTICAPTCHA.UDPPACKETNAMES.#$UdpPacketName1
+      SEND_BB.WRITE_INT32 CREST_ID
+      SEND_BB.TRIM_TO_INDEX
+      UDP_SENDBB SEND_BB
+      DELETE SEND_BB
+
+      ANTICAPTCHA.SLEEP_SENDING_LOCK TIMEDOUT 1 CREST_ID
+      IF ( TIMEDOUT == TRUE )
+         RETURN TRUE
+      ENDIF
+
+      DEFINE INT NEXT_SIZE "<&CREST_SIZE&>"
+      DEFINE INT DONE_SIZE 0
+      IF ( NEXT_SIZE > ANTICAPTCHA.SEND_SIZE )
+         NEXT_SIZE = ANTICAPTCHA.SEND_SIZE
+      ENDIF
+
+      DEFINE BYTEBUFFER SEND_BB 1014
+      SEND_BB.WRITE_STRING ANTICAPTCHA.UDPPACKETNAMES.#$UdpPacketName2
+      SEND_BB.WRITE_INT32 CREST_ID
+      SEND_BB.WRITE_INT32 NEXT_SIZE
+
+      FOR I 0 "<&CREST_SIZE&>" 1
+
+         DEFINE INT CREST_BYTE 0
+         CREST_BB.READ_BYTE CREST_BYTE
+         SEND_BB.WRITE_BYTE CREST_BYTE
+
+         DONE_SIZE = DONE_SIZE + ONE
+         IF ( DONE_SIZE == ANTICAPTCHA.SEND_SIZE )
+
+            ANTICAPTCHA.LOCK_SENDING VOID 1 CREST_ID
+
+            SEND_BB.TRIM_TO_INDEX
+            UDP_SENDBB SEND_BB
+            DELETE SEND_BB
+
+            ANTICAPTCHA.SLEEP_SENDING_LOCK TIMEDOUT 1 CREST_ID
+            IF ( TIMEDOUT == TRUE )
+               RETURN TRUE
+            ENDIF
+
+            DEFINE BYTEBUFFER SEND_BB 1014
+            SEND_BB.WRITE_STRING ANTICAPTCHA.UDPPACKETNAMES.#$UdpPacketName2
+            SEND_BB.WRITE_INT32 CREST_ID
+
+            DONE_SIZE = ZERO
+            NEXT_SIZE = CREST_SIZE - I
+            NEXT_SIZE = NEXT_SIZE - ONE
+            IF ( NEXT_SIZE > ANTICAPTCHA.SEND_SIZE )
+               NEXT_SIZE = ANTICAPTCHA.SEND_SIZE
+            ENDIF
+            SEND_BB.WRITE_INT32 NEXT_SIZE
+
+         ENDIF
+         DELETE CREST_BYTE
+
+      NEXT
+
+      IF ( DONE_SIZE > ZERO )
+
+         ANTICAPTCHA.LOCK_SENDING VOID 1 CREST_ID
+
+         SEND_BB.TRIM_TO_INDEX
+         UDP_SENDBB SEND_BB
+
+         ANTICAPTCHA.SLEEP_SENDING_LOCK TIMEDOUT 1 CREST_ID
+         IF ( TIMEDOUT == TRUE )
+            RETURN TRUE
+         ENDIF
+
+      ENDIF
+      DELETE SEND_BB
+
+      ANTICAPTCHA.LOCK_SENDING VOID 1 CREST_ID
+
+      DEFINE BYTEBUFFER SEND_BB 1014
+      SEND_BB.WRITE_STRING ANTICAPTCHA.UDPPACKETNAMES.#$UdpPacketName3
+      SEND_BB.WRITE_INT32 CREST_ID
+      SEND_BB.WRITE_INT32 CREST_SIZE
+      SEND_BB.TRIM_TO_INDEX
+      UDP_SENDBB SEND_BB
+      DELETE SEND_BB
+
+      ANTICAPTCHA.SLEEP_SENDING_LOCK TIMEDOUT 1 CREST_ID
+      IF ( TIMEDOUT == TRUE )
+         RETURN TRUE
+      ENDIF
+
+   RETURN FALSE
+
+//-------------------------------------------------------------------------------------
+END_CLASS
+//-------------------------------------------------------------------------------------

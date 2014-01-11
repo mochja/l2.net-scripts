@@ -1,0 +1,30 @@
+
+CLASS LAZY_RETURNING_DATAREFERENCE NULL
+
+//-------------------------------------------------------------------------------------
+//
+// DONT USE OR EDIT THIS CLASS !!!
+//
+//-------------------------------------------------------------------------------------
+
+	VAR_START
+      PRIVATE STRING MY_REFERENCE ""
+	VAR_END
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC SET_REFERENCE 1 NEW_REFERENCE
+      THIS.MY_REFERENCE = "#$<&NEW_REFERENCE&>"
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC GET_RETURN 1 CALLTIME
+      DEFINE STRING PIECE_KEY "<&THIS.MY_REFERENCE&>"
+      DEFINE INT MY_RETURN 0
+      LAZY.CLASSES.#$RETURNING.PIECES.PIECE_KEY.GET_RETURN MY_RETURN 1 CALLTIME
+   RETURN MY_RETURN
+
+//-------------------------------------------------------------------------------------
+
+END_CLASS

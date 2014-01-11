@@ -1,0 +1,84 @@
+// DLIB::Packets::ReadSystemMessage - v1.0 for Gracia 2.3
+// by d00d [08/15/09]
+//
+// Takes an byte buffer (_bInBuffer) containing the 
+// SystemMessage packet and dumps the data into a sorted list
+// (_oSystemMessage).
+
+// Version 1.0 - Initial Release
+
+FUNCTION DLIB::Packets::ReadSystemMessage 1 _bInBuffer
+
+    DEFINE SORTEDLIST _oSystemMessage
+    DEFINE ARRAYLIST Data
+    DEFINE INT TYPE_TEXT        0
+    DEFINE INT TYPE_NUMBER      1
+    DEFINE INT TYPE_NPC_NAME    2
+    DEFINE INT TYPE_ITEM_NAME   3
+    DEFINE INT TYPE_SKILL_NAME  4
+    DEFINE INT TYPE_FORTRESS    5
+    DEFINE INT TYPE_ITEM_NUMBER 6
+    DEFINE INT TYPE_ZONE_NAME   7
+    DEFINE INT TYPE_AUGMENT     8
+    DEFINE INT MESSAGE_ID
+    DEFINE INT MESSAGE_SIZE
+    DEFINE INT MESSAGE_TYPE
+    DEFINE INT INT_BUFFER0
+    DEFINE INT INT_BUFFER1
+    DEFINE INT INT_BUFFER2
+    
+    DEFINE STRING STRING_BUFFER
+      
+  IF _bInBuffer.CLASSNAME == "#$BYTEBUFFER"
+  
+    _bInBuffer.READ_BYTE NULL
+    _bInBuffer.READ_INT32 MESSAGE_ID
+    _bInBuffer.READ_INT32 MESSAGE_SIZE
+
+    FOR Z 0 "<&MESSAGE_SIZE&>" 1
+    
+        DEFINE SystemMessage Message
+        _bInBuffer.READ_INT32 Message.MESSAGE_TYPE
+      
+        SWITCH Message.MESSAGE_TYPE
+          CASE TYPE_TEXT
+            _bInBuffer.READ_STRING Message.STRING_BUFFER
+            BREAK 1
+          CASE TYPE_ITEM_NUMBER
+            _bInBuffer.READ_INT64 Message.INT_BUFFER0
+            BREAK 1
+          CASE TYPE_ITEM_NAME
+          CASE TYPE_FORTRESS
+          CASE TYPE_NUMBER
+          CASE TYPE_NPC_NAME
+            _bInBuffer.READ_INT32 Message.INT_BUFFER0
+            BREAK 1
+          CASE TYPE_SKILL_NAME
+            _bInBuffer.READ_INT32 Message.INT_BUFFER0
+            _bInBuffer.READ_INT32 Message.INT_BUFFER1
+            BREAK 1
+          CASE TYPE_ZONE_NAME
+            _bInBuffer.READ_INT32 Message.INT_BUFFER0
+            _bInBuffer.READ_INT32 Message.INT_BUFFER1
+            _bInBuffer.READ_INT32 Message.INT_BUFFER2
+            BREAK 1
+          CASE TYPE_AUGMENT
+            _bInBuffer.READ_INT32 Message.INT_BUFFER0
+            BREAK 1
+          DEFAULT
+            _bInBuffer.READ_INT32 Message.INT_BUFFER0
+        ENDSWITCH
+        
+        Data.ADD Message
+        DELETE Message
+    NEXT
+    
+    _oSystemMessage.ADD MESSAGE_ID "MESSAGE_ID"
+    _oSystemMessage.ADD MESSAGE_SIZE "MESSAGE_SIZE"
+    _oSystemMessage.ADD Data "DATA"
+        
+  ELSE
+    PRINT_TEXT "_bInBuffer is not a ByteBuffer"
+  ENDIF
+
+RETURN _oSystemMessage

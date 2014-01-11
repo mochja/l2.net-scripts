@@ -1,0 +1,24 @@
+DEFINE ARRAYLIST MYAL 0  
+DEFINE STRING TEMP "Value_1"  
+DEFINE STRING TEMP2 "Value_3"  
+ 
+MYAL.ADD TEMP
+ 
+TEMP = "#$Value_2"  
+ 
+MYAL.ADD TEMP
+MYAL.ADD TEMP2
+ 
+ 
+DEFINE INT A 0  
+PRINT_TEXT "MYAL.<&A&> = <&MYAL.A&>"  
+ 
+A = #I1  
+PRINT_TEXT "MYAL.<&A&> = <&MYAL.A&>"  
+
+A = #I2  
+PRINT_TEXT "MYAL.<&A&> = <&MYAL.A&>"  
+
+TEMP = "#$again"
+
+END_SCRIPT

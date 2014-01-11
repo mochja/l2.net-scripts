@@ -1,0 +1,376 @@
+//======================================================================
+//
+// L2Vision v0.50
+// by zdev
+//
+// Code to report back to L2Vision server component. Note that by
+// default even without using this script, the HP/CP/MP values will
+// be reported by L2.Net to L2Vision server.
+//
+// By using this script, you can send more information to L2Vision
+// server.
+//
+// [REQUIRED]
+//
+//   To use any of the optional components below, you must initialize
+//   L2Vision.l2s with the following script snippet:
+//
+//     INCLUDE stdlib\Inventory.l2c
+//     INCLUDE stdlib\Player.l2c
+//
+//     CALL_EXTERN L2Vision.l2s L2V_init VOID 1 "#$aaa.bbb.ccc.ddd"
+//
+//   For the "#$aaa.bbb.ccc.ddd" please provide the IP address where
+//   the L2Vision server component is running. If it's running on the
+//   same box as L2.Net, then you would provide: "#$127.0.0.1"x
+//
+//
+// [OPTIONAL: HILITE ITEMS IN LOOT LIST]
+//
+//   Add to somewhere in your script (must be sent after L2Vision is up):
+//
+//     CALL_EXTERN L2Vision.l2s L2V_send_hilite_item VOID 2 "#$Adena" <setting>
+//
+//     where <setting> = #i0 (off) #i1 (on)
+//     Adena is an example, replace with another name but remember #$ in front
+//     call as many times as you want.
+//     This will make the item show up in white in the list.
+//
+// [OPTIONAL: MARK ITEMS AS CONSUMABLE]
+//
+//   Add to somewhere in your script (must be sent after L2Vision is up):
+//
+//     CALL_EXTERN L2V_send_consumable_item 2 "#$Soulshot: S-Grade" <setting>
+//
+//     where <setting> = #i0 (off) #i1 (on)
+//     Soulshot is an example, replace with another name but remember #$ in front
+//     call as many times as you want
+//     This will show the item in the list no matter what and also show
+//     consumption rate next to it.
+//
+// [OPTIONAL: HILITE MOBS IN MOBS LIST]
+//
+//   Add to somewhere in your script (must be sent after L2Vision is up):
+//
+//     CALL_EXTERN L2Vision.l2s L2V_send_hilite_mob VOID 2 "#$Elpy" <setting>
+//
+//     where <setting> = #i0 (off) #i1 (on)
+//     Elpy is an example, replace with another name but remember #$ in front
+//     call as many times as you want
+//     This will make the mob show up in white in the list.
+//
+//======================================================================
+
+//----------------------------------------------------------------------
+
+FUNCTION L2V_send_char_info VOID
+  DEFINE BYTEBUFFER pkt 256
+
+  pkt.RESET_INDEX
+  pkt.WRITE_UINT32 #i98765
+  pkt.WRITE_UINT32 #i1
+  pkt.WRITE_UINT64 CHAR_XP
+  pkt.WRITE_UINT64 CHAR_SP
+  pkt.WRITE_UINT32 CHAR_MAX_CP
+  pkt.WRITE_UINT32 CHAR_CUR_CP
+  pkt.WRITE_UINT32 CHAR_MAX_HP
+  pkt.WRITE_UINT32 CHAR_CUR_HP
+  pkt.WRITE_UINT32 CHAR_MAX_MP
+  pkt.WRITE_UINT32 CHAR_CUR_MP
+  pkt.WRITE_INT32 CHAR_X
+  pkt.WRITE_INT32 CHAR_Y
+  pkt.WRITE_INT32 CHAR_Z
+  pkt.TRIM_TO_INDEX
+  pkt.RESET_INDEX
+
+  UDP_IP_SENDBB "<&_listener_ip&>" pkt
+RETURN VOID
+
+//----------------------------------------------------------------------
+
+FUNCTION L2V_send_inventory_updated_item 2 item_id count
+  DEFINE BYTEBUFFER pkt 256
+  DEFINE STRING name    ""
+
+  ITEM_GET_NAME name "<&item_id&>"
+  pkt.RESET_INDEX
+  pkt.WRITE_UINT32 #i98765
+  pkt.WRITE_UINT32 #i2
+  pkt.WRITE_UINT64 item_id
+  pkt.WRITE_UINT64 count
+  pkt.WRITE_STRING name
+  pkt.TRIM_TO_INDEX
+  pkt.RESET_INDEX
+
+  UDP_IP_SENDBB "<&_listener_ip&>" pkt
+RETURN VOID
+
+//----------------------------------------------------------------------
+
+FUNCTION L2V_send_killed_mob 1 name
+  DEFINE BYTEBUFFER pkt 256
+  DEFINE INT mob_id 0
+
+  NPC_GET_ID mob_id "<&name&>"
+  pkt.RESET_INDEX
+  pkt.WRITE_UINT32 #i98765
+  pkt.WRITE_UINT32 #i3
+  pkt.WRITE_UINT64 mob_id
+  pkt.WRITE_STRING name
+  pkt.TRIM_TO_INDEX
+  pkt.RESET_INDEX
+
+  UDP_IP_SENDBB "<&_listener_ip&>" pkt
+RETURN VOID
+
+//----------------------------------------------------------------------
+
+FUNCTION L2V_send_hilite_item 2 name hilite
+  DEFINE BYTEBUFFER pkt 256
+  DEFINE INT item_id 0
+
+  ITEM_GET_ID item_id "<&name&>"
+  pkt.RESET_INDEX
+  pkt.WRITE_UINT32 #i98765
+  pkt.WRITE_UINT32 #i4
+  pkt.WRITE_UINT64 item_id
+  pkt.WRITE_UINT32 hilite
+  pkt.WRITE_STRING name
+  pkt.TRIM_TO_INDEX
+  pkt.RESET_INDEX
+
+  UDP_IP_SENDBB "<&_listener_ip&>" pkt
+RETURN VOID
+
+//----------------------------------------------------------------------
+
+FUNCTION L2V_send_hilite_mob 2 name hilite
+  DEFINE BYTEBUFFER pkt 256
+  DEFINE INT mob_id 0
+
+  NPC_GET_ID mob_id "<&name&>"
+  pkt.RESET_INDEX
+  pkt.WRITE_UINT32 #i98765
+  pkt.WRITE_UINT32 #i5
+  pkt.WRITE_UINT64 mob_id
+  pkt.WRITE_UINT32 hilite
+  pkt.WRITE_STRING name
+  pkt.TRIM_TO_INDEX
+  pkt.RESET_INDEX
+
+  UDP_IP_SENDBB "<&_listener_ip&>" pkt
+RETURN VOID
+
+//----------------------------------------------------------------------
+
+FUNCTION L2V_send_consumable_item 2 name consumable
+  DEFINE BYTEBUFFER pkt 256
+  DEFINE INT item_id 0
+
+  ITEM_GET_ID item_id "<&name&>"
+  pkt.RESET_INDEX
+  pkt.WRITE_UINT32 #i98765
+  pkt.WRITE_UINT32 #i6
+  pkt.WRITE_UINT64 item_id
+  pkt.WRITE_UINT32 consumable
+  pkt.WRITE_STRING name
+  pkt.TRIM_TO_INDEX
+  pkt.RESET_INDEX
+
+  UDP_IP_SENDBB "<&_listener_ip&>" pkt
+RETURN VOID
+
+//----------------------------------------------------------------------
+
+FUNCTION L2V_send_inventory_added_item 2 item_id count
+  DEFINE BYTEBUFFER pkt 256
+  DEFINE STRING name    ""
+
+  ITEM_GET_NAME name "<&item_id&>"
+  pkt.RESET_INDEX
+  pkt.WRITE_UINT32 #i98765
+  pkt.WRITE_UINT32 #i7
+  pkt.WRITE_UINT64 item_id
+  pkt.WRITE_UINT64 count
+  pkt.WRITE_STRING name
+  pkt.TRIM_TO_INDEX
+  pkt.RESET_INDEX
+
+  UDP_IP_SENDBB "<&_listener_ip&>" pkt
+RETURN VOID
+
+//----------------------------------------------------------------------
+
+FUNCTION L2V_send_inventory_removed_item 2 item_id count
+  DEFINE BYTEBUFFER pkt 256
+  DEFINE STRING name    ""
+
+  ITEM_GET_NAME name "<&item_id&>"
+  pkt.RESET_INDEX
+  pkt.WRITE_UINT32 #i98765
+  pkt.WRITE_UINT32 #i8
+  pkt.WRITE_UINT64 item_id
+  pkt.WRITE_UINT64 count
+  pkt.WRITE_STRING name
+  pkt.TRIM_TO_INDEX
+  pkt.RESET_INDEX
+
+  UDP_IP_SENDBB "<&_listener_ip&>" pkt
+RETURN VOID
+
+//----------------------------------------------------------------------
+
+FUNCTION L2V_send_chat 3 type sender_name message
+  DEFINE BYTEBUFFER pkt 256
+
+  pkt.RESET_INDEX
+  pkt.WRITE_UINT32 #i98765
+  pkt.WRITE_UINT32 #i9
+  pkt.WRITE_UINT32 type
+  pkt.WRITE_STRING sender_name
+  pkt.WRITE_STRING message
+  pkt.TRIM_TO_INDEX
+  pkt.RESET_INDEX
+
+  UDP_IP_SENDBB "<&_listener_ip&>" pkt
+RETURN VOID
+
+//----------------------------------------------------------------------
+
+FUNCTION L2V_send_visitor 1 name
+  DEFINE BYTEBUFFER pkt 256
+
+  pkt.RESET_INDEX
+  pkt.WRITE_UINT32 #i98765
+  pkt.WRITE_UINT32 #i10
+  pkt.WRITE_STRING name
+  pkt.TRIM_TO_INDEX
+  pkt.RESET_INDEX
+
+  UDP_IP_SENDBB "<&_listener_ip&>" pkt
+RETURN VOID
+
+//----------------------------------------------------------------------
+
+FUNCTION L2V_send_visitor_info
+  DEFINE ARRAYLIST players 0
+
+  GET_PLAYERS players
+
+  FOREACH p Player players
+    L2V_send_visitor VOID 1 players.p.NAME
+    SLEEP 10
+  NEXTEACH
+RETURN VOID
+
+//----------------------------------------------------------------------
+
+FUNCTION L2V_send_full_inventory VOID
+  DEFINE ARRAYLIST inv  0
+
+  GET_INVENTORY inv
+  FOREACH ii Inventory inv
+    L2V_send_inventory_updated_item VOID 2 inv.ii.ITEM_ID inv.ii.COUNT
+    SLEEP 10
+  NEXTEACH
+RETURN VOID
+
+//----------------------------------------------------------------------
+
+FUNCTION L2V_inventory_packet_handler VOID
+  DEFINE INT pkt_type    0
+  DEFINE INT count       0
+  DEFINE INT i           0
+  DEFINE INT update_type 0
+  DEFINE INT item_type   0
+  DEFINE INT obj_id      0
+  DEFINE INT item_id     0
+  DEFINE INT ignore      0
+  DEFINE INT quantity    0
+  DEFINE INT item_type_2 0
+
+  PACKET.RESET_INDEX
+  PACKET.READ_BYTE pkt_type
+  PACKET.READ_UINT16 count
+  DO
+    PACKET.READ_UINT16 update_type
+    PACKET.READ_UINT16 item_type
+    PACKET.READ_UINT32 obj_id
+    PACKET.READ_UINT32 item_id
+    PACKET.READ_UINT32 ignore
+    PACKET.READ_UINT64 quantity
+    PACKET.READ_UINT16 item_type_2
+    PACKET.READ_UINT16 ignore
+    PACKET.READ_UINT16 ignore
+    PACKET.READ_UINT32 ignore
+    PACKET.READ_UINT16 ignore
+    PACKET.READ_UINT16 ignore
+    PACKET.READ_UINT32 ignore
+    PACKET.READ_UINT32 ignore
+    PACKET.READ_UINT16 ignore
+    PACKET.READ_UINT16 ignore
+    PACKET.READ_UINT16 ignore
+    PACKET.READ_UINT16 ignore
+    PACKET.READ_UINT16 ignore
+    PACKET.READ_UINT16 ignore
+    PACKET.READ_UINT16 ignore
+    PACKET.READ_UINT16 ignore
+    PACKET.READ_UINT32 ignore
+    PACKET.READ_UINT16 ignore
+    PACKET.READ_UINT16 ignore
+    PACKET.READ_UINT16 ignore
+
+    IF update_type == 1 // ADDS
+      L2V_send_inventory_added_item VOID 2 item_id quantity
+    ENDIF
+
+    IF update_type == 2 // UPDATES
+      L2V_send_inventory_updated_item VOID 2 item_id quantity
+    ENDIF
+
+    IF update_type == 3 // REMOVES
+      L2V_send_inventory_removed_item VOID 2 item_id quantity
+    ENDIF
+
+    i = i + 1
+  LOOP i < count
+RETURN VOID
+
+//----------------------------------------------------------------------
+
+FUNCTION L2V_mob_death_handler VOID
+  L2V_send_killed_mob VOID 1 TARGET_NAME
+RETURN VOID
+
+//----------------------------------------------------------------------
+
+FUNCTION L2V_chat_handler VOID
+  L2V_send_chat VOID 3 MESSAGETYPE SENDERNAME MESSAGE
+RETURN VOID
+
+//----------------------------------------------------------------------
+
+FUNCTION L2V_reporter_thread VOID
+  DO
+    L2V_send_char_info
+    L2V_send_visitor_info
+    SLEEP 10000
+  LOOP ZERO == ZERO
+RETURN VOID
+
+//----------------------------------------------------------------------
+// Listener Initialization
+
+FUNCTION L2V_init 1 listener_ip
+  DEFINE_GLOBAL STRING _listener_ip ""
+  _listener_ip = listener_ip
+
+  L2V_send_char_info
+  L2V_send_full_inventory
+
+  THREAD L2V_reporter_thread
+
+  SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" L2V_inventory_packet_handler 33
+  SET_EVENT "<&SCRIPTEVENT_CHAT&>" "<&SYSTEM_CURRENTFILE&>" L2V_chat_handler
+  SET_EVENT "<&SCRIPTEVENT_TARGETDIE&>" "<&SYSTEM_CURRENTFILE&>" L2V_mob_death_handler
+RETURN VOID

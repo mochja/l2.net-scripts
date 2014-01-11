@@ -1,0 +1,5 @@
+SET_EVENT "<&SCRIPTEVENT_CHATTOBOT&>" Tests\event_test_2-2.l2s t
+
+SLEEP 700000000
+PRINT_TEXT "end script"
+END_SCRIPT

@@ -1,0 +1,20 @@
+// Kratky popis
+// Server: 
+// Autor: mochitto
+// Date: 
+// Special thanks for L2.NET contributors
+// rev.: 0
+PRINT_TEXT "SCRIPT STARTED!]"
+
+// Main section
+// ===============================
+WHILE 1 == 1
+	PRINT_TEXT "ASDASDASD"
+	TARGET_SELF
+	SLEEP 1000
+	USE_SKILL 336
+	SLEEP 10000
+WEND
+	
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT

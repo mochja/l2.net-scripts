@@ -1,0 +1,16 @@
+// Kratky popis
+// Server: 
+// Autor: mochitto
+// Date: 
+// Special thanks for L2.NET contributors
+// rev.: 0
+PRINT_TEXT "SCRIPT STARTED!] <&CHAR_CLASS&>"
+
+// Main section
+// ===============================
+//INJECT_CLIENT "21 01 00 02 00 04 00 11 AE 00 10 20 1C 00 00 00 00 00 00 02 00 00 00 00 00 00 00 03 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 FF FF FF FF FE FF 00 00 00 00 00 00 00 00 00 00 00 00 00 00 FF FF FF FF 00 00 00 00 00 00"
+
+
+	
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT

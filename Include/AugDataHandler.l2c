@@ -1,0 +1,186 @@
+CLASS AugData NULL
+
+	VAR_START
+
+		PUBLIC INT AUG_UID 0
+		PUBLIC INT LVAL 0
+		PUBLIC INT RVAL 0
+		
+		PUBLIC STRING BASESTAT ""
+		PUBLIC ARRAYLIST STATS 0
+		PUBLIC INT ASKILL_ID 0
+		PUBLIC STRING ASKILL_DETAIL NULL
+		PUBLIC INT KNOWN TRUE
+	
+	 	STATIC INT _data_mapped 0
+		STATIC ARRAYLIST _aug_stats 0
+		STATIC ARRAYLIST _aug_stat_n 0
+		STATIC SORTEDLIST _aug_skills_g 0
+		STATIC SORTEDLIST _aug_skills_b 0
+				
+	VAR_END
+
+	PUBLIC SET_AUG 1 _auguid
+		THIS.AUG_UID = _auguid
+		THIS.LVAL = _auguid >> #i16
+		THIS.RVAL = _auguid & #i65535
+	RETURN VOID
+
+	PUBLIC SET_LRVAL 2 _lval _rval
+		THIS.LVAL = _lval
+		THIS.RVAL = _rval
+		THIS.AUG_UID = _lval << #i16
+		THIS.AUG_UID = THIS.AUG_UID | _rval
+	RETURN VOID
+	
+	PUBLIC LOAD_DATA 0
+		DEFINE INT _stime 0
+		DEFINE INT _etime 0
+		DEFINE DOUBLE _ftime 0
+		GET_TIME _stime
+		PRINT_TEXT "Mapping augmentation data, please wait..."
+		CALL_EXTERN Include/AugDataMap.l2s AUG_DATA_BIND THIS._aug_stats 0
+		CALL_EXTERN Include/AugDataMap.l2s AUG_SKILLG_BIND THIS._aug_skills_g 0
+		CALL_EXTERN Include/AugDataMap.l2s AUG_SKILLB_BIND THIS._aug_skills_b 0
+		CALL_EXTERN Include/AugDataMap.l2s AUG_STAT_NAME THIS._aug_stat_n 0
+		THIS._data_mapped = ONE
+		GET_TIME _etime
+		_etime = _etime - _stime
+		_etime = _etime / #i10000
+		_ftime = _etime / #i1000
+		PRINT_TEXT "Augmentation data mapped successfully in ~<&_ftime&> seconds"
+	RETURN VOID	
+	
+	PUBLIC GET_AUG 2 _augorl _rvl
+		IF _augorl != NULL
+			IF _rvl != NULL
+				THIS.SET_LRVAL VOID 2 _augorl _rvl
+			ELSE
+				THIS.SET_AUG VOID 1 _augorl
+			ENDIF
+		ENDIF
+		IF THIS._data_mapped != ONE		
+			THIS.LOAD_DATA
+		ENDIF
+		THIS._parseID VOID 1 THIS.LVAL
+		THIS._parseID VOID 1 THIS.RVAL
+	RETURN VOID
+	
+	PUBLIC CLEAN
+		THIS.AUG_UID = #i
+		THIS.LVAL = #i
+		THIS.RVAL = #i
+		THIS.BASESTAT = "#$"
+		THIS.STATS.CLEAR
+		THIS.ASKILL_ID = #i
+		THIS.ASKILL_DETAIL = "#$"
+		THIS.KNOWN = TRUE
+	RETURN VOID
+	
+	PRIVATE _parseID 1 _nval
+		IF _nval <= #i16380
+			IF _nval <= #i16340
+				DEFINE INT _mainunit 0
+				DEFINE INT _subunit 0
+				IF _nval <= #i14560
+					_mainunit = _nval / #i3640
+					_nval = _nval % #i3640
+					_subunit = _nval / #i91
+					_nval = _nval % #i91
+					IF _nval == ZERO
+						_nval = #i11
+						IF _subunit != ZERO
+							_subunit = _subunit - ONE
+						ELSE
+							_subunit = #i39
+							IF _mainunit != ZERO
+								_mainunit = _mainunit - ONE
+							ENDIF
+						ENDIF
+						DEFINE ARRAYLIST _tmparr 0
+							_tmparr.ADD THIS._aug_stat_n._nval
+							_tmparr.ADD THIS._aug_stats._mainunit._nval.ONE._subunit
+							THIS.STATS.ADD _tmparr
+						DELETE _tmparr
+						_nval = #i12
+						DEFINE ARRAYLIST _tmparr 0
+							_tmparr.ADD THIS._aug_stat_n._nval
+							_tmparr.ADD THIS._aug_stats._mainunit._nval.ONE._subunit
+							THIS.STATS.ADD _tmparr
+						DELETE _tmparr
+					ELSE
+						IF _nval > #i13
+							DEFINE INT _tnum -1
+							DEFINE INT _tempstat 13
+							WHILE _tempstat < _nval
+								_nval = _nval - _tempstat
+								_tempstat = _tempstat - ONE
+								_tnum = _tnum + ONE
+							WEND
+							DEFINE ARRAYLIST _tmparr 0
+								_tmparr.ADD THIS._aug_stat_n._tnum
+								_tmparr.ADD THIS._aug_stats._mainunit._tnum.ONE._subunit
+								THIS.STATS.ADD _tmparr
+							DELETE _tmparr
+							DEFINE ARRAYLIST _tmparr 0
+							_tnum = _tnum + _nval
+							IF _tnum != #i12
+								_tmparr.ADD THIS._aug_stat_n._tnum
+								_tmparr.ADD THIS._aug_stats._mainunit._tnum.TWO._subunit
+							ELSE
+								_tmparr.ADD THIS._aug_stat_n._tnum
+								_tmparr.ADD THIS._aug_stats._mainunit._tnum.ONE._subunit
+							ENDIF
+								THIS.STATS.ADD _tmparr
+							DELETE _tmparr
+						ELSE
+							_nval = _nval - ONE
+							DEFINE ARRAYLIST _tmparr 0
+							_tmparr.ADD THIS._aug_stat_n._nval
+							_tmparr.ADD THIS._aug_stats._mainunit._nval.ZERO._subunit
+							THIS.STATS.ADD _tmparr
+							DELETE _tmparr
+						ENDIF
+					ENDIF
+				ELSE
+					_nval = _nval - #i14560
+					_mainunit = _nval % #i178
+					_subunit = _nval / #i178
+					IF _mainunit == ZERO
+						_subunit = _subunit - ONE
+					ENDIF
+					DEFINE ARRAYLIST _mytmp 0
+					_mytmp = THIS._aug_skills_b.CONTAINS_KEY "<&_mainunit&>"
+					IF _mytmp != ZERO
+						THIS.ASKILL_ID = THIS._aug_skills_b."#$<&_mainunit&>"._subunit.#i0
+						THIS.ASKILL_DETAIL = THIS._aug_skills_b."#$<&_mainunit&>"._subunit.#i1
+					ELSE
+						THIS.ASKILL_ID = THIS._aug_skills_g."#$<&_mainunit&>".#i0
+						THIS.ASKILL_DETAIL = THIS._aug_skills_g."#$<&_mainunit&>".#i1
+					ENDIF
+				ENDIF					
+			ELSE
+				_nval = _nval - #i16341
+				_nval = _nval % #i4
+				SWITCH _nval
+					CASE #i0
+						THIS.BASESTAT = "#$STR +1"
+						BREAK 1
+					CASE #i1
+						THIS.BASESTAT = "#$CON +1"
+						BREAK 1
+					CASE #i2
+						THIS.BASESTAT = "#$INT +1"
+						BREAK 1
+					CASE #i3
+						THIS.BASESTAT = "#$MEN +1"
+						BREAK 1
+				ENDSWITCH
+			ENDIF
+		ELSE
+			PRINT_TEXT "<&_nval&> is not a known weapon augmentation ID."
+			THIS.KNOWN = FALSE
+		ENDIF
+	RETURN VOID
+
+END_CLASS

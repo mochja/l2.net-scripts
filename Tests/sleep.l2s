@@ -1,0 +1,22 @@
+THREAD t
+THREAD t
+
+//kind of cheating here... but i just want to make sure the script globals work as intended
+DEFINE INT SleepTime 0
+DEFINE INT Seconds 1
+
+PRINT_TEXT "TICKS_PER_MS <&TICKS_PER_MS&>"
+SleepTime = Seconds * TICKS_PER_MS
+
+SLEEP "<&SleepTime&>"
+PRINT_TEXT "end script : slept for <&SleepTime&>ms"
+END_SCRIPT
+
+FUNCTION t
+PRINT_TEXT "start"
+FOR A 0 100 1
+PRINT_TEXT "<&A&>"
+SLEEP 500
+NEXT
+PRINT_TEXT "done"
+RETURN VOID

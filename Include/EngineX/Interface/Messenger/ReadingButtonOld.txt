@@ -1,0 +1,4 @@
+<font color=7E7E7E>
+[<a action="LINK <&THIS.MENUKEY&>_ReadFrom|<&THIS.READINGS.GET_KEY I1&>"><&THIS.READINGS.I1&></a>]
+</font>
+__EOF

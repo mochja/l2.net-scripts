@@ -1,0 +1,22 @@
+
+CLASS LAZY_CASTING_CASTLIST_SKILL_BYPIECE NULL
+
+//-------------------------------------------------------------------------------------
+
+	VAR_START
+      PUBLIC STRING PIECE_KEY ""
+	VAR_END
+
+//-------------------------------------------------------------------------------------
+
+	PUBLIC GET_ID 0
+      DEFINE STRING PIECE_KEY "<&THIS.PIECE_KEY&>"
+      DEFINE INT SKILL_ID 0
+      IF ("LAZY.CLASSES.#$RETURNING.PIECES.CONTAINS_KEY <&PIECE_KEY&>" == TRUE)
+         LAZY.CLASSES.#$RETURNING.PIECES.PIECE_KEY.GET_RETURN SKILL_ID 0
+      ENDIF
+	RETURN SKILL_ID
+
+//-------------------------------------------------------------------------------------
+
+END_CLASS

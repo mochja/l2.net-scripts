@@ -1,0 +1,13 @@
+// mochitto
+// 6. 2. 2011
+INCLUDE "StdLib\Base_Item.l2c"
+
+CLASS BuyListItem Base_Item
+
+	VAR_START
+	
+		PUBLIC INT PRICE  
+
+	VAR_END
+                                                                                                                   				
+END_CLASS 

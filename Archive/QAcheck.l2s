@@ -1,0 +1,46 @@
+// Queen Ant Checker
+// Server: all
+// Autor: mochitto
+// Date: 6. 6. 2010
+// Special thanks for L2.NET contributors
+// rev.: 6
+PRINT_TEXT "SCRIPT STARTED!"
+
+// Event section
+// ===============================
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" TeleportToLocation 34
+
+// Define section
+// ===============================
+DEFINE_GLOBAL STRING MSG_ALIVE "Queen Ant is alive!"  // Custom message for RaidBoss spawn You can use <&RB_NAME&>
+DEFINE_GLOBAL INT ALARM 1                             // if 1 - On RB spawn play l2.net alarm and show message box 
+
+DEFINE_GLOBAL ARRAYLIST PLAYERS 0  // DONT EDIT!!!
+
+// Main section
+// =============================== 
+WHILE ZERO == ZERO
+	SLEEP 60000
+WEND
+	
+PRINT_TEXT "STOP SCRIPT!"
+END_SCRIPT
+
+// Function section
+// ===============================
+FUNCTION TeleportToLocation
+	PRINT_TEXT "== Queen Ant ALIVE"
+	IF ALARM == #i1
+		MESSAGE_BOX "RaidBoss ALIVE" "RaidBoss: Queen Ant is alive!" "<&WARNING&>"
+		PLAYALARM
+	ENDIF
+	ALERT_PLAYERS
+RETURN VOID
+
+FUNCTION ALERT_PLAYERS
+	FOREACH A STRING PLAYERS
+		SAY_TEXT "<&CHANNEL_PRIVATE&>" "<&MSG_ALIVE&>" "<&PLAYERS.a&>"
+		SLEEP 500
+	NEXTEACH
+	PRINT_TEXT "== MESSAGES SENDED"
+RETURN VOID

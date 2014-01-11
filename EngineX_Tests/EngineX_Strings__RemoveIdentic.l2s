@@ -1,0 +1,16 @@
+
+	INCLUDE Include/EngineX.l2c
+	DEFINE_GLOBAL ENGINEX ENGINEX 0
+
+	PRINT_TEXT ""
+	PRINT_TEXT "-------------------------------------------------"
+
+	DEFINE STRING MYSTRING "haaaaallooooooooOOOOoooo"
+	PRINT_TEXT "Old: <&MYSTRING&>"
+	ENGINEX.STRINGS.REMOVE_IDENTIC MYSTRING 1 MYSTRING
+	PRINT_TEXT "New: <&MYSTRING&>"
+
+	PRINT_TEXT "-------------------------------------------------"
+	PRINT_TEXT ""
+
+END_SCRIPT

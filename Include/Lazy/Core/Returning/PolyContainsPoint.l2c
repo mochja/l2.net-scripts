@@ -1,0 +1,37 @@
+
+CLASS LAZY_RETURNING_POLYCONTAINSPOINT LAZY_RETURNING_BASEPIECE
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT
+
+      // the polygon. the arraylist needs to contain vector2 or vector3 variables for the corners of the polygon
+      DEFINE ARRAYLIST _POLYGON 0
+      THIS.SET_VALUE VOID 2 #$POLYGON _POLYGON
+
+      // the point. need to be a vector2 or vector3 variable
+      DEFINE VECTOR2 _POINT 0
+      THIS.SET_VALUE VOID 2 #$POINT _POINT
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC _GET_RETURN 1 CALLTIME
+
+      DEFINE INT _POLYGON 0
+      DEFINE INT _POINT 0
+
+      THIS.DATA.#$POLYGON.GET_RETURN _POLYGON 1 CALLTIME
+      THIS.DATA.#$POINT.GET_RETURN _POINT 1 CALLTIME
+
+      // --- --- ---
+
+      DEFINE INT _BOOLEAN 0
+      ENGINEX.GEO.IN_POLY _BOOLEAN 3 _POLYGON _POINT.X _POINT.Y
+
+   RETURN _BOOLEAN
+
+//-------------------------------------------------------------------------------------
+
+END_CLASS

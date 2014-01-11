@@ -1,0 +1,75 @@
+v0.48 - various bug fixes
+      - Added Smart Skills.  Smart Skills allows you to map skills to weapons based on
+        item type or augment effect.  See CONFIG.INI for examples, I have included
+        a decrypted optiondata_client.txt so you can look up augment effect ID's.
+        Augment Skill Names have the prefix "Item: " stripped.
+v0.47 - Significant changes to COunter Hide to make it smarter and find players
+        who hid and restarted!
+      - Fixed IG<->L2NET disconnect from restarting and most other restart issues.
+v0.46 - Fixes to CounterDisarm, Hold Target, Player list.
+      - Fixes to MessageFilter
+v0.45 - Party members now excluded from playerlist, clan members targeting healers
+        also exlcuded.
+      - RequestRestart now managed so hold target does not disconnect you if you
+        are at a char select screen.  Previously if you had the script running and
+        restarted, the game would make you untarget since you were not in game workd
+        and hold target would try and retarget your last object.  This would d/c you
+        9/10.
+      - AEGIS::HoldTarget::Process::RequestTC now wakes up the client queue thread
+v0.44 - fixed dead players showing on player list, cleaned up some debugging messages
+v0.43 - significant changes to how CharInfo and UserInfo are processed / stored
+      - significant rewrite of MyCharacter.l2c, Charlist.l2c, functions leveraging
+        those two classes.  This should significantly improve latency on those
+        packet handlers.
+v0.42 - fixed the lock button in interface.l2s
+v0.41 - added PACKET_PROFILING=1/0 to CONFIG.INI to measure packet processing
+        delay of functions
+v0.40 - bugfix
+v0.39 - quick fix for blocked bypass requests
+v0.38 - Updated Packet Pipeline to v5.0
+      - Cpu utilization has dropped from 24-36% average to 0-5%.
+      - latency should be significantly improved from previous versions.
+      - misc bugfixes and smaller fixes.
+      - Added RestartResponse packet handler
+      - Added DeleteObject handler
+      - Added Threads container (sortedlist) in AEGIS superstructure root
+v0.37 - Added Counter Disarm - intelligently re-equips last weapon you had equipped
+        after Weapon Blockade/Disarm/Mass Disarm clears
+v0.36 - Added HoldTarget - prevents target loss from mirage / etc
+      - if you are debuffed with aggression / aura of hate target switches back
+        after debuff clears.
+      - AEGIS.ENTITYTRACKING.CHARACTER is now a class object (MyCharacter.l2c)
+      - Functions using the old sortedlist for CHARACTER have been updated.
+v0.35 - functional Updates to all AEGIS core and external modules to use key lookups
+        where available.
+      - read_config updated to store data in a sorted list for key lookups
+v0.34 - significant changes to packet_pipeline, massive performance increase
+      - packet handling is now done via stored procedures and key lookups.
+v0.33 - bugfixes to ActiveRiposte.l2s (i removed the CHAR_ID check for some reaosn)
+      - performance tweaks to ActiveRiposte/Message Filter loops.
+v0.32 - bugfixes
+v0.31 - improved ActiveRiposte to try and reflect aoe attacks like medusa that
+        do not specifically target you
+v0.30 - too many changes - massive gui update, in game player list etc.
+v0.14 - Added function to TargetingPerception to add a visual effect to players
+        have successfully received a resurrection but not accepted.
+v0.13 - Added MagicSkillCanceld handler
+v0.12 - fixes to CounterStab / CounterParry
+v0.11 - cleaned up syntax in CONFIG.INI, no longer requires @ to denote lists
+        or ; to denote an end of statement.
+v0.10 - large rewrite of read_config.l2s, now uses my line splitting method.
+v0.9  - fixes to ActiveRiposte.l2s, added TEMP sorted list to AEGIS.OPTIONS as
+        public space for modules
+v0.8  - Added ActiveRiposte.l2s/ActiveParry.l2s/CounterStab.l2s
+      - Updates to read_config.l2s
+v0.7  - Added TargetingPerception.l2s
+v0.6  - Added CounterHide.l2s
+v0.6  - Updates to Pipeline::Packet::AbnormalStatusUpdate
+v0.5  - major changes to Pipeline::packet::Charinfo
+      - changes the CharList.l2c
+v0.4  - Major fixes to autopot - still needs testing
+v0.3  - Added enhanced target perception
+v0.2  - Added Counter Hide
+v0.1c - bugfixes
+v0.1b - Initial Proof of Concept releasefor LTWONET ELITE
+v0.1a - Strip all non essential CODEX files

@@ -1,0 +1,137 @@
+
+FUNCTION READ 1 PACKET
+
+   PACKET.RESET_INDEX
+	PACKET.READ_BYTE VOID
+
+   DEFINE SORTEDLIST DATA 0
+   DATA.ADD NULL "MESSAGE_ID"
+   DATA.ADD NULL "COUNT"
+   DEFINE ARRAYLIST LIST 0
+   DATA.ADD INFOLIST "LIST"
+   DELETE LIST
+
+   PACKET.READ_INT32 DATA.#$MESSAGE_ID
+   PACKET.READ_INT32 DATA.#$COUNT
+   FOR I 0 "<&DATA.#$COUNT&>" 1
+      DEFINE SYSMESSDATA SM_DATA 0
+      PACKET.READ_INT32 SM_DATA.TYPE
+      SWITCH SM_DATA.TYPE
+         CASE 0
+            SM_DATA.VALUES.ADD NULL "TEXT"
+            PACKET.READ_STRING SM_DATA.VALUES.#$TEXT
+            BREAK 1
+         CASE 6
+            SM_DATA.VALUES.ADD NULL "ITEM_ID"
+            PACKET.READ_INT64 SM_DATA.VALUES.#$ITEM_ID
+            BREAK 1
+         CASE 3
+            BREAK 1
+         CASE 5
+            BREAK 1
+         CASE 1
+            BREAK 1
+         CASE 2
+            SM_DATA.VALUES.ADD NULL "TEMPLATE"
+            PACKET.READ_INT32 SM_DATA.VALUES.#$TEMPLATE
+            BREAK 1
+         CASE 4
+            SM_DATA.VALUES.ADD NULL "SKILL_ID"
+            PACKET.READ_INT32 SM_DATA.VALUES.#$SKILL_ID
+            SM_DATA.VALUES.ADD NULL "SKILL_LEVEL"
+            PACKET.READ_INT32 SM_DATA.VALUES.#$SKILL_LEVEL
+            BREAK 1
+         CASE 7
+            SM_DATA.VALUES.ADD NULL "POS_X"
+            PACKET.READ_INT32 SM_DATA.VALUES.#$POS_X
+            SM_DATA.VALUES.ADD NULL "POS_Y"
+            PACKET.READ_INT32 SM_DATA.VALUES.#$POS_Y
+            SM_DATA.VALUES.ADD NULL "POS_Z"
+            PACKET.READ_INT32 SM_DATA.VALUES.#$POS_Z
+            BREAK 1
+      ENDSWITCH
+      DATA.#$LIST.ADD SM_DATA
+      DELETE SM_DATA
+   NEXT
+
+RETURN DATA
+
+FUNCTION WRITE 1 DATA
+
+   DEFINE BYTEBUFFER PACKET 1024
+	PACKET.WRITE_BYTE 98
+
+   IF ( "DATA.CONTAINS_KEY MESSAGE_ID" == TRUE )
+      PACKET.WRITE_INT32 DATA.#$MESSAGE_ID
+      IF ( "DATA.CONTAINS_KEY LIST" == TRUE )
+         PACKET.WRITE_INT32 DATA.#$LIST.COUNT
+         FOREACH I SYSMESSDATA DATA.#$LIST
+            PACKET.WRITE_INT32 DATA.#$LIST.I.TYPE
+            SWITCH DATA.#$LIST.I.TYPE
+               CASE 0
+                  IF ( "DATA.#$LIST.I.VALUES.CONTAINS_KEY TEXT" == TRUE )
+                     PACKET.WRITE_STRING DATA.#$LIST.I.VALUES.#$TEXT
+                  ELSE
+                     PACKET.WRITE_STRING "#$"
+                  ENDIF
+                  BREAK 1
+               CASE 6
+                  IF ( "DATA.#$LIST.I.VALUES.CONTAINS_KEY ITEM_ID" == TRUE )
+                     PACKET.WRITE_INT64 DATA.#$LIST.I.VALUES.#$ITEM_ID
+                  ELSE
+                     PACKET.WRITE_INT64 ZERO
+                  ENDIF
+                  BREAK 1
+               CASE 3
+                  BREAK 1
+               CASE 5
+                  BREAK 1
+               CASE 1
+                  BREAK 1
+               CASE 2
+                  IF ( "DATA.#$LIST.I.VALUES.CONTAINS_KEY TEMPLATE" == TRUE )
+                     PACKET.WRITE_INT32 DATA.#$LIST.I.VALUES.#$TEMPLATE
+                  ELSE
+                     PACKET.WRITE_INT32 ZERO
+                  ENDIF
+                  BREAK 1
+               CASE 4
+                  IF ( "DATA.#$LIST.I.VALUES.CONTAINS_KEY SKILL_ID" == TRUE )
+                     PACKET.WRITE_INT32 DATA.#$LIST.I.VALUES.#$SKILL_ID
+                  ELSE
+                     PACKET.WRITE_INT32 ZERO
+                  ENDIF
+                  IF ( "DATA.#$LIST.I.VALUES.CONTAINS_KEY SKILL_LEVEL" == TRUE )
+                     PACKET.WRITE_INT32 DATA.#$LIST.I.VALUES.#$SKILL_LEVEL
+                  ELSE
+                     PACKET.WRITE_INT32 ZERO
+                  ENDIF
+                  BREAK 1
+               CASE 7
+                  IF ( "DATA.#$LIST.I.VALUES.CONTAINS_KEY POS_X" == TRUE )
+                     PACKET.WRITE_INT32 DATA.#$LIST.I.VALUES.#$POS_X
+                  ELSE
+                     PACKET.WRITE_INT32 ZERO
+                  ENDIF
+                  IF ( "DATA.#$LIST.I.VALUES.CONTAINS_KEY POS_Y" == TRUE )
+                     PACKET.WRITE_INT32 DATA.#$LIST.I.VALUES.#$POS_Y
+                  ELSE
+                     PACKET.WRITE_INT32 ZERO
+                  ENDIF
+                  IF ( "DATA.#$LIST.I.VALUES.CONTAINS_KEY POS_Z" == TRUE )
+                     PACKET.WRITE_INT32 DATA.#$LIST.I.VALUES.#$POS_Z
+                  ELSE
+                     PACKET.WRITE_INT32 ZERO
+                  ENDIF
+                  BREAK 1
+            ENDSWITCH
+         NEXTEACH
+      ELSE
+         PACKET.WRITE_INT32 ZERO
+      ENDIF
+   ELSE
+      PACKET.WRITE_INT32 ZERO
+   ENDIF
+
+   PACKET.TRIM_TO_INDEX
+RETURN PACKET

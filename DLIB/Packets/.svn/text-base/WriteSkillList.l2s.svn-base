@@ -1,0 +1,35 @@
+// DLIB::Packets::WriteSkillList - v1.1 for Gracia 2.4
+// by #d00d [12/12/08]
+//
+// Creates a SkillList packet based on a sorted list
+// template of values.
+
+// REQUIRES - SkillList.l2c - placed in calling script
+
+// Version 1.0 - Initial Release
+// Version 1.1 - Updates
+
+FUNCTION DLIB::Packets::WriteSkillList 1 _oSkillList
+
+  DEFINE BYTEBUFFER _bOutBuffer 4096
+  
+  IF _oSkillList.CLASSNAME == "#$SORTEDLIST"
+    _bOutBuffer.WRITE_BYTE #I95
+    _bOutBuffer.WRITE_INT32 "<&_oSkillList.COUNT&>"
+
+    FOREACH SKILL SkillList _oSkillList 
+      _bOutBuffer.WRITE_INT32 _oSKillList.SKILL.TYPE
+      _bOutBuffer.WRITE_INT32 _oSKillList.SKILL.LEVEL
+      _bOutBuffer.WRITE_INT32 _oSKillList.SKILL.ID		
+      _bOutBuffer.WRITE_BYTE _oSKillList.SKILL.DISABLED		
+      _bOutBuffer.WRITE_BYTE _oSKillList.SKILL.ENCHANTED	
+    NEXTEACH
+
+    _bOutBuffer.TRIM_TO_INDEX
+    _bOutBuffer.RESET_INDEX
+    
+  ELSE
+    PRINT_TEXT "_oSkillList is not a SortedList"
+  ENDIF
+  
+RETURN _bOutBuffer

@@ -1,0 +1,66 @@
+// Kratky popis
+// Server: 
+// Autor: mochitto
+// Date: 
+// Special thanks for L2.NET contributors
+// rev.: 0
+PRINT_TEXT "SCRIPT STARTED!]"
+
+// Main section
+// ===============================
+DEFINE INT RADIUS 50
+	DEFINE DOUBLE X
+	DEFINE INT Y
+	DEFINE INT U 1
+//	DEFINE DOUBLE PI "3.14159265358979323846"
+	FOR A 0 4 1
+		X = U * #d2.0 * PI 
+		//PRINT_TEXT "<&X&>"
+		X = X / #d4.0
+		X = X * radius
+		  //COS
+		Y = ( RADIUS * ( ( U + #d1.0 ) * #d2.0 * PI / #d4.0 ) )   //sin
+		U = U + 1
+		PRINT_TEXT "<&X&> <&Y&> <&PI&>" 
+		//DEST + X...
+	NEXT
+	
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT
+
+//defaut radius
+FUNCTION TEST
+	
+RETURN VOID
+
+FUNCTION CHECK_POSITION
+	DEFINE INT DEFAULT_X 
+	DEFINE INT DEFAULT_Y
+	DEFINE INT DEFAULT_Z
+	
+	DEFINE INT TMP_X 
+	DEFINE INT TMP_Y
+	//DEFINE INT DEFAULT_Z
+	
+	DEFINE INT MAX_DISTANCE 90
+	DEFINE INT DIST
+	DEFINE INT RAND
+	
+	DEFAULT_X = CHAR_X 
+	DEFAULT_Y = CHAR_Y
+	DEFAULT_Z = CHAR_Z
+	
+	DO
+		DISTANCE DIST "<&CHAR_X&>" "<&CHAR_Y&>" 0 "<&DEFAULT_X&>" "<&DEFAULT_Y&>" 0
+		IF ( ( DIST > MAX_DISTANCE ) && ( DIST < 200 ) )
+			GET_RAND RAND 0 40
+			TMP_X = DEFAULT_X + RAND
+			GET_RAND RAND 0 40
+			TMP_Y = DEFAULT_Y + RAND
+			MOVE_TO "<&TMP_X&>" "<&TMP_Y&>" "<&DEFAULT_Z&>"
+			SLEEP 800
+		ENDIF
+		SLEEP 25
+	LOOP 1 == 1
+	
+RETURN VOID

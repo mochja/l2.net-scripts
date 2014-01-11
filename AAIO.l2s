@@ -1,0 +1,43 @@
+// Kratky popis
+// Server: 
+// Autor: mochitto
+// Date: 
+// Special thanks for L2.NET contributors
+// rev.: 0
+PRINT_TEXT "SCRIPT STARTED!]"
+
+// Main section
+// ===============================
+
+THREAD MP
+
+SLEEP 98123423423	
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT
+
+FUNCTION MP
+     DEFINE INT ASD 0
+     DEFINE INT ASD2 0
+     DEFINE INT MPPOTS 0
+     DEFINE INT RAND
+     WHILE ZERO == ZERO  
+          ITEM_COUNT MPPOTS 728
+          IF MPPOTS > #i1                    
+               IF ( ( CHAR_CUR_MP < ( ( CHAR_MAX_MP * 11 ) / 100 ) ) && CHAR_CUR_HP > 0 )
+                    WHILE ( CHAR_CUR_MP < ( CHAR_MAX_MP - 300 ) ) 
+                         ITEM_COUNT MPPOTS 728
+                         IF MPPOTS > #i1
+                              USE_ITEM 728 // Mana Potion
+                         ELSE
+                              BREAK 2
+                         ENDIF
+                         GET_RAND RAND 400 550
+                         SLEEP "<&RAND&>"
+                    WEND
+               ENDIF
+          ELSE
+               SLEEP 10000
+          ENDIF
+          SLEEP 25
+     WEND
+RETURN VOID

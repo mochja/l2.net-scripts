@@ -1,0 +1,132 @@
+// Fixed by mochitto
+INCLUDE Include/nodeManager.l2c
+
+DEFINE INT LevelYouWant 40
+
+
+//------------------------------------------- DO NOT EDIT FROM HERE -------------------------------------\\
+
+SET_TARGETING TYPE TWO
+SET_TARGETING ATTACKABLE TWO
+SET_TARGETING COMBAT TWO
+
+DEFINE NodeManager myNodes 0
+DEFINE INT goodIndex 0
+
+myNodes.startNodeGroup NULL 0
+	myNodes.addNode NULL 3 #i89998 #i-144652 #i-1536
+	myNodes.addNode NULL 3 #i90306 #i-143922 #i-1536
+	myNodes.addNode NULL 3 #i90632 #i-143220 #i-1536
+	myNodes.addNode NULL 3 #i90291 #i-142582 #i-1536
+	myNodes.addNode NULL 3 #i89733 #i-141825 #i-1536
+myNodes.endNodeGroup NULL 0
+
+myNodes.startNodeGroup NULL 0
+	myNodes.addNode NULL 3 #i89005 #i-140406 #i-1536 
+	myNodes.addNode NULL 3 #i89421 #i-140870 #i-1536 
+	myNodes.addNode NULL 3 #i89568 #i-141508 #i-1536
+myNodes.endNodeGroup NULL 0
+
+myNodes.startNodeGroup NULL 0
+	myNodes.addNode NULL 3 #i88829 #i-140457 #i-1536
+	myNodes.addNode NULL 3 #i88091 #i-140400 #i-1536
+	myNodes.addNode NULL 3 #i87556 #i-140579 #i-1536
+myNodes.endNodeGroup NULL 0
+
+
+myNodes.startNodeGroup NULL 0
+	myNodes.addNode NULL 3 #i85719 #i-140554 #i-1536
+	myNodes.addNode NULL 3 #i85396 #i-140941 #i-1536 
+	myNodes.addNode NULL 3 #i85184 #i-141641 #i-1536 
+myNodes.endNodeGroup NULL 0
+
+myNodes.startNodeGroup NULL 0
+	myNodes.addNode NULL 3 #i84861 #i-144163 #i-1536 
+	myNodes.addNode NULL 3 #i84385 #i-143054 #i-1536 
+	myNodes.addNode NULL 3 #i84583 #i-142282 #i-1536
+	myNodes.addNode NULL 3 #i84966 #i-141967 #i-1536
+myNodes.endNodeGroup NULL 0
+
+myNodes.startNodeGroup NULL 0
+	myNodes.addNode NULL 3 #i86306 #i-143576 #i-1336
+	myNodes.addNode NULL 3 #i86527 #i-142897 #i-1336 
+	myNodes.addNode NULL 3 #i85924 #i-142407 #i-1336 
+	myNodes.addNode NULL 3 #i85117 #i-141784 #i-1536 
+myNodes.endNodeGroup NULL 0
+
+myNodes.startNodeGroup NULL 0
+	myNodes.addNode NULL 3 #i86838 #i-142646 #i-1336 
+	myNodes.addNode NULL 3 #i87340 #i-142456 #i-1336 
+	myNodes.addNode NULL 3 #i87349 #i-141810 #i-1336
+	myNodes.addNode NULL 3 #i87360 #i-140587 #i-1536  
+myNodes.endNodeGroup NULL 0
+
+myNodes.startNodeGroup NULL 0
+	myNodes.addNode NULL 3 #i87871 #i-142617 #i-1336
+	myNodes.addNode NULL 3 #i88231 #i-142674 #i-1336 
+	myNodes.addNode NULL 3 #i88583 #i-142468 #i-1336 
+	myNodes.addNode NULL 3 #i89642 #i-141783 #i-1536   
+myNodes.endNodeGroup NULL 0
+
+//myNodes.printNodeTree NULL 0
+
+PRINT_TEXT "Started Schuttgart Delevel Script"
+PRINT_TEXT "Starting devel in 10 second"
+SLEEP 10000
+
+//Check if we are dead or alive
+IF CHAR_CUR_HP == ZERO
+	CALLSUB SpawnToTown
+ENDIF
+
+WHILE ONE == ONE
+	//Check level for finish
+	IF CHAR_LEVEL <= LevelYouWant
+		CALLSUB Finished
+	ENDIF
+
+	//Travel to a guard
+	PRINT_TEXT "Moving..."
+	myNodes.calcDistances NULL 0
+	myNodes.findSmallestIndex goodIndex 0
+	myNodes.followNodeTrain NULL 1 goodIndex
+	
+	//Target and Attack guard
+	PRINT_TEXT "Attacking patrol"
+	COMMAND "/target Patrol"
+	SLEEP 600
+	ATTACK_TARGET
+	
+	//wait to die
+	PRINT_TEXT "Waiting to Die"
+	CALLSUB WaitForDeath
+	PRINT_TEXT "Ok, now I'm dead. Time to respawn!"
+	SLEEP 2000
+	CALLSUB SpawnToTown
+	SLEEP 5000
+WEND
+
+END_SCRIPT
+
+SUB WaitForDeath
+	WHILE CHAR_CUR_HP > ZERO
+		//PRINT_TEXT "Waiting to get killed..."
+		IF TARGET_NAME != "#$Patrol"
+			COMMAND "/target Patrol"
+			SLEEP 600	
+		ENDIF
+		ATTACK_TARGET
+		SLEEP 1200
+	WEND
+RETURNSUB
+
+SUB SpawnToTown
+	//INJECT "7D 00 00 00 00" //accept rez to town
+	TAP_TO TOWN
+RETURNSUB
+
+SUB Finished
+	PRINT_TEXT "Finished Deleveling..."
+	SLEEP 10000
+	INJECT "00"
+RETURNSUB

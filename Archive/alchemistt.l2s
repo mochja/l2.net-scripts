@@ -1,0 +1,44 @@
+// Alchemist key rozklikavani
+// version 0.1
+// by mochitto 2010
+
+PRINT_TEXT "SCRIPT STARTED]"
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKETEX&>" "<&SYSTEM_CURRENTFILE&>" exhtml 141
+
+DEFINE_GLOBAL STRING _html 0
+DEFINE_GLOBAL INT ObjID 0
+
+
+WHILE ZERO == ZERO
+SLEEP 10000
+WEND
+
+
+FUNCTION exhtml
+	PACKET.READ_BYTE NULL
+	PACKET.READ_INT16 NULL
+	PACKET.READ_INT32 ObjID
+	PACKET.READ_STRING _html
+	
+	DEFINE INT ITEM 0
+	ITEM_COUNT ITEM 9205
+	
+	DEFINE STRING Link1 "bypass -h Quest 9000_AlchemistChest KEY"
+	DEFINE STRING Link2 "bypass -h Quest 9000_AlchemistChest START.htm"
+	
+	SLEEP 330
+	IF ITEM > #i0
+		IF "_html.CONTAINS Link1" == TRUE
+			NPC_DIALOG "<&Link1&>"
+			PRINT_TEXT "==== Alchemist Keys: <&ITEM&>]"
+		ELSE 
+			IF "_html.CONTAINS Link2" == TRUE
+				NPC_DIALOG "<&Link2&>"
+			ENDIF
+		ENDIF
+	ELSE
+		PRINT_TEXT "SCRIPT END]"
+		SCRIPT_END
+	ENDIF
+
+RETURN VOID

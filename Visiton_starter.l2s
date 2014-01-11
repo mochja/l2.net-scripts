@@ -1,0 +1,22 @@
+// Kratky popis
+// Server: 
+// Autor: mochitto
+// Date: 
+// Special thanks for L2.NET contributors
+// rev.: 0
+PRINT_TEXT "SCRIPT STARTED!]"
+
+// Main section
+// ===============================
+      INCLUDE stdlib\Inventory.l2c
+     INCLUDE stdlib\Player.l2c
+
+     CALL_EXTERN L2Vision.l2s L2V_init VOID 1 "#$127.0.0.1"
+
+  while one == one
+  sleep 121212
+  wend
+
+	
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT

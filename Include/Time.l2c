@@ -1,0 +1,336 @@
+CLASS DateTime NULL
+
+	VAR_START
+	
+		PUBLIC INT SEC 0
+		PUBLIC INT MIN 0
+		PUBLIC INT HOUR 0
+		
+		PUBLIC INT DAY 0
+		PUBLIC INT MON 0
+		PUBLIC STRING MONN 0
+		PUBLIC INT YEAR 0
+		
+		PRIVATE INT START_TIME 0
+		PRIVATE INT STOP_TIME 0
+		PRIVATE INT ELAPSED_TIC 0
+		PUBLIC DOUBLE ELAPSED 0
+		
+		PRIVATE INT LSTART_TIME 0
+		PRIVATE INT LSTOP_TIME 0
+		PUBLIC STRING LELAPSED ""
+	
+	VAR_END
+	
+	PUBLIC PGET_TIME
+		DEFINE STRING _ptime ""
+		THIS.GET_CTime
+		IF THIS.SEC < #i9
+			_ptime = "#$0<&THIS.SEC&>"
+		ELSE
+			_ptime = "#$<&THIS.SEC&>"
+		ENDIF
+		IF THIS.MIN < #i9
+			_ptime = "#$0<&THIS.MIN&>:<&_ptime&>"
+		ELSE
+			_ptime = "#$<&THIS.MIN&>:<&_ptime&>"
+		ENDIF
+		IF THIS.HOUR < #i9
+			_ptime = "#$0<&THIS.HOUR&>:<&_ptime&>"
+		ELSE
+			_ptime = "#$<&THIS.HOUR&>:<&_ptime&>"
+		ENDIF
+	RETURN _ptime
+	
+	PUBLIC PGET_DATE
+		DEFINE STRING _pdate ""
+		THIS.GET_CDate
+		_pdate = "#$<&THIS.YEAR&>"
+		
+		IF THIS.MON < #i9
+			_pdate = "#$0<&THIS.MON&>.<&_pdate&>"
+		ELSE
+			_pdate = "#$<&THIS.MON&>.<&_pdate&>"
+		ENDIF
+		IF THIS.DAY < #i9
+			_pdate = "#$0<&THIS.DAY&>.<&_pdate&>"
+		ELSE
+			_pdate = "#$<&THIS.DAY&>.<&_pdate&>"
+		ENDIF
+	RETURN _pdate
+	
+	PUBLIC PGET_DateTime
+		DEFINE STRING _pdt ""
+		DEFINE STRING _tmpt ""
+		THIS.PGET_TIME _tmpt
+		THIS.PGET_DATE _pdt
+		_pdt = "#$<&_pdt&> - <&_tmpt&>"
+	RETURN _pdt
+	
+	PUBLIC FN_DateTime
+		DEFINE STRING _fdt ""
+		THIS.GET_CDateTime
+		IF THIS.SEC <= #i9
+			_fdt = "#$0<&THIS.SEC&>"
+		ELSE
+			_fdt = "#$<&THIS.SEC&>"
+		ENDIF
+		IF THIS.MIN <= #i9
+			_fdt = "#$0<&THIS.MIN&><&_fdt&>"
+		ELSE
+			_fdt = "#$<&THIS.MIN&><&_fdt&>"
+		ENDIF
+		IF THIS.HOUR <= #i9
+			_fdt = "#$0<&THIS.HOUR&><&_fdt&>"
+		ELSE
+			_fdt = "#$<&THIS.HOUR&><&_fdt&>"
+		ENDIF
+		IF THIS.DAY <= #i9
+			_fdt = "#$0<&THIS.DAY&><&_fdt&>"
+		ELSE
+			_fdt = "#$<&THIS.DAY&><&_fdt&>"
+		ENDIF	
+		IF THIS.MON <= #i9
+			_fdt = "#$0<&THIS.MON&><&_fdt&>"
+		ELSE
+			_fdt = "#$<&THIS.MON&><&_fdt&>"
+		ENDIF
+		_fdt = "#$<&THIS.YEAR&><&_fdt&>"
+	RETURN _fdt
+	
+	PUBLIC SFN_DateTime
+		DEFINE STRING _fdt ""
+		THIS.GET_CDateTime
+		IF THIS.MIN <= #i9
+			_fdt = "#$0<&THIS.MIN&>]"
+		ELSE
+			_fdt = "#$<&THIS.MIN&>]"
+		ENDIF
+		IF THIS.HOUR <= #i9
+			_fdt = "#$0<&THIS.HOUR&>.<&_fdt&>"
+		ELSE
+			_fdt = "#$<&THIS.HOUR&>.<&_fdt&>"
+		ENDIF
+		IF THIS.DAY <= #i9
+			_fdt = "#$0<&THIS.DAY&>][<&_fdt&>"
+		ELSE
+			_fdt = "#$<&THIS.DAY&>][<&_fdt&>"
+		ENDIF	
+		IF THIS.MON <= #i9
+			_fdt = "#$[0<&THIS.MON&>.<&_fdt&>"
+		ELSE
+			_fdt = "#$[<&THIS.MON&>.<&_fdt&>"
+		ENDIF
+	RETURN _fdt
+	
+	PUBLIC SET_TIME 1 _ticks
+		DEFINE INT _Tseconds 0
+		_Tseconds = _ticks / #i10000000
+		DEFINE INT _days 0
+		_days = _Tseconds / #i86400
+		DEFINE INT _remains 0
+		_remains = _Tseconds % #i86400
+		THIS.HOUR = _remains / #i3600
+		_remains = _remains % #i3600
+		THIS.MIN = _remains / #i60
+		THIS.SEC = _remains % #i60	
+	RETURN VOID
+	
+	PUBLIC GET_CTime
+		DEFINE INT _Tseconds 0
+		GET_TIME _Tseconds
+		_Tseconds = _Tseconds / #i10000000
+		DEFINE INT _days 0
+		_days = _Tseconds / #i86400
+		DEFINE INT _remains 0
+		_remains = _Tseconds % #i86400
+		THIS.HOUR = _remains / #i3600
+		_remains = _remains % #i3600
+		THIS.MIN = _remains / #i60
+		THIS.SEC = _remains % #i60
+	RETURN VOID
+	
+	PUBLIC GET_CDate
+		DEFINE INT _Tseconds 0
+		GET_TIME _Tseconds
+		_Tseconds = _Tseconds / #i10000000
+		DEFINE INT _days 0
+		_days = _Tseconds / #i86400
+		_days = _days * #i10000
+		DEFINE INT _year 1
+		_year = _days / #i3652425
+		THIS.YEAR = _year + ONE
+		_days = _days % #i3652425
+		_days = _days / #i10000
+		DEFINE INT _yearleap 0
+		THIS._isleap _yearleap 1 _year
+		DEFINE ARRAYLIST _monls 0
+		THIS._getmdays _monls 1 _yearleap
+		FOR A 12 0 -1
+			IF _days >= _monls.ZERO.A
+				_days = _days - _monls.ZERO.A
+				A = A + ONE
+				BREAK 2
+			ENDIF
+		NEXT
+		THIS.DAY = _days + ONE
+		THIS.MON = A
+		THIS.MONN = _monls.ONE.A
+	RETURN VOID
+	
+	PUBLIC GET_CDateTime
+		DEFINE INT _Tseconds 0
+		GET_TIME _Tseconds
+		_Tseconds = _Tseconds / #i10000000
+		DEFINE INT _days 0
+		_days = _Tseconds / #i86400
+		DEFINE INT _remains 0
+		_remains = _Tseconds % #i86400
+		THIS.HOUR = _remains / #i3600
+		_remains = _remains % #i3600
+		THIS.MIN = _remains / #i60
+		THIS.SEC = _remains % #i60
+		_days = _days * #i10000
+		DEFINE INT _year 1
+		_year = _days / #i3652425
+		THIS.YEAR = _year + ONE
+		_days = _days % #i3652425
+		_days = _days / #i10000
+		DEFINE INT _yearleap 0
+		THIS._isleap _yearleap 1 _year
+		DEFINE ARRAYLIST _monls 0
+		THIS._getmdays _monls 1 _yearleap
+		_days = _days + ONE
+		FOR A 12 0 -1
+			IF _days >= _monls.ZERO.A
+				_days = _days - _monls.ZERO.A
+				A = A + ONE
+				BREAK 2
+			ENDIF
+		NEXT
+		THIS.DAY = _days + ONE
+		THIS.MON = A
+		THIS.MONN = _monls.ONE.A
+	RETURN VOID
+	
+	PRIVATE _getmdays 1 _leped
+		DEFINE ARRAYLIST _yearmounths 0
+		IF _leped == ONE
+			_yearmounths.ADD #i0
+			_yearmounths.ADD #i31
+			_yearmounths.ADD #i60
+			_yearmounths.ADD #i91
+			_yearmounths.ADD #i121
+			_yearmounths.ADD #i152
+			_yearmounths.ADD #i182
+			_yearmounths.ADD #i213
+			_yearmounths.ADD #i244
+			_yearmounths.ADD #i274
+			_yearmounths.ADD #i305
+			_yearmounths.ADD #i335
+			_yearmounths.ADD #i366
+		ELSE
+			_yearmounths.ADD #i0 
+			_yearmounths.ADD #i31
+			_yearmounths.ADD #i59
+			_yearmounths.ADD #i90
+			_yearmounths.ADD #i120
+			_yearmounths.ADD #i151
+			_yearmounths.ADD #i181
+			_yearmounths.ADD #i212
+			_yearmounths.ADD #i243
+			_yearmounths.ADD #i273
+			_yearmounths.ADD #i304
+			_yearmounths.ADD #i334
+			_yearmounths.ADD #i365
+		ENDIF
+		DEFINE ARRAYLIST _monthsname 0 
+		_monthsname.ADD #$none
+		_monthsname.ADD #$January
+		_monthsname.ADD #$February
+		_monthsname.ADD #$March
+		_monthsname.ADD #$April
+		_monthsname.ADD #$May
+		_monthsname.ADD #$June
+		_monthsname.ADD #$July
+		_monthsname.ADD #$August
+		_monthsname.ADD #$September
+		_monthsname.ADD #$October
+		_monthsname.ADD #$November
+		_monthsname.ADD #$December
+		DEFINE ARRAYLIST _both 0
+		_both.ADD _yearmounths
+		_both.ADD _monthsname
+	RETURN _both
+	
+	PRIVATE _isleap 1 _year
+		DEFINE INT _condone 0	
+		_condone = _year % #i400
+		DEFINE INT _condtwo 0
+		_condtwo = _year % #i100
+		DEFINE INT _condthree 0
+		_condthree = _year % #i4
+		DEFINE INT _valid 0
+		IF ( _condone == ZERO ) || ( _condtwo != ZERO )
+			IF _condthree == ZERO
+				_valid = ONE
+			ENDIF
+		ENDIF	
+	RETURN _valid
+	
+	PRIVATE _countleaps 2 _yearsL
+		_yearsL = _yearsL - ONE
+		DEFINE INT _cond1 0
+		THIS._divRound _cond1 2 _yearsL #i4
+		DEFINE INT _cond2 0
+		THIS._divRound _cond2 2 _yearsL #i100
+		DEFINE INT _cond3 0
+		THIS._divRound _cond3 2 _yearsL #i400
+		DEFINE INT _leapsnum 0	
+		_leapsnum = _cond1 - _cond2
+		_leapsnum = _leapsnum + _cond3
+	RETURN _leapsnum
+	
+	PRIVATE _divRound 2 _anum _bnum
+		DEFINE INT _finalnum 0		
+		_finalnum = _anum % _bnum
+		DEFINE DOUBLE _tempnum 0
+		_tempnum = _anum / TWO
+		IF _finalnum > _tempnum
+			_finalnum = _anum / _bnum
+			_finalnum = _finalnum + ONE
+		ELSE
+			_finalnum = _anum / _bnum
+		ENDIF
+	RETURN _finalnum
+
+	PUBLIC TIMER_START 0
+		GET_TIME THIS.START_TIME
+	RETURN VOID
+
+	PUBLIC TIMER_STOP 0
+		GET_TIME THIS.STOP_TIME
+		THIS.ELAPSED_TIC = THIS.STOP_TIME - THIS.START_TIME
+		THIS.ELAPSED_TIC = THIS.ELAPSED_TIC / #i10000
+		THIS.ELAPSED = THIS.ELAPSED_TIC / #i1000
+	RETURN VOID
+	
+	PUBLIC LTIMER_START 0
+		GET_TIME THIS.LSTART_TIME
+	RETURN VOID
+
+	PUBLIC LTIMER_STOP 0
+		GET_TIME THIS.LSTOP_TIME
+		THIS.ELAPSED_TIC = THIS.LSTOP_TIME - THIS.LSTART_TIME
+		THIS.ELAPSED_TIC = THIS.ELAPSED_TIC / #i10000000
+		DEFINE INT _tmp 0
+		_tmp = THIS.ELAPSED_TIC / #i3600
+		THIS.LELAPSED = "#$<&_tmp&>h"
+		THIS.ELAPSED_TIC = THIS.ELAPSED_TIC % #i3600
+		_tmp = THIS.ELAPSED_TIC / #i60
+		THIS.LELAPSED = "#$<&THIS.LELAPSED&> <&_tmp&>m"
+		_tmp = THIS.ELAPSED_TIC % #i60
+		THIS.LELAPSED = "#$<&THIS.LELAPSED&> <&_tmp&>s"	
+	RETURN VOID
+
+END_CLASS

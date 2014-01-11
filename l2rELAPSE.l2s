@@ -1,0 +1,347 @@
+PRINT_TEXT "SCRIPT STARTED!]"
+PRINT_TEXT "Anti-Antibot for L2Relapse by mochitto!"
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" NpcHtmlMessage 25
+BLOCK 25
+
+DEFINE_GLOBAL STRING ANTI "bypass -h line"
+DEFINE_GLOBAL STRING LINE ""
+DEFINE_GLOBAL STRING NEW_LINE
+DEFINE_GLOBAL STRING COLOR
+DEFINE_GLOBAL STRING COLOR1
+DEFINE_GLOBAL STRING COLOR2
+DEFINE_GLOBAL INT STAR_CHAR_COUNT 36   
+DEFINE_GLOBAL INT TR_CHAR_COUNT 4      
+DEFINE_GLOBAL INT TD_CHAR_COUNT 4      
+DEFINE_GLOBAL INT FONT_CHAR_COUNT 12   
+DEFINE_GLOBAL INT FONTEND_CHAR_COUNT 9 
+DEFINE_GLOBAL INT OLD_INDEX 0
+DEFINE_GLOBAL INT NEW_INDEX 0 
+DEFINE_GLOBAL INT A 0
+DEFINE_GLOBAL INT B 0
+DEFINE_GLOBAL INT GOOD 0
+DEFINE_GLOBAL INT STATUS 0
+DEFINE_GLOBAL ARRAYLIST ROW1
+DEFINE_GLOBAL ARRAYLIST ROW2 
+DEFINE_GLOBAL ARRAYLIST ROW3
+DEFINE_GLOBAL ARRAYLIST ROW4
+DEFINE_GLOBAL ARRAYLIST ROW5
+DEFINE_GLOBAL ARRAYLIST ROW6
+DEFINE_GLOBAL ARRAYLIST ROW7
+DEFINE_GLOBAL ARRAYLIST ROW8
+DEFINE_GLOBAL ARRAYLIST ROW9
+
+WHILE ZERO == ZERO
+     SLEEP 1000
+WEND 
+
+PRINT_TEXT "SCRIPT STOPED! ]"
+END_SCRIPT
+
+FUNCTION NpcHtmlMessage
+     DEFINE INT OBJID 0
+     DEFINE INT ITEM_ID 0
+     DEFINE STRING HTM       
+     
+     PACKET.READ_BYTE NULL
+     PACKET.READ_INT32 OBJID
+     PACKET.READ_STRING HTM
+     PACKET.READ_INT32 ITEM_ID               
+     
+     LINE = "#$<&HTM&>"
+     IF "LINE.CONTAINS ANTI" == TRUE
+          PRINT_TEXT "Anti-antibot detected"
+          A = LINE.INDEXOF "#$<table>"
+          A = A + 8
+          LINE = LINE.SUBSTRING A 3005
+          OLD_INDEX = TR_CHAR_COUNT
+          IF ("LINE.STARTSWITH #$<tr>" == TRUE) && ("LINE.ENDSWITH #$</tr>" == TRUE) 
+               FOR N 0 9 1         
+                    NEW_INDEX = OLD_INDEX + STAR_CHAR_COUNT
+                    NEW_LINE = LINE.SUBSTRING OLD_INDEX STAR_CHAR_COUNT
+                    IF ( "NEW_LINE.STARTSWITH #$<td><font" == TRUE ) && ( "NEW_LINE.ENDSWITH #$>*</font></td>" == TRUE )
+                         A = TD_CHAR_COUNT + FONT_CHAR_COUNT
+                         COLOR = NEW_LINE.SUBSTRING A 6
+                         ROW1.ADD "#$<&COLOR&>"                
+                    ENDIF 
+                    OLD_INDEX = NEW_INDEX
+               NEXT 
+               OLD_INDEX = OLD_INDEX + 10 
+               FOR N 0 9 1          
+                    NEW_INDEX = OLD_INDEX + STAR_CHAR_COUNT
+                    NEW_LINE = LINE.SUBSTRING OLD_INDEX STAR_CHAR_COUNT
+                    IF ( "NEW_LINE.STARTSWITH #$<td><font" == TRUE ) && ( "NEW_LINE.ENDSWITH #$>*</font></td>" == TRUE )
+                         A = TD_CHAR_COUNT + FONT_CHAR_COUNT
+                         COLOR = NEW_LINE.SUBSTRING A 6
+                         ROW2.ADD "#$<&COLOR&>"          
+                    ENDIF 
+                    OLD_INDEX = NEW_INDEX
+               NEXT 
+                 OLD_INDEX = OLD_INDEX + 10
+               FOR N 0 9 1          
+                    NEW_INDEX = OLD_INDEX + STAR_CHAR_COUNT
+                    NEW_LINE = LINE.SUBSTRING OLD_INDEX STAR_CHAR_COUNT
+                    IF ( "NEW_LINE.STARTSWITH #$<td><font" == TRUE ) && ( "NEW_LINE.ENDSWITH #$>*</font></td>" == TRUE )
+                         A = TD_CHAR_COUNT + FONT_CHAR_COUNT
+                         COLOR = NEW_LINE.SUBSTRING A 6
+                         ROW3.ADD "#$<&COLOR&>"
+                    ENDIF 
+                    OLD_INDEX = NEW_INDEX
+               NEXT     
+                 OLD_INDEX = OLD_INDEX + 10
+               FOR N 0 9 1          
+                    NEW_INDEX = OLD_INDEX + STAR_CHAR_COUNT
+                    NEW_LINE = LINE.SUBSTRING OLD_INDEX STAR_CHAR_COUNT
+                    IF ( "NEW_LINE.STARTSWITH #$<td><font" == TRUE ) && ( "NEW_LINE.ENDSWITH #$>*</font></td>" == TRUE )
+                         A = TD_CHAR_COUNT + FONT_CHAR_COUNT
+                         COLOR = NEW_LINE.SUBSTRING A 6
+                         ROW4.ADD "#$<&COLOR&>"
+                    ENDIF 
+                    OLD_INDEX = NEW_INDEX
+               NEXT      
+                  OLD_INDEX = OLD_INDEX + 10
+               FOR N 0 9 1          
+                    NEW_INDEX = OLD_INDEX + STAR_CHAR_COUNT
+                    NEW_LINE = LINE.SUBSTRING OLD_INDEX STAR_CHAR_COUNT
+                    IF ( "NEW_LINE.STARTSWITH #$<td><font" == TRUE ) && ( "NEW_LINE.ENDSWITH #$>*</font></td>" == TRUE )
+                         A = TD_CHAR_COUNT + FONT_CHAR_COUNT
+                         COLOR = NEW_LINE.SUBSTRING A 6
+                         ROW5.ADD "#$<&COLOR&>"
+                    ENDIF 
+                    OLD_INDEX = NEW_INDEX
+               NEXT       
+                 OLD_INDEX = OLD_INDEX + 10
+               FOR N 0 9 1          
+                    NEW_INDEX = OLD_INDEX + STAR_CHAR_COUNT
+                    NEW_LINE = LINE.SUBSTRING OLD_INDEX STAR_CHAR_COUNT
+                    IF ( "NEW_LINE.STARTSWITH #$<td><font" == TRUE ) && ( "NEW_LINE.ENDSWITH #$>*</font></td>" == TRUE )
+                         A = TD_CHAR_COUNT + FONT_CHAR_COUNT
+                         COLOR = NEW_LINE.SUBSTRING A 6
+                         ROW6.ADD "#$<&COLOR&>"               
+                    ENDIF 
+                    OLD_INDEX = NEW_INDEX
+               NEXT        
+                  OLD_INDEX = OLD_INDEX + 10
+               FOR N 0 9 1          
+                    NEW_INDEX = OLD_INDEX + STAR_CHAR_COUNT
+                    NEW_LINE = LINE.SUBSTRING OLD_INDEX STAR_CHAR_COUNT
+                    IF ( "NEW_LINE.STARTSWITH #$<td><font" == TRUE ) && ( "NEW_LINE.ENDSWITH #$>*</font></td>" == TRUE )
+                         A = TD_CHAR_COUNT + FONT_CHAR_COUNT
+                         COLOR = NEW_LINE.SUBSTRING A 6
+                         ROW7.ADD "#$<&COLOR&>"
+                    ENDIF 
+                    OLD_INDEX = NEW_INDEX
+               NEXT      
+               OLD_INDEX = OLD_INDEX + 10
+               FOR N 0 9 1          
+                    NEW_INDEX = OLD_INDEX + STAR_CHAR_COUNT
+                    NEW_LINE = LINE.SUBSTRING OLD_INDEX STAR_CHAR_COUNT
+                    IF ( "NEW_LINE.STARTSWITH #$<td><font" == TRUE ) && ( "NEW_LINE.ENDSWITH #$>*</font></td>" == TRUE )
+                         A = TD_CHAR_COUNT + FONT_CHAR_COUNT
+                         COLOR = NEW_LINE.SUBSTRING A 6
+                         ROW8.ADD "#$<&COLOR&>"
+                    ENDIF 
+                    OLD_INDEX = NEW_INDEX
+               NEXT           
+               OLD_INDEX = OLD_INDEX + 10
+               FOR N 0 9 1          
+                    NEW_INDEX = OLD_INDEX + STAR_CHAR_COUNT
+                    NEW_LINE = LINE.SUBSTRING OLD_INDEX STAR_CHAR_COUNT
+                    IF ( "NEW_LINE.STARTSWITH #$<td><font" == TRUE ) && ( "NEW_LINE.ENDSWITH #$>*</font></td>" == TRUE )
+                         A = TD_CHAR_COUNT + FONT_CHAR_COUNT
+                         COLOR = NEW_LINE.SUBSTRING A 6
+                         ROW9.ADD "#$<&COLOR&>"               
+                    ENDIF 
+                    OLD_INDEX = NEW_INDEX
+               NEXT 
+          ENDIF
+               
+          FOREACH I1 STRING ROW1
+               FOREACH I2 STRING ROW2
+                    IF "ROW1.I1.CONTAINS ROW2.I2" == FALSE
+                         COLOR1 = "#$<&ROW1.I1&>"
+                         COLOR2 = "#$<&ROW2.I2&>"
+                    ENDIF 
+               NEXTEACH
+          NEXTEACH
+          A = #I0
+          B = #I0
+          FOREACH I7 STRING ROW7
+              IF "ROW7.I7.CONTAINS COLOR1" == TRUE
+                    A = A + #I1
+               ENDIF
+               IF "ROW7.I7.CONTAINS COLOR2" == TRUE
+                    B = B + #I1
+               ENDIF  
+          NEXTEACH
+          FOREACH I2 STRING ROW2
+              IF "ROW2.I2.CONTAINS COLOR1" == TRUE
+                    A = A + #I1
+               ENDIF
+               IF "ROW2.I2.CONTAINS COLOR2" == TRUE
+                    B = B + #I1
+               ENDIF  
+          NEXTEACH
+          FOREACH I9 STRING ROW9
+              IF "ROW9.I9.CONTAINS COLOR1" == TRUE
+                    A = A + #I1
+               ENDIF
+               IF "ROW9.I9.CONTAINS COLOR2" == TRUE
+                    B = B + #I1
+               ENDIF  
+          NEXTEACH
+          FOREACH I1 STRING ROW1
+              IF "ROW1.I1.CONTAINS COLOR1" == TRUE
+                    A = A + #I1
+               ENDIF
+               IF "ROW1.I1.CONTAINS COLOR2" == TRUE
+                    B = B + #I1
+               ENDIF  
+          NEXTEACH
+          IF A < B
+               COLOR = "#$<&COLOR1&>"
+          ELSE
+               COLOR = "#$<&COLOR2&>"
+          ENDIF
+          
+          // asdasdasd
+          FOREACH I1 STRING ROW1
+               IF ROW1.I1 == COLOR
+                    GOOD = GOOD + 1
+               ENDIF 
+               IF GOOD > 6
+                    STATUS = #i3
+               ENDIF
+          NEXTEACH
+          GOOD = 0
+          FOREACH I2 STRING ROW2
+               IF ROW2.I2 == COLOR
+                    GOOD = GOOD + 1
+               ENDIF 
+               IF GOOD > 6
+                    STATUS = #i3
+               ENDIF
+          NEXTEACH
+          GOOD = 0
+          FOREACH I3 STRING ROW3  
+               IF ROW3.I3 == COLOR
+                    GOOD = GOOD + 1
+               ENDIF 
+               IF GOOD > 6
+                    STATUS = #i3
+               ENDIF
+          NEXTEACH
+          GOOD = 0
+          FOREACH I4 STRING ROW4
+               IF ROW4.I4 == COLOR
+                    GOOD = GOOD + 1
+               ENDIF 
+               IF GOOD > 6
+                    STATUS = #i3
+               ENDIF
+          NEXTEACH
+          GOOD = 0
+          FOREACH I5 STRING ROW5
+               IF ROW5.I5 == COLOR
+                    GOOD = GOOD + 1
+               ENDIF 
+               IF GOOD > 6
+                    STATUS = #i3
+               ENDIF
+          NEXTEACH
+          GOOD = 0
+          FOREACH I6 STRING ROW6
+               IF ROW6.I6 == COLOR
+                    GOOD = GOOD + 1
+               ENDIF 
+               IF GOOD > 6
+                    STATUS = #i3
+               ENDIF
+          NEXTEACH
+          GOOD = 0
+          FOREACH I7 STRING ROW7
+               IF ROW7.I7 == COLOR
+                    GOOD = GOOD + 1
+               ENDIF 
+               IF GOOD > 6
+                    STATUS = #i3
+               ENDIF
+          NEXTEACH
+          GOOD = 0
+          FOREACH I8 STRING ROW8
+               IF ROW8.I8 == COLOR
+                    GOOD = GOOD + 1
+               ENDIF 
+               IF GOOD > 6
+                    STATUS = #i3
+               ENDIF
+          NEXTEACH
+          GOOD = 0
+          FOREACH I9 STRING ROW9
+               IF ROW9.I9 == COLOR
+                    GOOD = GOOD + 1
+               ENDIF 
+               IF GOOD > 6
+                    STATUS = #i3
+               ENDIF
+          NEXTEACH
+          GOOD = 0  
+          //===================================
+          FOR U 0 9 1 
+               FOR P 1 10 1     
+                    IF "ROW<&P&>.<&U&>" == COLOR
+                         GOOD = GOOD + 1
+                    ENDIF 
+                    IF (GOOD > 6) && (STATUS == 0)
+                         STATUS = #i1
+                    ENDIF
+                    IF (GOOD > 6) && (STATUS == #i3)
+                         STATUS = #i2
+                    ENDIF
+               NEXT
+               GOOD = 0
+          NEXT
+          SLEEP 1000
+          //11:28:12 :[You replied correctly.
+          IF (STATUS == #I1) || (STATUS == #I3)
+               NPC_DIALOG "bypass -h line"
+               MSG VOID 1 "#$Sended Anti-Antibot bypass by mochitto! [line]"
+               PRINT_TEXT "Protection has ben PWNED! [LINE]"
+          ENDIF
+          IF STATUS == #I2
+               NPC_DIALOG "bypass -h cross"
+               MSG VOID 1 "#$Sended Anti-Antibot bypass by mochitto! [cross]"
+               PRINT_TEXT "Protection has ben PWNED! [CROSS]"
+          ENDIF    
+          IF STATUS == #I0
+               DEFINE BYTEBUFFER NPCHTML 19998
+               NPCHTML.WRITE_BYTE #i25
+               NPCHTML.WRITE_INT32 OBJID
+               NPCHTML.WRITE_STRING HTM
+               NPCHTML.WRITE_INT32 ITEM_ID
+               NPCHTML.TRIM_TO_INDEX
+               INJECTBB_CLIENT NPCHTML
+               DELETE NPCHTML
+          ENDIF
+     ELSE
+          DEFINE BYTEBUFFER NPCHTML 19998
+          NPCHTML.WRITE_BYTE #i25
+          NPCHTML.WRITE_INT32 OBJID
+          NPCHTML.WRITE_STRING HTM
+          NPCHTML.WRITE_INT32 ITEM_ID
+          NPCHTML.TRIM_TO_INDEX
+          INJECTBB_CLIENT NPCHTML
+          DELETE NPCHTML
+     ENDIF
+RETURN VOID
+
+FUNCTION MSG 1 TEXT
+     DEFINE BYTEBUFFER SystemMessage 512
+     SystemMessage.WRITE_BYTE #i98
+     SystemMessage.WRITE_INT32 #i1987
+     SystemMessage.WRITE_INT32 TEXT.LENGTH
+     SystemMessage.WRITE_INT32 #i0
+     SystemMessage.WRITE_STRING TEXT
+     SystemMessage.TRIM_TO_INDEX
+     INJECTBB_CLIENT SystemMessage
+     DELETE SystemMessage
+RETURN VOID

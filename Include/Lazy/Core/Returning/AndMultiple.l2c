@@ -1,0 +1,39 @@
+
+CLASS LAZY_RETURNING_ANDMULTIPLE LAZY_RETURNING_BASEPIECE
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT
+
+      // the BOOLS values
+      THIS.ADD_VALUE VOID 2 #$BOOLS TRUE
+      THIS.ADD_VALUE VOID 2 #$BOOLS TRUE
+
+      // clear BOOLS
+      THIS.CLEAR VOID 1 #$BOOLS
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC _GET_RETURN 1 CALLTIME
+
+      DEFINE INT _BOOLS 0
+
+      THIS.DATA.#$BOOLS.GET_RETURN _BOOLS 1 CALLTIME
+
+      // --- --- ---
+
+      DEFINE INT BOOLEAN 0
+      FOR I1 0 "<&_BOOLS.COUNT&>" 1
+         _BOOLS.I1.GET_RETURN BOOLEAN 1 CALLTIME
+         IF (BOOLEAN == FALSE)
+            RETURN FALSE
+         ENDIF
+      NEXT
+
+   RETURN TRUE
+
+//-------------------------------------------------------------------------------------
+
+END_CLASS

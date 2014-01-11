@@ -1,0 +1,17 @@
+INCLUDE Tests\child_class.l2c
+
+DEFINE_GLOBAL SORTEDLIST MySL 0
+
+DEFINE INT r_Int 0
+
+FOR i 0 100 1
+  DEFINE NewSuper nugget 0
+
+  GET_RAND nugget.COUNT -2147483647 2147483646
+
+  MySL.ADD nugget "<&i&>"
+
+  DELETE nugget
+NEXT
+
+END_SCRIPT

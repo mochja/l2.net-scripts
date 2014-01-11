@@ -1,0 +1,6 @@
+INCLUDE Tests\Base.l2c
+
+CLASS Child2 Base
+	VAR_START
+	VAR_END
+END_CLASS

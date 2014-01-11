@@ -1,0 +1,19 @@
+// DLIB::Perception::IsPartyID - Returns true/false if the supplied ID is
+// within your party.
+
+// by d00d - version 1.0
+
+FUNCTION DLIB::Perception::IsPartyID 1 _iObjectID
+
+  DEFINE ARRAYLIST PARTY_OBJECTS 0
+  
+  DEFINE INT RESULT 0
+  GET_PARTY PARTY_OBJECTS
+  
+  FOREACH Object Player PARTY_OBJECTS
+    IF PARTY_OBJECTS.Object.ID == _iObjectID
+      RESULT = TRUE
+    ENDIF
+  NEXTEACH
+  
+RETURN RESULT

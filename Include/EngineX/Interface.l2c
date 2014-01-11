@@ -1,0 +1,14 @@
+
+//-------------------------------------------------------------------------------------
+CLASS ENGINEX_INTERFACE NULL
+//-------------------------------------------------------------------------------------
+
+   VAR_START
+      PUBLIC STRING MESSENGER "Include/EngineX/Interface/Messenger.l2c"
+      PUBLIC STRING MENU "Include/EngineX/Interface/Menu.l2c"
+      //PUBLIC STRING PARTYFRAME "Include/EngineX/Interface/PartyFrame.l2c"
+   VAR_END
+
+//-------------------------------------------------------------------------------------
+END_CLASS
+//-------------------------------------------------------------------------------------

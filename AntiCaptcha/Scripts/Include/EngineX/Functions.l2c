@@ -1,0 +1,41 @@
+
+INCLUDE Include/EngineX/Functions/Utils.l2c
+INCLUDE Include/EngineX/Functions/Strings.l2c
+INCLUDE Include/EngineX/Functions/Files.l2c
+INCLUDE Include/EngineX/Functions/Math.l2c
+INCLUDE Include/EngineX/Functions/Lists.l2c
+INCLUDE Include/EngineX/Functions/Geo.l2c
+INCLUDE Include/EngineX/Functions/Time.l2c
+INCLUDE Include/EngineX/Functions/Matrix.l2c
+
+//-------------------------------------------------------------------------------------
+CLASS ENGINEX_FUNCTIONS NULL
+//-------------------------------------------------------------------------------------
+
+   VAR_START
+      PUBLIC ENGINEX_FUNCTIONS_UTILS UTILS 0
+      PUBLIC ENGINEX_FUNCTIONS_STRINGS STRINGS 0
+      PUBLIC ENGINEX_FUNCTIONS_FILES FILES 0
+      PUBLIC ENGINEX_FUNCTIONS_MATH MATH 0
+      PUBLIC ENGINEX_FUNCTIONS_LISTS LISTS 0
+      PUBLIC ENGINEX_FUNCTIONS_GEO GEO 0
+      PUBLIC ENGINEX_FUNCTIONS_TIME TIME 0
+      PUBLIC ENGINEX_FUNCTIONS_MATRIX MATRIX 0
+   VAR_END
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT 0
+      THIS.UTILS.CONSTRUCT VOID 0
+      THIS.STRINGS.CONSTRUCT VOID 0
+      THIS.FILES.CONSTRUCT VOID 0
+      THIS.MATH.CONSTRUCT VOID 0
+      THIS.LISTS.CONSTRUCT VOID 0
+      THIS.GEO.CONSTRUCT VOID 0
+      THIS.TIME.CONSTRUCT VOID 0
+      THIS.MATRIX.CONSTRUCT VOID 0
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+END_CLASS
+//-------------------------------------------------------------------------------------

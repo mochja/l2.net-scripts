@@ -1,0 +1,41 @@
+// Kratky popis
+// Server: 
+// Autor: mochitto
+// Date: 
+// Special thanks for L2.NET contributors
+// rev.: 0
+PRINT_TEXT "SCRIPT STARTED!]"
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" SystemMessage 98     
+SET_EVENT "<&SCRIPTEVENT_SELFDIE&>" "<&SYSTEM_CURRENTFILE&>" SelfDie
+
+DEFINE_GLOBAL INT CAN_TOWN 1
+
+// Main section
+// ===============================
+		WHILE (ONE == ONE)
+			sleep 10000
+		WEND
+	
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT
+			
+FUNCTION SystemMessage
+	DEFINE INT MESSAGEID 0 
+	PACKET.READ_BYTE null
+	PACKET.READ_INT32 MESSAGEID
+   	IF MESSAGEID == 612
+		UDP_SEND "#$asdasd" #i1 #i1 #i1 #i1
+	ENDIF              	
+RETURN VOID
+
+FUNCTION SelfDie
+	PRINT_TEXT "== f:SelfDie"
+	BOTSET ACTIVE_TARGET_ON "<&FALSE&>"
+	SLEEP 1000
+	CANCEL_TARGET
+	SLEEP 2000
+	IF CAN_TOWN == 1
+		TAP_TO TOWN
+		CAN_TOWN = 0
+	ENDIF
+RETURN VOID

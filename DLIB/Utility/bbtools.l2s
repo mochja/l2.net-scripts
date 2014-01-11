@@ -1,0 +1,90 @@
+// Byte Buffer Seek, Chop, Shift and Pop.
+//
+// p_seek  - this seeks forward a number of bytes (_iOffsetbytes)
+//           in the provided byte buffer (_bInBuffer).
+//
+// p_chop   - this seeks forward a number of bytes (_iOffsetBytes) in
+//            the provided byte buffer (_bInBuffer) then reads a number
+//            of bytes (_iReadBytes) into a new buffer (_bOutBuffer).
+//            Everything else in the original buffer is discarded.
+//
+// p_shift  - this removes a number of bytes (_iOffsetBytes) from the 
+//            beginning of the byte buffer
+//
+// p_pop    - this removes a number of bytes (_iOffsetBytes) from the 
+//            end of the byte buffer (_bInBuffer) and returns the 
+//            new shrunk byte buffer.
+//
+// by d00d
+//
+// Initial Release - v1.0 [11/20/08]
+
+
+FUNCTION p_seek 2 _iOffsetBytes _bInBuffer
+
+  DEFINE INT _iTmp 0
+
+  FOR Z 0 "<&_iOffsetBytes&>" 1
+    _bInBuffer.READ_BYTE _iTmp
+  NEXT
+  
+RETURN _bInBuffer
+  
+FUNCTION p_shift 2 _iOffsetBytes _bInBuffer
+
+  DEFINE INT _iTmp 0
+  DEFINE INT _iOffset 0
+  
+  MATH _iOffset _bInBuffer.LENGTH SUBTRACT _iOffsetBytes
+  
+  DEFINE BYTEBUFFER _bOutBuffer "<&_iOffset&>"
+  
+  FOR Z 0 "<&_iOffsetBytes&>" 1
+    _bInBuffer.READ_BYTE _iTmp
+  NEXT
+
+  FOR Z 0 "<&_iOffset&>" 1
+    _bInBuffer.READ_BYTE _iTmp
+    _bOutBuffer.WRITE_BYTE _iTmp
+  NEXT
+
+  _bOutBuffer.RESET_INDEX
+
+RETURN _bOutBuffer
+
+FUNCTION p_pop 2 _iOffsetBytes _bInBuffer
+
+  DEFINE INT _iTmp 0
+  DEFINE INT _iOffset 0
+  
+  MATH _iOffset _bInBuffer.LENGTH SUBTRACT _iOffsetBytes
+  
+  DEFINE BYTEBUFFER _bOutBuffer "<&_iOffset&>"
+  
+  FOR Z 0 "<&_iOffset&>" 1
+    _bInBuffer.READ_BYTE _iTmp
+	_bOutBuffer.WRITE_BYTE _iTmp
+  NEXT
+  
+  _bOutBuffer.RESET_INDEX
+  
+RETURN _bOutBuffer
+    
+FUNCTION p_chop 3 _iOffsetBytes _iReadBytes _bInBuffer 
+
+  DEFINE INT _iTmp 0
+  DEFINE BYTEBUFFER _bOutBuffer "<&_bInBuffer.LENGTH&>"
+  
+  FOR Z 0 "<&_iOffsetBytes&>" 1
+    _bInBuffer.READ_BYTE _iTmp
+  NEXT
+
+  FOR Z 0 "<&_iReadBytes&>" 1
+    _bInBuffer.READ_BYTE _iTmp
+	_bOutBuffer.WRITE_BYTE _iTmp
+  NEXT
+  _bInBuffer.RESET_INDEX
+  _bOutBuffer.TRIM_TO_INDEX
+  _bOutBuffer.RESET_INDEX
+  
+RETURN _bOutBuffer

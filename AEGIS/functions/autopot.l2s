@@ -1,0 +1,642 @@
+// AEGIS PvP Potion Management
+//
+// Version 1.0
+
+FUNCTION PotionManagementAdmin
+  PRINT_TEXT "Potion Management - I said it wasnt ready yet!"
+  END_SCRIPT
+RETURN VOID
+/*
+FUNCTION PotionManagementAdmin
+
+  IF "AEGIS.OPTIONS.CONFIG.CONTAINS_KEY AUTO_POT" == FALSE
+    AEGIS.OPTIONS.CONFIG.ADD FALSE "AUTO_POT"
+  ENDIF
+
+  IF "AEGIS.OPTIONS.CONFIG.CONTAINS_KEY CP_THRESHOLD" == FALSE
+    AEGIS.OPTIONS.CONFIG.ADD "#D70.0" "CP_THRESHOLD"
+  ENDIF
+
+  IF "AEGIS.OPTIONS.CONFIG.CONTAINS_KEY HP_THRESHOLD" == FALSE
+    AEGIS.OPTIONS.CONFIG.ADD "#D70.0" "HP_THRESHOLD"
+  ENDIF
+
+  WHILE "AEGIS.ENTITYTRACKING.CHARACTER.COUNT" == ZERO
+    SLEEP 500
+  WEND
+  
+  WHILE AEGIS.STATUSEFFECTS.ZONEINFO.COUNT == ZERO
+    SLEEP 500
+  WEND
+  
+  IF "AEGIS.OPTIONS.CONFIG.#$AUTO_POT" == TRUE
+    PRINT_TEXT "Potion Management Starting"
+    THREAD ItemThreadLauncher
+  ELSE
+    PRINT_TEXT "Potion Management Exiting"
+  ENDIF
+  
+RETURN VOID
+*/
+FUNCTION ItemThreadLauncher
+
+  DEFINE INT NUM 0
+  
+  WHILE ONE == ONE
+    NUM = ZERO
+    IF AEGIS.OPTIONS.AUTOPOT.GREATER_CP != TRUE
+      ITEM_COUNT NUM "<&AEGIS.OPTIONS.AUTOPOT.GREATER_CP_ID&>"
+      IF NUM > ZERO
+        AutoPot::Launcher VOID 3 AEGIS.OPTIONS.AUTOPOT.GREATER_CP_ID "AEGIS.OPTIONS.CONFIG.#$CP_THRESHOLD" ZERO
+      ENDIF
+    ENDIF
+    
+    NUM = ZERO
+    IF AEGIS.OPTIONS.AUTOPOT.LESSER_CP != TRUE
+      ITEM_COUNT NUM "<&AEGIS.OPTIONS.AUTOPOT.LESSER_CP_ID&>"
+      IF NUM > ZERO
+        AutoPot::Launcher VOID 3 AEGIS.OPTIONS.AUTOPOT.LESSER_CP_ID "AEGIS.OPTIONS.CONFIG.#$CP_THRESHOLD" ZERO
+      ENDIF
+    ENDIF
+    
+    NUM = ZERO
+    IF AEGIS.OPTIONS.AUTOPOT.QHP != TRUE
+      ITEM_COUNT NUM "<&AEGIS.OPTIONS.AUTOPOT.QHP_ID&>"
+      IF NUM > ZERO
+        AutoPot::Launcher VOID 3 AEGIS.OPTIONS.AUTOPOT.QHP_ID "AEGIS.OPTIONS.CONFIG.#$HP_THRESHOLD" ZERO
+      ENDIF
+    ENDIF
+    
+    NUM = ZERO
+    IF AEGIS.OPTIONS.AUTOPOT.EVENT_QHP != TRUE
+      ITEM_COUNT NUM "<&AEGIS.OPTIONS.AUTOPOT.EVENT_QHP_ID&>"
+      IF NUM > ZERO
+        AutoPot::Launcher VOID 3 AEGIS.OPTIONS.AUTOPOT.EVENT_QHP_ID "AEGIS.OPTIONS.CONFIG.#$HP_THRESHOLD" ZERO
+      ENDIF
+    ENDIF
+    
+    NUM = ZERO
+    IF AEGIS.OPTIONS.AUTOPOT.GHP != TRUE
+      ITEM_COUNT NUM "<&AEGIS.OPTIONS.AUTOPOT.GHP_ID&>"
+      IF NUM > ZERO
+        AutoPot::Launcher VOID 3 AEGIS.OPTIONS.AUTOPOT.GHP_ID "AEGIS.OPTIONS.CONFIG.#$HP_THRESHOLD" ZERO
+      ENDIF
+    ENDIF
+    
+    NUM = ZERO
+    IF AEGIS.OPTIONS.AUTOPOT.EVENT_GHP != TRUE
+      ITEM_COUNT NUM "<&AEGIS.OPTIONS.AUTOPOT.EVENT_GHP_ID&>"
+      IF NUM > ZERO
+        AutoPot::Launcher VOID 3 AEGIS.OPTIONS.AUTOPOT.EVENT_GHP_ID "AEGIS.OPTIONS.CONFIG.#$HP_THRESHOLD" ZERO
+      ENDIF
+    ENDIF
+    
+    NUM = ZERO
+    IF AEGIS.OPTIONS.AUTOPOT.RICECAKE != TRUE
+      ITEM_COUNT NUM "<&AEGIS.OPTIONS.AUTOPOT.RICECAKE_ID&>"
+      IF NUM > ZERO
+        AutoPot::Launcher VOID 3 AEGIS.OPTIONS.AUTOPOT.RICECAKE_ID "AEGIS.OPTIONS.CONFIG.#$HP_THRESHOLD" ZERO
+      ENDIF
+    ENDIF
+    
+    NUM = ZERO
+    IF AEGIS.OPTIONS.AUTOPOT.OLY_QHP != TRUE
+      ITEM_COUNT NUM "<&AEGIS.OPTIONS.AUTOPOT.OLY_QHP_ID&>"
+      IF NUM > ZERO
+        AutoPot::Launcher VOID 3 AEGIS.OPTIONS.AUTOPOT.OLY_QHP_ID "AEGIS.OPTIONS.CONFIG.#$HP_THRESHOLD" ZERO
+      ENDIF
+    ENDIF
+    
+    NUM = ZERO
+    IF AEGIS.OPTIONS.AUTOPOT.SPRING_ECP != TRUE
+      ITEM_COUNT NUM "<&AEGIS.OPTIONS.AUTOPOT.SPRING_ECP_ID&>"
+      IF NUM > ZERO
+        AutoPot::Launcher VOID 3 AEGIS.OPTIONS.AUTOPOT.SPRING_ECP_ID "AEGIS.OPTIONS.CONFIG.#$CP_THRESHOLD" ZERO
+      ENDIF
+    ENDIF
+    
+    NUM = ZERO
+    IF AEGIS.OPTIONS.AUTOPOT.BATTLE_ECP != TRUE
+      ITEM_COUNT NUM "<&AEGIS.OPTIONS.AUTOPOT.BATTLE_ECP_ID&>"
+      IF NUM > ZERO
+        AutoPot::Launcher VOID 3 AEGIS.OPTIONS.AUTOPOT.BATTLE_ECP_ID "AEGIS.OPTIONS.CONFIG.#$CP_THRESHOLD" ONE
+      ENDIF
+    ENDIF
+    
+    NUM = ZERO
+    IF AEGIS.OPTIONS.AUTOPOT.ECP != TRUE
+      ITEM_COUNT NUM "<&AEGIS.OPTIONS.AUTOPOT.ECP_ID&>"
+      IF NUM > ZERO
+        AutoPot::Launcher VOID 3 AEGIS.OPTIONS.AUTOPOT.ECP_ID "AEGIS.OPTIONS.CONFIG.#$CP_THRESHOLD" ZERO
+      ENDIF
+    ENDIF
+    
+    NUM = ZERO
+    IF AEGIS.OPTIONS.AUTOPOT.BATTLE_EHP != TRUE
+      ITEM_COUNT NUM "<&AEGIS.OPTIONS.AUTOPOT.BATTLE_EHP_ID&>"
+      IF NUM > ZERO
+        AutoPot::Launcher VOID 3 AEGIS.OPTIONS.AUTOPOT.BATTLE_EHP_ID "AEGIS.OPTIONS.CONFIG.#$HP_THRESHOLD" ONE
+      ENDIF
+    ENDIF
+    
+    NUM = ZERO
+    IF AEGIS.OPTIONS.AUTOPOT.EHP != TRUE
+      ITEM_COUNT NUM "<&AEGIS.OPTIONS.AUTOPOT.EHP_ID&>"
+      IF NUM > ZERO
+        AutoPot::Launcher VOID 3 AEGIS.OPTIONS.AUTOPOT.EHP_ID "AEGIS.OPTIONS.CONFIG.#$HP_THRESHOLD" ZERO
+      ENDIF
+    ENDIF
+    SLEEP 333
+  WEND
+
+RETURN VOID
+
+FUNCTION AutoPot::StatusCheck 2 _dCurrentThreshold _iItemID
+
+  DEFINE INT B_RESULT 0
+  DEFINE INT DISABLED 0
+
+  // Invulnerable
+  B_RESULT = "AEGIS.ENTITYTRACKING.CHARACTER.CharInfo.#$EXTENDED_VFX" & #I1
+  IF B_RESULT == #I1
+    DISABLED = TRUE
+  ENDIF
+  // Air Stun
+  B_RESULT = "AEGIS.ENTITYTRACKING.CHARACTER.CharInfo.#$EXTENDED_VFX" & #I2
+  IF B_RESULT == #I2
+    DISABLED = TRUE
+  ENDIF
+  // Afraid
+  B_RESULT = "AEGIS.ENTITYTRACKING.CHARACTER.CharInfo.#$ABNORMAL_VFX" & #I32
+  IF B_RESULT == #I32
+    DISABLED = TRUE
+  ENDIF
+  // Stunned
+  B_RESULT = "AEGIS.ENTITYTRACKING.CHARACTER.CharInfo.#$ABNORMAL_VFX" & #I64
+  IF B_RESULT == #I64
+    DISABLED = TRUE
+  ENDIF
+  // Asleep
+  B_RESULT = "AEGIS.ENTITYTRACKING.CHARACTER.CharInfo.#$ABNORMAL_VFX" & #I128
+  IF B_RESULT == #I128
+    DISABLED = TRUE
+  ENDIF
+  // Paralyzed
+  B_RESULT = "AEGIS.ENTITYTRACKING.CHARACTER.CharInfo.#$ABNORMAL_VFX" & #I1024
+  IF B_RESULT == #I1024
+    DISABLED = TRUE
+  ENDIF
+  // Petrified
+  B_RESULT = "AEGIS.ENTITYTRACKING.CHARACTER.CharInfo.#$ABNORMAL_VFX" & #I2048
+  IF B_RESULT == #I2048
+    DISABLED = TRUE
+  ENDIF
+  // Lesser Celestial Shield
+  IF "AEGIS.EFFECTTRACKING.ABNORMALEFFECTS.CONTAINS_KEY 3158" == TRUE
+    DISABLED = TRUE
+  ENDIF
+  // Hide
+  IF "AEGIS.EFFECTTRACKING.ABNORMALEFFECTS.CONTAINS_KEY 922" == TRUE
+    DISABLED == TRUE
+  ENDIF
+  // Seal of Limit
+  IF "AEGIS.EFFECTTRACKING.ABNORMALEFFECTS.CONTAINS_KEY 1509" == TRUE
+    _dCurrentThreshhold = #D33.0
+  ENDIF
+
+  IF DISABLED == TRUE
+    _dCurrentThreshold = #D0.0
+  ELSE 
+    SWITCH _iItemID
+      CASE AEGIS.OPTIONS.AUTOPOT.SPRING_ECP_ID
+      CASE AEGIS.OPTIONS.AUTOPOT.BATTLE_ECP_ID
+      CASE AEGIS.OPTIONS.AUTOPOT.ECP_ID      
+        // Touch of Death
+        // Do not waste elixers if max cp < 1200
+        IF "AEGIS.EFFECTTRACKING.ABNORMALEFFECTS.CONTAINS_KEY 342" == TRUE
+          IF AEGIS.ENTITYTRACKING.Character.MAX_CP < #I1200
+            _dCurrentThreshold = #D0.0
+          ENDIF
+        ENDIF
+      BREAK 1
+    ENDSWITCH
+  ENDIF
+
+RETURN _dCurrentThreshold
+
+FUNCTION AutoPot::Launcher 3 _iItemID _dThreshold _iSiegeOnly
+
+  DEFINE INT ITEM_OK 0
+  DEFINE INT NUM 0
+  DEFINE INT SIEGE 0
+  DEFINE DOUBLE PERCENT 0.0
+  DEFINE DOUBLE _dCurrentThreshold 0.0
+  
+  SWITCH _iItemID
+    CASE AEGIS.OPTIONS.AUTOPOT.LESSER_CP_ID
+      NUM = ZERO
+      ITEM_COUNT NUM "<&AEGIS.OPTIONS.AUTOPOT.LESSER_CP_ID&>"
+      WHILE NUM > ZERO
+        _dCurrentThreshold = _dThreshold
+        
+        IF _iSiegeOnly > ZERO          
+          SIEGE = AEGIS.STATUSEFFECTS.ZONEINFO.SIEGEWARZONE1 + AEGIS.STATUSEFFECTS.ZONEINFO.SIEGEWARZONE2
+          
+          IF SIEGE > ZERO
+            ITEM_OK = TRUE
+          ENDIF
+        ELSE
+          ITEM_OK = TRUE
+        ENDIF
+        
+        IF ITEM_OK == TRUE
+          PERCENT = "AEGIS.ENTITYTRACKING.CHARACTER.CURRENT_CP" / "AEGIS.ENTITYTRACKING.CHARACTER.MAX_CP"
+            
+          AutoPot::StatusCheck _dCurrentThreshold 2 _dThreshold _iItemID
+            
+          IF PERCENT < _dCurrentThreshold
+            USE_ITEM "<&AEGIS.OPTIONS.AUTOPOT.LESSER_CP_ID&>"
+            SLEEP "<&AEGIS.OPTIONS.AUTOPOT.LESSER_CP_REUSE&>"
+          ENDIF
+          ITEM_COUNT NUM "<&AEGIS.OPTIONS.AUTOPOT.LESSER_CP_ID&>"            
+        ENDIF
+        SLEEP 100
+      WEND
+      
+      BREAK 1
+    CASE AEGIS.OPTIONS.AUTOPOT.GREATER_CP_ID
+      NUM = ZERO
+      ITEM_COUNT NUM "<&AEGIS.OPTIONS.AUTOPOT.GREATER_CP_ID&>"
+      WHILE NUM > ZERO
+        _dCurrentThreshold = _dThreshold
+        
+        IF _iSiegeOnly > ZERO
+          WHILE AEGIS.STATUSEFFECTS.ZONEINFO.COUNT == ZERO
+            SLEEP 500
+          WEND
+          
+          SIEGE = AEGIS.STATUSEFFECTS.ZONEINFO.SIEGEWARZONE1 + AEGIS.STATUSEFFECTS.ZONEINFO.SIEGEWARZONE2
+          
+          IF SIEGE > ZERO
+            ITEM_OK = TRUE
+          ENDIF
+        ELSE
+          ITEM_OK = TRUE
+        ENDIF
+        
+        IF ITEM_OK == TRUE
+          PERCENT = "AEGIS.ENTITYTRACKING.CHARACTER.CURRENT_CP" / "AEGIS.ENTITYTRACKING.CHARACTER.MAX_CP"
+            
+          AutoPot::StatusCheck _dCurrentThreshold 2 _dThreshold _iItemID
+            
+          IF PERCENT < _dCurrentThreshold
+            USE_ITEM "<&AEGIS.OPTIONS.AUTOPOT.GREATER_CP_ID&>"
+            SLEEP "<&AEGIS.OPTIONS.AUTOPOT.GREATER_CP_REUSE&>"
+          ENDIF
+          ITEM_COUNT NUM "<&AEGIS.OPTIONS.AUTOPOT.GREATER_CP_ID&>"            
+        ENDIF
+        SLEEP 100
+      WEND
+      BREAK 1
+    CASE AEGIS.OPTIONS.AUTOPOT.QHP_ID
+      NUM = ZERO
+      ITEM_COUNT NUM "<&AEGIS.OPTIONS.AUTOPOT.QHP_ID&>"
+      WHILE NUM > ZERO
+        _dCurrentThreshold = _dThreshold
+        
+        IF _iSiegeOnly > ZERO
+          WHILE AEGIS.STATUSEFFECTS.ZONEINFO.COUNT == ZERO
+            SLEEP 500
+          WEND
+          
+          SIEGE = AEGIS.STATUSEFFECTS.ZONEINFO.SIEGEWARZONE1 + AEGIS.STATUSEFFECTS.ZONEINFO.SIEGEWARZONE2
+          
+          IF SIEGE > ZERO
+            ITEM_OK = TRUE
+          ENDIF
+        ELSE
+          ITEM_OK = TRUE
+        ENDIF
+        
+        IF ITEM_OK == TRUE
+          PERCENT = "AEGIS.ENTITYTRACKING.CHARACTER.CURRENT_HP" / "AEGIS.ENTITYTRACKING.CHARACTER.MAX_HP"
+            
+          AutoPot::StatusCheck _dCurrentThreshold 2 _dThreshold _iItemID
+            
+          IF PERCENT < _dCurrentThreshold
+            USE_ITEM "<&AEGIS.OPTIONS.AUTOPOT.QHP_ID&>"
+            SLEEP "<&AEGIS.OPTIONS.AUTOPOT.QHP_REUSE&>"
+          ENDIF
+          ITEM_COUNT NUM "<&AEGIS.OPTIONS.AUTOPOT.QHP_ID&>"            
+        ENDIF
+        SLEEP 100
+      WEND      
+      BREAK 1
+    CASE AEGIS.OPTIONS.AUTOPOT.GHP_ID
+      NUM = ZERO
+      ITEM_COUNT NUM "<&AEGIS.OPTIONS.AUTOPOT.GHP_ID&>"
+      WHILE NUM > ZERO
+        _dCurrentThreshold = _dThreshold
+        
+        IF _iSiegeOnly > ZERO
+          WHILE AEGIS.STATUSEFFECTS.ZONEINFO.COUNT == ZERO
+            SLEEP 500
+          WEND
+          
+          SIEGE = AEGIS.STATUSEFFECTS.ZONEINFO.SIEGEWARZONE1 + AEGIS.STATUSEFFECTS.ZONEINFO.SIEGEWARZONE2
+          
+          IF SIEGE > ZERO
+            ITEM_OK = TRUE
+          ENDIF
+        ELSE
+          ITEM_OK = TRUE
+        ENDIF
+        
+        IF ITEM_OK == TRUE
+          PERCENT = "AEGIS.ENTITYTRACKING.CHARACTER.CURRENT_HP" / "AEGIS.ENTITYTRACKING.CHARACTER.MAX_HP"
+            
+          AutoPot::StatusCheck _dCurrentThreshold 2 _dThreshold _iItemID
+            
+          IF PERCENT < _dCurrentThreshold
+            USE_ITEM "<&AEGIS.OPTIONS.AUTOPOT.GHP_ID&>"
+            SLEEP "<&AEGIS.OPTIONS.AUTOPOT.GHP_REUSE&>"
+          ENDIF
+          ITEM_COUNT NUM "<&AEGIS.OPTIONS.AUTOPOT.GHP_ID&>"            
+        ENDIF
+        SLEEP 100
+      WEND
+      BREAK 1
+    CASE AEGIS.OPTIONS.AUTOPOT.EVENT_GHP_ID
+      NUM = ZERO
+      ITEM_COUNT NUM "<&AEGIS.OPTIONS.AUTOPOT.EVENT_GHP_ID&>"
+      WHILE NUM > ZERO
+        _dCurrentThreshold = _dThreshold
+        
+        IF _iSiegeOnly > ZERO
+          WHILE AEGIS.STATUSEFFECTS.ZONEINFO.COUNT == ZERO
+            SLEEP 500
+          WEND
+          
+          SIEGE = AEGIS.STATUSEFFECTS.ZONEINFO.SIEGEWARZONE1 + AEGIS.STATUSEFFECTS.ZONEINFO.SIEGEWARZONE2
+          
+          IF SIEGE > ZERO
+            ITEM_OK = TRUE
+          ENDIF
+        ELSE
+          ITEM_OK = TRUE
+        ENDIF
+        
+        IF ITEM_OK == TRUE
+          PERCENT = "AEGIS.ENTITYTRACKING.CHARACTER.CURRENT_HP" / "AEGIS.ENTITYTRACKING.CHARACTER.MAX_HP"
+            
+          AutoPot::StatusCheck _dCurrentThreshold 2 _dThreshold _iItemID
+            
+          IF PERCENT < _dCurrentThreshold
+            USE_ITEM "<&AEGIS.OPTIONS.AUTOPOT.EVENT_GHP_ID&>"
+            SLEEP "<&AEGIS.OPTIONS.AUTOPOT.EVENT_GHP_REUSE&>"
+          ENDIF
+          ITEM_COUNT NUM "<&AEGIS.OPTIONS.AUTOPOT.EVENT_GHP_ID&>"            
+        ENDIF
+        SLEEP 100
+      WEND      
+      BREAK 1
+    CASE AEGIS.OPTIONS.AUTOPOT.RICECAKE_ID
+      NUM = ZERO
+      ITEM_COUNT NUM "<&AEGIS.OPTIONS.AUTOPOT.RICECAKE_ID&>"
+      WHILE NUM > ZERO
+        _dCurrentThreshold = _dThreshold
+        
+        IF _iSiegeOnly > ZERO
+          WHILE AEGIS.STATUSEFFECTS.ZONEINFO.COUNT == ZERO
+            SLEEP 500
+          WEND
+          
+          SIEGE = AEGIS.STATUSEFFECTS.ZONEINFO.SIEGEWARZONE1 + AEGIS.STATUSEFFECTS.ZONEINFO.SIEGEWARZONE2
+          
+          IF SIEGE > ZERO
+            ITEM_OK = TRUE
+          ENDIF
+        ELSE
+          ITEM_OK = TRUE
+        ENDIF
+        
+        IF ITEM_OK == TRUE
+          PERCENT = "AEGIS.ENTITYTRACKING.CHARACTER.CURRENT_HP" / "AEGIS.ENTITYTRACKING.CHARACTER.MAX_HP"
+            
+          AutoPot::StatusCheck _dCurrentThreshold 2 _dThreshold _iItemID
+            
+          IF PERCENT < _dCurrentThreshold
+            USE_ITEM "<&AEGIS.OPTIONS.AUTOPOT.RICECAKE_ID&>"
+            SLEEP "<&AEGIS.OPTIONS.AUTOPOT.RICECAKE_REUSE&>"
+          ENDIF
+          ITEM_COUNT NUM "<&AEGIS.OPTIONS.AUTOPOT.RICECAKE_ID&>"            
+        ENDIF
+        SLEEP 100
+      WEND
+      BREAK 1
+    CASE AEGIS.OPTIONS.AUTOPOT.OLY_QHP_ID
+      NUM = ZERO
+      ITEM_COUNT NUM "<&AEGIS.OPTIONS.AUTOPOT.OLY_QHP_ID&>"
+      WHILE NUM > ZERO
+        _dCurrentThreshold = _dThreshold
+        
+        IF _iSiegeOnly > ZERO
+          WHILE AEGIS.STATUSEFFECTS.ZONEINFO.COUNT == ZERO
+            SLEEP 500
+          WEND
+          
+          SIEGE = AEGIS.STATUSEFFECTS.ZONEINFO.SIEGEWARZONE1 + AEGIS.STATUSEFFECTS.ZONEINFO.SIEGEWARZONE2
+          
+          IF SIEGE > ZERO
+            ITEM_OK = TRUE
+          ENDIF
+        ELSE
+          ITEM_OK = TRUE
+        ENDIF
+        
+        IF ITEM_OK == TRUE
+          PERCENT = "AEGIS.ENTITYTRACKING.CHARACTER.CURRENT_HP" / "AEGIS.ENTITYTRACKING.CHARACTER.MAX_HP"
+            
+          AutoPot::StatusCheck _dCurrentThreshold 2 _dThreshold _iItemID
+            
+          IF PERCENT < _dCurrentThreshold
+            USE_ITEM "<&AEGIS.OPTIONS.AUTOPOT.OLY_QHP_ID&>"
+            SLEEP "<&AEGIS.OPTIONS.AUTOPOT.OLY_QHP_REUSE&>"
+          ENDIF
+          ITEM_COUNT NUM "<&AEGIS.OPTIONS.AUTOPOT.OLY_QHP_ID&>"            
+        ENDIF
+        SLEEP 100
+      WEND
+      BREAK 1
+    CASE AEGIS.OPTIONS.AUTOPOT.SPRING_ECP_ID
+      NUM = ZERO
+      ITEM_COUNT NUM "<&AEGIS.OPTIONS.AUTOPOT.SPRING_ECP_ID&>"
+      WHILE NUM > ZERO
+        _dCurrentThreshold = _dThreshold
+        
+        IF _iSiegeOnly > ZERO
+          WHILE AEGIS.STATUSEFFECTS.ZONEINFO.COUNT == ZERO
+            SLEEP 500
+          WEND
+          
+          SIEGE = AEGIS.STATUSEFFECTS.ZONEINFO.SIEGEWARZONE1 + AEGIS.STATUSEFFECTS.ZONEINFO.SIEGEWARZONE2
+          
+          IF SIEGE > ZERO
+            ITEM_OK = TRUE
+          ENDIF
+        ELSE
+          ITEM_OK = TRUE
+        ENDIF
+        
+        IF ITEM_OK == TRUE
+          PERCENT = "AEGIS.ENTITYTRACKING.CHARACTER.CURRENT_CP" / "AEGIS.ENTITYTRACKING.CHARACTER.MAX_CP"
+            
+          AutoPot::StatusCheck _dCurrentThreshold 2 _dThreshold _iItemID
+            
+          IF PERCENT < _dCurrentThreshold
+            USE_ITEM "<&AEGIS.OPTIONS.AUTOPOT.SPRING_ECP_ID&>"
+            SLEEP "<&AEGIS.OPTIONS.AUTOPOT.SPRING_ECP_REUSE&>"
+          ENDIF
+          ITEM_COUNT NUM "<&AEGIS.OPTIONS.AUTOPOT.SPRING_ECP_ID&>"            
+        ENDIF
+        SLEEP 100
+      WEND
+      BREAK 1
+    CASE AEGIS.OPTIONS.AUTOPOT.BATTLE_ECP_ID
+      NUM = ZERO
+      WHILE NUM > ZERO
+        _dCurrentThreshold = _dThreshold
+        
+        IF _iSiegeOnly > ZERO
+          WHILE AEGIS.STATUSEFFECTS.ZONEINFO.COUNT == ZERO
+            SLEEP 500
+          WEND
+          
+          SIEGE = AEGIS.STATUSEFFECTS.ZONEINFO.SIEGEWARZONE1 + AEGIS.STATUSEFFECTS.ZONEINFO.SIEGEWARZONE2
+          
+          IF SIEGE > ZERO
+            ITEM_OK = TRUE
+          ENDIF
+        ELSE
+          ITEM_OK = TRUE
+        ENDIF
+        
+        IF ITEM_OK == TRUE
+          PERCENT = "AEGIS.ENTITYTRACKING.CHARACTER.CURRENT_CP" / "AEGIS.ENTITYTRACKING.CHARACTER.MAX_CP"
+            
+          AutoPot::StatusCheck _dCurrentThreshold 2 _dThreshold _iItemID
+            
+          IF PERCENT < _dCurrentThreshold
+            USE_ITEM "<&AEGIS.OPTIONS.AUTOPOT.BATTLE_ECP_ID&>"
+            SLEEP "<&AEGIS.OPTIONS.AUTOPOT.BATTLE_ECP_REUSE&>"
+          ENDIF
+          ITEM_COUNT NUM "<&AEGIS.OPTIONS.AUTOPOT.BATTLE_ECP_ID&>"            
+        ENDIF
+        SLEEP 100
+      WEND
+      BREAK 1
+    CASE AEGIS.OPTIONS.AUTOPOT.ECP_ID
+      NUM = ZERO
+      ITEM_COUNT NUM "<&AEGIS.OPTIONS.AUTOPOT.ECP_ID&>"
+      WHILE NUM > ZERO
+        _dCurrentThreshold = _dThreshold
+        
+        IF _iSiegeOnly > ZERO
+          WHILE AEGIS.STATUSEFFECTS.ZONEINFO.COUNT == ZERO
+            SLEEP 500
+          WEND
+          
+          SIEGE = AEGIS.STATUSEFFECTS.ZONEINFO.SIEGEWARZONE1 + AEGIS.STATUSEFFECTS.ZONEINFO.SIEGEWARZONE2
+          
+          IF SIEGE > ZERO
+            ITEM_OK = TRUE
+          ENDIF
+        ELSE
+          ITEM_OK = TRUE
+        ENDIF
+        
+        IF ITEM_OK == TRUE
+          PERCENT = "AEGIS.ENTITYTRACKING.CHARACTER.CURRENT_CP" / "AEGIS.ENTITYTRACKING.CHARACTER.MAX_CP"
+            
+          AutoPot::StatusCheck _dCurrentThreshold 2 _dThreshold _iItemID
+            
+          IF PERCENT < _dCurrentThreshold
+            USE_ITEM "<&AEGIS.OPTIONS.AUTOPOT.ECP_ID&>"
+            SLEEP "<&AEGIS.OPTIONS.AUTOPOT.ECP_REUSE&>"
+          ENDIF
+          ITEM_COUNT NUM "<&AEGIS.OPTIONS.AUTOPOT.ECP_ID&>"            
+        ENDIF
+        SLEEP 100
+      WEND
+      BREAK 1
+    CASE AEGIS.OPTIONS.AUTOPOT.BATTLE_EHP_ID
+      NUM = ZERO
+      ITEM_COUNT NUM "<&AEGIS.OPTIONS.AUTOPOT.BATTLE_EHP_ID&>"
+      WHILE NUM > ZERO
+        _dCurrentThreshold = _dThreshold
+        
+        IF _iSiegeOnly > ZERO
+          WHILE AEGIS.STATUSEFFECTS.ZONEINFO.COUNT == ZERO
+            SLEEP 500
+          WEND
+          
+          SIEGE = AEGIS.STATUSEFFECTS.ZONEINFO.SIEGEWARZONE1 + AEGIS.STATUSEFFECTS.ZONEINFO.SIEGEWARZONE2
+          
+          IF SIEGE > ZERO
+            ITEM_OK = TRUE
+          ENDIF
+        ELSE
+          ITEM_OK = TRUE
+        ENDIF
+        
+        IF ITEM_OK == TRUE
+          PERCENT = "AEGIS.ENTITYTRACKING.CHARACTER.CURRENT_HP" / "AEGIS.ENTITYTRACKING.CHARACTER.MAX_HP"
+            
+          AutoPot::StatusCheck _dCurrentThreshold 2 _dThreshold _iItemID
+            
+          IF PERCENT < _dCurrentThreshold
+            USE_ITEM "<&AEGIS.OPTIONS.AUTOPOT.BATTLE_EHP_ID&>"
+            SLEEP "<&AEGIS.OPTIONS.AUTOPOT.BATTLE_EHP_REUSE&>"
+          ENDIF
+          ITEM_COUNT NUM "<&AEGIS.OPTIONS.AUTOPOT.BATTLE_EHP_ID&>"            
+        ENDIF
+        SLEEP 100
+      WEND
+      BREAK 1      
+    CASE AEGIS.OPTIONS.AUTOPOT.EHP_ID
+      NUM = ZERO
+      ITEM_COUNT NUM "<&AEGIS.OPTIONS.AUTOPOT.EHP_ID&>"
+      WHILE NUM > ZERO
+        _dCurrentThreshold = _dThreshold
+        
+        IF _iSiegeOnly > ZERO
+          WHILE AEGIS.STATUSEFFECTS.ZONEINFO.COUNT == ZERO
+            SLEEP 500
+          WEND
+          
+          SIEGE = AEGIS.STATUSEFFECTS.ZONEINFO.SIEGEWARZONE1 + AEGIS.STATUSEFFECTS.ZONEINFO.SIEGEWARZONE2
+          
+          IF SIEGE > ZERO
+            ITEM_OK = TRUE
+          ENDIF
+        ELSE
+          ITEM_OK = TRUE
+        ENDIF
+        
+        IF ITEM_OK == TRUE
+          PERCENT = "AEGIS.ENTITYTRACKING.CHARACTER.CURRENT_HP" / "AEGIS.ENTITYTRACKING.CHARACTER.MAX_HP"
+            
+          AutoPot::StatusCheck _dCurrentThreshold 2 _dThreshold _iItemID
+            
+          IF PERCENT < _dCurrentThreshold
+            USE_ITEM "<&AEGIS.OPTIONS.AUTOPOT.EHP_ID&>"
+            SLEEP "<&AEGIS.OPTIONS.AUTOPOT.EHP_REUSE&>"
+          ENDIF
+          ITEM_COUNT NUM "<&AEGIS.OPTIONS.AUTOPOT.EHP_ID&>"            
+        ENDIF
+        SLEEP 100
+      WEND
+  ENDSWITCH
+  
+RETURN VOID
+

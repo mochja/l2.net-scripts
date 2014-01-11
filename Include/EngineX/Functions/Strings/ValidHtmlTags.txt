@@ -1,0 +1,20 @@
+// tagname | default closed | attribute keys
+html | 0 | 
+title | 0 | 
+body | 0 | 
+br | 1 | 
+br1 | 1 | 
+img | 1 | src,width,height
+edit | 1 | var,width,height,align,type,length
+multiedit | 1 | var,width,height
+button | 1 | value,width,height,back,fore,action
+combobox | 1 | var,width,list
+table | 0 | width,fixwidth,height,border,cellspacing,cellpadding,bgcolor
+tr | 0 | 
+td | 0 | align,valign,width,fixwidth,height
+font | 0 | color 
+a | 0 | action,msg
+center | 0 | 
+fstring | 0 | *
+* | 0 | *
+

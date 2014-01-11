@@ -1,0 +1,55 @@
+// DLIB::Packets::ReadExPartyPetWindowUpdate - v1.0 for Gracia 2.3
+// by d00d [09/29/09]
+//
+// Takes an byte buffer (_bInBuffer) containing the 
+// ExPartyPetWindowUpdate packet and dumps the data into a sorted list
+// (_oExPartyPetWindowUpdate).
+
+// Version 1.0 - Initial Release
+
+FUNCTION DLIB::Packets::ReadExPartyPetWindowUpdate 1 _bInBuffer
+
+  DEFINE INT OBJECT_ID
+  DEFINE INT NPC_ID
+  DEFINE INT SUMMON_TYPE
+  DEFINE INT OWNER_ID
+  DEFINE INT CUR_HP
+  DEFINE INT MAX_HP
+  DEFINE INT CUR_MP
+  DEFINE INT MAX_MP
+  DEFINE INT LEVEL
+  
+  DEFINE SORTEDLIST _oExPartyPetWindowUpdate
+  
+  DEFINE STRING VISIBLE_NAME
+  
+  IF _bInBuffer.CLASSNAME == "#$BYTEBUFFER"
+    _bInBuffer.RESET_INDEX
+    _bInBuffer.READ_BYTE NULL  // 0xFE
+    _bInBuffer.READ_BYTE NULL  // 0x19
+    _bInBuffer.READ_INT32 OBJECT_ID
+    _bInBuffer.READ_INT32 NPC_ID
+    _bInBuffer.READ_INT32 SUMMON_TYPE
+    _bInBuffer.READ_INT32 OWNER_ID
+    _bInBuffer.READ_STRING VISIBLE_NAME
+    _bInBuffer.READ_INT32 CUR_HP
+    _bInBuffer.READ_INT32 MAX_HP
+    _bInBuffer.READ_INT32 CUR_MP
+    _bInBuffer.READ_INT32 MAX_MP
+    _bInBuffer.READ_INT32 LEVEL
+    
+    _oCharInfo.ADD OBJECT_ID "OBJECT_ID"
+    _oCharInfo.ADD NPC_ID "NPC_ID"
+    _oCharInfo.ADD SUMMON_TYPE "SUMMON_TYPE"
+    _oCharInfo.ADD OWNER_ID "OWNER_ID"
+    _oCharInfo.ADD VISIBLE_NAME "VISIBLE_NAME"
+    _oCharInfo.ADD CUR_HP "CUR_HP"
+    _oCharInfo.ADD MAX_HP "MAX_HP"
+    _oCharInfo.ADD CUR_MP "CUR_MP"
+    _oCharInfo.ADD MAX_MP "MAX_MP"
+    _oCharInfo.ADD LEVEL "LEVEL"	  
+  ELSE
+    PRINT_TEXT "_bInBuffer is not a ByteBuffer"
+  ENDIF
+  
+RETURN _oCharInfo

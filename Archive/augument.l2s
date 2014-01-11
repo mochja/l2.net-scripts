@@ -1,0 +1,47 @@
+// CHANGE THE WEAPON NAME WITH THE EXACT NAME OF YOURS
+AA_ScrObj.WRK_ITEM.NAME = "#$+6 Homunkulus's Sword"
+
+// CHANGE THE LIFE STONE NAME WITH THE EXACT NAME OF YOURS
+AA_ScrObj.WRK_LS.NAME = "#$Life Stone: level 61"
+
+
+// CHANGE FOR WHAT AUGMENT CONFIGURATION YOU WANT
+// #i1 - just skills ; #i2 - just base stat
+// #i3 - skills or base stat
+// #i4 - skills and base stat <- THIS COULD NEVER HAPPEN
+AA_ScrObj.AUG_TYPE = #i3
+
+
+// ADD THE SKILL ID THAT ARE YOU LOOKING FOR(if you don't want just the base stat)
+AA_ScrObj.CHOSE_SKILL.ADD #i3241
+AA_ScrObj.CHOSE_SKILL.ADD #i3240
+AA_ScrObj.CHOSE_SKILL.ADD #i3244
+AA_ScrObj.CHOSE_SKILL.ADD #i3243
+AA_ScrObj.CHOSE_SKILL.ADD #i3247
+// ...YOU CAND ADD MORE OR REMOVE AND KEEP JUST ONE
+
+
+// #$STR - for STR+1
+// #$CON - for CON+1
+// #$MEN - for MEN+1
+// #$INT - for INT+1
+// CHANGE BELOW FOR WHAT BASE STAT YOU WANT(if you don't want just the skills)
+AA_ScrObj.BASE_STAT = #$MEN
+
+
+// CHANGE TO "TRUE" TO ADD THE 2 SECONDS DELAY, LIKE INGAME,
+// WHEN ADDING OR REMOVING AUGMENTATION
+AA_ScrObj.PROTECT_DELAY = FALSE
+
+// CHANGE TO "FALSE" IF YOU DON'T WANT TO SAVE LOGS
+AA_ScrObj.SAVE_LOG = TRUE
+// NUMBER OF LOG LINES PER FILE
+AA_ScrObj.LOG_LINES = #i2000
+
+
+// NPC DIALOG STRINGS, NEED TO CHNAGE ONLY IF THEY DIFFER (FOR RETAIL THIS IS A MUST)
+AA_ScrObj.NPC_DIAG11 = "#$bypass -h npc_<&TARGET_ID&>_Link common/augmentation_01.htm"
+AA_ScrObj.NPC_DIAG12 = "#$bypass -h npc_<&TARGET_ID&>_Augment 1"
+AA_ScrObj.NPC_DIAG21 = "#$bypass -h npc_<&TARGET_ID&>_Link common/augmentation_02.htm"
+AA_ScrObj.NPC_DIAG22 = "#$bypass -h npc_<&TARGET_ID&>_Augment 2"
+

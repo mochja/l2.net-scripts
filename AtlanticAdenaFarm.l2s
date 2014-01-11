@@ -1,0 +1,172 @@
+// Kratky popis
+// Server: 
+// Autor: mochitto
+// Date: 
+// Special thanks for L2.NET contributors
+// rev.: 0
+PRINT_TEXT "SCRIPT STARTED!]"
+
+SET_EVENT "<&SCRIPTEVENT_SELFDIE&>" "<&SYSTEM_CURRENTFILE&>" SelfDie
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" TeleportToLocation 34
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" HTML 25
+
+DEFINE_GLOBAL INT WAS_DEAD
+DEFINE_GLOBAL INT COMM
+// Main section
+// ===============================
+
+PRINT_LINE VOID 1 "#$INFO" 
+
+PRINT_TEXT "== This script was created for l2alantic.ro freya server with custom items, a lot of NPCs and safe farm zones :P"
+PRINT_TEXT "== Author: mochitto 10. 1. 2011"
+PRINT_TEXT "== Version: v0.1 ALPHA"
+PRINT_TEXT "== Happy boting!!"
+
+PRINT_LINE VOID 1 "#$INFO"
+
+comm = 4
+
+DO
+	SLEEP 1234
+LOOP ONE == ONE
+	
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT
+
+FUNCTION BUY_TOURCH
+	DEFINE INT TOURCH_COUNT
+	ITEM_COUNT TOURCH_COUNT 15485
+	
+	PRINT_TEXT "Torch count: <&TOURCH_COUNT&>"
+
+	SLEEP 2123
+	COMMAND "/target Kartia"
+	SLEEP 2123
+	TALK_TARGET
+	
+	IF TOURCH_COUNT == 0
+		COMM = #i0
+	ELSE
+		COMM = #i2
+	ENDIF
+ENDIF
+
+FUNCTION SelfDie
+	PRINT_TEXT "== f:SelfDie"
+	
+	BOTSET ACTIVE_TARGET_ON "<&FALSE&>"
+	BOTSET ACTIVE_ATTACK_ON "<&FALSE&>"
+	
+	IF WAS_DEAD == FALSE
+		WAS_DEAD = TRUE		
+		SLEEP 3342
+		TAP_TO TOWN
+	ENDIF
+RETURN VOID
+
+FUNCTION TeleportToLocation
+	DEFINE INT OBJ_ID
+	DEFINE INT DIST
+     
+	PACKET.READ_BYTE  NULL
+	PACKET.READ_INT32 OBJ_ID 
+     
+    BOTSET ACTIVE_TARGET_ON "<&FALSE&>"
+	BOTSET ACTIVE_ATTACK_ON "<&FALSE&>" 
+     
+	IF OBJ_ID == CHAR_ID	  
+		IF WAS_DEAD == TRUE 
+			WAS_DEAD = FALSE 
+		ENDIF    
+     
+		DISTANCE DIST CHAR_X CHAR_Y 0 -84378 244445 0
+    	// HANDLER PRE MESTO
+		IF DIST < 800
+			print_text "<&dist&>"
+			SLEEP 4232
+			COMMAND "/target Eric"
+			COMM = 4
+			SLEEP 1200
+			TALK_TARGET
+			BREAK 2
+		ENDIF
+		
+		DISTANCE DIST CHAR_X CHAR_Y 0 86585 163446 0
+		// HANDLER PRE FARM ZONU
+		IF DIST < 300
+			//MOVE_TO 123 123 123
+			BOTSET ACTIVE_TARGET_ON "<&TRUE&>"
+			BOTSET ACTIVE_ATTACK_ON "<&TRUE&>"
+		ENDIF
+	ENDIF
+RETURN VOID
+
+FUNCTION HTML
+	PRINT_TEXT "COMMAND IS [<&COMM&>]"
+	DEFINE STRING HTML 
+ 
+	PACKET.READ_BYTE   NULL
+	PACKET.READ_INT32  NULL
+	PACKET.READ_STRING HTML
+	SLEEP 800
+	
+	DEFINE STRING Link0 "bypass -h npc_<&TARGET_ID&>_Chat 33"
+	DEFINE STRING Link1 "bypass -h npc_<&TARGET_ID&>_multisell 200000"
+	DEFINE STRING Link2 "bypass -h custom_farm_teleport 86585 163446 -3541"
+	DEFINE STRING Link3 "bypass -h Quest 555_NPCBuffer castBuffSet 0 0 0"
+	
+	SWITCH COMM
+		CASE #i0 // buy torch
+			IF "HTML.CONTAINS Link0" == TRUE
+				NPC_DIALOG "<&Link0&>"
+				PRINT_TEXT "Bot click: <&Link0&>"
+				COMM = #i1
+			ENDIF
+			BREAK 1
+		CASE #i1 // 2/2
+			IF "HTML.CONTAINS Link1" == TRUE
+				NPC_DIALOG "<&Link1&>"
+				PRINT_TEXT "Bot click: <&Link1&>"
+				COMM = #i-1
+				SLEEP 1231
+				INJECT "B0 40 0D 03 00 A0 86 01 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 FE FF 00 00 00 00 00 00 00 00 00 00 00 00 00 00"
+				SLEEP 2322
+				COMM = #i2
+				TALK_TARGET
+			ENDIF
+			BREAK 1
+		CASE #i2 // tele to zone
+			IF "HTML.CONTAINS Link0" == TRUE
+				NPC_DIALOG "<&Link0&>"
+				PRINT_TEXT "Bot click: <&Link0&>"
+				COMM = #i3
+			ENDIF
+			BREAK 1
+		CASE #i3 // tele to zone 2/2
+			IF "HTML.CONTAINS Link2" == TRUE
+				NPC_DIALOG "<&Link2&>"
+				PRINT_TEXT "Bot click: <&Link2&>"
+				COMM = #i-1
+			ENDIF  
+			BREAK 1   
+		CASE #i4
+			IF "HTML.CONTAINS Link3" == TRUE
+				NPC_DIALOG "<&Link3&>"
+				PRINT_TEXT "Bot click: <&Link3&>"
+				COMM = #i-1
+				SLEEP 6232
+				BUY_TOURCH
+			ENDIF  
+	ENDSWITCH	
+RETURN VOID
+
+FUNCTION PRINT_LINE 1 TEXT
+	DEFINE STRING S
+	
+	S = "#$-[ <&TEXT&> ]"
+	WHILE S.LENGTH < 72
+		S = "#$=<&S&>"
+	WEND
+	
+	PRINT_TEXT "<&S&>"
+RETURN VOID

@@ -1,0 +1,36 @@
+
+//-------------------------------------------------------------------------------------
+CLASS ENGINEX_SERVERS_L2INC NULL
+//-------------------------------------------------------------------------------------
+
+   VAR_START
+      PUBLIC INT RABBIT_TYPE_ID 1020002
+   VAR_END
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT
+      ENGINEX.CONSTRUCT VOID 1 #$EngineX.Interface.Menu
+      ENGINEX.CONSTRUCT VOID 1 #$EngineX.ScriptEvents.ServerPackets
+      ENGINEX.SCRIPTEVENTS.SERVERPACKETS.ADD_BLOCK VOID 2 "12" "#$ENGINEX.SERVERS.L2INC.BLOCK_NpcInfo"
+      ENGINEX.INTERFACE.MENU.SAY VOID 2 "#$EngineX.Servers.L2Inc" "#$Blocking rabbits for client"
+      SLEEP 1
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC BLOCK_NpcInfo 1 PACKET
+      PACKET.READ_BYTE VOID
+      DEFINE INT OBJECT_ID
+      DEFINE INT TYPE_ID
+      PACKET.READ_INT32 OBJECT_ID
+      PACKET.READ_INT32 TYPE_ID
+      IF ( TYPE_ID == THIS.RABBIT_TYPE_ID )
+         ENGINEX.INTERFACE.MENU.SAY VOID 2 "#$EngineX.Servers.L2Inc" "#$Rabbit blocked!"
+         RETURN FALSE
+      ENDIF
+   RETURN TRUE
+
+//-------------------------------------------------------------------------------------
+END_CLASS
+//-------------------------------------------------------------------------------------

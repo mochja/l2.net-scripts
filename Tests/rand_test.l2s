@@ -1,0 +1,6 @@
+DEFINE INT rr 0
+
+WHILE TRUE == TRUE
+GET_RAND rr 1 3
+PRINT_TEXT "<&rr&>"
+WEND

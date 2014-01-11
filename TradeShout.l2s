@@ -1,0 +1,27 @@
+// Shout to +Trade chat 100s+
+// Server: l2-divinty.com
+// Autor: mochitto
+// Date: 5. 6. 2010
+// Special thanks for L2.NET contributors and Divinity Server :P
+// rev.: 6
+
+// Define section
+// ===============================
+DEFINE ARRAYLIST TEXT 0
+
+TEXT.ADD "#$WTB ALL"
+TEXT.ADD "#$WTS ALL"
+TEXT.ADD "#$WTT ALL"
+
+// Main section
+// ===============================
+
+WHILE ZERO == ZERO
+	FOREACH A STRING TEXT
+		SLEEP_HUMAN_WRITING "<&TEXT.A&>"
+		SAY_TEXT "<&CHANNEL_ALL&>" "<&TEXT.A&>"
+		SLEEP 100000
+	NEXTEACH
+WEND
+
+END_SCRIPT

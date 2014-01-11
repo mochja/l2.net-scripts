@@ -1,0 +1,72 @@
+// RaidBoss Checker
+// Server: all
+// Autor: mochitto
+// Date: 6. 6. 2010
+// Special thanks for L2.NET contributors
+// rev.: 14
+PRINT_TEXT "SCRIPT STARTED!]"
+INCLUDE StdLib/NPC.l2c
+
+// Define section
+// ===============================
+DEFINE_GLOBAL STRING RB_NAME "Flame of Splendor Barakiel"        // RaidBoss full name. You can search on http://l2jdp.com/l2jdb
+DEFINE_GLOBAL STRING MSG_ALIVE "ten buzerant barakiel zivej xDD"  // Custom message for RaidBoss spawn You can use <&RB_NAME&>
+DEFINE_GLOBAL INT CHECK_INTERVAL 5000         // Checking interval in ms (1sec = 1000ms)
+DEFINE_GLOBAL INT ALARM 1                     // if 1 - On RB spawn play l2.net alarm and show message box 
+DEFINE_GLOBAL INT COUNTPMS 1                          // count pm then be sended
+DEFINE_GLOBAL INT PMSINTERVAL 1000                    // inteval with pm pack send in ms (1s = 1000ms)
+
+DEFINE_GLOBAL ARRAYLIST PLAYERS 0  // DONT EDIT!!!
+DEFINE_GLOBAL ARRAYLIST NPCS 0     // DONT EDIT!!!
+DEFINE_GLOBAL INT CAN_CHECK 1
+
+// Players list who will send message for RBspawn
+// You can add next playrs if put next line: PLAYERS.add "#$playerName"
+PLAYERS.add "#$EidolonR"
+PLAYERS.add "#$Derian"
+PLAYERS.add "#$Fajfka"
+PLAYERS.add "#$Gambler"
+PLAYERS.add "#$Oscorp"
+
+// Main section - DONT EDIT NEXT
+// ===============================
+
+WHILE CAN_CHECK == #i1
+	CHECK_RB
+	SLEEP "<&CHECK_INTERVAL&>"
+WEND
+
+PRINT_TEXT "STOP SCRIPT!]"
+END_SCRIPT
+
+// Function section
+// ===============================
+FUNCTION CHECK_RB
+	GET_NPCS NPCS
+	FOREACH A NPC NPCS 
+		IF NPCS.A.NAME == RB_NAME
+			PRINT_TEXT  "== <&RB_NAME&> ALIVE"
+			CAN_CHECK = #i0
+			THREAD ALERT_PLAYERS
+			IF ALARM == #i1
+				MESSAGE_BOX "RaidBoss ALIVE" "RaidBoss: <&RB_NAME&> is alive!" "<&WARNING&>"
+				WHILE 1 == 1
+					PLAYALARM
+					SLEEP 20000
+				WEND
+			ENDIF
+		ENDIF
+	NEXTEACH
+	PRINT_TEXT "== <&RB_NAME&> DEAD"
+RETURN VOID 
+
+FUNCTION ALERT_PLAYERS
+	FOR A 0 "<&COUNTPMS&>" 1
+		FOREACH A STRING PLAYERS
+			SAY_TEXT "<&CHANNEL_PRIVATE&>" "<&MSG_ALIVE&>" "<&PLAYERS.a&>"
+			SLEEP 500
+		NEXTEACH
+		SLEEP "<&PMSINTERVAL&>"
+	NEXT
+	PRINT_TEXT "== MESSAGES SENDED"
+RETURN VOID

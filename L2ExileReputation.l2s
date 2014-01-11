@@ -1,0 +1,270 @@
+// Kratky popis
+// Server: 
+// Autor: mochitto
+// Date: 
+// Special thanks for L2.NET contributors
+// rev.: 0
+PRINT_TEXT "SCRIPT STARTED!]"
+
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" CharList 9 
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" ACADEMY 44
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" HTML 25
+
+
+DEFINE_GLOBAL INT    CHARSLOT 0
+DEFINE_GLOBAL INT    LASTID   0  
+DEFINE_GLOBAL INT    CHARS    0
+DEFINE_GLOBAL INT    WCHARS   0
+DEFINE_GLOBAL INT    CHARLIST 0
+DEFINE_GLOBAL INT    TOTAL_CHARS 0
+DEFINE_GLOBAL INT    RELOG_DELAY 7000
+DEFINE_GLOBAL STRING NICK
+DEFINE_GLOBAL STRING NAME "SexyBoy"
+DEFINE_GLOBAL INT    COMM      3123
+
+// Main section
+// ===============================
+DEFINE FILEREADER FR "last_id.ini" 
+FR.READ LASTID
+FR.CLOSE       
+
+CharCreate   
+
+DEFINE FILEWRITER FW "last_id.ini"
+FW.WRITE LASTID
+FW.FLUSH
+FW.CLOSE
+
+THREAD CheckClass
+PRINT_TEXT "== Thread for check class was started.. ]"
+
+SLEEP 3000
+
+CALLSUB Relog
+
+SLEEP 3000
+
+FOR A 0 "<&CHARS&>" 1 	
+	SLEEP 3000
+
+	IF ( CHAR_CLASS != 2 )
+		WHILE ( CHAR_LEVEL < 41 )
+			IF CHAR_CLAN != 0
+				WHILE CHAR_CLASS != #i1
+					SLEEP 100
+				ENDIF
+				
+				COMMAND "/TARGET PRIEST OF BLESSING"
+				SLEEP 1000
+				TALK_TARGET
+				SLEEP 1000
+				INJECT "B0 90 38 01 00 40 0D 03 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 FE FF 00 00 00 00 00 00 00 00 00 00 00 00 00 00"
+				SLEEP 1000
+				INJECT "B0 92 38 01 00 20 A1 07 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 FE FF 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+				SLEEP 1000
+				USE_ITEM 2499
+				SLEEP 1000
+				INJECT "D0 0D 00 B7 05 00 00 01 00 00 00"
+				SLEEP 1000
+				
+				COMMAND "/TARGET Steve Shyagel"
+				COMM = #I0
+				SLEEP 1000
+				TALK_TARGET				
+				WHILE COMM != #I1
+					SLEEP 100
+				WEND
+				SLEEP 2500
+				COMMAND "/TARGET sirra"
+				SLEEP 1000
+				TALK_TARGET
+				WHILE COMM != #i2234234
+					SLEEP 1000
+				WEND
+				SLEEP 2312
+				//11:38:57 :[Current location : 54966, 67378, -3547 (Near the Elven Village)
+				WALK_TO VOID 3 54966 67378 -3547 
+
+				print_text "attacking fucked mob to lvl up 40"
+				WHILE ( CHAR_LEVEL < 40 )		
+					IF ( TARGET_CUR_HP > 0 ) && ( TARGET_NAME != CHAR_NAME )
+						SLEEP 700
+						ATTACK_TARGET
+					ELSE
+						TARGET_NEAREST
+						SLEEP 1000
+					ENDIF
+					SLEEP 900
+				WEND
+			ENDIF
+			SLEEP 500
+		WEND
+		
+		PRINT_TEXT "== Wating for class change... ]"
+	    
+		WHILE ( CHAR_CLASS != 2 )
+			SLEEP 500
+		WEND
+		
+		//SLEEP 10000
+	ENDIF
+	
+	PRINT_TEXT "== Waiting for restart"
+	CANCEL_TARGET
+	WHILE IS_INCOMBAT CHAR_ID
+		IF ( TARGET_CUR_HP > 0 ) && ( TARGET_NAME != CHAR_NAME )
+			SLEEP 700
+			ATTACK_TARGET
+		ENDIF
+		SLEEP 900
+	WEND
+	
+	SLEEP 1000
+
+	PRINT_TEXT "== Restart ]"
+	INJECT "57" //RELOG
+	SLEEP 7000
+	CALLSUB Relog
+	SLEEP 25
+NEXT
+
+PLAYALARM
+	
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT
+
+FUNCTION CharCreate
+	WHILE CHARS < 7
+		IF CHARLIST == 1
+			INJECT "13" //Create CHAR
+			SLEEP 3124
+			LASTID = LASTID + 1
+			NICK = "#$<&NAME&><&LASTID&>"
+			PRINT_TEXT "== Created char in slot <&CHARS&> with nick <&NICK&> ]"
+			DEFINE BYTEBUFFER CharCreateBuffer 512
+			CharCreateBuffer.WRITE_BYTE 12
+			CharCreateBuffer.WRITE_STRING NICK
+			CharCreateBuffer.WRITE_INT32 0
+			CharCreateBuffer.WRITE_INT32 0
+			CharCreateBuffer.WRITE_INT32 0
+			CharCreateBuffer.WRITE_INT32 28
+			CharCreateBuffer.WRITE_INT32 39
+			CharCreateBuffer.WRITE_INT32 30
+			CharCreateBuffer.WRITE_INT32 27
+			CharCreateBuffer.WRITE_INT32 35
+			CharCreateBuffer.WRITE_INT32 11
+			CharCreateBuffer.WRITE_INT32 0
+			CharCreateBuffer.WRITE_INT32 0
+			CharCreateBuffer.WRITE_INT32 0
+			CharCreateBuffer.TRIM_TO_INDEX
+			INJECTBB CharCreateBuffer
+			DELETE CharCreateBuffer
+			SLEEP 1900
+		ENDIF
+		SLEEP 25
+	WEND  
+RETURN VOID
+
+SUB Relog
+	IF ( CHARSLOT < CHARS )
+		DEFINE BYTEBUFFER CharSelect_bb 64 
+		print_text "== Loggin char in slot <&CHARSLOT&> ]"
+		CharSelect_bb.WRITE_BYTE #i18
+		CharSelect_bb.WRITE_INT32 CHARSLOT
+		CharSelect_bb.WRITE_INT16 #i0
+		CharSelect_bb.WRITE_INT32 #i0
+		CharSelect_bb.WRITE_INT32 #i0
+		CharSelect_bb.WRITE_INT32 #i0
+		CharSelect_bb.TRIM_TO_INDEX
+		INJECTBB CharSelect_bb
+		DELETE CharSelect_bb 
+		CHARSLOT = CHARSLOT + 1 
+		SLEEP "<&RELOG_DELAY&>"
+	ENDIF
+RETURNSUB
+
+FUNCTION CheckClass
+	WHILE ZERO == ZERO  
+		IF ( ( CHAR_CLASS == #i0 ) && ( CHAR_LEVEL >= #i20 ) )
+			INJECT "87 E9 03 00 00"
+			SLEEP 1000
+			INJECT "85 43 00 4F 00 31 00 00 00 "
+			print_text "== Im Human Warrior now ]"
+		ENDIF         	
+		IF ( ( CHAR_CLASS == #i1 ) && ( CHAR_LEVEL >= #i40 ) )
+			SLEEP 3000
+			INJECT "87 E9 03 00 00"
+			SLEEP 1000
+			INJECT "85 43 00 4F 00 32 00 00 00"
+			print_text "== Im Gladiator now ]"
+		ENDIF  	
+		SLEEP 5000
+	WEND
+RETURN VOID
+
+FUNCTION CharList
+     PACKET.READ_BYTE NULL
+     PACKET.READ_INT32 CHARS
+     
+     PRINT_TEXT "== Chars at your account <&CHARS&> ]"
+     CHARLIST = 1
+RETURN VOID 
+
+FUNCTION ACADEMY
+	DEFINE INT REQUESTER_ID
+	DEFINE INT CharID
+	
+	PACKET.READ_BYTE NULL
+	PACKET.READ_INT32 REQUESTER_ID
+	
+	CHAR_GET_ID CharID "gejos"
+	
+	IF CharID == REQUESTER_ID
+		SLEEP 500
+		INJECT "27 01 00 00 00" // clan
+		PRINT_TEXT "== Accepted invite request to academy ]"
+	ENDIF
+	SLEEP 1000
+RETURN VOID
+
+
+
+FUNCTION HTML
+	PRINT_TEXT "COMMAND IS [<&COMM&>]"
+	define string _html
+	PACKET.READ_BYTE NULL
+	PACKET.READ_INT32 NULL
+	PACKET.READ_STRING _html
+	SLEEP 800
+	
+	DEFINE STRING Link0 "bypass -h Quest BufferNPC execBuff 2 0 0"
+	DEFINE STRING Link1 "bypass -h npc_268478234_goto 10109"
+
+	SWITCH COMM
+		CASE #i0
+			IF "_html.CONTAINS Link0" == TRUE
+				NPC_DIALOG "<&Link0&>"
+				PRINT_TEXT "Click tele 0"
+				COMM = #i1
+			ENDIF
+			BREAK 1
+		CASE #i1
+			IF "_html.CONTAINS Link1" == TRUE
+				NPC_DIALOG "<&Link1&>"
+				PRINT_TEXT "Click tele 1"
+				COMM = #i2234234
+			ENDIF
+			BREAK 1
+	ENDSWITCH
+RETURN VOID
+
+
+FUNCTION WALK_TO 3 X Y Z
+    DEFINE INT TDIST 0           
+    DISTANCE TDIST X Y 0 "<&CHAR_X&>" "<&CHAR_Y&>" 0
+    WHILE TDIST > #i60
+        MOVE_TO "<&X&>" "<&Y&>" "<&Z&>"
+        SLEEP 500
+        DISTANCE TDIST X Y 0 "<&CHAR_X&>" "<&CHAR_Y&>" 0
+    WEND
+RETURN VOID

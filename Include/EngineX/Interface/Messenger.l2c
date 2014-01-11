@@ -1,0 +1,380 @@
+
+INCLUDE Include/EngineX/Interface/Messenger/Conversation.l2c
+INCLUDE Include/EngineX/Interface/Messenger/Message.l2c
+
+//-------------------------------------------------------------------------------------
+CLASS ENGINEX_INTERFACE_MESSENGER NULL
+//-------------------------------------------------------------------------------------
+
+   VAR_START
+
+      PUBLIC INT MENUKEY 0
+
+      PUBLIC INT MESSAGES_PER_SITE 15
+
+      PUBLIC INT ONSEND_SHOW_WINDOW 1
+      PUBLIC INT ONRECEIVE_SHOW_WINDOW 0
+      PUBLIC INT ONSEND_SHOW_MARK 0
+      PUBLIC INT ONRECEIVE_SHOW_MARK 1
+
+      PUBLIC STRING COLOR_IN_NEW "FD00FD"
+      PUBLIC STRING COLOR_IN_OLD "7E7E7E"
+      PUBLIC STRING COLOR_OUT_NEW "FD6AFD"
+      PUBLIC STRING COLOR_OUT_OLD "B2B2B2"
+
+      PUBLIC SORTEDLIST TEMPLATES 0
+
+      PUBLIC SORTEDLIST WRITINGS 0
+      PUBLIC SORTEDLIST READINGS 0
+      PUBLIC INT WRITE_TO 0
+      PUBLIC INT READ_FROM 0
+
+      PUBLIC SORTEDLIST CONVERSATIONS 0
+      PUBLIC INT CONVERSATION_PAGE 0
+
+   VAR_END
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT
+
+      ENGINEX.CONSTRUCT VOID 1 #$EngineX.Interface.Menu
+      ENGINEX.CONSTRUCT VOID 1 #$EngineX.ScriptEvents.CustomPackets
+      ENGINEX.CONSTRUCT VOID 1 #$EngineX.ScriptEvents.ServerPackets
+      ENGINEX.CONSTRUCT VOID 1 #$EngineX.ScriptEvents.ClientPackets
+      ENGINEX.CONSTRUCT VOID 1 #$EngineX.System.Time
+
+      ENGINEX.INTERFACE.MENU.GENERATE_MENUKEY THIS.MENUKEY 0
+
+      ENGINEX.SCRIPTEVENTS.SERVERPACKETS.ADD_BLOCK VOID 2 "74" "#$ENGINEX.INTERFACE.MESSENGER.BLOCK_CreatureSay"
+      ENGINEX.SCRIPTEVENTS.CLIENTPACKETS.ADD_BLOCK VOID 2 "35" "#$ENGINEX.INTERFACE.MESSENGER.PIPEBLOCK_RequestBypassToServer"
+      ENGINEX.SCRIPTEVENTS.CLIENTPACKETS.ADD_BLOCK VOID 2 "133" "#$ENGINEX.INTERFACE.MESSENGER.PIPEBLOCK_RequestTutorialLinkHtml"
+      ENGINEX.SCRIPTEVENTS.CUSTOMPACKETS.ADD_PIPE VOID 2 "<&SCRIPTEVENT_CHAT&>" "#$ENGINEX.INTERFACE.MESSENGER.PIPE_Chat"
+
+      THIS.READ_TPL VOID 1 "#$WriteWindow"
+      THIS.READ_TPL VOID 1 "#$WritingButton"
+      THIS.READ_TPL VOID 1 "#$WritingForm"
+      THIS.READ_TPL VOID 1 "#$ReadWindow"
+      THIS.READ_TPL VOID 1 "#$ReadingButtonOld"
+      THIS.READ_TPL VOID 1 "#$ReadingButtonNew"
+      THIS.READ_TPL VOID 1 "#$ReadingMessage"
+      THIS.READ_TPL VOID 1 "#$ReadingPagerOn"
+      THIS.READ_TPL VOID 1 "#$ReadingPagerOff"
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC READ_TPL 1 TPLID
+      DEFINE ARRAYLIST CONTENT 0
+      DEFINE FILEREADER FROPEN "../Include/EngineX/Interface/Messenger/<&TPLID&>.txt"
+      WHILE ( TRUE == TRUE )
+         DEFINE STRING LINEREADER ""
+         FROPEN.READ LINEREADER
+         IF ( LINEREADER == "#$__EOF" )
+            BREAK 2
+         ELSE
+            CONTENT.ADD LINEREADER
+         ENDIF
+         DELETE LINEREADER
+         SLEEP 1
+      WEND
+      FROPEN.CLOSE
+      THIS.TEMPLATES.ADD CONTENT "<&TPLID&>"
+      SLEEP 1
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC PIPE_Chat 1 DATA
+
+      IF ( DATA.#$MESSAGETYPE != CHANNEL_PRIVATE )
+         RETURN VOID
+      ENDIF
+
+      DEFINE INT SHOW_MARK 0
+      DEFINE INT SHOW_WINDOW 0
+      DEFINE INt IS_INCOMING 0
+
+      IF ( DATA.#$SENDERNAME.STARTSWITH "#$->" == TRUE )
+         IF ( THIS.ONSEND_SHOW_WINDOW == TRUE )
+            SHOW_WINDOW = TRUE
+         ENDIF
+         IF ( THIS.ONSEND_SHOW_MARK == TRUE )
+            SHOW_MARK = TRUE
+         ENDIF
+         IS_INCOMING = FALSE
+      ELSE
+         IF ( THIS.ONRECEIVE_SHOW_WINDOW == TRUE )
+            SHOW_WINDOW = TRUE
+         ENDIF
+         IF ( THIS.ONRECEIVE_SHOW_MARK == TRUE )
+            SHOW_MARK = TRUE
+         ENDIF
+         IS_INCOMING = TRUE
+      ENDIF
+
+      DEFINE STRING SENDERID "<&DATA.#$SENDERID&>"
+
+      IF ( THIS.WRITINGS.CONTAINS_KEY "<&SENDERID&>" == FALSE )
+         THIS.WRITINGS.ADD "#$<&DATA.#$SENDERNAME&>" "<&SENDERID&>"
+      ENDIF
+      IF ( THIS.READINGS.CONTAINS_KEY "<&SENDERID&>" == FALSE )
+         THIS.READINGS.ADD "#$<&DATA.#$SENDERNAME&>" "<&SENDERID&>"
+      ENDIF
+
+      IF ( THIS.WRITE_TO == ZERO )
+         THIS.WRITE_TO = DATA.#$SENDERID
+      ENDIF
+      IF ( THIS.READ_FROM == ZERO )
+         THIS.READ_FROM = DATA.#$SENDERID
+      ENDIF
+
+      IF ( THIS.CONVERSATIONS.CONTAINS_KEY "<&SENDERID&>" == FALSE )
+         DEFINE ENGINEX_INTERFACE_MESSENGER_CONVERSATION CONVERSATION 0
+         THIS.CONVERSATIONS.ADD CONVERSATION "<&SENDERID&>"
+         DELETE CONVERSATION
+      ENDIF
+
+      DEFINE SORTEDLIST TIMEDATA 0
+      ENGINEX.SYSTEM.TIME.TIMEDATA TIMEDATA 1 NOW
+
+      DEFINE ENGINEX_INTERFACE_MESSENGER_MESSAGE MESSAGE 0
+      MESSAGE.SENDERNAME = DATA.#$SENDERNAME
+      MESSAGE.TIMEDATA = "#$<&TIMEDATA.#$HOUR_FORMATED&>:<&TIMEDATA.#$MINUTE_FORMATED&>:<&TIMEDATA.#$SECOND_FORMATED&>"
+      MESSAGE.TEXT = DATA.#$MESSAGE
+      MESSAGE.IS_INCOMING = IS_INCOMING
+      THIS.CONVERSATIONS.SENDERID.MESSAGES.ADD MESSAGE
+      THIS.CONVERSATIONS.SENDERID.NEW_COUNT = THIS.CONVERSATIONS.SENDERID.NEW_COUNT + ONE
+      DELETE MESSAGE
+
+      IF ( SHOW_WINDOW == TRUE )
+         THIS.SHOW_READWINDOW
+         THIS.SHOW_WRITEWINDOW
+      ENDIF
+      IF ( SHOW_MARK == TRUE )
+         ENGINEX.INTERFACE.MENU.SHOW_TUTORIAL_MARK VOID 1 THIS.MENUKEY
+      ENDIF
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC BLOCK_CreatureSay 1 PACKET
+      PACKET.READ_BYTE VOID
+      PACKET.READ_INT32 VOID
+      DEFINE INT MESSAGETYPE 0
+      PACKET.READ_INT32 MESSAGETYPE
+      IF ( MESSAGETYPE == CHANNEL_PRIVATE )
+         RETURN FALSE
+      ENDIF
+   RETURN TRUE
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC PIPEBLOCK_RequestBypassToServer 1 PACKET
+      DEFINE STRING STR ""
+      PACKET.READ_BYTE VOID
+      PACKET.READ_STRING STR
+      STR = STR.TRIM
+      IF ( STR.STARTSWITH "#$<&THIS.MENUKEY&>" == FALSE )
+         RETURN TRUE
+      ENDIF
+      IF ( STR.STARTSWITH "#$<&THIS.MENUKEY&>_WriteTo" == TRUE )
+         STR = STR.REPLACE "#$<&THIS.MENUKEY&>_WriteTo" "#$"
+         STR = STR.TRIM
+         THIS.WRITE_TO = "#i<&STR&>"
+         THIS.SHOW_WRITEWINDOW
+      ENDIF
+      IF ( STR.STARTSWITH "#$<&THIS.MENUKEY&>_Write" == TRUE )
+         STR = STR.REPLACE "#$<&THIS.MENUKEY&>_Write" "#$"
+         STR = STR.TRIM
+         DEFINE STRING WRITE_TO "<&THIS.WRITE_TO&>"
+         SAY_TEXT "<&CHANNEL_PRIVATE&>" "<&STR&>" "<&THIS.WRITINGS.WRITE_TO&>"
+         THIS.SHOW_WRITEWINDOW
+      ENDIF
+      IF ( STR.STARTSWITH "#$<&THIS.MENUKEY&>_CloseWrite" == TRUE )
+         DEFINE STRING WRITE_TO "<&THIS.WRITE_TO&>"
+         THIS.WRITINGS.REMOVE "<&WRITE_TO&>"
+         THIS.WRITE_TO = ZERO
+         THIS.SHOW_WRITEWINDOW
+      ENDIF
+   RETURN FALSE
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC PIPEBLOCK_RequestTutorialLinkHtml 1 PACKET
+      DEFINE STRING STR ""
+      PACKET.READ_BYTE VOID
+      PACKET.READ_STRING STR
+      STR = STR.TRIM
+      IF ( STR.STARTSWITH "#$<&THIS.MENUKEY&>" == FALSE )
+         RETURN TRUE
+      ENDIF
+      IF ( STR.STARTSWITH "#$<&THIS.MENUKEY&>_ReadFrom|" == TRUE )
+         STR = STR.REPLACE "#$<&THIS.MENUKEY&>_ReadFrom|" "#$"
+         STR = STR.TRIM
+         IF ( THIS.READ_FROM != ZERO )
+            DEFINE STRING READ_FROM "<&THIS.READ_FROM&>"
+            FOR I 0 "<&THIS.CONVERSATIONS.READ_FROM.MESSAGES.COUNT&>" 1
+               THIS.CONVERSATIONS.READ_FROM.MESSAGES.I.IS_OLD = TRUE
+            NEXT
+         ENDIF
+         THIS.READ_FROM = "#i<&STR&>"
+         THIS.SHOW_READWINDOW
+         THIS.CONVERSATION_PAGE = ZERO
+      ENDIF
+      IF ( STR.STARTSWITH "#$<&THIS.MENUKEY&>_Page|" == TRUE )
+         STR = STR.REPLACE "#$<&THIS.MENUKEY&>_Page|" "#$"
+         STR = STR.TRIM
+         THIS.CONVERSATION_PAGE = "#i<&STR&>"
+         THIS.SHOW_READWINDOW
+      ENDIF
+      IF ( STR.STARTSWITH "#$<&THIS.MENUKEY&>_CloseRead" == TRUE )
+         DEFINE STRING READ_FROM "<&THIS.READ_FROM&>"
+         THIS.READINGS.REMOVE "<&READ_FROM&>"
+         THIS.READ_FROM = ZERO
+         IF ( THIS.READINGS.COUNT == ZERO )
+            ENGINEX.INTERFACE.MENU.HIDE_TUTORIAL_WINDOW
+         ELSE
+            THIS.SHOW_READWINDOW
+         ENDIF
+      ENDIF
+   RETURN FALSE
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC SHOW_WRITEWINDOW 0
+
+      DEFINE STRING WRITING_BUTTONS ""
+      FOR I1 0 "<&THIS.WRITINGS.COUNT&>" 1
+         FOR I2 0 "<&THIS.TEMPLATES.#$WritingButton.COUNT&>" 1
+            WRITING_BUTTONS = "#$<&WRITING_BUTTONS&><&THIS.TEMPLATES.#$WritingButton.I2&>"
+         NEXT
+      NEXT
+
+      DEFINE STRING WRITING_FORM ""
+      IF ( THIS.WRITE_TO != ZERO )
+         DEFINE STRING WRITE_TO "<&THIS.WRITE_TO&>"
+         FOR I2 0 "<&THIS.TEMPLATES.#$WritingForm.COUNT&>" 1
+            WRITING_FORM = "#$<&WRITING_FORM&><&THIS.TEMPLATES.#$WritingForm.I2&>"
+         NEXT
+      ENDIF
+
+      DEFINE SORTEDLIST PDATA 0
+      PDATA.ADD "<&THIS.MENUKEY&>" "OBJECT_ID"
+      PDATA.ADD "#$" "HTML"
+      FOR I 0 "<&THIS.TEMPLATES.#$WriteWindow.COUNT&>" 1
+         PDATA.#$HTML = "#$<&PDATA.#$HTML&><&THIS.TEMPLATES.#$WriteWindow.I&>"
+      NEXT
+      DEFINE BYTEBUFFER PACKET 19999
+      ENGINEX.SCRIPTEVENTS.SERVERPACKETS.WRITE PACKET 2 "25" "PDATA"
+      INJECTBB_CLIENT PACKET
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC SHOW_READWINDOW 0
+
+      DEFINE STRING READ_FROM "<&THIS.READ_FROM&>"
+      THIS.CONVERSATIONS.READ_FROM.NEW_COUNT = ZERO
+
+      DEFINE ARRAYLIST MESSAGES 0
+      MESSAGES = THIS.CONVERSATIONS.READ_FROM.MESSAGES.CLONE
+      MESSAGES.REVERSE
+
+      DEFINE STRING READING_BUTTONS ""
+      FOR I1 0 "<&THIS.READINGS.COUNT&>" 1
+         IF ( "THIS.CONVERSATIONS.#$<&THIS.READINGS.GET_KEY I1&>.NEW_COUNT" == ZERO )
+            FOR I2 0 "<&THIS.TEMPLATES.#$ReadingButtonOld.COUNT&>" 1
+               READING_BUTTONS = "#$<&READING_BUTTONS&><&THIS.TEMPLATES.#$ReadingButtonOld.I2&>"
+            NEXT
+         ELSE
+            FOR I2 0 "<&THIS.TEMPLATES.#$ReadingButtonNew.COUNT&>" 1
+               READING_BUTTONS = "#$<&READING_BUTTONS&><&THIS.TEMPLATES.#$ReadingButtonNew.I2&>"
+            NEXT
+         ENDIF
+      NEXT
+
+      DEFINE INT PAGES_COUNT 0
+      DEFINE INT PAGES_COUNT_REST 0
+      PAGES_COUNT = MESSAGES.COUNT / THIS.MESSAGES_PER_SITE
+      PAGES_COUNT_REST = MESSAGES.COUNT % THIS.MESSAGES_PER_SITE
+      IF ( PAGES_COUNT_REST > ZERO )
+         PAGES_COUNT = PAGES_COUNT + ONE
+      ENDIF
+      DEFINE INT OFFSET_START 0
+      DEFINE INT OFFSET_END 0
+      IF ( THIS.CONVERSATION_PAGE <= PAGES_COUNT )
+         OFFSET_START = THIS.CONVERSATION_PAGE * THIS.MESSAGES_PER_SITE
+      ENDIF
+      OFFSET_END = OFFSET_START + THIS.MESSAGES_PER_SITE
+      IF ( OFFSET_END > MESSAGES.COUNT )
+         OFFSET_END = MESSAGES.COUNT
+      ENDIF
+
+      DEFINE ARRAYLIST SHOWMESSAGES 0
+      FOR I1 "<&OFFSET_START&>" "<&OFFSET_END&>" 1
+         SHOWMESSAGES.ADD MESSAGES.I1
+      NEXT
+      SHOWMESSAGES.REVERSE
+
+      DEFINE STRING READING_MESSAGES ""
+      DEFINE STRING MESSAGE_COLOR ""
+      FOR I1 0 "<&SHOWMESSAGES.COUNT&>" 1
+         IF ( SHOWMESSAGES.I1.IS_OLD == TRUE )
+            IF ( SHOWMESSAGES.I1.IS_INCOMING == TRUE )
+               MESSAGE_COLOR = THIS.COLOR_IN_OLD
+            ELSE
+               MESSAGE_COLOR = THIS.COLOR_OUT_OLD
+            ENDIF
+         ELSE
+            IF ( SHOWMESSAGES.I1.IS_INCOMING == TRUE )
+               MESSAGE_COLOR = THIS.COLOR_IN_NEW
+            ELSE
+               MESSAGE_COLOR = THIS.COLOR_OUT_NEW
+            ENDIF
+         ENDIF
+         FOR I2 0 "<&THIS.TEMPLATES.#$ReadingMessage.COUNT&>" 1
+            READING_MESSAGES = "#$<&READING_MESSAGES&><&THIS.TEMPLATES.#$ReadingMessage.I2&>"
+         NEXT
+      NEXT
+
+      DEFINE STRING READING_PAGER "<table><tr>"
+      DEFINE INT PAGE 0
+      DEFINE INT TDS 0
+      FOR I 0 "<&PAGES_COUNT&>" 1
+         PAGE = I + ONE
+         READING_PAGER = "#$<&READING_PAGER&><td width=20>"
+         IF ( I == THIS.CONVERSATION_PAGE )
+            FOR I2 0 "<&THIS.TEMPLATES.#$ReadingPagerOff.COUNT&>" 1
+               READING_PAGER = "#$<&READING_PAGER&><&THIS.TEMPLATES.#$ReadingPagerOff.I2&>"
+            NEXT
+         ELSE
+            FOR I2 0 "<&THIS.TEMPLATES.#$ReadingPagerOn.COUNT&>" 1
+               READING_PAGER = "#$<&READING_PAGER&><&THIS.TEMPLATES.#$ReadingPagerOn.I2&>"
+            NEXT
+         ENDIF
+         READING_PAGER = "#$<&READING_PAGER&></td>"
+         IF ( TDS == 10 )
+            TDS = ZERO
+            READING_PAGER = "#$<&READING_PAGER&></tr><tr>"
+         ENDIF
+      NEXT
+      READING_PAGER = "#$<&READING_PAGER&></tr></table>"
+
+      DEFINE SORTEDLIST PDATA 0
+      PDATA.ADD "#$" "HTML"
+      FOR I 0 "<&THIS.TEMPLATES.#$ReadWindow.COUNT&>" 1
+         PDATA.#$HTML = "#$<&PDATA.#$HTML&><&THIS.TEMPLATES.#$ReadWindow.I&>"
+      NEXT
+      DEFINE BYTEBUFFER PACKET 19999
+      ENGINEX.SCRIPTEVENTS.SERVERPACKETS.WRITE PACKET 2 "166" "PDATA"
+      INJECTBB_CLIENT PACKET
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+END_CLASS
+//-------------------------------------------------------------------------------------

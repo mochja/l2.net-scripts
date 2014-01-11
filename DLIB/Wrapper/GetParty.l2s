@@ -1,0 +1,52 @@
+// DLIB::Wrapper::GetPlayers - v1.0 for Gracia 2.2
+// by d00d [12/08/08]
+//
+// Wrapper for GET_PLAYERS to insert the bot characters
+// information.
+
+// Version 1.0 - Initial Release
+
+FUNCTION DLIB::Wrapper::GetPlayers 1 _oDataObject
+  
+  GET_PARTY _oDataObject
+  
+  DEFINE PLAYER Player 0
+  
+  Player.ID = CHAR_ID
+  Player.X = CHAR_X
+  Player.Y = CHAR_Y
+  Player.Z = CHAR_Z
+  Player.NAME = CHAR_NAME
+  Player.TITLE = CHAR_TITLE
+  // Player.CLAN = CHAR_CLAN
+  // Player.ALLY = CHAR_ALLY
+  Player.RACE = CHAR_RACE
+  Player.SEX  = CHAR_SEX
+  Player.CLASS = CHAR_CLASS
+  Player.LEVEL = CHAR_LEVEL
+  Player.HP = CHAR_CUR_HP
+  Player.MAX_HP = CHAR_MAX_HP
+  Player.MP = CHAR_CUR_MP
+  Player.MAX_MP = CHAR_MAX_MP
+  Player.CP = CHAR_CUR_CP
+  Player.MAX_CP = CHAR_MAX_CP
+  Player.PVPFLAG = #I0
+  Player.KARMA = #I0
+  Player.ATTACK_SPEED = CHAR_ATTACK_SPEED
+  Player.CAST_SPEEd = CHAR_CAST_SPEED
+  Player.RUN_SPEED = CHAR_RUN_SPEED
+  Player.TARGET_ID = TARGET_ID
+  Player.FOLLOW_TARGET_ID = ZERO
+  Player.DEST_X = CHAR_DESTX
+  Player.DEST_Y = CHAR_DESTY
+  Player.DEST_Z = CHAR_DESTZ
+    
+  IF _oDataObject.CLASSNAME == "#$SORTEDLIST"
+    _oDataObject.ADD Player PLAYER
+  ENDIF
+
+  IF _oDataObject.CLASSNAME == "#$ARRAYLIST"
+    _oDataObject.ADD Player
+  ENDIF  
+  
+RETURN _oDataObject

@@ -1,0 +1,14 @@
+DEFINE STRING MSG "hello"
+DEFINE STRING REPLY "-"
+
+GET_ELIZA REPLY "<&MSG&>"
+
+PRINT_TEXT "<&REPLY&>"
+
+SLEEP_HUMAN_WRITING "something short"
+PRINT_TEXT "something short"
+
+SLEEP_HUMAN_WRITING "test of a really long message that should wait a little bit of time before it says anything or at least thatis the plan but who knows really until it gets tested"
+PRINT_TEXT "test of a really long message that should wait a little bit of time before it says anything or at least thatis the plan but who knows really until it gets tested"
+
+END_SCRIPT

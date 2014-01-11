@@ -1,0 +1,13 @@
+DEFINE STRING itemname2 "Soulshot: No Grade"
+DEFINE INT id2 0
+DEFINE INT icnt 0
+
+ITEM_GET_ID id2 "<&itemname2&>"
+
+PRINT_TEXT "item <&itemname2&> = <&id2&>"
+
+ITEM_COUNT icnt "<&id2&>"
+
+PRINT_TEXT "i have <&icnt&> <&itemname2&>"
+
+END_SCRIPT

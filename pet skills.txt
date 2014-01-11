@@ -1,0 +1,415 @@
+5771:Buff Control
+5771:Buff Control
+5771:Buff Control
+5987:Weapon Maintenance
+5988:Armor Maintenance
+5771:Buff Control
+5771:Buff Control
+5771:Buff Control
+5987:Weapon Maintenance
+5988:Armor Maintenance
+5638:Feline Queen - Bless the Body
+5639:Feline Queen - Bless the Soul
+5640:Feline Queen - Haste
+5638:Feline Queen - Bless the Body
+5639:Feline Queen - Bless the Soul
+5639:Feline Queen - Bless the Soul
+5643:Unicorn Seraphim - Acumen
+5647:Unicorn Seraphim - Clarity
+5648:Unicorn Seraphim - Empower
+5643:Unicorn Seraphim - Acumen
+5647:Unicorn Seraphim - Clarity
+5643:Unicorn Seraphim - Acumen
+5647:Unicorn Seraphim - Clarity
+5643:Unicorn Seraphim - Acumen
+5647:Unicorn Seraphim - Clarity
+5643:Unicorn Seraphim - Acumen
+5646:Unicorn Seraphim - Wild Magic
+5647:Unicorn Seraphim - Clarity
+5643:Unicorn Seraphim - Acumen
+5646:Unicorn Seraphim - Wild Magic
+5647:Unicorn Seraphim - Clarity
+5643:Unicorn Seraphim - Acumen
+5646:Unicorn Seraphim - Wild Magic
+5647:Unicorn Seraphim - Clarity
+5643:Unicorn Seraphim - Acumen
+5646:Unicorn Seraphim - Wild Magic
+5643:Unicorn Seraphim - Acumen
+5646:Unicorn Seraphim - Wild Magic
+5643:Unicorn Seraphim - Acumen
+5643:Unicorn Seraphim - Acumen
+5643:Unicorn Seraphim - Acumen
+5643:Unicorn Seraphim - Acumen
+5643:Unicorn Seraphim - Acumen
+5643:Unicorn Seraphim - Acumen
+5643:Unicorn Seraphim - Acumen
+5643:Unicorn Seraphim - Acumen
+5643:Unicorn Seraphim - Acumen
+5643:Unicorn Seraphim - Acumen
+5643:Unicorn Seraphim - Acumen
+5643:Unicorn Seraphim - Acumen
+5643:Unicorn Seraphim - Acumen
+5643:Unicorn Seraphim - Acumen
+5643:Unicorn Seraphim - Acumen
+5643:Unicorn Seraphim - Acumen
+5643:Unicorn Seraphim - Acumen
+5643:Unicorn Seraphim - Acumen
+5643:Unicorn Seraphim - Acumen
+5643:Unicorn Seraphim - Acumen
+5643:Unicorn Seraphim - Acumen
+5643:Unicorn Seraphim - Acumen
+5643:Unicorn Seraphim - Acumen
+5643:Unicorn Seraphim - Acumen
+5643:Unicorn Seraphim - Acumen
+5643:Unicorn Seraphim - Acumen
+5643:Unicorn Seraphim - Acumen
+5643:Unicorn Seraphim - Acumen
+5643:Unicorn Seraphim - Acumen
+5643:Unicorn Seraphim - Acumen
+5643:Unicorn Seraphim - Acumen
+5643:Unicorn Seraphim - Acumen
+5643:Unicorn Seraphim - Acumen
+5643:Unicorn Seraphim - Acumen
+5643:Unicorn Seraphim - Acumen
+4233:Vampiric Attack
+4233:Vampiric Attack
+4233:Vampiric Attack
+4233:Vampiric Attack
+4233:Vampiric Attack
+4233:Vampiric Attack
+4233:Vampiric Attack
+4233:Vampiric Attack
+4233:Vampiric Attack
+4233:Vampiric Attack
+4233:Vampiric Attack
+4233:Vampiric Attack
+4233:Vampiric Attack
+4233:Vampiric Attack
+4233:Vampiric Attack
+4233:Vampiric Attack
+4233:Vampiric Attack
+4233:Vampiric Attack
+4233:Vampiric Attack
+4233:Vampiric Attack
+4233:Vampiric Attack
+4233:Vampiric Attack
+4233:Vampiric Attack
+4233:Vampiric Attack
+4233:Vampiric Attack
+4233:Vampiric Attack
+4233:Vampiric Attack
+4233:Vampiric Attack
+4233:Vampiric Attack
+4233:Vampiric Attack
+4233:Vampiric Attack
+4233:Vampiric Attack
+4233:Vampiric Attack
+4233:Vampiric Attack
+4233:Vampiric Attack
+4233:Vampiric Attack
+4233:Vampiric Attack
+4233:Vampiric Attack
+4233:Vampiric Attack
+4233:Vampiric Attack
+4233:Vampiric Attack
+4233:Vampiric Attack
+4233:Vampiric Attack
+4233:Vampiric Attack
+4233:Vampiric Attack
+4233:Vampiric Attack
+4233:Vampiric Attack
+4233:Vampiric Attack
+5654:Nightshade - Guidance
+5654:Nightshade - Guidance
+5654:Nightshade - Guidance
+5654:Nightshade - Guidance
+5654:Nightshade - Guidance
+5654:Nightshade - Guidance
+5654:Nightshade - Guidance
+5654:Nightshade - Guidance
+5654:Nightshade - Guidance
+5654:Nightshade - Guidance
+4079:Siege Hammer
+4079:Siege Hammer
+4079:Siege Hammer
+4079:Siege Hammer
+4079:Siege Hammer
+4079:Siege Hammer
+4079:Siege Hammer
+4079:Siege Hammer
+4079:Siege Hammer
+4079:Siege Hammer
+4079:Siege Hammer
+4079:Siege Hammer
+4079:Siege Hammer
+4079:Siege Hammer
+4079:Siege Hammer
+4079:Siege Hammer
+4079:Siege Hammer
+4079:Siege Hammer
+4079:Siege Hammer
+4079:Siege Hammer
+4079:Siege Hammer
+4079:Siege Hammer
+4079:Siege Hammer
+4079:Siege Hammer
+4079:Siege Hammer
+4079:Siege Hammer
+4079:Siege Hammer
+4079:Siege Hammer
+4079:Siege Hammer
+4079:Siege Hammer
+4079:Siege Hammer
+4230:Wild Cannon
+4230:Wild Cannon
+4230:Wild Cannon
+4230:Wild Cannon
+4230:Wild Cannon
+4230:Wild Cannon
+4230:Wild Cannon
+4230:Wild Cannon
+4230:Wild Cannon
+4230:Wild Cannon
+4230:Wild Cannon
+4230:Wild Cannon
+4230:Wild Cannon
+4230:Wild Cannon
+4230:Wild Cannon
+4230:Wild Cannon
+4230:Wild Cannon
+4230:Wild Cannon
+4230:Wild Cannon
+4230:Wild Cannon
+4230:Wild Cannon
+4230:Wild Cannon
+4230:Wild Cannon
+4230:Wild Cannon
+4230:Wild Cannon
+4230:Wild Cannon
+4230:Wild Cannon
+4230:Wild Cannon
+4230:Wild Cannon
+4230:Wild Cannon
+4230:Wild Cannon
+5135:Slash
+5136:Spin Slash
+5137:Hold of King
+5138:Whiplash
+5139:Tidal Wave
+5140:Dark Curse
+5141:Dicing Death
+5142:Corpse Kaboom
+5110:Cannon Fodder
+5111:Big Bang
+5110:Cannon Fodder
+5111:Big Bang
+5110:Cannon Fodder
+5111:Big Bang
+5110:Cannon Fodder
+5111:Big Bang
+5110:Cannon Fodder
+5111:Big Bang
+5110:Cannon Fodder
+5111:Big Bang
+5110:Cannon Fodder
+5111:Big Bang
+5110:Cannon Fodder
+5111:Big Bang
+5110:Cannon Fodder
+5111:Big Bang
+5110:Cannon Fodder
+5111:Big Bang
+5110:Cannon Fodder
+5111:Big Bang
+5110:Cannon Fodder
+5111:Big Bang
+5110:Cannon Fodder
+5111:Big Bang
+5110:Cannon Fodder
+5111:Big Bang
+5110:Cannon Fodder
+5111:Big Bang
+5110:Cannon Fodder
+5111:Big Bang
+5110:Cannon Fodder
+5111:Big Bang
+5110:Cannon Fodder
+5111:Big Bang
+5110:Cannon Fodder
+5111:Big Bang
+5110:Cannon Fodder
+5111:Big Bang
+5110:Cannon Fodder
+5111:Big Bang
+5110:Cannon Fodder
+5111:Big Bang
+5110:Cannon Fodder
+5111:Big Bang
+5110:Cannon Fodder
+5111:Big Bang
+5110:Cannon Fodder
+5111:Big Bang
+5110:Cannon Fodder
+5111:Big Bang
+5110:Cannon Fodder
+5111:Big Bang
+5110:Cannon Fodder
+5111:Big Bang
+5110:Cannon Fodder
+5111:Big Bang
+5110:Cannon Fodder
+5111:Big Bang
+5110:Cannon Fodder
+5111:Big Bang
+5580:Divine Beast Bite
+5581:Divine Beast Stun Attack
+5582:Divine Beast Fire Breath
+5583:Divine Beast Roar
+5135:Slash
+5136:Spin Slash
+5137:Hold of King
+5135:Slash
+5136:Spin Slash
+5137:Hold of King
+5135:Slash
+5136:Spin Slash
+5137:Hold of King
+5135:Slash
+5136:Spin Slash
+5137:Hold of King
+5135:Slash
+5136:Spin Slash
+5137:Hold of King
+5135:Slash
+5136:Spin Slash
+5137:Hold of King
+5135:Slash
+5136:Spin Slash
+5137:Hold of King
+5135:Slash
+5136:Spin Slash
+5137:Hold of King
+5135:Slash
+5136:Spin Slash
+5137:Hold of King
+5135:Slash
+5136:Spin Slash
+5137:Hold of King
+5135:Slash
+5136:Spin Slash
+5137:Hold of King
+5135:Slash
+5136:Spin Slash
+5137:Hold of King
+5135:Slash
+5136:Spin Slash
+5137:Hold of King
+5135:Slash
+5136:Spin Slash
+5137:Hold of King
+5135:Slash
+5136:Spin Slash
+5137:Hold of King
+5138:Whiplash
+5139:Tidal Wave
+5138:Whiplash
+5139:Tidal Wave
+5138:Whiplash
+5139:Tidal Wave
+5138:Whiplash
+5139:Tidal Wave
+5138:Whiplash
+5139:Tidal Wave
+5138:Whiplash
+5139:Tidal Wave
+5138:Whiplash
+5139:Tidal Wave
+5138:Whiplash
+5139:Tidal Wave
+5138:Whiplash
+5139:Tidal Wave
+5138:Whiplash
+5139:Tidal Wave
+5138:Whiplash
+5139:Tidal Wave
+5138:Whiplash
+5139:Tidal Wave
+5138:Whiplash
+5139:Tidal Wave
+5138:Whiplash
+5139:Tidal Wave
+5138:Whiplash
+5139:Tidal Wave
+5140:Dark Curse
+5141:Dicing Death
+5142:Corpse Kaboom
+5140:Dark Curse
+5141:Dicing Death
+5142:Corpse Kaboom
+5140:Dark Curse
+5141:Dicing Death
+5142:Corpse Kaboom
+5140:Dark Curse
+5141:Dicing Death
+5142:Corpse Kaboom
+5140:Dark Curse
+5141:Dicing Death
+5142:Corpse Kaboom
+5140:Dark Curse
+5141:Dicing Death
+5142:Corpse Kaboom
+5140:Dark Curse
+5141:Dicing Death
+5142:Corpse Kaboom
+5140:Dark Curse
+5141:Dicing Death
+5142:Corpse Kaboom
+5140:Dark Curse
+5141:Dicing Death
+5142:Corpse Kaboom
+5140:Dark Curse
+5141:Dicing Death
+5142:Corpse Kaboom
+5140:Dark Curse
+5141:Dicing Death
+5142:Corpse Kaboom
+5140:Dark Curse
+5141:Dicing Death
+5142:Corpse Kaboom
+5140:Dark Curse
+5141:Dicing Death
+5142:Corpse Kaboom
+5140:Dark Curse
+5141:Dicing Death
+5142:Corpse Kaboom
+5140:Dark Curse
+5141:Dicing Death
+5142:Corpse Kaboom
+6041:Phoenix Rush
+6042:Phoenix Cleanse
+6043:Phoenix Flame Feather
+6044:Phoenix Flame Beak
+5442:Bite Attack
+5443:Cry of the Wolf
+5444:Maul
+5445:Awakening
+5195:Pet Greater Heal
+5590:Pet Battle Heal
+5771:Buff Control
+5200:Pet Recharge
+5771:Buff Control
+5195:Pet Greater Heal
+5590:Pet Battle Heal
+5771:Buff Control
+5442:Bite Attack
+5443:Cry of the Wolf
+5444:Maul
+5445:Awakening
+5442:Bite Attack
+5443:Cry of the Wolf
+5444:Maul
+5445:Awakening
+5442:Bite Attack
+5443:Cry of the Wolf
+5444:Maul
+5445:Awakening

@@ -1,0 +1,1034 @@
+// Packet Sifter by d00d
+// Another quick and dirty tool for more or less fit for public consumption.
+//
+// v1.0 - Initial Release
+// v1.1 - Typo Fix
+
+Init::GlobalVariables VOID 0
+
+
+// This filters out packets from being displayed.
+// ServerFilterList.ADD hexid decid
+// ExServerFilterList.ADD hexid decid
+// ClientFilterList.ADD hexid decid
+// ExClientFilterList.ADD hexid decid
+
+Window::PacketViewer.SET_NAME "Packet Trace"
+Window::PacketViewer.SET_HTML ""
+Window::PacketViewer.RUN_WINDOW
+
+Init::Events VOID 0
+
+WHILE ONE == ONE
+  SLEEP 10000
+WEND
+
+END_SCRIPT
+
+
+FUNCTION Init::GlobalVariables
+
+  DEFINE_GLOBAL SORTEDLIST ServerPacket
+  DEFINE_GLOBAL SORTEDLIST ExServerPacket
+  DEFINE_GLOBAL SORTEDLIST ClientPacket
+  DEFINE_GLOBAL SORTEDLIST ExClientPacket
+  DEFINE_GLOBAL SORTEDLIST ServerFilterList
+  DEFINE_GLOBAL SORTEDLIST ExServerFilterList
+  DEFINE_GLOBAL SORTEDLIST ClientFilterList
+  DEFINE_GLOBAL SORTEDLIST ExClientFilterList
+  
+  DEFINE_GLOBAL WINDOW Window::PacketViewer HTML  
+  DEFINE_GLOBAL STRING HTML::Buffer
+  
+  Init::DataObjects VOID 0
+  
+RETURN VOID
+
+FUNCTION Init::Events
+
+  FOR Z 0 255 1
+    SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" ServerPacket::Writer "<&Z&>"
+  NEXT
+
+  FOR Z 0 255 1
+    SET_EVENT "<&SCRIPTEVENT_SERVERPACKETEX&>" "<&SYSTEM_CURRENTFILE&>" ServerExPacket::Writer "<&Z&>"
+  NEXT
+
+  FOR Z 0 255 1
+    SET_EVENT "<&SCRIPTEVENT_CLIENTPACKET&>" "<&SYSTEM_CURRENTFILE&>" ClientPacket::Writer "<&Z&>"
+  NEXT
+
+  FOR Z 0 255 1
+    SET_EVENT "<&SCRIPTEVENT_CLIENTPACKETEX&>" "<&SYSTEM_CURRENTFILE&>" ClientExPacket::Writer "<&Z&>"
+  NEXT
+
+RETURN VOID
+
+FUNCTION DrawOverlay 1 _sBuffer
+  
+  HTML::Buffer = "#$<&_sBuffer&>" + HTML::Buffer
+  
+RETURN HTML::Buffer
+
+FUNCTION ServerExPacket::Writer
+
+  DEFINE INT PACKET_ID
+  DEFINE INT BUF1
+  DEFINE STRING BUF2
+  DEFINE STRING BUF3
+  PACKET.READ_BYTE NULL
+  PACKET.READ_INT16 PACKET_ID
+  
+  LOCK MUTEX
+    IF "ExServerFilterList.CONTAINS_KEY <&PACKET_ID&>" == TRUE
+      PACKET_ID = PACKET_ID
+    ELSE
+      ResolveExServerPacket BUF2 1 PACKET_ID
+      BUF2 = "#$<tr><td>(ES)</td><td align=\"center\"><&BUF2&></td><td>"
+      PACKET.RESET_INDEX
+      FOR Z 0 "<&PACKET.LENGTH&>" 1
+        PACKET.READ_BYTE BUF1
+        BUF3 = BUF1.GET_HEX
+        BUF3 = "BUF3.SUBSTRING #I0 #I2"
+        BUF2 = "#$<&BUF2&> <&BUF3&>"
+      NEXT
+      BUF2 = "#$<&BUF2&></td></tr>"
+      DrawOverlay HTML::Buffer 1 BUF2
+      Window::PacketViewer.SET_HTML "<html><body><font face=\"Lucida Console\"><table border=\"1\"><&HTML::Buffer&></table></font></body></html>"
+    ENDIF
+  UNLOCK MUTEX
+RETURN VOID
+
+FUNCTION ServerPacket::Writer
+
+  DEFINE INT PACKET_ID
+  DEFINE INT BUF1
+  DEFINE STRING BUF2
+  DEFINE STRING BUF3
+  PACKET.READ_BYTE PACKET_ID
+  
+  LOCK MUTEX
+    IF "ServerFilterList.CONTAINS_KEY <&PACKET_ID&>" == TRUE
+      PACKET_ID = PACKET_ID
+    ELSE
+      ResolveServerPacket BUF2 1 PACKET_ID
+      BUF2 = "#$<tr><td>(S)</td><td align=\"center\"><&BUF2&></td><td>"
+      PACKET.RESET_INDEX
+      FOR Z 0 "<&PACKET.LENGTH&>" 1
+        PACKET.READ_BYTE BUF1
+        BUF3 = BUF1.GET_HEX
+        BUF3 = "BUF3.SUBSTRING #I0 #I2"
+        BUF2 = "#$<&BUF2&> <&BUF3&>"
+      NEXT
+      BUF2 = "#$<&BUF2&></td></tr>"
+      DrawOverlay HTML::Buffer 1 BUF2
+      Window::PacketViewer.SET_HTML "<html><body><font face=\"Lucida Console\"><table border=\"1\"><&HTML::Buffer&></table></font></body></html>"
+    ENDIF
+  UNLOCK MUTEX
+  
+RETURN VOID
+
+FUNCTION ClientExPacket::Writer
+  PRINT_TEXT "Entered ClientExPacket::Writer"
+  DEFINE INT PACKET_ID
+  DEFINE INT BUF1
+  DEFINE STRING BUF2
+  DEFINE STRING BUF3
+  PACKET.READ_BYTE NULL
+  PACKET.READ_INT16 PACKET_ID
+  
+  LOCK MUTEX
+    IF "ExClientFilterList.CONTAINS_KEY <&PACKET_ID&>" == TRUE
+      PACKET_ID = PACKET_ID
+    ELSE
+      ResolveExClientPacket BUF2 1 PACKET_ID
+      BUF2 = "#$<tr><td>(EC)</td><td align=\"center\"><&BUF2&></td><td>"
+      PACKET.RESET_INDEX
+      FOR Z 0 "<&PACKET.LENGTH&>" 1
+        PACKET.READ_BYTE BUF1
+        BUF3 = BUF1.GET_HEX
+        BUF3 = "BUF3.SUBSTRING #I0 #I2"
+        BUF2 = "#$<&BUF2&> <&BUF3&>"
+      NEXT
+      BUF2 = "#$<&BUF2&></td></tr>"
+      DrawOverlay HTML::Buffer 1 BUF2
+      Window::PacketViewer.SET_HTML "<html><body><font face=\"Lucida Console\"><table border=\"1\"><&HTML::Buffer&></table></font></body></html>"
+    ENDIF
+  UNLOCK MUTEX
+RETURN VOID
+
+FUNCTION ClientPacket::Writer
+
+  DEFINE INT PACKET_ID
+  DEFINE INT BUF1
+  DEFINE STRING BUF2
+  DEFINE STRING BUF3
+  PACKET.READ_BYTE PACKET_ID
+  
+  LOCK MUTEX
+    IF "ClientFilterList.CONTAINS_KEY <&PACKET_ID&>" == TRUE
+      PACKET_ID = PACKET_ID
+    ELSE
+      ResolveClientPacket BUF2 1 PACKET_ID
+      BUF2 = "#$<tr><td>(C)</td><td align=\"center\"><&BUF2&></td><td>"
+      PACKET.RESET_INDEX
+      FOR Z 0 "<&PACKET.LENGTH&>" 1
+        PACKET.READ_BYTE BUF1
+        BUF3 = BUF1.GET_HEX
+        BUF3 = "BUF3.SUBSTRING #I0 #I2"
+        BUF2 = "#$<&BUF2&> <&BUF3&>"
+      NEXT
+      BUF2 = "#$<&BUF2&></td></tr>"
+      DrawOverlay HTML::Buffer 1 BUF2
+      Window::PacketViewer.SET_HTML "<html><body><font face=\"Lucida Console\"><table border=\"1\"><&HTML::Buffer&></table></font></body></html>"
+    ENDIF
+  UNLOCK MUTEX
+  
+RETURN VOID
+
+FUNCTION ResolveExServerPacket 1 _iHeader
+
+  DEFINE STRING HexVer
+  DEFINE STRING PNAME
+  
+  HexVer = _iHeader.GET_HEX
+  HexVer = HexVer.SUBSTRING #I0 #I2
+  FOREACH X STRING ExServerPacket
+    IF ExServerPacket.X.TO_UPPER == HexVer.TO_UPPER
+      PNAME = "#$<&ExServerPacket.GET_KEY <&X&>&>"
+    ENDIF
+  NEXTEACH
+  
+RETURN PNAME
+
+FUNCTION ResolveServerPacket 1 _iHeader
+
+  DEFINE STRING HexVer
+  DEFINE STRING PNAME
+
+  HexVer = _iHeader.GET_HEX
+  HexVer = HexVer.SUBSTRING #I0 #I2
+  FOREACH X STRING ServerPacket
+    IF ServerPacket.X.TO_UPPER == HexVer.TO_UPPER
+      PNAME = "#$<&ServerPacket.GET_KEY <&X&>&>"
+    ENDIF
+  NEXTEACH
+  
+RETURN PNAME
+
+FUNCTION ResolveExClientPacket 1 _iHeader
+
+  DEFINE STRING HexVer
+  DEFINE STRING PNAME
+  
+  HexVer = _iHeader.GET_HEX
+  HexVer = HexVer.SUBSTRING #I0 #I2
+  FOREACH X STRING ExClientPacket
+    IF ExClientPacket.X.TO_UPPER == HexVer.TO_UPPER
+      PNAME = "#$<&ExClientPacket.GET_KEY <&X&>&>"
+    ENDIF
+  NEXTEACH
+  
+RETURN PNAME
+
+FUNCTION ResolveClientPacket 1 _iHeader
+
+  DEFINE STRING HexVer
+  DEFINE STRING PNAME
+
+  HexVer = _iHeader.GET_HEX
+  HexVer = HexVer.SUBSTRING #I0 #I2
+  FOREACH X STRING ClientPacket
+    IF ClientPacket.X.TO_UPPER == HexVer.TO_UPPER
+      PNAME = "#$<&ClientPacket.GET_KEY <&X&>&>"
+    ENDIF
+  NEXTEACH
+  
+RETURN PNAME
+
+FUNCTION Init::DataObjects
+
+  ServerPacket.ADD "#$00" "Die"
+  ServerPacket.ADD "#$01" "Revive"
+  ServerPacket.ADD "#$02" "AttackOutofRange"
+  ServerPacket.ADD "#$03" "AttackinCoolTime"
+  ServerPacket.ADD "#$04" "AttackDeadTarget"
+  ServerPacket.ADD "#$05" "SpawnItem"
+  ServerPacket.ADD "#$06" "SellList"
+  ServerPacket.ADD "#$07" "BuyList"
+  ServerPacket.ADD "#$08" "DeleteObject"
+  ServerPacket.ADD "#$09" "CharacterSelectionInfo"
+  ServerPacket.ADD "#$0A" "LoginFail"
+  ServerPacket.ADD "#$0B" "CharacterSelectedPacket"
+  ServerPacket.ADD "#$0C" "NpcInfo"
+  ServerPacket.ADD "#$0D" "NewCharacterSuccess"
+  ServerPacket.ADD "#$0E" "NewCharacterFail"
+  ServerPacket.ADD "#$0F" "CharCreateOk"
+  ServerPacket.ADD "#$10" "CharCreateFail"
+  ServerPacket.ADD "#$11" "ItemList"
+  ServerPacket.ADD "#$12" "SunRise"
+  ServerPacket.ADD "#$13" "SunSet"
+  ServerPacket.ADD "#$14" "TradeStartPacket"
+  ServerPacket.ADD "#$15" "TradeStartOkPacket"
+  ServerPacket.ADD "#$16" "DropItem"
+  ServerPacket.ADD "#$17" "GetItem"
+  ServerPacket.ADD "#$18" "StatusUpdate"
+  ServerPacket.ADD "#$19" "NpcHtmlMessage"
+  ServerPacket.ADD "#$1A" "TradeOwnAddPacket"
+  ServerPacket.ADD "#$1B" "TradeOtherAddPacket"
+  ServerPacket.ADD "#$1C" "TradeDonePacket"
+  ServerPacket.ADD "#$1D" "CharacterDeleteSuccess"
+  ServerPacket.ADD "#$1E" "CharacterDeleteFail"
+  ServerPacket.ADD "#$1F" "ActionFail"
+  ServerPacket.ADD "#$20" "ServerClose"
+  ServerPacket.ADD "#$21" "InventoryUpdatePacket"
+  ServerPacket.ADD "#$22" "TeleportToLocationPacket"
+  ServerPacket.ADD "#$23" "TargetSelectedPacket"
+  ServerPacket.ADD "#$24" "TargetUnselectedPacket"
+  ServerPacket.ADD "#$25" "AutoAttackStartPacket"
+  ServerPacket.ADD "#$26" "AutoAttackStopPacket"
+  ServerPacket.ADD "#$27" "SocialActionPacket"
+  ServerPacket.ADD "#$28" "ChangeMoveTypePacket"
+  ServerPacket.ADD "#$29" "ChangeWaitTypePacket"
+  ServerPacket.ADD "#$2A" "ManagePledgePowerPacket"
+  ServerPacket.ADD "#$2B" "CreatePledgePacket"
+  ServerPacket.ADD "#$2C" "AskJoinPledgePacket"
+  ServerPacket.ADD "#$2D" "JoinPledgePacket"
+  ServerPacket.ADD "#$2E" "VersionCheck"
+  ServerPacket.ADD "#$2F" "MoveToLocation"
+  ServerPacket.ADD "#$30" "NcpSay"
+  ServerPacket.ADD "#$31" "CharInfo"
+  ServerPacket.ADD "#$32" "UserInfo"
+  ServerPacket.ADD "#$33" "Attack"
+  ServerPacket.ADD "#$34" "WithdrawalPledgePacket"
+  ServerPacket.ADD "#$35" "OustPledgeMemberPacket"
+  ServerPacket.ADD "#$36" "SetOustPledgeMemberPacket"
+  ServerPacket.ADD "#$37" "DismissPledgePacket"
+  ServerPacket.ADD "#$38" "SetDismissPledgePacket"
+  ServerPacket.ADD "#$39" "AskJoinPartyPacket"
+  ServerPacket.ADD "#$3A" "JoinPartyPacket"
+  ServerPacket.ADD "#$3B" "WithdrawalPartyPacket"
+  ServerPacket.ADD "#$3C" "OustPartyMemberPacket"
+  ServerPacket.ADD "#$3D" "SetOustPartyMemberPacket"
+  ServerPacket.ADD "#$3E" "DismissPartyPacket"
+  ServerPacket.ADD "#$3F" "SetDismissPartyPacket"
+  ServerPacket.ADD "#$40" "MagicAndSkillList"
+  ServerPacket.ADD "#$41" "WareHouseDepositListPacket"
+  ServerPacket.ADD "#$42" "WareHouseWithdrawListPacket"
+  ServerPacket.ADD "#$43" "WareHouseDonePacket"
+  ServerPacket.ADD "#$44" "ShortCutRegisterPacket"
+  ServerPacket.ADD "#$45" "ShortCutInitPacket"
+  ServerPacket.ADD "#$46" "ShortCutDeletePacket"
+  ServerPacket.ADD "#$47" "StopMove"
+  ServerPacket.ADD "#$48" "MagicSkillUse"
+  ServerPacket.ADD "#$49" "MagicSkillCanceled"
+  ServerPacket.ADD "#$4A" "CreatureSay"
+  ServerPacket.ADD "#$4B" "EquipUpdatePacket"
+  ServerPacket.ADD "#$4C" "DoorInfo"
+  ServerPacket.ADD "#$4D" "DoorStatusUpdate"
+  ServerPacket.ADD "#$4E" "PartySmallWindowAll"
+  ServerPacket.ADD "#$4F" "PartySmallWindowAddPacket"
+  ServerPacket.ADD "#$50" "PartySmallWindowDeleteAllPacket"
+  ServerPacket.ADD "#$51" "PartySmallWindowDeletePacket"
+  ServerPacket.ADD "#$52" "PartySmallWindowUpdatePacket"
+  ServerPacket.ADD "#$53" "TradePressOwnOkPacket"
+  ServerPacket.ADD "#$54" "MagicSkillLaunchedPacket"
+  ServerPacket.ADD "#$55" "FriendAddRequestResult"
+  ServerPacket.ADD "#$56" "FriendAdd"
+  ServerPacket.ADD "#$57" "FriendRemove"
+  ServerPacket.ADD "#$58" "FriendList"
+  ServerPacket.ADD "#$59" "FriendStatus"
+  ServerPacket.ADD "#$5A" "PledgeShowMemberListAllPacket"
+  ServerPacket.ADD "#$5B" "PledgeShowMemberListUpdatePacket"
+  ServerPacket.ADD "#$5C" "PledgeShowMemberListAddPacket"
+  ServerPacket.ADD "#$5D" "PledgeShowMemberListDeletePacket"
+  ServerPacket.ADD "#$5E" "MagicListPacket"
+  ServerPacket.ADD "#$5F" "SkillListPacket"
+  ServerPacket.ADD "#$60" "OnVehicleInfo"
+  ServerPacket.ADD "#$61" "FinishRotating"
+  ServerPacket.ADD "#$62" "SystemMessagePacket"
+  ServerPacket.ADD "#$63" "StartPledgeWarPacket"
+  ServerPacket.ADD "#$64" "ReplyStartPledgeWarPacket"
+  ServerPacket.ADD "#$65" "StopPledgeWarPacket"
+  ServerPacket.ADD "#$66" "ReplyStopPledgeWarPacket"
+  ServerPacket.ADD "#$67" "SurrenderPledgeWarPacket"
+  ServerPacket.ADD "#$68" "ReplySurrenderPledgeWarPacket"
+  ServerPacket.ADD "#$69" "SetPledgeCrestPacket"
+  ServerPacket.ADD "#$6A" "PledgeCrest"
+  ServerPacket.ADD "#$6B" "SetupGaugePacket"
+  ServerPacket.ADD "#$6C" "OnVehicleDeparture"
+  ServerPacket.ADD "#$6D" "OnVehicleCheckLocation"
+  ServerPacket.ADD "#$6E" "OnGetOnVehicle"
+  ServerPacket.ADD "#$6F" "OnGetOffVehicle"
+  ServerPacket.ADD "#$70" "TradeRequestPacket"
+  ServerPacket.ADD "#$71" "RestartResponsePacket"
+  ServerPacket.ADD "#$72" "MoveToPawn"
+  ServerPacket.ADD "#$73" "SSQInfoPacket"
+  ServerPacket.ADD "#$74" "GameGuardQueryPacket"
+  ServerPacket.ADD "#$75" "L2FriendListPacket"
+  ServerPacket.ADD "#$76" "L2FriendPacket"
+  ServerPacket.ADD "#$77" "L2FriendStatusPacket"
+  ServerPacket.ADD "#$78" "L2FriendSayPacket"
+  ServerPacket.ADD "#$79" "ValidateLocation"
+  ServerPacket.ADD "#$7A" "StartRotating"
+  ServerPacket.ADD "#$7B" "ShowBoardPacket"
+  ServerPacket.ADD "#$7C" "ChooseInventoryItemPacket"
+  ServerPacket.ADD "#$7D" "Dummy"
+  ServerPacket.ADD "#$7E" "MoveToLocationInVehicle"
+  ServerPacket.ADD "#$7F" "StopMoveInVehicle"
+  ServerPacket.ADD "#$80" "ValidateLocationInVehicle"
+  ServerPacket.ADD "#$81" "TradeUpdatePacket"
+  ServerPacket.ADD "#$82" "TradePressOtherOkPacket"
+  ServerPacket.ADD "#$83" "FriendAddRequestResult2"
+  ServerPacket.ADD "#$84" "LeaveWorld"
+  ServerPacket.ADD "#$85" "AbnormalStatusUpdatePacket"
+  ServerPacket.ADD "#$86" "QuestListPacket"
+  ServerPacket.ADD "#$87" "EnchantResultPacket"
+  ServerPacket.ADD "#$88" "PledgeShowMemberListDeleteAllPacket"
+  ServerPacket.ADD "#$89" "PledgeInfo"
+  ServerPacket.ADD "#$8A" "PledgeExtendedInfoPacket"
+  ServerPacket.ADD "#$8B" "SurrenderPersonallyPacket"
+  ServerPacket.ADD "#$8C" "Ride"
+  ServerPacket.ADD "#$8D" "Dummy2"
+  ServerPacket.ADD "#$8E" "PledgeShowInfoUpdatePacket"
+  ServerPacket.ADD "#$8F" "ActionFail2"
+  ServerPacket.ADD "#$90" "AcquireSkillListPacket"
+  ServerPacket.ADD "#$91" "AcquireSkillInfoPacket"
+  ServerPacket.ADD "#$92" "ServerObjectInfoPacket"
+  ServerPacket.ADD "#$93" "GMHidePacket"
+  ServerPacket.ADD "#$94" "AcquireSkillDonePacket"
+  ServerPacket.ADD "#$95" "GMViewCharacterInfoPacket"
+  ServerPacket.ADD "#$96" "GMViewPledgeInfoPacket"
+  ServerPacket.ADD "#$97" "GMViewSkillInfoPacket"
+  ServerPacket.ADD "#$98" "GMViewMagicInfoPacket"
+  ServerPacket.ADD "#$99" "GMViewQuestInfoPacket"
+  ServerPacket.ADD "#$9A" "GMViewItemListPacket"
+  ServerPacket.ADD "#$9B" "GMViewWarehouseWithdrawListPacket"
+  ServerPacket.ADD "#$9C" "ListPartyWatingPacket"
+  ServerPacket.ADD "#$9D" "PartyRoomInfoPacket"
+  ServerPacket.ADD "#$9E" "PlaySoundPacket"
+  ServerPacket.ADD "#$9F" "StaticObjectPacket"
+  ServerPacket.ADD "#$A0" "PrivateSellList"
+  ServerPacket.ADD "#$A1" "PrivateBuyList"
+  ServerPacket.ADD "#$A2" "PrivateStoreMsg"
+  ServerPacket.ADD "#$A3" "ShowMinimapPacket"
+  ServerPacket.ADD "#$A4" "ReviveRequestPacket"
+  ServerPacket.ADD "#$A5" "AbnormalVisualEffectPacket"
+  ServerPacket.ADD "#$A6" "TutorialShowHtml"
+  ServerPacket.ADD "#$A7" "TutorialShowQuestionMarkPacket"
+  ServerPacket.ADD "#$A8" "TutorialEnableClientEventPacket"
+  ServerPacket.ADD "#$A9" "TutorialCloseHtmlPacket"
+  ServerPacket.ADD "#$AA" "ShowRadarPacket"
+  ServerPacket.ADD "#$AB" "WithdrawAlliancePacket"
+  ServerPacket.ADD "#$AC" "OustAllianceMemberPledgePacket"
+  ServerPacket.ADD "#$AD" "DismissAlliancePacket"
+  ServerPacket.ADD "#$AE" "SetAllianceCrestPacket"
+  ServerPacket.ADD "#$AF" "AllianceCrest"
+  ServerPacket.ADD "#$B0" "ServerCloseSocketPacket"
+  ServerPacket.ADD "#$B1" "PetStatusShow"
+  ServerPacket.ADD "#$B2" "PetInfo"
+  ServerPacket.ADD "#$B3" "PetItemList"
+  ServerPacket.ADD "#$B4" "PetInventoryUpdatePacket"
+  ServerPacket.ADD "#$B5" "AllianceInfoPacket"
+  ServerPacket.ADD "#$B6" "PetStatusUpdatePacket"
+  ServerPacket.ADD "#$B7" "PetDeletePacket"
+  ServerPacket.ADD "#$B8" "DeleteRadarPacket"
+  ServerPacket.ADD "#$B9" "MyTargetSelectedPacket"
+  ServerPacket.ADD "#$BA" "PartyMemberPosition"
+  ServerPacket.ADD "#$BB" "AskJoinAlliancePacket"
+  ServerPacket.ADD "#$BC" "JoinAlliancePacket"
+  ServerPacket.ADD "#$BD" "PrivateSellList2"
+  ServerPacket.ADD "#$BE" "PrivateBuyList2"
+  ServerPacket.ADD "#$BF" "PrivateStoreBuyMsg"
+  ServerPacket.ADD "#$C0" "VehicleStartPacket"
+  ServerPacket.ADD "#$C1" "RequestTimeCheckPacket"
+  ServerPacket.ADD "#$C2" "StartAllianceWarPacket"
+  ServerPacket.ADD "#$C3" "ReplyStartAllianceWarPacket"
+  ServerPacket.ADD "#$C4" "StopAllianceWarPacket"
+  ServerPacket.ADD "#$C5" "ReplyStopAllianceWarPacket"
+  ServerPacket.ADD "#$C6" "SurrenderAllianceWarPacket"
+  ServerPacket.ADD "#$C7" "SkillCoolTimePacket"
+  ServerPacket.ADD "#$C8" "PackageToListPacket"
+  ServerPacket.ADD "#$C9" "CastleSiegeInfoPacket"
+  ServerPacket.ADD "#$CA" "CastleSiegeAttackerList"
+  ServerPacket.ADD "#$CB" "CastleSiegeDefenderList"
+  ServerPacket.ADD "#$CC" "NickNameChanged"
+  ServerPacket.ADD "#$CD" "PledgeStatusChanged"
+  ServerPacket.ADD "#$CE" "RelationChanged"
+  ServerPacket.ADD "#$CF" "OnEventTrigger"
+  ServerPacket.ADD "#$D0" "MultiSellListPacket"
+  ServerPacket.ADD "#$D1" "SetSummonRemainTimePacket"
+  ServerPacket.ADD "#$D2" "PackageSendableListPacket"
+  ServerPacket.ADD "#$D3" "EarthQuake"
+  ServerPacket.ADD "#$D4" "FlyToLocation"
+  ServerPacket.ADD "#$D5" "BlockListPacket"
+  ServerPacket.ADD "#$D6" "SpecialCamera"
+  ServerPacket.ADD "#$D7" "NormalCamera"
+  ServerPacket.ADD "#$D8" "OnSkillRemainSec"
+  ServerPacket.ADD "#$D9" "NetPingPacket"
+  ServerPacket.ADD "#$DA" "DicePacket"
+  ServerPacket.ADD "#$DB" "SnoopPacket"
+  ServerPacket.ADD "#$DC" "RecipeBookItemListPacket"
+  ServerPacket.ADD "#$DD" "RecipeItemMakeInfoPacket"
+  ServerPacket.ADD "#$DE" "RecipeShopManageListPacket"
+  ServerPacket.ADD "#$DF" "RecipeShopSellListPacket"
+  ServerPacket.ADD "#$E0" "RecipeShopItemInfoPacket"
+  ServerPacket.ADD "#$E1" "RecipeShopMsgPacket"
+  ServerPacket.ADD "#$E2" "ShowCalcPacket"
+  ServerPacket.ADD "#$E3" "RaceMonsterStatusUpdatePacket"
+  ServerPacket.ADD "#$E4" "HennaItemInfo"
+  ServerPacket.ADD "#$E5" "HennaInfoPacket"
+  ServerPacket.ADD "#$E6" "HennaUnequipListPacket"
+  ServerPacket.ADD "#$E7" "HennaUnequipItemInfo"
+  ServerPacket.ADD "#$E8" "MacroListPacket"
+  ServerPacket.ADD "#$E9" "BuyListSeed"
+  ServerPacket.ADD "#$EA" "ShowTownMapPacket"
+  ServerPacket.ADD "#$EB" "ObserverStartPacket"
+  ServerPacket.ADD "#$EC" "ObserverEndPacket"
+  ServerPacket.ADD "#$ED" "ChairSitPacket"
+  ServerPacket.ADD "#$EE" "HennaEquipListPacket"
+  ServerPacket.ADD "#$EF" "SellListProcure"
+  ServerPacket.ADD "#$F0" "GMHennaInfoPacket"
+  ServerPacket.ADD "#$F1" "ShowRadarPacket2"
+  ServerPacket.ADD "#$F2" "ClientSetTimePacket"
+  ServerPacket.ADD "#$F3" "ConfirmDlgPacket"
+  ServerPacket.ADD "#$F4" "PartySpelled"
+  ServerPacket.ADD "#$F5" "PreviewList"
+  ServerPacket.ADD "#$F6" "ShopPreviewInfoPacket"
+  ServerPacket.ADD "#$F7" "CameraModePacket"
+  ServerPacket.ADD "#$F8" "ShowXMasSealPacket"
+  ServerPacket.ADD "#$F9" "EtcStatusUpdatePacket"
+  ServerPacket.ADD "#$FA" "ShortBuffStatusUpdatePacket"
+  ServerPacket.ADD "#$FB" "SSQStatusPacket"
+  ServerPacket.ADD "#$FC" "PetitionVotePacket"
+  ServerPacket.ADD "#$FD" "AgitDecoInfoPacket"
+  ServerPacket.ADD "#$FE" "DummyPacket"
+  
+  ExServerPacket.ADD "#$00" "ExDummyPacket"
+  ExServerPacket.ADD "#$01" "ExRegenMaxPacket"
+  ExServerPacket.ADD "#$02" "ExEventMatchUserInfoPacket"
+  ExServerPacket.ADD "#$03" "ExColosseumFenceInfoPacket"
+  ExServerPacket.ADD "#$04" "ExEventMatchSpelledInfoPacket"
+  ExServerPacket.ADD "#$05" "ExEventMatchFirecrackerPacket"
+  ExServerPacket.ADD "#$06" "ExEventMatchTeamUnlockedPacket"
+  ExServerPacket.ADD "#$07" "ExEventMatchGMTestPacket"
+  ExServerPacket.ADD "#$08" "ExPartyRoomMemberPacket"
+  ExServerPacket.ADD "#$09" "ExClosePartyRoomPacket"
+  ExServerPacket.ADD "#$0A" "ExManagePartyRoomMemberPacket"
+  ExServerPacket.ADD "#$0B" "ExEventMatchLockResult"
+  ExServerPacket.ADD "#$0C" "ExAutoSoulShot"
+  ExServerPacket.ADD "#$0D" "ExEventMatchListPacket"
+  ExServerPacket.ADD "#$0E" "ExEventMatchObserverPacket"
+  ExServerPacket.ADD "#$0F" "ExEventMatchMessagePacket"
+  ExServerPacket.ADD "#$10" "ExEventMatchScorePacket"
+  ExServerPacket.ADD "#$11" "ExServerPrimitivePacket"
+  ExServerPacket.ADD "#$12" "ExOpenMPCCPacket"
+  ExServerPacket.ADD "#$13" "ExCloseMPCCPacket"
+  ExServerPacket.ADD "#$14" "ExShowCastleInfo"
+  ExServerPacket.ADD "#$15" "ExShowFortressInfo"
+  ExServerPacket.ADD "#$16" "ExShowAgitInfo"
+  ExServerPacket.ADD "#$17" "ExShowFortressSiegeInfo"
+  ExServerPacket.ADD "#$18" "ExPartyPetWindowAdd"
+  ExServerPacket.ADD "#$19" "ExPartyPetWindowUpdate"
+  ExServerPacket.ADD "#$1A" "ExAskJoinMPCCPacket"
+  ExServerPacket.ADD "#$1B" "ExPledgeEmblem"
+  ExServerPacket.ADD "#$1C" "ExEventMatchTeamInfoPacket"
+  ExServerPacket.ADD "#$1D" "ExEventMatchCreatePacket"
+  ExServerPacket.ADD "#$1E" "ExFishingStartPacket"
+  ExServerPacket.ADD "#$1F" "ExFishingEndPacket"
+  ExServerPacket.ADD "#$20" "ExShowQuestInfoPacket"
+  ExServerPacket.ADD "#$21" "ExShowQuestMarkPacket"
+  ExServerPacket.ADD "#$22" "ExSendManorListPacket"
+  ExServerPacket.ADD "#$23" "ExShowSeedInfoPacket"
+  ExServerPacket.ADD "#$24" "ExShowCropInfoPacket"
+  ExServerPacket.ADD "#$25" "ExShowManorDefaultInfoPacket"
+  ExServerPacket.ADD "#$26" "ExShowSeedSettingPacket"
+  ExServerPacket.ADD "#$27" "ExFishingStartCombatPacket"
+  ExServerPacket.ADD "#$28" "ExFishingHpRegenPacket"
+  ExServerPacket.ADD "#$29" "ExEnchantSkillListPacket"
+  ExServerPacket.ADD "#$2A" "ExEnchantSkillInfoPacket"
+  ExServerPacket.ADD "#$2B" "ExShowCropSettingPacket"
+  ExServerPacket.ADD "#$2C" "ExShowSellCropListPacket"
+  ExServerPacket.ADD "#$2D" "ExOlympiadMatchEndPacket"
+  ExServerPacket.ADD "#$2E" "ExMailArrivedPacket"
+  ExServerPacket.ADD "#$2F" "ExStorageMaxCountPacket"
+  ExServerPacket.ADD "#$30" "ExEventMatchManagePacket"
+  ExServerPacket.ADD "#$31" "ExMultiPartyCommandChannelInfoPacket"
+  ExServerPacket.ADD "#$32" "ExPCCafePointInfoPacket"
+  ExServerPacket.ADD "#$33" "ExSetCompassZoneCode"
+  ExServerPacket.ADD "#$34" "ExGetBossRecord"
+  ExServerPacket.ADD "#$35" "ExAskJoinPartyRoom"
+  ExServerPacket.ADD "#$36" "ExListPartyMatchingWaitingRoom"
+  ExServerPacket.ADD "#$37" "ExSetMpccRouting"
+  ExServerPacket.ADD "#$38" "ExShowAdventurerGuideBook"
+  ExServerPacket.ADD "#$39" "ExShowScreenMessage"
+  ExServerPacket.ADD "#$3A" "PledgeSkillListPacket"
+  ExServerPacket.ADD "#$3B" "PledgeSkillListAddPacket"
+  ExServerPacket.ADD "#$3C" "PledgePowerGradeList"
+  ExServerPacket.ADD "#$3D" "PledgeReceivePowerInfo"
+  ExServerPacket.ADD "#$3E" "PledgeReceiveMemberInfo"
+  ExServerPacket.ADD "#$3F" "PledgeReceiveWarList"
+  ExServerPacket.ADD "#$40" "PledgeReceiveSubPledgeCreated"
+  ExServerPacket.ADD "#$41" "ExRedSkyPacket"
+  ExServerPacket.ADD "#$42" "PledgeReceiveUpdatePower"
+  ExServerPacket.ADD "#$43" "FlySelfDestinationPacket"
+  ExServerPacket.ADD "#$44" "ShowPCCafeCouponShowUI"
+  ExServerPacket.ADD "#$45" "ExSearchOrc"
+  ExServerPacket.ADD "#$46" "ExCursedWeaponList"
+  ExServerPacket.ADD "#$47" "ExCursedWeaponLocation"
+  ExServerPacket.ADD "#$48" "ExRestartClient"
+  ExServerPacket.ADD "#$49" "ExRequestHackShield"
+  ExServerPacket.ADD "#$4A" "ExUseSharedGroupItem"
+  ExServerPacket.ADD "#$4B" "ExMPCCShowPartyMemberInfo"
+  ExServerPacket.ADD "#$4C" "ExDuelAskStart"
+  ExServerPacket.ADD "#$4D" "ExDuelReady"
+  ExServerPacket.ADD "#$4E" "ExDuelStart"
+  ExServerPacket.ADD "#$4F" "ExDuelEnd"
+  ExServerPacket.ADD "#$50" "ExDuelUpdateUserInfo"
+  ExServerPacket.ADD "#$51" "ExShowVariationMakeWindow"
+  ExServerPacket.ADD "#$52" "ExShowVariationCancelWindow"
+  ExServerPacket.ADD "#$53" "ExPutItemResultForVariationMake"
+  ExServerPacket.ADD "#$54" "ExPutIntensiveResultForVariationMake"
+  ExServerPacket.ADD "#$55" "ExPutCommissionResultForVariationMake"
+  ExServerPacket.ADD "#$56" "ExVariationResult"
+  ExServerPacket.ADD "#$57" "ExPutItemResultForVariationCancel"
+  ExServerPacket.ADD "#$58" "ExVariationCancelResult"
+  ExServerPacket.ADD "#$59" "ExDuelEnemyRelation"
+  ExServerPacket.ADD "#$5A" "ExPlayAnimation"
+  ExServerPacket.ADD "#$5B" "ExMPCCPartyInfoUpdate"
+  ExServerPacket.ADD "#$5C" "ExPlayScene"
+  ExServerPacket.ADD "#$5D" "ExSpawnEmitterPacket"
+  ExServerPacket.ADD "#$5E" "ExEnchantSkillInfoDetailPacket"
+  ExServerPacket.ADD "#$5F" "ExBasicActionList"
+  ExServerPacket.ADD "#$60" "ExAirShipInfo"
+  ExServerPacket.ADD "#$61" "ExAttributeEnchantResultPacket"
+  ExServerPacket.ADD "#$62" "ExChooseInventoryAttributeItemPacket"
+  ExServerPacket.ADD "#$63" "ExGetOnAirShipPacket"
+  ExServerPacket.ADD "#$64" "ExGetOffAirShipPacket"
+  ExServerPacket.ADD "#$65" "ExMoveToLocationAirShipPacket"
+  ExServerPacket.ADD "#$66" "ExStopMoveAirShipPacket"
+  ExServerPacket.ADD "#$67" "ExShowTracePacket"
+  ExServerPacket.ADD "#$68" "ExItemAuctionInfoPacket"
+  ExServerPacket.ADD "#$69" "ExNeedToChangeName"
+  ExServerPacket.ADD "#$6A" "ExPartyPetWindowDelete"
+  ExServerPacket.ADD "#$6B" "ExTutorialList"
+  ExServerPacket.ADD "#$6C" "ExRpItemLink"
+  ExServerPacket.ADD "#$6D" "ExMoveToLocationInAirShipPacket"
+  ExServerPacket.ADD "#$6E" "ExStopMoveInAirShipPacket"
+  ExServerPacket.ADD "#$6F" "ExValidateLocationInAirShipPacket"
+  ExServerPacket.ADD "#$70" "ExUISettingPacket"
+  ExServerPacket.ADD "#$71" "ExMoveToTargetInAirShipPacket"
+  ExServerPacket.ADD "#$72" "ExAttackInAirShipPacket"
+  ExServerPacket.ADD "#$73" "ExMagicSkillUseInAirShipPacket"
+  ExServerPacket.ADD "#$74" "ExShowBaseAttributeCancelWindow"
+  ExServerPacket.ADD "#$75" "ExBaseAttributeCancelResult"
+  ExServerPacket.ADD "#$76" "ExSubPledgetSkillAdd"
+  ExServerPacket.ADD "#$77" "ExResponseFreeServer"
+  ExServerPacket.ADD "#$78" "ExShowProcureCropDetailPacket"
+  ExServerPacket.ADD "#$79" "ExHeroListPacket"
+  ExServerPacket.ADD "#$7A" "ExOlympiadUserInfoPacket"
+  ExServerPacket.ADD "#$7B" "ExOlympiadSpelledInfoPacket"
+  ExServerPacket.ADD "#$7C" "ExOlympiadModePacket"
+  ExServerPacket.ADD "#$7D" "ExShowFortressMapInfo"
+  ExServerPacket.ADD "#$7E" "ExPVPMatchRecord"
+  ExServerPacket.ADD "#$7F" "ExPVPMatchUserDie"
+  ExServerPacket.ADD "#$80" "ExPrivateStoreSetWholeMsg"
+  ExServerPacket.ADD "#$81" "ExPutEnchantTargetItemResult"
+  ExServerPacket.ADD "#$82" "ExPutEnchantSupportItemResult"
+  ExServerPacket.ADD "#$83" "ExChangeNicknameNColor"
+  ExServerPacket.ADD "#$84" "ExGetBookMarkInfoPacket"
+  ExServerPacket.ADD "#$85" "ExNotifyPremiumItem"
+  ExServerPacket.ADD "#$86" "ExGetPremiumItemListPacket"
+  ExServerPacket.ADD "#$87" "ExPeriodicItemList"
+  ExServerPacket.ADD "#$88" "ExJumpToLocation"
+  ExServerPacket.ADD "#$89" "ExPVPMatchCCRecord"
+  ExServerPacket.ADD "#$8A" "ExPVPMatchCCMyRecord"
+  ExServerPacket.ADD "#$8B" "ExPVPMatchCCRetire"
+  ExServerPacket.ADD "#$8C" "ExShowTerritory"
+  ExServerPacket.ADD "#$8D" "ExNpcQuestHtmlMessage"
+  ExServerPacket.ADD "#$8E" "ExSendUIEventPacket"
+  ExServerPacket.ADD "#$8F" "ExNotifyBirthDay"
+  ExServerPacket.ADD "#$90" "ExShowDominionRegistry"
+  ExServerPacket.ADD "#$91" "ExReplyRegisterDominion"
+  ExServerPacket.ADD "#$92" "ExReplyDominionInfo"
+  ExServerPacket.ADD "#$93" "ExShowOwnthingPos"
+  ExServerPacket.ADD "#$94" "ExCleftList"
+  ExServerPacket.ADD "#$95" "ExCleftState"
+  ExServerPacket.ADD "#$96" "ExDominionChannelSet"
+  ExServerPacket.ADD "#$97" "ExBlockUpSetList"
+  ExServerPacket.ADD "#$98" "ExBlockUpSetState"
+  ExServerPacket.ADD "#$99" "ExStartScenePlayer"
+  ExServerPacket.ADD "#$9A" "ExAirShipTeleportList"
+  ExServerPacket.ADD "#$9B" "ExMpccRoomInfo"
+  ExServerPacket.ADD "#$9C" "ExListMpccWaiting"
+  ExServerPacket.ADD "#$9D" "ExDissmissMpccRoom"
+  ExServerPacket.ADD "#$9E" "ExManageMpccRoomMember"
+  ExServerPacket.ADD "#$9F" "ExMpccRoomMember"
+  ExServerPacket.ADD "#$A0" "ExVitalityPointInfo"
+  ExServerPacket.ADD "#$A1" "ExShowSeedMapInfo"
+  ExServerPacket.ADD "#$A2" "ExMpccPartymasterList"
+  ExServerPacket.ADD "#$A3" "ExDominionWarStart"
+  ExServerPacket.ADD "#$A4" "ExDominionWarEnd"
+  ExServerPacket.ADD "#$A5" "ExShowLines"
+  ExServerPacket.ADD "#$A6" "ExPartyMemberRenamed"
+  ExServerPacket.ADD "#$A7" "ExEnchantSkillResult"
+  ExServerPacket.ADD "#$A8" "ExRefundList"
+  ExServerPacket.ADD "#$A9" "ExNoticePostArrived"
+  ExServerPacket.ADD "#$AA" "ExShowReceivedPostList"
+  ExServerPacket.ADD "#$AB" "ExReplyReceivedPost"
+  ExServerPacket.ADD "#$AC" "ExShowSentPostList"
+  ExServerPacket.ADD "#$AD" "ExReplySentPost"
+  ExServerPacket.ADD "#$AE" "ExResponseShowStepOne"
+  ExServerPacket.ADD "#$AF" "ExResponseShowStepTwo"
+  ExServerPacket.ADD "#$B0" "ExResponseShowContents"
+  ExServerPacket.ADD "#$B1" "ExShowPetitionHtml"
+  ExServerPacket.ADD "#$B2" "ExReplyPostItemList"
+  ExServerPacket.ADD "#$B3" "ExChangePostState"
+  ExServerPacket.ADD "#$B4" "ExReplyWritePost"
+  ExServerPacket.ADD "#$B5" "ExRaidCharSelected"
+  ExServerPacket.ADD "#$B6" "ExRaidReserveResult"
+  ExServerPacket.ADD "#$B7" "ExBuySellListPacket"
+  ExServerPacket.ADD "#$B8" "ExBR_GamePoint"
+  ExServerPacket.ADD "#$B9" "ExBR_ProductList"
+  ExServerPacket.ADD "#$BA" "ExBR_ProductInfo"
+  ExServerPacket.ADD "#$BB" "ExBR_BuyProduct"
+  ExServerPacket.ADD "#$BC" "ExBR_PremiumState"
+  ExServerPacket.ADD "#$BD" "ExBrBroadcastEventState"
+  ExServerPacket.ADD "#$BE" "ExBrExtraUserInfo"
+  ExServerPacket.ADD "#$BF" "ExBrBuffEventState"
+  ExServerPacket.ADD "#$C0" "ExBR_RecentProductList"
+  ExServerPacket.ADD "#$C1" "ExBR_LoadEventTopRankers"
+  ExServerPacket.ADD "#$C2" "ExBR_MinigameLoadScores"
+  ExServerPacket.ADD "#$B5" "ExInitializeSeed"
+  ExServerPacket.ADD "#$B8" "ExCloseRaidSocket"
+  ExServerPacket.ADD "#$B9" "ExPrivateMarketList"
+  ExServerPacket.ADD "#$BA" "ExRaidCharacterSelected"
+  ExServerPacket.ADD "#$BB" "ExAskCoupleAction"
+  ExServerPacket.ADD "#$BC" "ExBrBroadcastEventState2"
+  ExServerPacket.ADD "#$BD" "ExBR_LoadEventTopRankers2"
+  ExServerPacket.ADD "#$BE" "ExChangeNPCState"
+  ExServerPacket.ADD "#$BF" "ExAskModifyPartyLooting"
+  ExServerPacket.ADD "#$C0" "ExSetPartyLooting"
+  ExServerPacket.ADD "#$C1" "ExRotation"
+  ExServerPacket.ADD "#$C2" "ExChangeZoneInfo"
+  ExServerPacket.ADD "#$C3" "ExMembershipInfo"
+  ExServerPacket.ADD "#$C4" "ExReplyHandOverPartyMaster"
+  ExServerPacket.ADD "#$C5" "ExQuestNpcLogList"
+  ExServerPacket.ADD "#$C6" "ExQuestItemList"
+  ExServerPacket.ADD "#$C7" "ExGMViewQuestItemList"
+  ExServerPacket.ADD "#$C8" "ExResartResponse"
+  ExServerPacket.ADD "#$C9" "ExVoteSystemInfo"
+
+  ClientPacket.ADD "#$00" "Logout"
+  ClientPacket.ADD "#$01" "Attack"
+  ClientPacket.ADD "#$03" "RequestStartPledgeWar"
+  ClientPacket.ADD "#$04" "RequestReplyStartPledgeWar"
+  ClientPacket.ADD "#$05" "RequestStopPledgeWar"
+  ClientPacket.ADD "#$06" "RequestSCCheck"
+  ClientPacket.ADD "#$07" "RequestSurrenderPledgeWar"
+  ClientPacket.ADD "#$08" "RequestReplySurrenderPledgeWar"
+  ClientPacket.ADD "#$09" "RequestSetPledgeCrest"
+  ClientPacket.ADD "#$0b" "RequestGiveNickName"
+  ClientPacket.ADD "#$0c" "NewCharacter"
+  ClientPacket.ADD "#$0d" "CharacterDeletePacket"
+  ClientPacket.ADD "#$0e" "ProtocolVersion"
+  ClientPacket.ADD "#$0f" "MoveBackwardToLocation"
+  ClientPacket.ADD "#$10" "Say"
+  ClientPacket.ADD "#$11" "EnterWorld"
+  ClientPacket.ADD "#$12" "CharacterSelect"
+  ClientPacket.ADD "#$13" "NewCharacterPacket"
+  ClientPacket.ADD "#$14" "ItemList"
+  ClientPacket.ADD "#$15" "RequestEquipItem"
+  ClientPacket.ADD "#$16" "RequestUnEquipItem"
+  ClientPacket.ADD "#$17" "RequestDropItemPacket"
+  ClientPacket.ADD "#$19" "UseItemPacket"
+  ClientPacket.ADD "#$1a" "TradeRequestPacket"
+  ClientPacket.ADD "#$1b" "AddTradeItemPacket"
+  ClientPacket.ADD "#$1c" "TradeDonePacket"
+  ClientPacket.ADD "#$1f" "Action"
+  ClientPacket.ADD "#$22" "RequestLinkHtml"
+  ClientPacket.ADD "#$23" "RequestBypassToServer"
+  ClientPacket.ADD "#$24" "RequestBBSWrite"
+  ClientPacket.ADD "#$25" "RequestCreatePledge"
+  ClientPacket.ADD "#$26" "RequestJoinPledge"
+  ClientPacket.ADD "#$27" "RequestAnswerJoinPledge"
+  ClientPacket.ADD "#$28" "RequestWithDrawalPledge"
+  ClientPacket.ADD "#$29" "RequestOustPledgeMember"
+  ClientPacket.ADD "#$2b" "AuthLogin"
+  ClientPacket.ADD "#$2c" "RequestGetItemFromPet"
+  ClientPacket.ADD "#$2e" "RequestAllyInfo"
+  ClientPacket.ADD "#$2f" "RequestCrystallizeItem"
+  ClientPacket.ADD "#$30" "RequestPrivateStoreManageSell"
+  ClientPacket.ADD "#$31" "SetPrivateStoreList"
+  ClientPacket.ADD "#$32" "AttackRequest"
+  ClientPacket.ADD "#$33" "RequestTeleportPacket"
+  ClientPacket.ADD "#$34" "SocialAction"
+  ClientPacket.ADD "#$35" "ChangeMoveType"
+  ClientPacket.ADD "#$36" "ChangeWaitType"
+  ClientPacket.ADD "#$37" "RequestSellItem"
+  ClientPacket.ADD "#$38" "RequestMagicSkillList"
+  ClientPacket.ADD "#$39" "RequestMagicSkillUse"
+  ClientPacket.ADD "#$3a" "SendApperingPacket"
+  ClientPacket.ADD "#$3b" "SendWareHouseDepositList"
+  ClientPacket.ADD "#$3c" "SendWareHouseWithDrawList"
+  ClientPacket.ADD "#$3d" "RequestShortCutReg"
+  ClientPacket.ADD "#$3e" "RequestShortCutUse"
+  ClientPacket.ADD "#$3f" "RequestShortCutDel"
+  ClientPacket.ADD "#$40" "RequestBuyItem"
+  ClientPacket.ADD "#$41" "RequestDismissPledge"
+  ClientPacket.ADD "#$42" "RequestJoinParty"
+  ClientPacket.ADD "#$43" "RequestAnswerJoinParty"
+  ClientPacket.ADD "#$44" "RequestWithDrawalParty"
+  ClientPacket.ADD "#$45" "RequestOustPartyMember"
+  ClientPacket.ADD "#$46" "RequestDismissParty"
+  ClientPacket.ADD "#$47" "CanNotMoveAnymore"
+  ClientPacket.ADD "#$48" "RequestTargetCancel"
+  ClientPacket.ADD "#$49" "Say2"
+  ClientPacket.ADD "#$4d" "RequestPledgeMemberList"
+  ClientPacket.ADD "#$4f" "RequestMagicList"
+  ClientPacket.ADD "#$50" "RequestSkillList"
+  ClientPacket.ADD "#$52" "MoveWithDelta"
+  ClientPacket.ADD "#$53" "GetOnVehicle"
+  ClientPacket.ADD "#$54" "GetOffVehicle"
+  ClientPacket.ADD "#$55" "AnswerTradeRequest"
+  ClientPacket.ADD "#$56" "RequestActionUse"
+  ClientPacket.ADD "#$57" "RequestRestart"
+  ClientPacket.ADD "#$58" "RequestSiegeInfo"
+  ClientPacket.ADD "#$59" "ValidatePosition"
+  ClientPacket.ADD "#$5a" "RequestSEKCustom"
+  ClientPacket.ADD "#$5b" "StartRotating"
+  ClientPacket.ADD "#$5c" "FinishRotating"
+  ClientPacket.ADD "#$5e" "RequestShowboard"
+  ClientPacket.ADD "#$5f" "RequestEnchantItem"
+  ClientPacket.ADD "#$60" "RequestDestroyItem"
+  ClientPacket.ADD "#$62" "RequestQuestList"
+  ClientPacket.ADD "#$63" "RequestDestroyQuest"
+  ClientPacket.ADD "#$65" "RequestPledgeInfo"
+  ClientPacket.ADD "#$66" "RequestPledgeExtendedInfo"
+  ClientPacket.ADD "#$67" "RequestPledgeCrest"
+  ClientPacket.ADD "#$6b" "RequestSendL2FriendSay"
+  ClientPacket.ADD "#$6c" "RequestOpenMinimap"
+  ClientPacket.ADD "#$6d" "RequestSendMsnChatLog"
+  ClientPacket.ADD "#$6e" "RequestReload"
+  ClientPacket.ADD "#$6f" "RequestHennaEquip"
+  ClientPacket.ADD "#$70" "RequestHennaUnequipList"
+  ClientPacket.ADD "#$71" "RequestHennaUnequipInfo"
+  ClientPacket.ADD "#$72" "RequestHennaUnequip"
+  ClientPacket.ADD "#$73" "RequestAcquireSkillInfo"
+  ClientPacket.ADD "#$74" "SendBypassBuildCmd"
+  ClientPacket.ADD "#$75" "MoveToLocationInVehicle"
+  ClientPacket.ADD "#$76" "CanNotMoveAnymoreVehicle"
+  ClientPacket.ADD "#$77" "RequestFriendInvite"
+  ClientPacket.ADD "#$78" "RequestFriendAddReply"
+  ClientPacket.ADD "#$79" "RequestFriendList"
+  ClientPacket.ADD "#$7a" "RequestFriendDel"
+  ClientPacket.ADD "#$7b" "CharacterRestorePacket"
+  ClientPacket.ADD "#$7c" "RequestAcquireSkill"
+  ClientPacket.ADD "#$7d" "RequestRestartPoint"
+  ClientPacket.ADD "#$7e" "RequestGMCommand"
+  ClientPacket.ADD "#$7f" "RequestPartyMatchConfig"
+  ClientPacket.ADD "#$80" "RequestPartyMatchList"
+  ClientPacket.ADD "#$81" "RequestPartyMatchDetail"
+  ClientPacket.ADD "#$83" "SendPrivateStoreBuyList"
+  ClientPacket.ADD "#$84" "ReviveReply"
+  ClientPacket.ADD "#$85" "RequestTutorialLinkHtml"
+  ClientPacket.ADD "#$86" "RequestTutorialPassCmdToServer"
+  ClientPacket.ADD "#$87" "RequestTutorialQuestionMarkPressed"
+  ClientPacket.ADD "#$88" "RequestTutorialClientEvent"
+  ClientPacket.ADD "#$89" "RequestPetition"
+  ClientPacket.ADD "#$8a" "RequestPetitionCancel"
+  ClientPacket.ADD "#$8b" "RequestGMList"
+  ClientPacket.ADD "#$8c" "RequestJoinAlly"
+  ClientPacket.ADD "#$8d" "RequestAnswerJoinAlly"
+  ClientPacket.ADD "#$8e" "RequestWithdrawAlly"
+  ClientPacket.ADD "#$8f" "RequestOustAlly"
+  ClientPacket.ADD "#$90" "RequestDismissAlly"
+  ClientPacket.ADD "#$91" "RequestSetAllyCrest"
+  ClientPacket.ADD "#$92" "RequestAllyCrest"
+  ClientPacket.ADD "#$93" "RequestChangePetName"
+  ClientPacket.ADD "#$94" "RequestPetUseItem"
+  ClientPacket.ADD "#$95" "RequestGiveItemToPet"
+  ClientPacket.ADD "#$96" "RequestPrivateStoreQuitSell"
+  ClientPacket.ADD "#$97" "SetPrivateStoreMsgSell"
+  ClientPacket.ADD "#$98" "RequestPetGetItem"
+  ClientPacket.ADD "#$99" "RequestPrivateStoreBuyManage"
+  ClientPacket.ADD "#$9a" "SetPrivateStoreList2"
+  ClientPacket.ADD "#$9c" "RequestPrivateStoreQuitBuy"
+  ClientPacket.ADD "#$9d" "SetPrivateStoreMsgBuy"
+  ClientPacket.ADD "#$9f" "SendPrivateStoreBuyList2"
+  ClientPacket.ADD "#$a0" "SendTimeCheckPacket"
+  ClientPacket.ADD "#$a6" "RequestSkillCoolTime"
+  ClientPacket.ADD "#$a7" "RequestPackageSendableItemList"
+  ClientPacket.ADD "#$a8" "RequestPackageSend"
+  ClientPacket.ADD "#$a9" "RequestBlock"
+  ClientPacket.ADD "#$aa" "RequestCastleSiegeInfo"
+  ClientPacket.ADD "#$ab" "RequestCastleSiegeAttackerList"
+  ClientPacket.ADD "#$ac" "RequestCastleSiegeInfo2"
+  ClientPacket.ADD "#$ad" "RequestJoinCastleSiege"
+  ClientPacket.ADD "#$ae" "RequestConfirmCastleSiegeWaitingList"
+  ClientPacket.ADD "#$af" "RequestSetCastleSiegeTime"
+  ClientPacket.ADD "#$b0" "RequestMultiSellChoose"
+  ClientPacket.ADD "#$b1" "NetPing"
+  ClientPacket.ADD "#$b2" "RequestRemainTime"
+  ClientPacket.ADD "#$b3" "BypassUserCmd"
+  ClientPacket.ADD "#$b4" "Snoop_quit"
+  ClientPacket.ADD "#$b5" "RequestRecipeBookOpen"
+  ClientPacket.ADD "#$b6" "RequestRecipeItemDelete"
+  ClientPacket.ADD "#$b7" "RequestRecipeItemMakeInfo"
+  ClientPacket.ADD "#$b8" "RequestRecipeItemMakeSelf"
+  ClientPacket.ADD "#$b9" "RequestRecipeShopManageList"
+  ClientPacket.ADD "#$ba" "RequestRecipeShopMessageSet"
+  ClientPacket.ADD "#$bb" "RequestRecipeShopListSet"
+  ClientPacket.ADD "#$bc" "RequestRecipeShopManageQuit"
+  ClientPacket.ADD "#$bd" "RequestRecipeShopManageCancel"
+  ClientPacket.ADD "#$be" "RequestRecipeShopMakeInfo"
+  ClientPacket.ADD "#$bf" "RequestRecipeShopMakeDo"
+  ClientPacket.ADD "#$c0" "RequestRecipeShopSellList"
+  ClientPacket.ADD "#$c1" "RequestObserverEndPacket"
+  ClientPacket.ADD "#$c2" "VoteSociality"
+  ClientPacket.ADD "#$c3" "RequestHennaItemList"
+  ClientPacket.ADD "#$c4" "RequestHennaItemInfo"
+  ClientPacket.ADD "#$c5" "RequestBuySeed"
+  ClientPacket.ADD "#$c6" "ConfirmDlg"
+  ClientPacket.ADD "#$c7" "RequestPreviewItem"
+  ClientPacket.ADD "#$c8" "RequestSSQStatus"
+  ClientPacket.ADD "#$c9" "PetitionVote"
+  ClientPacket.ADD "#$cb" "ReplyGameGuardQuery"
+  ClientPacket.ADD "#$cc" "RequestPledgePower"
+  ClientPacket.ADD "#$cd" "RequestMakeMacro"
+  ClientPacket.ADD "#$ce" "RequestDeleteMacro"
+  ClientPacket.ADD "#$cf" "RequestProcureCrop"
+
+  ExClientPacket.ADD "#$01" "RequestManorList"
+  ExClientPacket.ADD "#$02" "RequestProcureCropList"
+  ExClientPacket.ADD "#$03" "RequestSetSeed"
+  ExClientPacket.ADD "#$04" "RequestSetCrop"
+  ExClientPacket.ADD "#$05" "RequestWriteHeroWords"
+  ExClientPacket.ADD "#$06" "RequestExAskJoinMPCC"
+  ExClientPacket.ADD "#$07" "RequestExAcceptJoinMPCC"
+  ExClientPacket.ADD "#$08" "RequestExOustFromMPCC"
+  ExClientPacket.ADD "#$09" "RequestOustFromPartyRoom"
+  ExClientPacket.ADD "#$0a" "RequestDismissPartyRoom"
+  ExClientPacket.ADD "#$0b" "RequestWithdrawPartyRoom"
+  ExClientPacket.ADD "#$0c" "RequestHandOverPartyMaster"
+  ExClientPacket.ADD "#$0d" "RequestAutoSoulShot"
+  ExClientPacket.ADD "#$0e" "RequestExEnchantSkillInfo"
+  ExClientPacket.ADD "#$0f" "RequestExEnchantSkill"
+  ExClientPacket.ADD "#$10" "RequestExPledgeCrestLarge"
+  ExClientPacket.ADD "#$11" "RequestExSetPledgeCrestLarge"
+  ExClientPacket.ADD "#$12" "RequestPledgeSetAcademyMaster"
+  ExClientPacket.ADD "#$13" "RequestPledgePowerGradeList"
+  ExClientPacket.ADD "#$14" "RequestPledgeMemberPowerInfo"
+  ExClientPacket.ADD "#$15" "RequestPledgeSetMemberPowerGrade"
+  ExClientPacket.ADD "#$16" "RequestPledgeMemberInfo"
+  ExClientPacket.ADD "#$17" "RequestPledgeWarList"
+  ExClientPacket.ADD "#$18" "RequestExFishRanking"
+  ExClientPacket.ADD "#$19" "RequestPCCafeCouponUse"
+  ExClientPacket.ADD "#$1a" "ExOrcMove"
+  ExClientPacket.ADD "#$1b" "RequestDuelStart"
+  ExClientPacket.ADD "#$1c" "RequestDuelAnswerStart"
+  ExClientPacket.ADD "#$1d" "RequestExSetTutorial"
+  ExClientPacket.ADD "#$1e" "RequestExRqItemLink"
+  ExClientPacket.ADD "#$1f" "CanNotMoveAnymoreAirShip"
+  ExClientPacket.ADD "#$20" "MoveToLocationInAirShip"
+  ExClientPacket.ADD "#$21" "RequestKeyMapping"
+  ExClientPacket.ADD "#$22" "RequestSaveKeyMapping"
+  ExClientPacket.ADD "#$23" "RequestExRemoveItemAttribute"
+  ExClientPacket.ADD "#$24" "RequestSaveInventoryOrder"
+  ExClientPacket.ADD "#$25" "RequestExitPartyMatchingWaitingRoom"
+  ExClientPacket.ADD "#$26" "RequestConfirmTargetItem"
+  ExClientPacket.ADD "#$27" "RequestConfirmRefinerItem"
+  ExClientPacket.ADD "#$28" "RequestConfirmGemStone"
+  ExClientPacket.ADD "#$29" "RequestOlympiadObserverEnd"
+  ExClientPacket.ADD "#$2a" "RequestCursedWeaponList"
+  ExClientPacket.ADD "#$2b" "RequestCursedWeaponLocation"
+  ExClientPacket.ADD "#$2c" "RequestPledgeReorganizeMember"
+  ExClientPacket.ADD "#$2d" "RequestExMPCCShowPartyMembersInfo"
+  ExClientPacket.ADD "#$2e" "RequestOlympiadMatchList"
+  ExClientPacket.ADD "#$2f" "RequestAskJoinPartyRoom"
+  ExClientPacket.ADD "#$30" "AnswerJoinPartyRoom"
+  ExClientPacket.ADD "#$31" "RequestListPartyMatchingWaitingRoom"
+  ExClientPacket.ADD "#$32" "RequestExEnchantSkill2"
+  ExClientPacket.ADD "#$33" "RequestExEnchantSkill3"
+  ExClientPacket.ADD "#$34" "RequestExEnchantSkill4"
+  ExClientPacket.ADD "#$35" "RequestEnchantItemAttribute"
+  ExClientPacket.ADD "#$36" "ExGetOnAirShip"
+  ExClientPacket.ADD "#$38" "MoveToLocationAirShip"
+  ExClientPacket.ADD "#$39" "RequestBidItemAuction"
+  ExClientPacket.ADD "#$3a" "RequestInfoItemAuction"
+  ExClientPacket.ADD "#$3b" "RequestExChangeName"
+  ExClientPacket.ADD "#$3c" "RequestAllCastleInfo"
+  ExClientPacket.ADD "#$3d" "RequestAllFortressInfo"
+  ExClientPacket.ADD "#$3e" "RequestAllAgitInfo"
+  ExClientPacket.ADD "#$3f" "RequestFortressSiegeInfo"
+  ExClientPacket.ADD "#$40" "RequestGetBossRecord"
+  ExClientPacket.ADD "#$41" "RequestRefine"
+  ExClientPacket.ADD "#$42" "RequestConfirmCancelItem"
+  ExClientPacket.ADD "#$43" "RequestRefineCancel"
+  ExClientPacket.ADD "#$44" "RequestExMagicSkillUseGround"
+  ExClientPacket.ADD "#$45" "RequestDuelSurrender"
+  ExClientPacket.ADD "#$46" "RequestExEnchantSkillInfoDetail"
+  ExClientPacket.ADD "#$48" "RequestFortressMapInfo"
+  ExClientPacket.ADD "#$49" "RequestPVPMatchRecord"
+  ExClientPacket.ADD "#$4a" "SetPrivateStoreWholeMsg"
+  ExClientPacket.ADD "#$4b" "RequestDispel"
+  ExClientPacket.ADD "#$4c" "RequestExTryToPutEnchantTargetItem"
+  ExClientPacket.ADD "#$4d" "RequestExTryToPutEnchantSupportItem"
+  ExClientPacket.ADD "#$4e" "RequestExCancelEnchantItem"
+  ExClientPacket.ADD "#$4f" "RequestChangeNicknameColor"
+  ExClientPacket.ADD "#$50" "RequestResetNickname"
+  ExClientPacket.ADD "#$52" "RequestWithDrawPremiumItem"
+  ExClientPacket.ADD "#$53" "RequestJump"
+  ExClientPacket.ADD "#$54" "RequestStartShowCrataeCubeRank"
+  ExClientPacket.ADD "#$55" "RequestStopShowCrataeCubeRank"
+  ExClientPacket.ADD "#$56" "NotifyStartMiniGame"
+  ExClientPacket.ADD "#$57" "RequestJoinDominionWar"
+  ExClientPacket.ADD "#$58" "RequestDominionInfo"
+  ExClientPacket.ADD "#$59" "RequestExCleftEnter"
+  ExClientPacket.ADD "#$5a" "RequestExBlockGameEnter"
+  ExClientPacket.ADD "#$5b" "EndScenePlayer"
+  ExClientPacket.ADD "#$5c" "RequestExBlockGameVote"
+  ExClientPacket.ADD "#$5d" "RequestListMpccWaiting"
+  ExClientPacket.ADD "#$5e" "RequestManageMpccRoom"
+  ExClientPacket.ADD "#$5f" "RequestJoinMpccRoom"
+  ExClientPacket.ADD "#$60" "RequestOustFromMpccRoom"
+  ExClientPacket.ADD "#$61" "RequestDismissMpccRoom"
+  ExClientPacket.ADD "#$62" "RequestWithdrawMpccRoom"
+  ExClientPacket.ADD "#$63" "RequestSeedPhase"
+  ExClientPacket.ADD "#$64" "RequestMpccPartyMasterList"
+  ExClientPacket.ADD "#$65" "RequestPostItemList"
+  ExClientPacket.ADD "#$66" "RequestSendPost"
+  ExClientPacket.ADD "#$67" "RequestRequestReceivedPostList"
+  ExClientPacket.ADD "#$68" "RequestDeleteReceivedPost"
+  ExClientPacket.ADD "#$69" "RequestRequestReceivedPost"
+  ExClientPacket.ADD "#$6a" "RequestReceivePost"
+  ExClientPacket.ADD "#$6b" "RequestRejectPost"
+  ExClientPacket.ADD "#$6c" "RequestSentPostList"
+  ExClientPacket.ADD "#$6d" "RequestDeleteSentPost"
+  ExClientPacket.ADD "#$6e" "RequestRequestSentPost"
+  ExClientPacket.ADD "#$6f" "RequestCancelSentPost"
+  ExClientPacket.ADD "#$70" "RequestShowNewUserPetition"
+  ExClientPacket.ADD "#$71" "RequestShowStepThree"
+  ExClientPacket.ADD "#$72" "RequestShowStepTwo"
+  ExClientPacket.ADD "#$73" "ExRaidReserveResult"
+  ExClientPacket.ADD "#$75" "RequestRefundItem"
+  ExClientPacket.ADD "#$76" "RequestBuySellUIClose"
+  ExClientPacket.ADD "#$77" "RequestEventMatchObserverEnd"
+  ExClientPacket.ADD "#$78" "BrGamePoint"
+  ExClientPacket.ADD "#$79" "BrProductList"
+  ExClientPacket.ADD "#$7a" "BrProductInfo"
+  ExClientPacket.ADD "#$7b" "BrBuyProduct"
+  ExClientPacket.ADD "#$7c" "BrRecentProductList"
+  ExClientPacket.ADD "#$7d" "BrEventRankerList"
+  ExClientPacket.ADD "#$7e" "BrMinigameLoadScores"
+  ExClientPacket.ADD "#$7f" "BrMinigameInsertScore"
+  ExClientPacket.ADD "#$80" "BrLectureMark"
+  ExClientPacket.ADD "#$78" "RequestpartyLootModification"
+  ExClientPacket.ADD "#$79" "AnswerPartyLootModification"
+  ExClientPacket.ADD "#$7a" "AnswerCoupleAction"
+  ExClientPacket.ADD "#$7b" "RequestBREventRankerList"
+  ExClientPacket.ADD "#$7c" "AskMembership"
+  ExClientPacket.ADD "#$7d" "RequestAddExpandQuestAlarm"
+  ExClientPacket.ADD "#$7e" "RequestVoteNew"
+  
+RETURN VOID

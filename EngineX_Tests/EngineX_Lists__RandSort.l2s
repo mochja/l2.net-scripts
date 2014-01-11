@@ -1,0 +1,25 @@
+
+	INCLUDE "Include/EngineX.l2c"
+    DEFINE_GLOBAL ENGINEX ENGINEX 0
+	DEFINE NULL xSTRINGS 0
+    ENGINEX.CONSTRUCT xSTRINGS 1 #$EngineX.Functions.Lists
+
+	PRINT_TEXT ""
+	PRINT_TEXT "-------------------------------------------------"
+
+	DEFINE ARRAYLIST LOL 0
+	LOL.ADD "#i1"
+	LOL.ADD "#i2"
+	LOL.ADD "#i3"
+	LOL.ADD "#i4"
+	LOL.ADD "#i5"
+
+	xSTRINGS.RANDSORT LOL 1 LOL
+	FOR I 0 "<&LOL.COUNT&>" 1
+		PRINT_TEXT "<&LOL.I&>"
+	NEXT
+
+	PRINT_TEXT "-------------------------------------------------"
+	PRINT_TEXT ""
+
+END_SCRIPT

@@ -1,0 +1,29 @@
+
+	INCLUDE Include/EngineX.l2c
+	DEFINE_GLOBAL ENGINEX ENGINEX 0
+
+	PRINT_TEXT ""
+	PRINT_TEXT "-------------------------------------------------"
+
+	DEFINE INT PosX 123
+	DEFINE INT PosY 456
+	DEFINE INT PosZ 789
+	PRINT_TEXT "My Coords: <&PosX&>/<&PosY&> ... z = <&PosZ&>"
+
+	PRINT_TEXT "Get new Point with max random offset = 100"
+	DEFINE SORTEDLIST NEWPOINT 0
+	ENGINEX.GEO.POINT_RANDOM_OFFSET NEWPOINT 4 PosX PosY PosZ #i100
+
+	PRINT_TEXT "New X: <&NEWPOINT.X&>"
+	PRINT_TEXT "New Y: <&NEWPOINT.Y&>"
+	PRINT_TEXT "New Z: <&NEWPOINT.Z&>"
+
+	DEFINE INT CHECKDISTANCE 0
+	DISTANCE CHECKDISTANCE PosX PosY PosZ NEWPOINT.X NEWPOINT.Y NEWPOINT.Z
+
+	PRINT_TEXT "Distance Old->New = <&CHECKDISTANCE&>"
+
+	PRINT_TEXT "-------------------------------------------------"
+	PRINT_TEXT ""
+
+END_SCRIPT

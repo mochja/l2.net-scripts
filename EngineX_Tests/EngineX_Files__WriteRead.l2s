@@ -1,0 +1,25 @@
+
+	INCLUDE Include/EngineX.l2c
+	DEFINE_GLOBAL ENGINEX ENGINEX 0
+
+	PRINT_TEXT ""
+	PRINT_TEXT "-------------------------------------------------"
+
+	PRINT_TEXT "Write File: MyTest.txt"
+	DEFINE ARRAYLIST MYARRAY 0
+	MYARRAY.ADD "#$abc"
+	MYARRAY.ADD "#$def"
+	MYARRAY.ADD "#$ghi"
+	ENGINEX.FILES.WRITE_FILE VOID 3 "#$MyTest" "#$__EOF" MYARRAY
+
+	PRINT_TEXT "Read File: MyTest.txt"
+	DEFINE ARRAYLIST MYARRAY2 0
+	ENGINEX.FILES.READ_FILE MYARRAY2 2 "#$MyTest.txt" "#$__EOF"
+	FOR I 0 "<&MYARRAY2.COUNT&>" 1
+		PRINT_TEXT "<&MYARRAY2.I&>"
+	NEXT
+
+	PRINT_TEXT "-------------------------------------------------"
+	PRINT_TEXT ""
+
+END_SCRIPT

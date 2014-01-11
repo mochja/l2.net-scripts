@@ -1,0 +1,21 @@
+<html>
+<title>EngineX.Interface.Messenger :: Reading</title>
+<body>
+<center>
+<table bgcolor=000000 cellpadding=2><tr><td>
+<&READING_BUTTONS&>
+<table bgcolor=333333 cellpadding=3><tr><td width=256>
+<table><tr>
+<td width=240>Your conversation with <font color=FFCC00><&THIS.READINGS.READ_FROM&></font></td>
+<td width=20><font color=7E7E7E>[<a action="LINK <&THIS.MENUKEY&>_CloseRead">x</a>]</font></td>
+</tr></table>
+<center>
+<&READING_MESSAGES&>
+</center>
+</td></tr></table>
+<center><&READING_PAGER&></center>
+</td></tr></table>
+</center><br><br>
+</body>
+</html>
+__EOF

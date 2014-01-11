@@ -1,0 +1,15 @@
+
+	INCLUDE Include/EngineX.l2c
+	DEFINE_GLOBAL ENGINEX ENGINEX 0
+
+	PRINT_TEXT ""
+	PRINT_TEXT "-------------------------------------------------"
+
+DEFINE INT MY_INT 123456789
+ENGINEX.STRINGS.SUBINT MY_INT 3 MY_INT #i0 #i3
+PRINT_TEXT "<&MY_INT&> (classname: <&MY_INT.CLASSNAME&>)"
+
+	PRINT_TEXT "-------------------------------------------------"
+	PRINT_TEXT ""
+
+END_SCRIPT

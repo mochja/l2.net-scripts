@@ -1,0 +1,19 @@
+// Kratky popis
+// Server: 
+// Autor: mochitto
+// Date: 
+// Special thanks for L2.NET contributors
+// rev.: 0
+PRINT_TEXT "SCRIPT STARTED!]"
+
+// Main section
+// ===============================
+label here
+	//inject "BF AF 03 05 10 24 00 00 00 00 00 00 00 00 00 00 00" s cokes
+	//inject "BF AF 03 05 10 23 00 00 00 00 00 00 00 00 00 00 00"  vop
+	inject "BF AF 03 05 10 26 00 00 00 00 00 00 00 00 00 00 00"
+	sleep 300
+jump_to_label here
+	
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT

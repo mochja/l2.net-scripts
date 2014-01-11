@@ -1,0 +1,12 @@
+DEFINE BYTEBUFFER testbb 12
+DEFINE INT bb1 2
+DEFINE INT bb2 3
+ 
+testbb.WRITE_INT32 bb1
+testbb.WRITE_INT32 bb2
+testbb.TRIM_TO_INDEX
+testbb.RESET_INDEX
+ 
+UDP_SENDBB testbb
+ 
+END_SCRIPT

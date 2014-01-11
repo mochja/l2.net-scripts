@@ -1,0 +1,30 @@
+
+CLASS LAZY_RETURNING_DATAVALUE NULL
+
+//-------------------------------------------------------------------------------------
+//
+// DONT USE OR EDIT THIS CLASS !!!
+//
+//-------------------------------------------------------------------------------------
+
+	VAR_START
+      PRIVATE INT MY_VALUE 0
+	VAR_END
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC SET_VALUE 1 NEW_VALUE
+      THIS._SET_VALUE THIS.MY_VALUE 1 NEW_VALUE
+   RETURN VOID
+
+   PUBLIC _SET_VALUE 1 NEW_VALUE
+   RETURN NEW_VALUE
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC GET_RETURN 1 CALLTIME
+   RETURN THIS.MY_VALUE
+
+//-------------------------------------------------------------------------------------
+
+END_CLASS

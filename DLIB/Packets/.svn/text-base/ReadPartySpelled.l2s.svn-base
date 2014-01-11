@@ -1,0 +1,49 @@
+// DLIB::Packets::ReadPartySpelled - v1.0 for Gracia 2.3
+// by d00d [06/06/09]
+//
+// Takes an byte buffer (_bInBuffer) containing the 
+// PartySpelled packet and dumps the data into a sorted list
+// (_oPartySpelled).
+
+// Version 1.0 - Initial Release
+
+FUNCTION DLIB::Packets::ReadPartySpelled 1 _bInBuffer
+
+  DEFINE INT OBJECT_TYPE
+  DEFINE INT OBJECT_ID
+  DEFINE INT EFFECT_COUNT
+  DEFINE SORTEDLIST EFFECTS
+  
+  DEFINE SORTEDLIST _oPartySpelled
+  _oPartySpelled.ADD EFFECTS "EFFECTS"
+  
+  IF _bInBuffer.CLASSNAME == "#$BYTEBUFFER"
+    _bInBuffer.RESET_INDEX
+    
+    _bInBuffer.READ_BYTE NULL
+    _bInBuffer.READ_INT32 OBJECT_TYPE
+    _bInBuffer.READ_INT32 OBJECT_ID
+    _bInBuffer.READ_INT32 EFFECT_COUNT
+  
+    FOR Z 0 "<&EFFECT_COUNT&>" 1
+    
+      DEFINE PartySpelled Effect
+      
+      _bInBuffer.READ_INT32 EFFECT.SKILL_ID
+      _bInBuffer.READ_INT16 EFFECT.EFFECT_TYPE
+      _bInBuffer.READ_INT32 EFFECT.EFFECT_DURATION
+      
+      Effect.OBJECT_TYPE = OBJECT_TYPE
+      Effect.OBJECT_ID = OBJECT_ID
+            
+      "_oPartySpelled.#$EFFECTS.ADD" EFFECT "<&EFFECT.SKILL_ID&>"
+      
+      DELETE Effect
+    NEXT
+    
+    _oPartySpelled.ADD OBJECT_ID "OBJECT_ID"
+    
+  ELSE
+    PRINT_TEXT "_bInBuffer is not a ByteBuffer"
+  ENDIF
+RETURN _oPartySpelled

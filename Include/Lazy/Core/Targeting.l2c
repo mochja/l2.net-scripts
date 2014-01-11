@@ -1,0 +1,151 @@
+
+INCLUDE "Include/Lazy/Core/Targeting/QueueBit.l2c"
+
+INCLUDE "StdLib/Player.l2c"
+INCLUDE "StdLib/NPC.l2c"
+
+CLASS LAZY_TARGETING NULL
+
+//-------------------------------------------------------------------------------------
+
+   VAR_START
+
+      PUBLIC INT {MENU} 0
+      PUBLIC INT {RETURNING} 0
+
+      PUBLIC SORTEDLIST TARGET_QUEUE 0
+      PUBLIC INT SEARCH_OBJECT_ID 0
+
+   VAR_END
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT2 0
+
+      LAZY.REGISTER THIS.{RETURNING} 1 #$RETURNING
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+// user calls
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+
+   PUBLIC ADD_TO_QUEUE 2 OBJECT_ID AT_BEGINNING
+      IF (AT_BEGINNING.TYPE == NULL)
+         AT_BEGINNING = FALSE
+      ENDIF
+
+      IF ("THIS.TARGET_QUEUE.CONTAINS_KEY <&OBJECT_ID&>" == TRUE)
+         RETURN FALSE
+      ENDIF
+
+      DEFINE LAZY_TARGETING_QUEUEBIT QUEUEBIT 0
+      IF (AT_BEGINNING == TRUE)
+         THIS.TARGET_QUEUE.REVERSE
+      ENDIF
+      THIS.TARGET_QUEUE.ADD "QUEUEBIT" "<&OBJECT_ID&>"
+      IF (AT_BEGINNING == TRUE)
+         THIS.TARGET_QUEUE.REVERSE
+      ENDIF
+
+   RETURN TRUE
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC GET_TARGET 4 IN_NPCS NPC_CONDITION IN_PLAYERS PLAYER_CONDITION
+      IF (NPC_CONDITION.TYPE == NULL)
+         NPC_CONDITION = "#$"
+      ENDIF
+      IF (PLAYER_CONDITION.TYPE == NULL)
+         PLAYER_CONDITION = "#$"
+      ENDIF
+      IF (IN_PLAYERS.TYPE == NULL)
+         IN_PLAYERS = FALSE
+      ENDIF
+      IF (IN_NPCS.TYPE == NULL)
+         IN_NPCS = TRUE
+      ENDIF
+
+      DEFINE SORTEDLIST NPCS 0
+      DEFINE SORTEDLIST PLAYERS 0
+
+      IF (IN_NPCS == TRUE)
+         GET_NPCS NPCS
+      ENDIF
+      IF (IN_PLAYERS == TRUE)
+         GET_PLAYERS NPCS
+      ENDIF
+
+      DEFINE INT NEAREST_NPC_ID 0
+      DEFINE INT NEAREST_NPC_DIST 0
+      DEFINE INT NEAREST_PLAYER_ID 0
+      DEFINE INT NEAREST_PLAYER_DIST 0
+      DEFINE INT TEMP_DISTANCE 0
+      DEFINE INT BOOLEAN 0
+
+      ENGINEX.MATH.MAX_INT NEAREST_NPC_DIST 0
+      ENGINEX.MATH.MAX_INT NEAREST_PLAYER_DIST 0
+
+      FOREACH I1 NPC NPCS
+         IF (TRUE == TRUE)
+            IF (NPC_CONDITION != "#$")
+               IF ("THIS.{RETURNING}.PIECES.CONTAINS_KEY <&NPC_CONDITION&>" == TRUE)
+                  THIS.SEARCH_OBJECT_ID = NPCS.I1.ID
+                  THIS.{RETURNING}.PIECES.NPC_CONDITION.GET_RETURN BOOLEAN 0
+                  IF (BOOLEAN == FALSE)
+                     BREAK 4
+                  ENDIF
+               ENDIF
+            ENDIF
+            DISTANCE TEMP_DISTANCE CHAR_X CHAR_Y CHAR_Z NPCS.I1.X NPCS.I1.Y NPCS.I1.Z
+            IF (TEMP_DISTANCE < NEAREST_NPC_DIST)
+               NEAREST_NPC_DIST = "#i<&TEMP_DISTANCE&>"
+               NEAREST_NPC_ID = "#i<&NPCS.I1.ID&>"
+            ENDIF
+         ENDIF
+      NEXTEACH
+
+      FOREACH I1 PLAYER PLAYERS
+         IF (TRUE == TRUE)
+            IF (PLAYER_CONDITION != "#$")
+               IF ("THIS.{RETURNING}.PIECES.CONTAINS_KEY <&NPC_CONDITION&>" == TRUE)
+                  THIS.SEARCH_OBJECT_ID = PLAYERS.I1.ID
+                  THIS.{RETURNING}.PIECES.PLAYER_CONDITION.GET_RETURN BOOLEAN 0
+                  IF (BOOLEAN == FALSE)
+                     BREAK 4
+                  ENDIF
+               ENDIF
+            ENDIF
+            DISTANCE TEMP_DISTANCE CHAR_X CHAR_Y CHAR_Z NPCS.I1.X NPCS.I1.Y NPCS.I1.Z
+            IF (TEMP_DISTANCE < NEAREST_PLAYER_DIST)
+               NEAREST_PLAYER_DIST = "#i<&TEMP_DISTANCE&>"
+               NEAREST_PLAYER_ID = "#i<&PLAYERS.I1.ID&>"
+            ENDIF
+         ENDIF
+      NEXTEACH
+
+      IF (NEAREST_NPC_ID != ZERO)
+         IF (NEAREST_PLAYER_ID != ZERO)
+            IF (NEAREST_NPC_DIST < NEAREST_PLAYER_DIST)
+               RETURN NEAREST_NPC_ID
+            ELSE
+               RETURN NEAREST_PLAYER_ID
+            ENDIF
+         ELSE
+            RETURN NEAREST_NPC_ID
+         ENDIF
+      ELSE
+         IF (NEAREST_PLAYER_ID != ZERO)
+            RETURN NEAREST_PLAYER_ID
+         ENDIF
+      ENDIF
+
+   RETURN ZERO
+
+//-------------------------------------------------------------------------------------
+
+END_CLASS

@@ -1,0 +1,35 @@
+
+CLASS LAZY_RETURNING_POINT2D LAZY_RETURNING_BASEPIECE
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT
+
+      // integer or double value
+      THIS.SET_VALUE VOID 2 #$X #i0
+
+      // integer or double value
+      THIS.SET_VALUE VOID 2 #$Y #i0
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC _GET_RETURN 1 CALLTIME
+
+      DEFINE INT _X 0
+      DEFINE INT _Y 0
+
+      THIS.DATA.#$X.GET_RETURN _X 1 CALLTIME
+      THIS.DATA.#$Y.GET_RETURN _Y 1 CALLTIME
+
+      // --- --- ---
+
+      DEFINE VECTOR2 POINT2D 0
+      POINT2D.SET VOID 2 _X _Y
+
+   RETURN POINT2D
+
+//-------------------------------------------------------------------------------------
+
+END_CLASS

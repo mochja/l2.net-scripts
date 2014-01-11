@@ -1,0 +1,58 @@
+// New Script
+SET_EVENT "<&SCRIPTEVENT_CHATTOBOT&>"  "<&SYSTEM_CURRENTFILE&>" CHATTOBOT
+DEFINE_GLOBAL STRING TEXT 
+READ_FROM_FILE TEXT
+NpcHtmlMessage VOID 1 TEXT
+
+SLEEP 123123123
+
+END_SCRIPT
+
+FUNCTION NpcHtmlMessage 1 HTM
+     DEFINE BYTEBUFFER b_npchtmlmessage 19999
+     b_npchtmlmessage.WRITE_BYTE 25 // 0x19
+     b_npchtmlmessage.WRITE_INT32 #i1
+     b_npchtmlmessage.WRITE_STRING HTM
+     b_npchtmlmessage.WRITE_INT32 #i0
+     b_npchtmlmessage.TRIM_TO_INDEX
+     INJECTBB_CLIENT b_npchtmlmessage
+     DELETE b_npchtmlmessage
+RETURN VOID
+
+FUNCTION CHATTOBOT
+     SWITCH MESSAGE
+          CASE "#$htm"
+                READ_FROM_FILE TEXT
+				NpcHtmlMessage VOID 1 TEXT
+				SAY_TO_CLIENT 1 "HTM Reloaded...."
+          BREAK 1
+     ENDSWITCH
+RETURN VOID
+
+FUNCTION READ_FROM_FILE
+  DEFINE FILEREADER FR "test.htm"
+  DEFINE STRING HEADER "<html>"
+  DEFINE STRING FOOTER "</html>"
+  DEFINE STRING BUFFER
+  DEFINE STRING BODY
+  FR.READ BUFFER
+  
+  IF "BUFFER.CONTAINS HEADER" == TRUE
+    BODY = BUFFER
+    IF "BUFFER.CONTAINS FOOTER" != TRUE
+    
+    WHILE ONE == ONE
+      IF "BUFFER.CONTAINS FOOTER" == TRUE
+        BREAK 2
+      ELSE
+      	FR.READ BUFFER
+      	BODY = "#$<&BODY&><&BUFFER&>"
+      ENDIF   
+    WEND                     
+  ELSE
+    PRINT_TEXT "Not valid htm"
+  ENDIF  
+  	ENDIF
+    
+  FR.CLOSE  
+RETURN BODY

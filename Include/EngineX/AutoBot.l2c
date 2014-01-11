@@ -1,0 +1,14 @@
+
+//-------------------------------------------------------------------------------------
+CLASS ENGINEX_AUTOBOT NULL
+//-------------------------------------------------------------------------------------
+
+   VAR_START
+      PUBLIC STRING POTIONS "Include/EngineX/AutoBot/Potions.l2c"
+      PUBLIC STRING MAILING "Include/EngineX/AutoBot/Mailing.l2c"
+      PUBLIC STRING MOVING "Include/EngineX/AutoBot/Moving.l2c"
+   VAR_END
+
+//-------------------------------------------------------------------------------------
+END_CLASS
+//-------------------------------------------------------------------------------------

@@ -1,0 +1,75 @@
+// Logout on no XP change in X minutes.
+//
+// CALL_EXTERN "DLIB\Modules\Logout_XP.l2s" Module::DLIB::Logout::XP VOID 1 _iMinutes
+
+
+FUNCTION Module::DLIB::Logout::XP 1 _iMinutes
+
+  Module::Init::GlobalVariables VOID 0
+  
+  DLIB.Modules.#$XP_Watchdog.TIME_LIMIT = _iMinutes
+  
+  THREAD Module::DLIB::Watchdog::XP
+  
+RETURN VOID
+
+
+FUNCTION Module::Init::GlobalVariables
+
+  DEFINE XP_Watchdog Logout::XP
+  DLIB.Modules.ADD Logout::XP "XP_Watchdog"
+  
+  Module::DLIB::Logout::Events VOID 0
+  
+RETURN VOID
+
+FUNCTION Module::DLIB::Logout::Events
+ 
+  SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" Module::DLIB::Logout::Packet::UserInfo 50
+  
+RETURN VOID
+ 
+FUNCTION Module::DLIB::Logout::Packet::UserInfo
+ 
+  LOCK DLIB.Modules.Logout::XP.MUTEX
+    CALL_EXTERN "DLIB\Packets\ReadUserInfo.l2s" DLIB::Packets::ReadUserInfo DLIB.UserInfo_SL 1 PACKET
+  UNLOCK DLIB.Modules.Logout::XP.MUTEX
+  
+RETURN VOID
+
+FUNCTION Module::DLIB::Watchdog::XP
+
+  PRINT_TEXT "XP_Watchdog loaded, if idle open your inventory to begin."
+  
+  WHILE DLIB.UserInfo_SL.COUNT == ZERO
+    SLEEP 500
+  WEND
+  
+  PRINT_TEXT "XP Watchdog Started. FORCE_LOG at <&DLIB.Modules.#$XP_Watchdog.TIME_LIMIT&> minute(s) of inactivity."
+  
+  DEFINE INT OLD_COUNT
+  DEFINE INT FAIL_COUNT 0
+ 
+  WHILE ONE == ONE
+
+    PRINT_TEXT "Watchdog::XP - FAIL_COUNT (<&FAIL_COUNT&>/<&DLIB.Modules.#$XP_Watchdog.TIME_LIMIT&>)"
+
+    IF FAIL_COUNT >= DLIB.Modules.#$XP_Watchdog.TIME_LIMIT
+      PRINT_TEXT "XP Watchdog tripped, force logging."
+      FORCE_LOG
+      END_SCRIPT
+    ENDIF
+    
+    IF DLIB.UserInfo_SL.#$XP == OLD_COUNT
+      FAIL_COUNT = FAIL_COUNT + ONE
+    ELSE
+      FAIL_COUNT = ZERO
+    ENDIF
+    
+    OLD_COUNT = "DLIB.UserInfo_SL.#$XP"
+  
+    SLEEP 60000
+  
+  WEND
+ 
+RETURN VOID  

@@ -1,0 +1,290 @@
+
+//-------------------------------------------------------------------------------------
+CLASS ENGINEX_AUTOBOT_MAILING NULL
+//-------------------------------------------------------------------------------------
+
+   VAR_START
+
+      PUBLIC ARRAYLIST RETRIEVE_FROM 0
+      PUBLIC SORTEDLIST SEND_ITEMS 0
+      PUBLIC ARRAYLIST RECEIVEDLIST 0
+      PUBLIC ARRAYLIST RECEIVEDITEMS 0
+      PUBLIC INT RECEIVINGBB 0
+
+   VAR_END
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT
+      ENGINEX.CONSTRUCT VOID 1 #$EngineX.ScriptEvents.ClientPacketsEx
+      ENGINEX.CONSTRUCT VOID 1 #$EngineX.ScriptEvents.ServerPacketsEx
+      ENGINEX.SCRIPTEVENTS.SERVERPACKETSEX.ADD_BLOCK VOID 2 "170" "#$ENGINEX.AUTOBOT.MAILING.PIPEBLOCK_ExShowReceivedPostList"
+      ENGINEX.SCRIPTEVENTS.SERVERPACKETSEX.ADD_BLOCK VOID 2 "171" "#$ENGINEX.AUTOBOT.MAILING.PIPEBLOCK_ExShowReceivedPost"
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC RETRIEVE_ITEMS 0
+
+      THIS.RECEIVEDLIST.CLEAR
+      THIS.RECEIVINGBB = TRUE
+
+      DEFINE SORTEDLIST BBDATA 0
+      ENGINEX.SCRIPTEVENTS.CLIENTPACKETSEX.WRITE VOID 3 103 BBDATA TRUE
+      DELETE BBDATA
+
+      WHILE ( THIS.RECEIVINGBB == TRUE )
+         SLEEP 100
+      WEND
+
+      DEFINE INT SLEEPTIME 0
+      GET_RAND SLEEPTIME 500 1500
+      SLEEP "<&SLEEPTIME&>"
+      DELETE SLEEPTIME
+
+      DEFINE ARRAYLIST MESSAGE_IDS 0
+      FOR I1 0 "<&THIS.RECEIVEDLIST.COUNT&>" 1
+         IF ( THIS.RECEIVEDLIST.I1.#$HASATTACHMENTS == TRUE )
+            FOR I2 0 "<&THIS.RETRIEVE_FROM.COUNT&>" 1
+               IF ( THIS.RECEIVEDLIST.I1.#$SENDERNAME.TO_UPPER == THIS.RETRIEVE_FROM.I2.TO_UPPER )
+                  MESSAGE_IDS.ADD "<&THIS.RECEIVEDLIST.I1.#$MESSAGE_ID&>"
+               ENDIF
+            NEXT
+         ENDIF
+      NEXT
+
+      FOR I 0 "<&MESSAGE_IDS.COUNT&>" 1
+
+         THIS.RECEIVEDITEMS.CLEAR
+         THIS.RECEIVINGBB = TRUE
+
+         DEFINE SORTEDLIST BBDATA 0
+         BBDATA.ADD MESSAGE_IDS.I "MESSAGE_ID"
+         ENGINEX.SCRIPTEVENTS.CLIENTPACKETSEX.WRITE VOID 3 105 BBDATA TRUE
+         DELETE BBDATA
+
+         WHILE ( THIS.RECEIVINGBB == TRUE )
+            SLEEP 100
+         WEND
+
+         DEFINE INT SLEEPTIME 0
+         GET_RAND SLEEPTIME 500 1500
+         SLEEP "<&SLEEPTIME&>"
+         DELETE SLEEPTIME
+
+         IF ( THIS.RECEIVEDITEMS.COUNT > ZERO )
+
+            DEFINE SORTEDLIST BBDATA 0
+            BBDATA.ADD MESSAGE_IDS.I "MESSAGE_ID"
+            ENGINEX.SCRIPTEVENTS.CLIENTPACKETSEX.WRITE VOID 3 106 BBDATA TRUE
+            DELETE BBDATA
+
+            DEFINE INT SLEEPTIME 0
+            GET_RAND SLEEPTIME 1500 2500
+            SLEEP "<&SLEEPTIME&>"
+            DELETE SLEEPTIME
+
+         ENDIF
+
+      NEXT
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC SEND_ITEMS 4 RECEIVER SUBJECT TEXT REQADENA
+
+      DEFINE ARRAYLIST MYINV 0
+      GET_INVENTORY MYINV
+
+      DEFINE INT SENDITEM_OBJID 0
+      DEFINE INT SENDITEM_ID 0
+      DEFINE INT HAVEITEM_COUNT 0
+      DEFINE INT SENDITEM_COUNT 0
+
+      DEFINE SORTEDLIST SENDITEMS_QUEUED 0
+
+      FOREACH SENDITEM_I SORTEDLIST THIS.SEND_ITEMS
+         SENDITEM_ID = "<&THIS.SEND_ITEMS.GET_KEY SENDITEM_I&>"
+
+         //ITEM_COUNT HAVEITEM_COUNT "<&SENDITEM_ID&>"
+         HAVEITEM_COUNT = ZERO
+         FOREACH INV_I INVENTORY MYINV
+            IF ( SENDITEM_ID == MYINV.INV_I.ITEM_ID )
+               IF ( MYINV.INV_I.EQUIPPED == FALSE )
+                  HAVEITEM_COUNT = HAVEITEM_COUNT + MYINV.INV_I.COUNT
+               ENDIF
+            ENDIF
+            SLEEP 1
+         NEXTEACH
+
+         IF ( HAVEITEM_COUNT > ZERO )
+
+            SENDITEM_COUNT = ZERO
+            SWITCH THIS.SEND_ITEMS.SENDITEM_I.#$TYPE
+               CASE 0
+                  SENDITEM_COUNT = HAVEITEM_COUNT
+                  BREAK 1
+               CASE 1
+                  IF ( THIS.SEND_ITEMS.SENDITEM_I.#$COUNT <= HAVEITEM_COUNT )
+                     SENDITEM_COUNT = THIS.SEND_ITEMS.SENDITEM_I.#$COUNT
+                  ENDIF
+                  BREAK 1
+               CASE 2
+                  IF ( THIS.SEND_ITEMS.SENDITEM_I.#$COUNT >= HAVEITEM_COUNT )
+                     SENDITEM_COUNT = HAVEITEM_COUNT
+                  ENDIF
+                  BREAK 1
+               CASE 3
+                  DEFINE INT HAVEMULTI 0
+                  HAVEMULTI = HAVEITEM_COUNT / THIS.SEND_ITEMS.SENDITEM_I.#$COUNT
+                  SENDITEM_COUNT = THIS.SEND_ITEMS.SENDITEM_I.#$COUNT * HAVEMULTI
+                  DELETE HAVEMULTI
+                  BREAK 1
+               CASE 4
+                  SENDITEM_COUNT = HAVEITEM_COUNT - THIS.SEND_ITEMS.SENDITEM_I.#$COUNT
+                  IF ( SENDITEM_COUNT < ZERO )
+                     SENDITEM_COUNT = ZERO
+                  ENDIF
+                  BREAK 1
+            ENDSWITCH
+
+            WHILE ( SENDITEM_COUNT > ZERO )
+
+               FOREACH INV_I INVENTORY MYINV
+                  IF ( SENDITEM_ID == MYINV.INV_I.ITEM_ID )
+
+                     SENDITEM_OBJID = "<&MYINV.INV_I.ID&>"
+                     IF ( "SENDITEMS_QUEUED.CONTAINS_KEY <&SENDITEM_OBJID&>" == FALSE )
+
+                        IF ( MYINV.INV_I.COUNT == ONE )
+                           SENDITEM_COUNT = SENDITEM_COUNT - ONE
+                           SENDITEMS_QUEUED.ADD "<&ONE&>" "<&SENDITEM_OBJID&>"
+                        ELSE
+                           IF ( MYINV.INV_I.COUNT >= SENDITEM_COUNT )
+                              SENDITEMS_QUEUED.ADD "<&SENDITEM_COUNT&>" "<&SENDITEM_OBJID&>"
+                           ENDIF
+                           SENDITEM_COUNT = ZERO
+                        ENDIF
+                        IF ( SENDITEM_COUNT <= ZERO )
+                           BREAK 4
+                        ENDIF
+
+                     ENDIF
+                  ENDIF
+               NEXTEACH
+            WEND
+
+         ENDIF
+         SLEEP 1
+      NEXTEACH
+
+      DEFINE INT ADENALEFT 0
+      ITEM_COUNT ADENALEFT 57
+
+      DEFINE INT LOOPSENDING 1
+      WHILE ( LOOPSENDING == TRUE )
+         ADENALEFT = ADENALEFT - 100
+         IF ( ADENALEFT > 0 )
+
+            DEFINE SORTEDLIST BBDATA 0
+            BBDATA.ADD "#$<&RECEIVER&>" "RECEIVER"
+            BBDATA.ADD "#$<&SUBJECT&>" "SUBJECT"
+            BBDATA.ADD "#$<&TEXT&>" "TEXT"
+            DEFINE ARRAYLIST ATTACHS 0
+            BBDATA.ADD "ATTACHS" "ITEMS"
+            DELETE ATTACHS
+            BBDATA.ADD "#$<&REQADENA&>" "REQUEST_ADENA"
+
+            WHILE ( SENDITEMS_QUEUED.COUNT > ZERO )
+
+               ADENALEFT = ADENALEFT - 1000
+               IF ( ADENALEFT <= 0 )
+                  LOOPSENDING = FALSE
+                  BREAK 2
+               ENDIF
+
+               DEFINE ATTACHMENT ATTACH 0
+               ATTACH.OBJECT_ID = "<&SENDITEMS_QUEUED.GET_KEY 0&>"
+               ATTACH.COUNT = "<&SENDITEMS_QUEUED.0&>"
+               BBDATA.#$ITEMS.ADD ATTACH
+               DELETE ATTACH
+
+               SENDITEMS_QUEUED.REMOVE "<&SENDITEMS_QUEUED.GET_KEY 0&>"
+               IF ( ( BBDATA.#$ITEMS.COUNT == 8 ) || ( SENDITEMS_QUEUED.COUNT == ZERO ) )
+                  BREAK 2
+               ENDIF
+            WEND
+
+            ENGINEX.SCRIPTEVENTS.CLIENTPACKETSEX.WRITE VOID 3 102 BBDATA TRUE
+            DELETE BBDATA
+
+         ELSE
+            LOOPSENDING = FALSE
+         ENDIF
+         IF ( SENDITEMS_QUEUED.COUNT == ZERO )
+            LOOPSENDING = FALSE
+         ENDIF
+         IF ( LOOPSENDING == FALSE )
+            BREAK 2
+         ENDIF
+
+         DEFINE INT SLEEPTIME 0
+         GET_RAND SLEEPTIME 30000 40000
+         SLEEP "<&SLEEPTIME&>"
+         DELETE SLEEPTIME
+      WEND
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   //TYPE:
+   //0 = send all
+   //1 = send only this count
+   //2 = send this count, send less if u dont have that much
+   //3 = send this count multiple times untill count is less then you have
+   //4 = send as much but keep this count
+   PUBLIC ADD_SEND_ITEM 3 ITEM_ID COUNT TYPE
+      IF ( "THIS.SEND_ITEMS.CONTAINS_KEY <&ITEM_ID&>" == FALSE )
+         DEFINE SORTEDLIST SENDITEM 0
+         SENDITEM.ADD "<&COUNT&>" "COUNT"
+         SENDITEM.ADD "<&TYPE&>" "TYPE"
+         THIS.SEND_ITEMS.ADD SENDITEM "<&ITEM_ID&>"
+         DELETE SENDITEM
+      ENDIF
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CLEAR_SEND_ITEMS 0
+      THIS.ITEMS.CLEAR
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC PIPEBLOCK_ExShowReceivedPostList 1 PACKET
+      IF ( THIS.RECEIVINGBB == TRUE )
+         DEFINE SORTEDLIST BBDATA 0
+         ENGINEX.SCRIPTEVENTS.SERVERPACKETSEX.READ BBDATA 1 PACKET
+         THIS.RECEIVEDLIST = BBDATA.#$MESSAGES
+         THIS.RECEIVINGBB = FALSE
+         RETURN FALSE
+      ENDIF
+   RETURN TRUE
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC PIPEBLOCK_ExShowReceivedPost 1 PACKET
+      IF ( THIS.RECEIVINGBB == TRUE )
+         DEFINE SORTEDLIST BBDATA 0
+         ENGINEX.SCRIPTEVENTS.SERVERPACKETSEX.READ BBDATA 1 PACKET
+         THIS.RECEIVEDITEMS = BBDATA.#$ITEMS
+         THIS.RECEIVINGBB = FALSE
+         RETURN FALSE
+      ENDIF
+   RETURN TRUE
+
+//-------------------------------------------------------------------------------------
+END_CLASS
+//-------------------------------------------------------------------------------------

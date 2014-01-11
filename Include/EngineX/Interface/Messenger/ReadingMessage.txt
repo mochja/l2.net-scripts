@@ -1,0 +1,5 @@
+<table><tr>
+<td width=70>(<&SHOWMESSAGES.I1.TIMEDATA&>)</td>
+<td width=190><font color=<&MESSAGE_COLOR&>><&SHOWMESSAGES.I1.SENDERNAME&>: <&SHOWMESSAGES.I1.TEXT&></font></td>
+</tr></table>
+__EOF

@@ -1,0 +1,42 @@
+
+	INCLUDE "Include/EngineX.l2c"
+	DEFINE_GLOBAL ENGINEX ENGINEX 0
+
+	INCLUDE "Include/Lazy.l2c"
+	DEFINE_GLOBAL LAZY LAZY 0
+
+//-------------------------------------------------------------------------------------
+
+   // Test:
+   // - ObjectData
+   // - Percent
+
+   DEFINE INT RETURNING 0
+   LAZY.REGISTER RETURNING 1 #$RETURNING
+
+//-------------------------------------------------------------------------------------
+
+   DEFINE_GLOBAL INT FAKE_CUR_HP 0
+
+   DEFINE INT MYPIECE 0
+   RETURNING.NEW_PIECE MYPIECE 2 #$MyMaxHP #$ObjectData
+   MYPIECE.SET_VALUE VOID 2 #$OBJECT_ID CHAR_ID
+   MYPIECE.SET_VALUE VOID 2 #$DATA_KEY #$MAX_HP
+   MYPIECE.SET_VALUE VOID 2 #$DEFAULT_RETURN #i0
+   DELETE MYPIECE
+
+   DEFINE INT MYPIECE 0
+   RETURNING.NEW_PIECE MYPIECE 2 #$MyPercent #$Percent
+   MYPIECE.SET_REFERENCE VOID 2 #$MAX #$MyMaxHP
+   MYPIECE.SET_VARIABLE VOID 2 #$NOW #$FAKE_CUR_HP
+   DELETE MYPIECE
+
+   DEFINE DOUBLE PRINT_PERCENT 0
+   FOR FAKE_CUR_HP 0 "<&CHAR_MAX_HP&>" 100
+      RETURNING.PIECES.#$MyPercent.GET_RETURN PRINT_PERCENT 0
+      PRINT_TEXT "<&FAKE_CUR_HP&> of <&CHAR_MAX_HP&> = <&PRINT_PERCENT&>"
+   NEXT
+
+//-------------------------------------------------------------------------------------
+
+END_SCRIPT

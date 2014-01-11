@@ -1,0 +1,395 @@
+
+//-------------------------------------------------------------------------------------
+CLASS ENGINEX_FUNCTIONS_TIME NULL
+//-------------------------------------------------------------------------------------
+
+   VAR_START
+		PUBLIC INT TIMESTAMP_OFFSET 62135596800
+		PUBLIC INT SECONDS_PER_MINUTE 60
+		PUBLIC INT SECONDS_PER_HOUR 3600
+		PUBLIC INT SECONDS_PER_DAY 86400
+		PUBLIC INT SECONDS_PER_WEEK 604800
+		PUBLIC INT SECONDS_PER_YEAR_AVERAGE 31556952
+		PUBLIC INT SECONDS_PER_YEAR_NOLEAP 31536000
+		PUBLIC INT SECONDS_PER_YEAR_LEAP 31622400
+		PUBLIC INT TIMESHIFTING 1
+   VAR_END
+
+//-------------------------------------------------------------------------------------
+
+	PUBLIC TIMESTAMP2TICKS 1 TIMESTAMP
+		DEFINE INT TICKS 0
+		TICKS = TIMESTAMP + THIS.TIMESTAMP_OFFSET
+		TICKS = TICKS * TICKS_PER_S
+      SLEEP 1
+	RETURN TICKS
+
+//-------------------------------------------------------------------------------------
+
+	PUBLIC TICKS2TIMESTAMP 1 TICKS
+		DEFINE INT TIMESTAMP 0
+      TIMESTAMP = TICKS / TICKS_PER_S
+      TIMESTAMP = TIMESTAMP - THIS.TIMESTAMP_OFFSET
+      SLEEP 1
+	RETURN TIMESTAMP
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC IS_LEAPYEAR 1 YEAR
+      DEFINE INT REST400 0
+      DEFINE INT REST100 0
+      DEFINE INT REST004 0
+      REST400 = YEAR % 400
+      REST100 = YEAR % 100
+      REST004 = YEAR % 4
+      DEFINE INT RETURNBOOL 0
+      IF ( ( REST400 == ZERO ) || ( ( REST100 != ZERO ) && ( REST004 == ZERO ) ) )
+         RETURNBOOL = TRUE
+      ENDIF
+      SLEEP 1
+   RETURN RETURNBOOL
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC TIMEDATA 1 TICKS
+      IF ( TICKS.TYPE == NULL )
+         TICKS = NOW
+      ENDIF
+
+		DEFINE INT TIMESTAMP 0
+		DEFINE INT MICROSECONDS 0
+		DEFINE INT DONE_SECONDS 0
+		DEFINE INT DONE_DAYS 0
+		DEFINE INT DONE_WEEKS 0
+      DEFINE INT YEAR 0
+      DEFINE INT YEAR_SECONDS_LEFT 0
+      DEFINE INT YEAR_SECONDS_DONE 0
+      DEFINE INT TEMP_ADD 0
+      DEFINE INT TEMP_COUNT 0
+      DEFINE INT DAY_OF_YEAR 0
+      DEFINE INT YEAR_DAYS_DONE 0
+      DEFINE INT YEAR_DAYS_LEFT 0
+      DEFINE INT WEEK_NUMBER_ISO 0
+      DEFINE INT WEEK_NUMBER_USA 0
+      //DEFINE INT WEEK_DAY_ISO_ZEROBASED 0
+      DEFINE INT WEEK_DAY 0
+      DEFINE INT WEEK_DAY_ISO 0
+      //DEFINE INT WEEK_DAY_USA_ZEROBASED 0
+      //DEFINE INT WEEK_DAY_USA 0
+      DEFINE INT HOUR 0
+      DEFINE STRING HOUR_FORMATED 0
+      DEFINE STRING MINUTE_FORMATED 0
+      DEFINE STRING SECOND_FORMATED 0
+      DEFINE STRING MONTH_DAY_FORMATED 0
+      DEFINE STRING MONTH_NUMBER_FORMATED 0
+      DEFINE INT MINUTE 0
+      DEFINE INT SECOND 0
+      DEFINE INT IS_LEAPYEAR 0
+      DEFINE INT MONTH_NUMBER_ZEROBASED 0
+      DEFINE INT MONTH_NUMBER 0
+      DEFINE INT MONTH_DAY 0
+      DEFINE INT IS_SUMMERTIME 0
+
+		DONE_SECONDS = TICKS / TICKS_PER_S
+		DONE_DAYS = TICKS / TICKS_PER_D
+		DONE_WEEKS = DONE_DAYS / 7
+		THIS.TICKS2TIMESTAMP TIMESTAMP 1 TICKS
+		MICROSECONDS = TICKS % TICKS_PER_S
+
+      // LEAP YEAR is every 4th year, but not every 100th but every 400th again
+      // period 4 = 126230400 seconds
+      // period 100 = 3155673600 seconds
+      // period 400 = 12622780800 seconds
+
+		TEMP_COUNT = DONE_SECONDS / 12622780800
+		YEAR_SECONDS_LEFT = DONE_SECONDS % 12622780800
+		TEMP_ADD = TEMP_COUNT * 400
+		YEAR = ONE + TEMP_ADD
+
+		TEMP_COUNT = YEAR_SECONDS_LEFT / 3155673600
+		YEAR_SECONDS_LEFT = YEAR_SECONDS_LEFT % 3155673600
+		TEMP_ADD = TEMP_COUNT * 100
+		YEAR = YEAR + TEMP_ADD
+
+		TEMP_COUNT = YEAR_SECONDS_LEFT / 126230400
+		YEAR_SECONDS_LEFT = YEAR_SECONDS_LEFT % 126230400
+		TEMP_ADD = TEMP_COUNT * 4
+		YEAR = YEAR + TEMP_ADD
+
+		TEMP_COUNT = YEAR_SECONDS_LEFT / 31536000
+		YEAR_SECONDS_LEFT = YEAR_SECONDS_LEFT % 31536000
+		TEMP_ADD = TEMP_COUNT * 1
+		YEAR = YEAR + TEMP_ADD
+
+      YEAR_SECONDS_DONE = DONE_SECONDS - YEAR_SECONDS_LEFT
+
+      // time shift
+      IF ( THIS.TIMESHIFTING == TRUE )
+         TEMP_ADD = YEAR_DAYS_DONE % 7
+         TEMP_COUNT = 90
+         IF ( IS_LEAPYEAR == TRUE )
+            TEMP_COUNT = TEMP_COUNT + 86400
+         ENDIF
+         IF ( TEMP_ADD > 3 )
+            TEMP_COUNT = TEMP_COUNT - 7
+         ENDIF
+         TEMP_COUNT = TEMP_COUNT + TEMP_ADD
+         TEMP_COUNT = TEMP_COUNT / 7
+         TEMP_COUNT = TEMP_COUNT * 7
+         IF ( TEMP_ADD > 3 )
+            TEMP_COUNT = TEMP_COUNT + 7
+         ENDIF
+         TEMP_COUNT = TEMP_COUNT - TEMP_ADD
+         TEMP_COUNT = TEMP_COUNT * 86400
+         TEMP_COUNT = TEMP_COUNT - 79200
+         IF ( YEAR_SECONDS_LEFT >= TEMP_COUNT )
+            TEMP_COUNT = 304
+            IF ( IS_LEAPYEAR == TRUE )
+               TEMP_COUNT = TEMP_COUNT + 86400
+            ENDIF
+            IF ( TEMP_ADD > 3 )
+               TEMP_COUNT = TEMP_COUNT - 7
+            ENDIF
+            TEMP_COUNT = TEMP_COUNT + TEMP_ADD
+            TEMP_COUNT = TEMP_COUNT / 7
+            TEMP_COUNT = TEMP_COUNT * 7
+            IF ( TEMP_ADD > 3 )
+               TEMP_COUNT = TEMP_COUNT + 7
+            ENDIF
+            TEMP_COUNT = TEMP_COUNT - TEMP_ADD
+            TEMP_COUNT = TEMP_COUNT * 86400
+            TEMP_COUNT = TEMP_COUNT - 75600
+            IF ( YEAR_SECONDS_LEFT <= TEMP_COUNT )
+               IS_SUMMERTIME = TRUE
+            ENDIF
+         ENDIF
+         IF ( IS_SUMMERTIME == TRUE )
+            YEAR_SECONDS_LEFT = YEAR_SECONDS_LEFT + 7200
+         ENDIF
+      ENDIF
+
+      YEAR_DAYS_DONE = YEAR_SECONDS_DONE / 86400
+      YEAR_DAYS_LEFT = YEAR_SECONDS_LEFT / 86400
+      DAY_OF_YEAR = YEAR_SECONDS_LEFT / 86400
+      DAY_OF_YEAR = DAY_OF_YEAR + ONE
+
+      WEEK_DAY_ISO = DONE_DAYS % 7
+      WEEK_DAY_ISO = WEEK_DAY_ISO + ONE
+      WEEK_DAY = "<&WEEK_DAY_ISO&>"
+      IF ( WEEK_DAY == 7 )
+         WEEK_DAY = ZERO
+      ENDIF
+
+/*
+
+
+      // week day ISO
+		WEEK_DAY_ISO_ZEROBASED = DONE_DAYS % 7
+		WEEK_DAY_ISO = WEEK_DAY_ISO_ZEROBASED + ONE
+
+      // week day USA
+      WEEK_DAY_USA_ZEROBASED = WEEK_DAY_ISO
+      IF ( WEEK_DAY_USA_ZEROBASED == 7 )
+         WEEK_DAY_USA_ZEROBASED = ZERO
+      ENDIF
+      WEEK_DAY_USA = WEEK_DAY_USA_ZEROBASED + ONE
+*/
+
+
+
+
+      // week number ISO
+      TEMP_COUNT = YEAR_DAYS_DONE % 7
+		IF ( ( TEMP_COUNT > 3 ) && ( DAY_OF_YEAR < 4 ) )
+			WEEK_NUMBER_ISO = 53
+		ELSE
+			IF ( TEMP_COUNT > 3 )
+				TEMP_ADD = DAY_OF_YEAR - 7
+				TEMP_ADD = TEMP_ADD + TEMP_COUNT
+			ELSE
+				TEMP_ADD = DAY_OF_YEAR + TEMP_COUNT
+				TEMP_ADD = TEMP_ADD - 1
+			ENDIF
+			WEEK_NUMBER_ISO = TEMP_ADD / 7
+			TEMP_ADD = TEMP_ADD % 7
+			IF ( TEMP_ADD > ZERO )
+				WEEK_NUMBER_ISO = WEEK_NUMBER_ISO + ONE
+			ENDIF
+		ENDIF
+
+      // week number USA
+      TEMP_COUNT = YEAR_SECONDS_DONE / 86400
+      TEMP_COUNT = TEMP_COUNT % 7
+      TEMP_COUNT = 7 - TEMP_COUNT
+      TEMP_COUNT = YEAR_DAYS_LEFT - TEMP_COUNT
+      WEEK_NUMBER_USA = ONE
+      IF ( TEMP_COUNT > ZERO )
+         TEMP_ADD = TEMP_COUNT / 7
+         TEMP_ADD = TEMP_ADD + ONE
+         WEEK_NUMBER_USA = WEEK_NUMBER_USA + TEMP_ADD
+      ENDIF
+
+
+
+
+
+
+
+      // hour:minute:second
+		TEMP_COUNT = YEAR_SECONDS_LEFT % 86400
+		HOUR = TEMP_COUNT / 3600
+		TEMP_COUNT = TEMP_COUNT % 3600
+		MINUTE = TEMP_COUNT / 60
+		SECOND = TEMP_COUNT % 60
+
+      // leap year
+      THIS.IS_LEAPYEAR IS_LEAPYEAR 1 YEAR
+
+      // month day and month number
+		TEMP_COUNT = DAY_OF_YEAR
+      MONTH_NUMBER_ZEROBASED = MONTH_NUMBER_ZEROBASED + ONE
+      TEMP_COUNT = TEMP_COUNT - 31
+      MONTH_DAY = TEMP_COUNT + 31
+      IF ( TEMP_COUNT > ZERO )
+         MONTH_NUMBER_ZEROBASED = MONTH_NUMBER_ZEROBASED + ONE
+         IF ( IS_LEAPYEAR == TRUE )
+            TEMP_COUNT = TEMP_COUNT - 29
+            MONTH_DAY = TEMP_COUNT + 29
+         ELSE
+            TEMP_COUNT = TEMP_COUNT - 28
+            MONTH_DAY = TEMP_COUNT + 28
+         ENDIF
+         IF ( TEMP_COUNT > ZERO )
+            MONTH_NUMBER_ZEROBASED = MONTH_NUMBER_ZEROBASED + ONE
+            TEMP_COUNT = TEMP_COUNT - 31
+            MONTH_DAY = TEMP_COUNT + 31
+            IF ( TEMP_COUNT > ZERO )
+               MONTH_NUMBER_ZEROBASED = MONTH_NUMBER_ZEROBASED + ONE
+               TEMP_COUNT = TEMP_COUNT - 30
+               MONTH_DAY = TEMP_COUNT + 30
+               MONTH_DAY = TEMP_COUNT + 30
+               IF ( TEMP_COUNT > ZERO )
+                  MONTH_NUMBER_ZEROBASED = MONTH_NUMBER_ZEROBASED + ONE
+                  TEMP_COUNT = TEMP_COUNT - 31
+                  MONTH_DAY = TEMP_COUNT + 31
+                  IF ( TEMP_COUNT > ZERO )
+                     MONTH_NUMBER_ZEROBASED = MONTH_NUMBER_ZEROBASED + ONE
+                     TEMP_COUNT = TEMP_COUNT - 30
+                     MONTH_DAY = TEMP_COUNT + 30
+                     IF ( TEMP_COUNT > ZERO )
+                        MONTH_NUMBER_ZEROBASED = MONTH_NUMBER_ZEROBASED + ONE
+                        TEMP_COUNT = TEMP_COUNT - 31
+                        MONTH_DAY = TEMP_COUNT + 31
+                        IF ( TEMP_COUNT > ZERO )
+                           MONTH_NUMBER_ZEROBASED = MONTH_NUMBER_ZEROBASED + ONE
+                           TEMP_COUNT = TEMP_COUNT - 31
+                           MONTH_DAY = TEMP_COUNT + 31
+                           IF ( TEMP_COUNT > ZERO )
+                              MONTH_NUMBER_ZEROBASED = MONTH_NUMBER_ZEROBASED + ONE
+                              TEMP_COUNT = TEMP_COUNT - 30
+                              MONTH_DAY = TEMP_COUNT + 30
+                              IF ( TEMP_COUNT > ZERO )
+                                 MONTH_NUMBER_ZEROBASED = MONTH_NUMBER_ZEROBASED + ONE
+                                 TEMP_COUNT = TEMP_COUNT - 31
+                                 MONTH_DAY = TEMP_COUNT + 31
+                                 IF ( TEMP_COUNT > ZERO )
+                                    MONTH_NUMBER_ZEROBASED = MONTH_NUMBER_ZEROBASED + ONE
+                                    TEMP_COUNT = TEMP_COUNT - 30
+                                    MONTH_DAY = TEMP_COUNT + 30
+                                    IF ( TEMP_COUNT > ZERO )
+                                       MONTH_NUMBER_ZEROBASED = MONTH_NUMBER_ZEROBASED + ONE
+                                       TEMP_COUNT = TEMP_COUNT - 31
+                                       MONTH_DAY = TEMP_COUNT + 31
+                                       IF ( TEMP_COUNT > ZERO )
+                                          //
+                                       ENDIF
+                                    ENDIF
+                                 ENDIF
+                              ENDIF
+                           ENDIF
+                        ENDIF
+                     ENDIF
+                  ENDIF
+               ENDIF
+            ENDIF
+         ENDIF
+      ENDIF
+      MONTH_NUMBER = MONTH_NUMBER_ZEROBASED + ONE
+
+      HOUR_FORMATED = "#$<&HOUR&>"
+      IF ( HOUR < 10 )
+         HOUR_FORMATED = "#$0<&HOUR_FORMATED&>"
+      ENDIF
+      MINUTE_FORMATED = "#$<&MINUTE&>"
+      IF ( MINUTE < 10 )
+         MINUTE_FORMATED = "#$0<&MINUTE_FORMATED&>"
+      ENDIF
+      SECOND_FORMATED = "#$<&SECOND&>"
+      IF ( SECOND < 10 )
+         SECOND_FORMATED = "#$0<&SECOND_FORMATED&>"
+      ENDIF
+      MONTH_DAY_FORMATED = "#$<&MONTH_DAY&>"
+      IF ( MONTH_DAY < 10 )
+         MONTH_DAY_FORMATED = "#$0<&MONTH_DAY_FORMATED&>"
+      ENDIF
+      MONTH_NUMBER_FORMATED = "#$<&MONTH_NUMBER&>"
+      IF ( MONTH_NUMBER < 10 )
+         MONTH_NUMBER_FORMATED = "#$0<&MONTH_NUMBER_FORMATED&>"
+      ENDIF
+
+      DEFINE SORTEDLIST DATA 0
+      DATA.ADD "TIMESTAMP" "TIMESTAMP"
+      DATA.ADD "MICROSECONDS" "MICROSECONDS"
+      DATA.ADD "DONE_SECONDS" "DONE_SECONDS"
+      DATA.ADD "DONE_DAYS" "DONE_DAYS"
+      DATA.ADD "DONE_WEEKS" "DONE_WEEKS"
+      DATA.ADD "YEAR" "YEAR"
+      DATA.ADD "YEAR_SECONDS_LEFT" "YEAR_SECONDS_LEFT"
+      DATA.ADD "YEAR_SECONDS_DONE" "YEAR_SECONDS_DONE"
+      DATA.ADD "DAY_OF_YEAR" "DAY_OF_YEAR"
+      DATA.ADD "YEAR_DAYS_DONE" "YEAR_DAYS_DONE"
+      DATA.ADD "YEAR_DAYS_LEFT" "YEAR_DAYS_LEFT"
+      DATA.ADD "WEEK_NUMBER_ISO" "WEEK_NUMBER_ISO"
+      DATA.ADD "WEEK_NUMBER_USA" "WEEK_NUMBER_USA"
+      //DATA.ADD "WEEK_DAY_ISO_ZEROBASED" "WEEK_DAY_ISO_ZEROBASED"
+      DATA.ADD "WEEK_DAY" "WEEK_DAY"
+      DATA.ADD "WEEK_DAY_ISO" "WEEK_DAY_ISO"
+      //DATA.ADD "WEEK_DAY_USA_ZEROBASED" "WEEK_DAY_USA_ZEROBASED"
+      //DATA.ADD "WEEK_DAY_USA" "WEEK_DAY_USA"
+      DATA.ADD "HOUR" "HOUR"
+      DATA.ADD "MINUTE" "MINUTE"
+      DATA.ADD "SECOND" "SECOND"
+      DATA.ADD "IS_LEAPYEAR" "IS_LEAPYEAR"
+      DATA.ADD "MONTH_NUMBER_ZEROBASED" "MONTH_NUMBER_ZEROBASED"
+      DATA.ADD "MONTH_NUMBER" "MONTH_NUMBER"
+      DATA.ADD "MONTH_DAY" "MONTH_DAY"
+      IF ( THIS.TIMESHIFTING == TRUE )
+         DATA.ADD "IS_SUMMERTIME" "IS_SUMMERTIME"
+      ENDIF
+      DATA.ADD "HOUR_FORMATED" "HOUR_FORMATED"
+      DATA.ADD "MINUTE_FORMATED" "MINUTE_FORMATED"
+      DATA.ADD "SECOND_FORMATED" "SECOND_FORMATED"
+      DATA.ADD "MONTH_DAY_FORMATED" "MONTH_DAY_FORMATED"
+      DATA.ADD "MONTH_NUMBER_FORMATED" "MONTH_NUMBER_FORMATED"
+
+   RETURN DATA
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC DATE 2 OLDSTR TICKS
+      IF ( TICKS.TYPE == NULL )
+         TICKS = NOW
+      ENDIF
+      DEFINE SORTEDLIST TIMEDATA 0
+      THIS.TIMEDATA TIMEDATA 1 TICKS
+      DEFINE STRING NEWSTR "<&OLDSTR&>"
+      NEWSTR = NEWSTR.REPLACE #$\d TIMEDATA.#$MONTH_DAY_FORMATED
+      NEWSTR = NEWSTR.REPLACE #$\j TIMEDATA.#$MONTH_DAY
+      NEWSTR = NEWSTR.REPLACE #$\w TIMEDATA.#$WEEK_DAY
+      NEWSTR = NEWSTR.REPLACE #$\N TIMEDATA.#$WEEK_DAY_ISO
+      NEWSTR = NEWSTR.REPLACE #$\z TIMEDATA.#$DAY_OF_YEAR
+   RETURN NEWSTR
+
+//-------------------------------------------------------------------------------------
+END_CLASS
+//-------------------------------------------------------------------------------------

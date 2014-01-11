@@ -1,0 +1,17 @@
+// Attack Packet class data
+// for L2.net.
+// by d00d
+//
+// v1.0 - Initial Draft
+
+CLASS MultiAttack null
+VAR_START
+
+  PUBLIC INT ATTACKER_ID
+  PUBLIC INT DEFENDER_ID
+  PUBLIC INT DEFENDER_DAMAGE
+  PUBLIC INT ATTACKER_FLAGS
+
+VAR_END
+
+END_CLASS

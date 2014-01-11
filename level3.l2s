@@ -1,0 +1,152 @@
+//BY slothmo, CHaNG, and mpj123
+
+SET_TARGETING COMBAT ZERO
+
+//**************KITING INFO
+//uncomment whichever one you need; one = kite, zero = melee
+//DEFINE INT Kiting "<&ZERO&>"
+DEFINE INT Kiting "<&ONE&>"
+
+DEFINE INT KiteRange 450
+DEFINE DOUBLE VX 0
+DEFINE DOUBLE VY 0
+DEFINE DOUBLE LEN 0
+//**************END OF KITING INFO
+
+//*************REST INFO
+//lets make a variable to store the hp to rest when we drop below
+//we make it equal to half our max
+DEFINE INT HP 2
+HP = CHAR_MAX_HP /HP
+
+//let set a range to pick up loot
+DEFINE INT loot_range 150
+
+//make a variable to store our rest info
+DEFINE INT Rest "<&ONE&>"
+
+//just a printout 
+PRINT_TEXT "rest below <&HP&>"
+//*************END OF REST INFO
+
+//lets make sure we start with decent hp
+IF CHAR_CUR_HP < HP
+	CALLSUB Rest
+ENDIF
+
+DO 
+	DO 
+		CALLSUB Target
+
+		//if we got a target
+		IF TARGET_CUR_HP > ZERO
+			//lets kill it
+			CALLSUB KillTarget
+		ENDIF
+
+		//PRINT_TEXT "target dead"
+
+		//now our target is dead
+		//PRINT_TEXT "<&NEAREST_ITEM_DISTANCE&>"
+		WHILE NEAREST_ITEM_DISTANCE < loot_range
+			//PRINT_TEXT "loot is nearby"
+			CALLSUB pickup
+		WEND
+	//do we need to rest? if not lets keep fighting
+	LOOP CHAR_CUR_HP > HP 
+
+	PRINT_TEXT "lower than <&HP&>, resting"
+	CALLSUB Rest
+	PRINT_TEXT "hp is full, starting to fight again"
+LOOP ZERO == ZERO
+
+END_SCRIPT
+
+////////SUBS//////////
+
+SUB Target
+	TARGET_NEAREST
+	SLEEP 750
+RETURNSUB
+
+
+SUB pickup
+	CLICK_NEAREST_ITEM
+	SLEEP 200
+RETURNSUB
+
+
+SUB KillTarget
+	DO
+		ATTACK_TARGET
+		SLEEP 200
+		IF Kiting == ONE
+			CALLSUB KiteToRange
+			SLEEP 200
+		ENDIF
+	LOOP TARGET_CUR_HP > ZERO
+	//PRINT_TEXT "killtarget sub finished"
+RETURNSUB
+
+SUB KiteToRange
+	//we are ignoring the z value for kiting since we dont want to be
+	//kiting up into the sky or down into the ground
+	//especially since monster attack ranges ignore z
+
+	//need to get a vector for from the monster to us
+	VX = CHAR_X - TARGET_X
+	VY = CHAR_Y - TARGET_Y
+
+	//now we have the vector from the target to us... lets normalize it now
+	DISTANCE LEN ZERO ZERO ZERO VX VY ZERO
+	VX = VX / LEN
+	VY = VY / LEN
+
+	//now lets scale back up to our range
+	VX = VX * KiteRange
+	VY = VY * KiteRange
+
+	//then we add this offset to the mob location
+	VX = VX + TARGET_X
+	VY = VY + TARGET_Y
+
+	//and finally... we move
+	MOVE_TO "<&VX&>" "<&VY&>" "<&CHAR_Z&>" 
+RETURNSUB
+
+
+SUB Rest
+	PRINT_TEXT "Were starting the sitting loop sitting"
+
+	Rest = ONE
+	DO
+		//check if anything has us targeted
+		IF COUNT_NPC_TARGETME > ZERO
+			//we are targeted, let not be sitting shall we?
+			Rest = ZERO
+			PRINT_TEXT "Some monster attacked us, lets defend ourselves"
+		ENDIF
+
+		//check if we are rested to full
+		IF CHAR_CUR_HP == CHAR_MAX_HP
+			//full hp, lets get up
+			Rest = ZERO
+			PRINT_TEXT "We are ready to go."
+		ENDIF
+
+		//are we still resting?
+		IF Rest == ONE
+			//lets sleep a bit (first off to not look so bot like)
+			//second of all, because we need hpzzz
+			SLEEP 1000
+			COMMAND "/sit"
+			//PRINT_TEXT "Were sitting"
+		ENDIF
+
+	//are we still resting? if so lets run the loop again
+	LOOP Rest == ONE
+
+	//done resting lets stand
+	COMMAND "/stand"
+	SLEEP 200
+RETURNSUB

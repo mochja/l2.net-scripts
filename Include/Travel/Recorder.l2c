@@ -1,0 +1,125 @@
+
+INCLUDE "STDLIB\Player.l2c"
+CLASS TRAVEL_RECORDER NULL
+
+   /***************************\
+   \***************************/
+
+	VAR_START
+
+		PUBLIC INT RECORD_MYSELF 1
+		PUBLIC INT RECORD_OTHERS 1
+      PUBLIC INT LINES_PER_FILE 100
+
+      PRIVATE ARRAYLIST DATA 0
+      PRIVATE INT IS_SAVING 0
+
+	VAR_END
+
+   /***************************\
+   \***************************/
+
+	PUBLIC CONSTRUCT 0
+
+      ENGINEX.EVENTS.ADD_CUSTOMPACKET VOID 2 SCRIPTEVENT_CHATTOBOT #$TRAVEL.RECORDER.CHAT_TO_BOT
+
+	RETURN VOID
+
+   /***************************\
+   \***************************/
+
+	PUBLIC START_RECORDING 0
+
+		DEFINE INT EXISTS 0
+		ENGINEX.SERVERPACKETS.EXISTS EXISTS 2 #i47 #$TRAVEL.RECORDER.OBJECT_MOVES
+		IF (EXISTS == FALSE)
+			ENGINEX.SERVERPACKETS.ADD VOID 2 #i47 #$TRAVEL.RECORDER.OBJECT_MOVES
+		ENDIF
+
+		PRINT_TEXT "Travel-Recorder :: Recording started"
+
+	RETURN VOID
+
+   /***************************\
+   \***************************/
+
+	PUBLIC OBJECT_MOVES 1 PACKET_DATA
+
+      DEFINE INT RECORD 0
+
+      IF (PACKET_DATA.#$OBJECT_ID == CHAR_ID)
+         IF (TRAVEL.RECORDER.RECORD_MYSELF == TRUE)
+
+            RECORD = TRUE
+
+         ENDIF
+      ELSE
+         IF (TRAVEL.RECORDER.RECORD_OTHERS == TRUE)
+
+            DEFINE ARRAYLIST NEAR_PLAYERS 0
+            GET_PLAYERS NEAR_PLAYERS
+            FOREACH PLAYER_ID PLAYER NEAR_PLAYERS
+               IF (PACKET_DATA.#$OBJECT_ID == NEAR_PLAYERS.PLAYER_ID.ID)
+                  RECORD = TRUE
+               ENDIF
+            NEXTEACH
+
+         ENDIF
+      ENDIF
+
+      IF (RECORD == TRUE)
+
+         TRAVEL.RECORDER.DATA.ADD "#$<&PACKET_DATA.#$OLD_X&>|<&PACKET_DATA.#$OLD_Y&>|<&PACKET_DATA.#$OLD_Z&>|<&PACKET_DATA.#$NEW_X&>|<&PACKET_DATA.#$NEW_Y&>|<&PACKET_DATA.#$NEW_Z&>"
+
+         IF (TRAVEL.RECORDER.DATA.COUNT >= TRAVEL.RECORDER.LINES_PER_FILE)
+            TRAVEL.RECORDER.SAVE VOID 0
+         ENDIF
+
+      ENDIF
+	RETURN VOID
+
+   /***************************\
+   \***************************/
+
+	PUBLIC SAVE 0
+
+      IF (TRAVEL.RECORDER.IS_SAVING == FALSE)
+         TRAVEL.RECORDER.IS_SAVING = TRUE
+
+         PRINT_TEXT "Travel-Recorder :: Start saving"
+         SAY_TO_CLIENT "<&CHANNEL_PARTYCOMMANDER&>" "Travel-Recorder :: Start saving"
+
+         DEFINE INT CUR_TIME 0
+         GET_TIME CUR_TIME
+         ENGINEX.FILES.WRITE_FILE VOID 3 "#$TravelRecorder_<&CUR_TIME&>" "#$__EOF" TRAVEL.RECORDER.DATA
+
+         DEFINE INT CUR_LINE 0
+         FOR I 0 "<&TRAVEL.RECORDER.DATA.COUNT&>" 1
+            TRAVEL.RECORDER.DATA.REMOVE 0
+            CUR_LINE = CUR_LINE + #i1
+            IF (CUR_LINE == TRAVEL.RECORDER.LINES_PER_FILE)
+               BREAK 2
+            ENDIF
+         NEXT
+
+         PRINT_TEXT "Travel-Recorder :: Finished saved"
+         SAY_TO_CLIENT "<&CHANNEL_PARTYCOMMANDER&>" "Travel-Recorder :: Finished saved"
+
+         TRAVEL.RECORDER.IS_SAVING = FALSE
+      ENDIF
+
+	RETURN VOID
+
+   /***************************\
+   \***************************/
+
+	PUBLIC CHAT_TO_BOT 1 PACKET_DATA
+      IF (PACKET_DATA.#$MESSAGE.TO_UPPER == "#$save")
+         TRAVEL.RECORDER.SAVE VOID 0
+      ENDIF
+	RETURN VOID
+
+   /***************************\
+   \***************************/
+
+END_CLASS

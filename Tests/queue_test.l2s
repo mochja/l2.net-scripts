@@ -1,0 +1,33 @@
+INCLUDE Tests\child_class.l2c
+
+DEFINE QUEUE testq 0
+
+FOR A 0 5 1
+	DEFINE INT "testqI<&A&>" "<&A&>"
+	testq.PUSH "testqI<&A&>"
+NEXT
+
+PRINT_TEXT "testing regular queue"
+
+WHILE testq.COUNT > #i0
+	PRINT_TEXT "pop: <&testq.POP&> ::::: count left <&testq.COUNT&>"
+WEND
+
+//////////////////////////////////////////////////
+
+DEFINE NewSuper myclass 0
+
+FOR A 0 5 1
+	DEFINE INT "supertestqI<&A&>" "<&A&>"
+	myclass.TESTQ.PUSH "supertestqI<&A&>"
+NEXT
+
+PRINT_TEXT "testing public queue inside child class"
+PRINT_TEXT "size = <&myclass.TESTQ.COUNT&>"
+//PAUSE
+
+WHILE myclass.TESTQ.COUNT > #i0
+	PRINT_TEXT "pop: <&myclass.TESTQ.POP&> ::::: count left <&myclass.TESTQ.COUNT&>"
+WEND
+
+END_SCRIPT

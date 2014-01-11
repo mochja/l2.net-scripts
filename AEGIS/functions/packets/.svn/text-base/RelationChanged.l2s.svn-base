@@ -1,0 +1,18 @@
+// Handle RelationChanged packets.
+
+FUNCTION Packet::RelationChanged 1 _bRelationChanged
+
+  DEFINE RelationChanged RC
+  
+  CALL_EXTERN "DLIB\Packets\ReadRelationChanged.l2s" DLIB::Packets::ReadRelationChanged RC 1 _bRelationChanged
+  
+  LOCK AEGIS.MUTEX.ENTITYTRACKING.PLAYERS
+   
+    IF "AEGIS.ENTITYTRACKING.PLAYERS.CONTAINS_KEY <&RC.OBJECT_ID&>" == TRUE
+      "AEGIS.ENTITYTRACKING.PLAYERS.#$<&RC.OBJECT_ID&>.RELATIONS" = RC
+    ENDIF
+    
+  UNLOCK AEGIS.MUTEX.ENTITYTRACKING.PLAYERS
+  
+  
+RETURN VOID

@@ -1,0 +1,110 @@
+//BY slothmo, CHaNG, and mpj123
+
+SET_TARGETING COMBAT ZERO
+
+//lets make a variable to store the hp to rest when we drop below
+DEFINE INT HP 2
+HP = CHAR_MAX_HP DIVIDE HP
+//we make it equal to half our max
+
+//let set a range to pick up loot
+DEFINE INT loot_range 100
+
+//make a variable to store our rest info
+DEFINE INT Rest "<&ONE&>"
+
+//just a printout 
+PRINT_TEXT "rest below <&HP&>"
+
+//lets make sure we start with decent hp
+IF CHAR_CUR_HP < HP
+	CALLSUB Rest
+ENDIF
+
+DO 
+	DO 
+		CALLSUB Target
+
+		//if we got a target
+		IF TARGET_CUR_HP > ZERO
+			//lets kill it
+			CALLSUB KillTarget
+		ENDIF
+
+		//PRINT_TEXT "target dead"
+
+		//now our target is dead
+		//PRINT_TEXT "<&NEAREST_ITEM_DISTANCE&>"
+		WHILE NEAREST_ITEM_DISTANCE < loot_range
+			//PRINT_TEXT "loot is nearby"
+			CALLSUB pickup
+		WEND
+	//do we need to rest? if not lets keep fighting
+	LOOP CHAR_CUR_HP > HP 
+
+	PRINT_TEXT "lower than <&HP&>, resting"
+	CALLSUB Rest
+	PRINT_TEXT "hp is full, starting to fight again"
+LOOP ZERO == ZERO
+
+END_SCRIPT
+
+////////SUBS//////////
+
+SUB Target
+	TARGET_NEAREST
+	SLEEP 750
+RETURNSUB
+
+
+SUB pickup
+	CLICK_NEAREST_ITEM
+	SLEEP 200
+RETURNSUB
+
+
+SUB KillTarget
+	DO
+		ATTACK_TARGET
+		SLEEP 200
+	LOOP TARGET_CUR_HP > ZERO
+	//PRINT_TEXT "killtarget sub finished"
+RETURNSUB
+
+
+SUB Rest
+	PRINT_TEXT "Were starting the sitting loop sitting"
+
+	Rest = ONE
+	DO
+		//check if anything has us targeted
+		IF COUNT_NPC_TARGETME > ZERO
+			//we are targeted, let not be sitting shall we?
+			Rest = ZERO
+			PRINT_TEXT "Some monster attacked us, lets defend ourselves"
+		ENDIF
+
+		//check if we are rested to full
+		IF CHAR_CUR_HP == CHAR_MAX_HP
+			//full hp, lets get up
+			Rest = ZERO
+			PRINT_TEXT "We are ready to go."
+		ENDIF
+
+		//are we still resting?
+		IF Rest == ONE
+			//lets sleep a bit (first off to not look so bot like)
+			//second of all, because we need hpzzz
+			SLEEP 1000
+			COMMAND "/sit"
+			//PRINT_TEXT "Were sitting"
+		ENDIF
+
+	//are we still resting? if so lets run the loop again
+	LOOP Rest == ONE
+
+	//done resting lets stand
+	COMMAND "/stand"
+	SLEEP 200
+RETURNSUB
+

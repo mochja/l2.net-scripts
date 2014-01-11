@@ -1,0 +1,36 @@
+
+CLASS LAZY_RETURNING_PERCENT LAZY_RETURNING_BASEPIECE
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT
+
+      // the max value
+      THIS.SET_VALUE VOID 2 #$MAX #i0
+
+      // the now value
+      THIS.SET_VALUE VOID 2 #$NOW #i0
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC _GET_RETURN 1 CALLTIME
+
+      DEFINE INT _MAX 0
+      DEFINE INT _NOW 0
+
+      THIS.DATA.#$MAX.GET_RETURN _MAX 1 CALLTIME
+      THIS.DATA.#$NOW.GET_RETURN _NOW 1 CALLTIME
+
+      // --- --- ---
+
+      DEFINE DOUBLE _PERCENT 0
+      _PERCENT = #d100.0 / _MAX
+      _PERCENT = _PERCENT * _NOW
+
+   RETURN _PERCENT
+
+//-------------------------------------------------------------------------------------
+
+END_CLASS

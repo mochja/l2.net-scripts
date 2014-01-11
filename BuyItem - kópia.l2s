@@ -1,0 +1,103 @@
+// Kratky popis
+// Server: 
+// Autor: mochitto
+// Date: 
+// Special thanks for L2.NET contributors
+// rev.: 0
+PRINT_TEXT "SCRIPT STARTED!]"
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKETEX&>" "<&SYSTEM_CURRENTFILE&>" BuyList 183
+include "class/tradeitem.l2c"
+DEFINE_GLOBAL ARRAYLIST ITEM_LIST
+DEFINE_GLOBAL ARRAYLIST BUY_ITEM_LIST
+
+// Main section
+// ===============================
+
+//bsoe
+BUY_ITEM VOID 2 1829 -1
+
+SLEEP 8973234	
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT
+
+FUNCTION BuyList
+	define int size
+	define int ListId
+	PACKET.READ_BYTE NULL  //writeC(0xFE);
+	PACKET.READ_INT16 NULL //writeH(0xB7);
+	PACKET.READ_INT64 NULL //writeQ(_money);		// current money
+	
+	PACKET.READ_INT32 ListId //writeD(_listId);
+	PACKET.READ_INT16 size //writeH(_list.size());
+	print_text "<&size&>"
+
+
+	FOR A 0 "<&size&>" 1
+		DEFINE TRADEITEM ITEM
+		PACKET.READ_INT16 NULL 
+		PACKET.READ_INT32 NULL 
+        PACKET.READ_INT32 ITEM.ITEMID 
+        PACKET.READ_INT64 ITEM.CurrentCount 
+        PACKET.READ_INT16 NULL 
+        PACKET.READ_INT16 NULL 
+        PACKET.READ_INT32 NULL 
+        PACKET.READ_INT16 NULL 
+        PACKET.READ_INT16 NULL 
+        PACKET.READ_INT16 NULL 
+        PACKET.READ_INT64 NULL 
+        
+        PACKET.READ_INT16 NULL 
+        PACKET.READ_INT16 NULL 
+        PACKET.READ_INT16 NULL 
+        PACKET.READ_INT16 NULL 
+        PACKET.READ_INT16 NULL 
+        PACKET.READ_INT16 NULL 
+        PACKET.READ_INT16 NULL 
+        PACKET.READ_INT16 NULL  
+       
+        PACKET.READ_INT16 NULL 
+        PACKET.READ_INT16 NULL 
+        PACKET.READ_INT16 NULL
+        ITEM_LIST.ADD ITEM
+        DELETE ITEM
+	NEXT
+	
+	sleep 1000
+	define string name
+	FOREACH A TRADEITEM ITEM_LIST
+		FOREACH B TRADEITEM BUY_ITEM_LIST
+			IF ITEM_LIST.A.ITEMID == BUY_ITEM_LIST.B.ITEMID  
+				PRINT_TEXT "<&NAME&> <&ITEM_LIST.A.ITEMID&> <&ITEM_LIST.A.CurrentCount&>"
+				DEFINE BYTEBUFFER RequestBuyItem 256 
+				RequestBuyItem.WRITE_BYTE #i64
+				RequestBuyItem.WRITE_INT32 ListId
+				RequestBuyItem.WRITE_INT32 1
+				RequestBuyItem.WRITE_INT32 BUY_ITEM_LIST.B.ITEMID
+				IF ITEM_LIST.A.CurrentCount > 0
+					IF BUY_ITEM_LIST.B.CurrentCount == -1
+						RequestBuyItem.WRITE_INT64 ITEM_LIST.A.CurrentCount	
+					ENDIF
+				ELSE
+					RequestBuyItem.WRITE_INT64 BUY_ITEM_LIST.B.CurrentCount
+				ENDIF
+				RequestBuyItem.TRIM_TO_INDEX
+				INJECTBB RequestBuyItem
+				DELETE RequestBuyItem
+			ENDIF
+		NEXTEACH  
+	NEXTEACH  	
+	
+	// TODO BUY ITEM
+	
+	INJECT "D0 76 00"
+	//23:06:04 :[Scroll of Escape: Clan Hall 1829 5
+
+RETURN VOID
+
+FUNCTION BUY_ITEM 2 ID COUNT
+	DEFINE TRADEITEM ITEM
+	ITEM.ITEMID = "<&ID&>"
+	ITEM.CURRENTCOUNT = "<&COUNT&>"
+	BUY_ITEM_LIST.ADD ITEM
+	DELETE ITEM
+RETURN VOID

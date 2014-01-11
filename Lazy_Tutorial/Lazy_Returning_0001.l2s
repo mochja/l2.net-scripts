@@ -1,0 +1,98 @@
+
+	INCLUDE "Include/EngineX.l2c"
+	DEFINE_GLOBAL ENGINEX ENGINEX 0
+
+	INCLUDE "Include/Lazy.l2c"
+	DEFINE_GLOBAL LAZY LAZY 0
+
+//-------------------------------------------------------------------------------------
+
+   // the RETURNING-class is an ultimate condition system
+   // it allows you to check multiple states
+   // allows you to use static values
+   // allows you to use global defined variables
+   // and it allows you to use the return values of other returns
+
+   // lets create a pointer to the class to get use of it
+   //
+   DEFINE INT RETURNING 0
+   LAZY.REGISTER RETURNING 1 #$RETURNING
+
+   // this will be our variable to ckeck all the returns
+   //
+   DEFINE INT TESTRETURN 0
+
+//-------------------------------------------------------------------------------------
+
+   // the DoubleComparison contains 3 data values:
+   // LEFT, OPERATOR and RIGHT
+
+   // test 1) the use of static values
+   //         Return = (123 == 123)
+
+   DEFINE INT MYPIECE 0
+   RETURNING.NEW_PIECE MYPIECE 2 #$MyPiece1 #$DoubleComparison
+   MYPIECE.SET_VALUE VOID 2 #$LEFT #d123
+   MYPIECE.SET_VALUE VOID 2 #$OPERATOR #$==
+   MYPIECE.SET_VALUE VOID 2 #$RIGHT #d123
+   MYPIECE.GET_RETURN TESTRETURN 0
+   DELETE MYPIECE
+
+   IF (TESTRETURN == TRUE)
+      PRINT_TEXT "1) yeah !!! (right answer)"
+   ELSE
+      PRINT_TEXT "1) nooooooo (wrong answer)"
+   ENDIF
+
+//-------------------------------------------------------------------------------------
+
+   // now the last test showed us how to use static values.
+   // but what if we want to use variable values ?
+   // therefore we need to create global defined variables
+   // and use there names
+
+   // test 2) the use of global variables
+   //         Return = (123 != 123)
+
+   DEFINE_GLOBAL DOUBLE MYDOUBLE 123
+
+   DEFINE INT MYPIECE 0
+   RETURNING.NEW_PIECE MYPIECE 2 #$MyPiece2 #$DoubleComparison
+   MYPIECE.SET_VARIABLE VOID 2 #$LEFT #$MYDOUBLE
+   MYPIECE.SET_VALUE VOID 2 #$OPERATOR #$!=
+   MYPIECE.SET_VALUE VOID 2 #$RIGHT #d123
+   MYPIECE.GET_RETURN TESTRETURN 0
+   DELETE MYPIECE
+
+   IF (TESTRETURN == TRUE)
+      PRINT_TEXT "2) yeah !!! (wrong answer)"
+   ELSE
+      PRINT_TEXT "2) nooooooo (right answer)"
+   ENDIF
+
+//-------------------------------------------------------------------------------------
+
+   // now we created 2 pieces
+   // now lets use the BooleanComparison
+   // to compare the returns of pieces
+
+   // test 3) the use of references
+   //         Return = (#$MyReturn1 != #$MyReturn2)
+
+   DEFINE INT MYPIECE 0
+   RETURNING.NEW_PIECE MYPIECE 2 #$MyPiece3 #$BooleanComparison
+   MYPIECE.SET_REFERENCE VOID 2 #$LEFT #$MyPiece1
+   MYPIECE.SET_VALUE VOID 2 #$OPERATOR #$!=
+   MYPIECE.SET_REFERENCE VOID 2 #$RIGHT #$MyPiece2
+   MYPIECE.GET_RETURN TESTRETURN 0
+   DELETE MYPIECE
+
+   IF (TESTRETURN == TRUE)
+      PRINT_TEXT "3) yeah !!! (right answer)"
+   ELSE
+      PRINT_TEXT "3) nooooooo (wrong answer)"
+   ENDIF
+
+//-------------------------------------------------------------------------------------
+
+END_SCRIPT

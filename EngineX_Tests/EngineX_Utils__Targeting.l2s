@@ -1,0 +1,36 @@
+
+	INCLUDE Include/EngineX.l2c
+	DEFINE_GLOBAL ENGINEX ENGINEX 0
+
+	PRINT_TEXT ""
+	PRINT_TEXT "-------------------------------------------------"
+
+	DEFINE INT TARGET_FOUND 0
+
+	// target self via id-variable ... timeout is 1 second
+	ENGINEX.UTILS.TARGET TARGET_FOUND 2 CHAR_ID #i1000 TRUE
+	PRINT_TEXT "target #1 --> <&TARGET_FOUND&>"
+
+   SLEEP 1000
+   ENGINEX.UTILS.UNTARGET VOID 2 #i1000 TRUE
+   SLEEP 1000
+
+
+/*
+	// target self via string-variable
+	ENGINEX.UTILS.TARGET TARGET_FOUND 2 CHAR_NAME #i1000 TRUE
+	PRINT_TEXT "target #2 --> <&TARGET_FOUND&>"
+
+	// target via string
+	ENGINEX.UTILS.TARGET TARGET_FOUND 2 "#$Imp" #i1000 TRUE
+	PRINT_TEXT "target #3 --> <&TARGET_FOUND&>"
+
+	// target via int
+	ENGINEX.UTILS.TARGET TARGET_FOUND 2 #i123456789 #i1000 TRUE
+	PRINT_TEXT "target #4 --> <&TARGET_FOUND&>"
+*/
+
+	PRINT_TEXT "-------------------------------------------------"
+	PRINT_TEXT ""
+
+END_SCRIPT

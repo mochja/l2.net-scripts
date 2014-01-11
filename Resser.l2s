@@ -1,0 +1,85 @@
+// Resser
+// Server: 
+// Autor: mochitto
+// Date: 
+// Special thanks for L2.NET contributors
+// rev.: 0
+PRINT_TEXT "SCRIPT STARTED!]"
+INCLUDE StdLib\Player.l2c
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" ConfirmDlg 243
+SET_EVENT "<&SCRIPTEVENT_SELFDIE&>" "<&SYSTEM_CURRENTFILE&>" SelfDie
+
+DEFINE_GLOBAL ARRAYLIST PARTY
+DEFINE_GLOBAL ARRAYLIST PLAYERS
+DEFINE_GLOBAL int dist
+define_global int GM_RESSED 0
+
+// Main section
+// ===============================                                                                                            
+GET_PARTY PARTY
+
+WHILE ZERO == ZERO  
+	IF (CHAR_CUR_HP > 0)
+		GET_PLAYERS PLAYERS
+		//GET_PARTY PLAYERS
+		DIST = 1000
+		FOREACH I PLAYER PLAYERS
+    		FOREACH O PLAYER PARTY
+				IF "PARTY.O.NAME" == "PLAYERS.I.NAME"
+					GET_PLAYERS PLAYERS
+					DISTANCE DIST CHAR_X CHAR_Y 0 PLAYERS.I.DEST_X PLAYERS.I.DEST_Y 0
+					IF DIST < 500  
+						print_text "<&PLAYERS.O.HP&>"          
+						IF PLAYERS.O.HP == 0
+							print_text "i will ress <&PLAYERS.O.NAME&>"
+							COMMAND "/target <&PLAYERS.O.NAME&>"
+							SLEEP 1000
+							IF (GM_RESSED == 0) && (TARGET_NAME == PLAYERS.O.NAME)   
+								USE_ITEM 737
+								SLEEP 16000
+							ENDIF
+						ENDIF	
+					ENDIF
+				ENDIF
+			NEXTEACH
+ 	   NEXTEACH
+	ENDIF
+  	SLEEP 1000	
+WEND 
+
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT
+
+FUNCTION ConfirmDlg
+	DEFINE STRING PCNAME 0
+	DEFINE INT messageId 
+	DEFINE INT RESSED 0
+	define int rand
+	
+	PACKET.READ_BYTE null
+	PACKET.READ_INT32 messageId
+	PACKET.READ_INT32 null
+	PACKET.READ_INT32 null
+	PACKET.READ_STRING PCNAME
+	IF messageId == 1510
+		GM_RESSED = 0
+		RESSED = 0
+		FOREACH I player PARTY
+			IF party.I.NAME == PCNAME
+				GET_RAND RAND 1000 4000
+				SLEEP "<&RAND&>"
+				INJECT "C6 E6 05 00 00 01 00 00 00 00 00 00 00"
+				RESSED = 1
+			ENDIF
+		NEXTEACH
+		IF RESSED == 0
+			GET_RAND RAND 1000 4000
+			SLEEP "<&RAND&>"
+			INJECT "C6 E6 05 00 00 00 00 00 00 00 00 00 00"
+		ENDIF
+	ENDIF
+RETURN VOID 
+
+FUNCTION SelfDie
+	GM_RESSED = 1
+RETURN VOID 

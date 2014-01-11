@@ -1,0 +1,17 @@
+// Global sub structure for EffectTracking
+// for L2.net.
+// by d00d
+//
+// v1.0 - Initial Draft
+
+CLASS StatusEffects null
+VAR_START
+ 
+  PUBLIC SORTEDLIST AbnormalEffects
+  PUBLIC SORTEDLIST ShortEffects
+  PUBLIC SORTEDLIST PartyEffects
+  PUBLIC ZoneInfo   ZoneData
+  
+VAR_END
+ 
+END_CLASS

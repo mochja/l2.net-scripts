@@ -1,0 +1,3067 @@
+include class\user_info.l2c
+include class\char_info.l2c
+include class\clan_info.l2c
+include class\target_me_class.l2c
+
+DEFINE_GLOBAL int hp_pots 1 // 0 off
+DEFINE_GLOBAL int mp_pots 1 // 0 off
+//==== edited by moch
+DEFINE_GLOBAL int cp_pots 0 // 0 off
+DEFINE_GLOBAL int gcp_pots 1 // 0 off
+DEFINE_GLOBAL int cp_elixir 1 // 0 off
+
+DEFINE_GLOBAL int auto_pots 1 // 0 off
+DEFINE_GLOBAL int anti_mira 1 // 0 off
+DEFINE_GLOBAL int anti_disa 1 // 0 off
+
+
+
+//////////////////// potions ///////////////////////////
+// ID potion
+DEFINE_GLOBAL int mp_pot_id 728  /// 728  -MANA POTION iD
+DEFINE_GLOBAL int hp_pot_id 1539 /// 1539 -ghp ID
+DEFINE_GLOBAL int cp_pot_id 5591 /// 5591 - CP POT ID
+DEFINE_GLOBAL int cp_elixir_id 8639 /// Elixir of CP (S-Grade)
+DEFINE_GLOBAL int gcp_pot_id 5592 /// 5592 - Greater CP POT ID
+
+DEFINE_GLOBAL int sleep_cp 700   ///delay cp
+DEFINE_GLOBAL int sleep_gcp 600   ///delay cp
+DEFINE_GLOBAL int sleep_cp_elixir 30000   ///delay cp
+DEFINE_GLOBAL int sleep_mp 1500  ///delay mp
+////////////////////////////////////////////////////////////
+// ADV settings
+// self
+DEFINE_GLOBAL int fake_gm 1 // 0 - off (fix hellbound map)
+DEFINE_GLOBAL int fake_hero 0 // 1-on fake hero
+DEFINE_GLOBAL int fake_agh 0 // 1 - on fake aghation
+DEFINE_GLOBAL int id_agha 0 // id aghation
+DEFINE_GLOBAL int osd 1 // 1- dmg on scren 
+
+//others
+DEFINE_GLOBAL int tar_tag 1 // show circle on ppl who target u
+DEFINE_GLOBAL int siege_alag 0 // 1 on
+DEFINE_GLOBAL int race_dif 0 // 1 on
+DEFINE_GLOBAL int heal_tit 1 // 1 on
+
+
+
+/////////////////////////////////////////////////////////////////////////
+DEFINE_GLOBAL int sort_type 2 // 1- by dist 2 - by class
+DEFINE_GLOBAL int osd_type 1 // 1 - normal 2- with special system 
+
+//////////////////////////////////////////////////////////////////////////
+define_global user_nfo pak 0
+define_global sortedlist char_list 0
+define_global arraylist class 0
+define_global arraylist ppl_arr 0
+///////// vary dla listy
+define_global sortedlist clan_data 0
+define_global sortedlist war_enem 0
+define_global sortedlist Shop_list 0
+define_global sortedlist Shop_list2 0
+define_global int jum 0
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+// lista playerow
+DEFINE_GLOBAL Sortedlist Target_me_list 0
+// bypasy
+DEFINE_GLOBAL string byp1 "bypass -h l2net_auto_pots_on"
+DEFINE_GLOBAL string byp2 "bypass -h l2net_auto_pots_off"
+DEFINE_GLOBAL string byp3 "bypass -h l2net_anti_mir_on"
+DEFINE_GLOBAL string byp4 "bypass -h l2net_anti_mir_off"
+DEFINE_GLOBAL string byp5 "bypass -h l2net_anti_dis_on"
+DEFINE_GLOBAL string byp6 "bypass -h l2net_anti_dis_off"
+DEFINE_GLOBAL string byp7 "bypass -h l2net_target "
+DEFINE_GLOBAL string byp8 "bypass -h l2net_fake_gm_on"
+DEFINE_GLOBAL string byp9 "bypass -h l2net_fake_gm_off"
+DEFINE_GLOBAL string byp10 "bypass -h l2net_fake_hero_on"
+DEFINE_GLOBAL string byp11 "bypass -h l2net_fake_hero_off"
+DEFINE_GLOBAL string byp12 "bypass -h l2net_fake_agh_on"
+DEFINE_GLOBAL string byp13 "bypass -h l2net_fake_agh_off"
+DEFINE_GLOBAL string byp14 "bypass -h l2net_tar_tag_on"
+DEFINE_GLOBAL string byp15 "bypass -h l2net_tar_tag_off"
+DEFINE_GLOBAL string byp16 "bypass -h l2net_AntiL_on"
+DEFINE_GLOBAL string byp17 "bypass -h l2net_AntiL_off"
+DEFINE_GLOBAL string byp18 "bypass -h l2net_Rac_on"
+DEFINE_GLOBAL string byp19 "bypass -h l2net_Rac_off"
+DEFINE_GLOBAL string byp20 "bypass -h l2net_Hea_tit_on"
+DEFINE_GLOBAL string byp21 "bypass -h l2net_Hea_tit_off"
+DEFINE_GLOBAL string byp22 "bypass -h l2net_osd_on"
+DEFINE_GLOBAL string byp23 "bypass -h l2net_osd_off"
+DEFINE_GLOBAL string byp24 "bypass -h l2net_agh_id "
+DEFINE_GLOBAL string byp25 "bypass -h l2net_page "
+DEFINE_GLOBAL string byp26 "bypass -h l2net_next "
+DEFINE_GLOBAL string byp27 "bypass -h l2net_back "
+
+// anti mir
+DEFINE_GLOBAL int my_target_id 0
+DEFINE_GLOBAL int my_tar_un 0
+
+///
+DEFINE_GLOBAL int temp_mp 0
+DEFINE_GLOBAL int temp_hp 0
+DEFINE_GLOBAL int temp_cp 0
+DEFINE_GLOBAL int temp_gcp 0
+DEFINE_GLOBAL int temp_e 0
+call add_class
+THREAD pots_count
+if cp_pots == 1
+THREAD SPAM_CP
+endif
+
+if gcp_pots == 1
+THREAD SPAM_GCP
+endif
+if cp_elixir == 1
+THREAD SPAM_CP_ELIXIR
+endif
+
+if hp_pots == 1
+THREAD SPAM_GHP
+endif
+if mp_pots == 1
+THREAD SPAM_MP
+endif
+
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" del_obj 8
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" tar_sel 35
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" tar_uns 36
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" my_tar 185
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" read_user_info 50
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" read_char_info 49
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" tp_to 34
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" clans 137
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" rela 206
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" auto_stop_combat 38
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" sys_msg_pck 98
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" shop_tit 162
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" shop_tit2 191
+block 191
+block 162
+block 50
+block 49
+// cli
+SET_EVENT "<&SCRIPTEVENT_CLIENTPACKET&>" "<&SYSTEM_CURRENTFILE&>" bypas 35
+SET_EVENT "<&SCRIPTEVENT_CLIENTPACKET&>" "<&SYSTEM_CURRENTFILE&>" req_can_ta 72
+BLOCK_CLIENT 35
+//
+SET_EVENT "<&SCRIPTEVENT_SYSTEMMESSAGE&>" "<&SYSTEM_CURRENTFILE&>" sysmsg
+SET_EVENT "<&SCRIPTEVENT_CHATTOBOT&>" "<&SYSTEM_CURRENTFILE&>" polec
+
+
+define arraylist inv 0
+GET_INVENTORY inv
+DEFINE_GLOBAL int id_wep 0
+
+for a 0 "<&inv.count&>" 1
+if inv.a.EQUIPPED == 1
+	if inv.a.slot == 128
+		id_wep = inv.a.id
+	endif
+	if inv.a.slot == 16384
+		id_wep = inv.a.id
+	endif
+endif
+next
+if id_wep == 0
+	anti_disa = 0
+endif
+
+call okno_ig
+
+DO
+    SLEEP 2000
+LOOP 1 == 1
+
+
+
+
+END_SCRIPT
+
+
+FUNCTION SPAM_GCP
+DEFINE INT MIN_CP 0
+DO
+	IF auto_pots == 1
+		IF CHAR_CUR_HP != #i0
+			MIN_CP = CHAR_MAX_CP - #i200
+			IF CHAR_CUR_CP < MIN_CP
+				USE_ITEM "<&gcp_pot_id&>"
+				SLEEP "<&sleep_gcp&>"        	
+   	 		ENDIF
+		ENDIF
+	ELSE
+		 SLEEP 2000
+	ENDIF
+LOOP ZERO == ZERO
+RETURN VOID
+
+FUNCTION SPAM_CP
+DEFINE INT MIN_CP 0
+DO
+	IF auto_pots == 1
+		IF CHAR_CUR_HP != #i0
+			MIN_CP = CHAR_MAX_CP - #i50
+			IF CHAR_CUR_CP < MIN_CP
+				USE_ITEM "<&cp_pot_id&>"    
+				SLEEP "<&sleep_cp&>"    	
+   	 		ENDIF
+		ENDIF
+	ELSE
+		 SLEEP 2000
+	ENDIF
+LOOP ZERO == ZERO
+RETURN VOID
+
+FUNCTION SPAM_CP_ELIXIR
+DO
+	IF auto_pots == 1
+		IF CHAR_CUR_HP != #i0
+        	IF CHAR_CUR_CP < #i200
+				USE_ITEM "<&cp_elixir_id&>"
+				SLEEP "<&sleep_cp_elixir&>"        	
+   	 		ENDIF
+		ENDIF
+	ELSE
+		 SLEEP 10000
+	ENDIF
+LOOP ZERO == ZERO
+RETURN VOID
+
+FUNCTION SPAM_GHP
+DEFINE INT MIN_HP 0
+DO
+	IF auto_pots == 1
+		MIN_HP = CHAR_MAX_HP - #i200
+		IF CHAR_CUR_HP != 0
+    			IF CHAR_CUR_HP < MIN_HP
+        			USE_ITEM "<&hp_pot_id&>"
+        			SLEEP 3500
+    			ENDIF
+		endif
+	endif
+sleep 1000
+LOOP ZERO == ZERO
+RETURN VOID
+
+FUNCTION SPAM_MP
+DEFINE INT MIN_MP 0
+DO 
+	IF auto_pots == 1
+		IF CHAR_CUR_HP != 0
+    			MIN_MP = CHAR_MAX_MP - 500
+  			IF CHAR_CUR_MP < MIN_MP
+      		  		USE_ITEM "<&mp_pot_id&>"
+    			ENDIF
+		ENDIF
+	ENDIF
+sleep "<&sleep_mp&>"
+LOOP ZERO == ZERO
+RETURN VOID
+/////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////
+function okno_ig
+Define bytebuffer okno 6000
+define int p1 25
+define int p2 5
+define int p3 5588
+define int max_tab 0
+define int max_tab__l 0
+
+
+define string html_string ""
+Define string htm_1 "<html>"
+Define string htm_2 "</CENTER></body></html>"
+Define string htm_3 "</CENTER>"
+Define string htm_4 "<title>"
+Define string htm_5 "</title>"
+Define string htm_6 "<body><CENTER>" 
+Define string on_t "ON"
+Define string off_t "OFF"
+
+Define string mp_p "MP: "
+Define string hp_p "HP: "
+Define string cp_p "CP: "
+Define string gcp_p "GCP: "
+Define string cp_elixir_p "CPE: "
+
+
+Define string kol1 "<font color=\"LEVEL\">" // zolty
+Define string kol2 "<font color=\"00FFFF\">" // morski
+Define string kol3 "<font color=\"FF0000\">"  // red
+Define string kol4 "<font color=\"ae9977\">"
+Define string kol_end "</font>"
+
+Define string ent "<br>"
+Define string ent1 "<br1>"
+Define string spc "  "
+Define string lin "--------------------------------------------------"
+
+
+
+// guziki - linki
+
+Define string gu1 "<button value=\""  // tu napis
+Define string gu2 "\" action=\"" //zatym bypas
+Define string gu3 "\" width=30 height=21 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\">"
+
+Define string gu4 "<a action=\""  //bypass
+Define string gu5 "\">" //napis
+Define string gu6 "</a>" 
+
+
+//
+// tabela
+Define string tab1 "<table width=280 border=0 bgcolor=\"444444\">"     
+Define string tab2 "</table>"
+Define string tab3 "<td>"
+Define string tab4 "</td>"
+Define string tab5 "<table width=260 border=1>" 
+Define string tab6 "<tr>"
+Define string tab7 "</tr>"
+//
+define string text "PVP HELPER 1.6 EP by AdiFenix "
+define string text2 " Targets : "
+define string text3 "APots:"
+define string text4 "AMir:"
+define string text5 "ADis:"
+
+okno.write_byte p1
+okno.write_int32 p2
+html_string = htm_1
+html_string = html_string + htm_4
+html_string = html_string + "#$PVP Helper"
+html_string = html_string + htm_5
+html_string = html_string + htm_6
+html_string = html_string + kol1
+html_string = html_string + text
+html_string = html_string + kol_end
+html_string = html_string + ent
+
+html_string = html_string + tab1
+html_string = html_string + tab6
+html_string = html_string + tab3
+html_string = html_string + text3
+html_string = html_string + tab4
+if auto_pots == 1
+html_string = html_string + tab3
+html_string = html_string + gu1
+html_string = html_string + on_t
+html_string = html_string + gu2
+html_string = html_string + byp1
+html_string = html_string + gu3
+html_string = html_string + tab4
+else
+html_string = html_string + tab3
+html_string = html_string + gu1
+html_string = html_string + off_t
+html_string = html_string + gu2
+html_string = html_string + byp2
+html_string = html_string + gu3
+html_string = html_string + tab4
+endif
+html_string = html_string + tab3
+html_string = html_string + text4
+html_string = html_string + tab4
+
+if anti_mira == 1
+html_string = html_string + tab3
+html_string = html_string + gu1
+html_string = html_string + on_t
+html_string = html_string + gu2
+html_string = html_string + byp3
+html_string = html_string + gu3
+html_string = html_string + tab4
+else
+html_string = html_string + tab3
+html_string = html_string + gu1
+html_string = html_string + off_t
+html_string = html_string + gu2
+html_string = html_string + byp4
+html_string = html_string + gu3
+html_string = html_string + tab4
+endif
+html_string = html_string + tab3
+html_string = html_string + text5
+html_string = html_string + tab4
+
+if anti_disa == 1
+html_string = html_string + tab3
+html_string = html_string + gu1
+html_string = html_string + on_t
+html_string = html_string + gu2
+html_string = html_string + byp5
+html_string = html_string + gu3
+html_string = html_string + tab4
+else
+html_string = html_string + tab3
+html_string = html_string + gu1
+html_string = html_string + off_t
+html_string = html_string + gu2
+html_string = html_string + byp6
+html_string = html_string + gu3
+html_string = html_string + tab4
+endif
+
+html_string = html_string + tab7
+html_string = html_string + tab2
+html_string = html_string + ent
+html_string = html_string + kol4
+html_string = html_string + "#$-------------------- POTS ----------------------"
+html_string = html_string + kol_end
+// potki
+html_string = html_string + ent1
+html_string = html_string + "#$("
+html_string = html_string + mp_p
+html_string = html_string + kol1
+html_string = html_string + "#$<&temp_mp&>"
+html_string = html_string + kol_end
+html_string = html_string + "#$)"
+html_string = html_string + spc
+html_string = html_string + "#$("
+html_string = html_string + hp_p
+html_string = html_string + kol1
+html_string = html_string + "#$<&temp_hp&>"
+html_string = html_string + kol_end
+html_string = html_string + "#$)"
+
+html_string = html_string + ent1
+html_string = html_string + spc
+html_string = html_string + "#$("
+html_string = html_string + gcp_p
+html_string = html_string + kol1
+html_string = html_string + "#$<&temp_gcp&>"
+html_string = html_string + kol_end
+html_string = html_string + "#$)"
+html_string = html_string + spc
+html_string = html_string + "#$("
+html_string = html_string + cp_p
+html_string = html_string + kol1
+html_string = html_string + "#$<&temp_cp&>"
+html_string = html_string + kol_end
+html_string = html_string + "#$)"
+html_string = html_string + spc
+html_string = html_string + "#$("
+html_string = html_string + cp_elixir_p
+html_string = html_string + kol1
+html_string = html_string + "#$<&temp_e&>"
+html_string = html_string + kol_end
+html_string = html_string + "#$)"
+
+html_string = html_string + ent1
+html_string = html_string + kol4
+html_string = html_string + "#$-------------------- Target --------------------"
+html_string = html_string + kol_end
+html_string = html_string + ent
+
+
+html_string = html_string + tab1
+html_string = html_string + "#$<CENTER>"
+// tabela - targetu
+
+max_tab = Target_me_list.count - 1
+
+if Target_me_list.count != 0
+do
+
+html_string = html_string + tab6 	
+html_string = html_string + tab3 
+
+html_string = html_string + gu4
+html_string = html_string + byp7
+html_string = html_string + Target_me_list.max_tab.id
+html_string = html_string + gu5
+html_string = html_string + Target_me_list.max_tab.name
+html_string = html_string + gu6
+
+
+html_string = html_string + tab4 	
+html_string = html_string + tab3	
+html_string = html_string + Target_me_list.max_tab.class
+html_string = html_string + tab4
+html_string = html_string + tab7
+max_tab = max_tab - 1
+max_tab__l = max_tab__l + 1
+if max_tab__l == 6
+	jump_to_label tu
+endif
+loop max_tab >= 0
+
+endif
+
+label tu
+
+html_string = html_string + tab2
+html_string = html_string + htm_2
+
+
+
+okno.write_string html_string
+okno.write_int32 p3
+okno.TRIM_TO_INDEX
+
+
+INJECTBB_CLIENT okno
+
+return void
+
+
+
+FUNCTION pots_count
+
+do
+
+ITEM_COUNT temp_cp "<&cp_pot_id&>"
+ITEM_COUNT temp_gcp "<&gcp_pot_id&>"
+ITEM_COUNT temp_e "<&cp_elixir_id&>"
+ITEM_COUNT temp_mp "<&mp_pot_id&>"
+ITEM_COUNT temp_hp "<&hp_pot_id&>"
+
+sleep 10000 // 10 sec
+loop 1 == 1
+
+return void
+
+
+FUNCTION tar_sel
+define int obj_tar_id 0
+define int tar_id 0
+define tar_me tar_dat 0
+define string nam_cla " "
+
+
+packet.read_byte null
+packet.read_int32 obj_tar_id
+	if obj_tar_id != CHAR_ID
+		packet.read_int32 tar_id
+
+		if tar_id == CHAR_ID
+			lock opera
+			if "<&char_list.CONTAINS_KEY <&obj_tar_id&>&>" == true
+				tar_dat.id = "char_list.#$<&obj_tar_id&>.uid"
+				tar_dat.name = "char_list.#$<&obj_tar_id&>.name"
+				call class_name nam_cla 1 "char_list.#$<&obj_tar_id&>.class"
+				tar_dat.class = nam_cla
+				tar_dat.clanid = "char_list.#$<&obj_tar_id&>.clanid"
+				Target_me_list.add tar_dat "<&tar_dat.id&>"
+				if tar_tag == 1
+					"char_list.#$<&obj_tar_id&>.team" = #i2
+				endif
+				call okno_ig
+			endif
+			unlock opera
+			if tar_tag == 1
+				call write_char_info void 1 obj_tar_id	
+			endif
+		jump_to_label add_po
+		endif
+		lock opera
+		if "<&Target_me_list.CONTAINS_KEY <&obj_tar_id&>&>" == true
+			Target_me_list.remove "<&obj_tar_id&>"
+			if tar_tag == 1
+				if "<&char_list.CONTAINS_KEY <&obj_tar_id&>&>" == true
+					"char_list.#$<&obj_tar_id&>.team" = #i0
+				endif
+			endif
+			call okno_ig
+		endif
+		unlock opera
+		if tar_tag == 1
+			call write_char_info void 1 obj_tar_id
+		endif
+	endif
+
+
+label add_po
+
+
+return void
+////////////////////////////////////
+FUNCTION tar_uns
+define int obj_id_uns 0
+define arraylist ppl_near 0
+define int prot 0
+packet.read_byte null
+packet.read_int32 obj_id_uns
+
+if obj_id_uns == CHAR_ID
+	if my_tar_un != 1
+		if TARGET_ID != obj_id_uns
+			if anti_mira == 1
+				if CHAR_CUR_HP != 0
+					target "<&my_target_id&>"
+				endif
+			endif
+		endif
+	else
+	my_tar_un = 0
+	endif
+jump_to_label un_lab
+endif
+lock opera
+if "<&Target_me_list.CONTAINS_KEY <&obj_id_uns&>&>" == true
+	Target_me_list.remove "<&obj_id_uns&>"
+	if tar_tag == 1
+		if "<&char_list.CONTAINS_KEY <&obj_id_uns&>&>" == true
+			"char_list.#$<&obj_id_uns&>.team" = #i0
+			prot = 1
+		endif
+		
+	endif
+	call okno_ig
+
+endif
+
+unlock opera
+if prot == 1
+	if tar_tag == 1
+		call write_char_info void 1 obj_id_uns
+	endif
+endif
+label un_lab
+
+return void
+
+
+
+
+FUNCTION tp_to
+define int id_tp 0
+packet.read_byte null
+packet.read_int32 id_tp
+if id_tp == CHAR_ID
+lock opera
+Target_me_list.clear
+char_list.clear
+Shop_list.clear
+Shop_list2.clear
+unlock opera
+call okno_ig
+endif
+
+
+
+return void
+
+Function del_obj
+define int del_obj_id 0
+packet.read_byte null
+packet.read_int32 del_obj_id
+lock opera
+if "<&Target_me_list.CONTAINS_KEY <&del_obj_id&>&>" == true
+	Target_me_list.remove "<&del_obj_id&>"
+	call okno_ig
+endif
+if "<&char_list.CONTAINS_KEY <&del_obj_id&>&>" == true
+	char_list.remove "<&del_obj_id&>"
+endif
+
+unlock opera
+
+
+return void
+
+
+FUNCTION bypas
+define string temp_byp ""
+define string l2net "l2net"
+
+define int kic 0
+define int max_cou 0
+define int min_cou 13
+
+define int kic2 0
+define int max_cou2 0
+define int min_cou2 13
+
+define int pag_in 11
+define int pag_c 0
+
+packet.read_byte null
+packet.read_string temp_byp
+if "temp_byp.CONTAINS l2net" == true
+	if "byp1.CONTAINS temp_byp" == true
+		auto_pots = 0
+		call okno_ig
+		jump_to_label byp_end
+	endif
+	if "byp2.CONTAINS temp_byp" == true
+		auto_pots = 1
+		call okno_ig
+		jump_to_label byp_end
+	endif
+	if "byp3.CONTAINS temp_byp" == true
+		anti_mira = 0
+		call okno_ig
+		jump_to_label byp_end
+	endif
+	if "byp4.CONTAINS temp_byp" == true
+		anti_mira = 1
+		call okno_ig
+		jump_to_label byp_end
+	endif
+	if "byp5.CONTAINS temp_byp" == true
+		anti_disa = 0
+		call okno_ig
+		jump_to_label byp_end
+	endif
+	if "byp6.CONTAINS temp_byp" == true
+		
+		if id_wep == 0
+			anti_disa = 0
+		else
+			anti_disa = 1
+		endif
+		call okno_ig
+		jump_to_label byp_end
+	endif
+	if "temp_byp.CONTAINS #$l2net_target" == true
+		max_cou = temp_byp.count - min_cou
+		kic = temp_byp.SUBSTRING min_cou max_cou
+		target "<&kic&>"
+	endif
+////////////////////////////////////////////////////////////////self
+	if "byp8.CONTAINS temp_byp" == true
+		fake_gm = 0
+		call write_user_info
+		call okno_adv_ig
+		jump_to_label byp_end
+	endif
+	if "byp9.CONTAINS temp_byp" == true
+		fake_gm = 1
+		call write_user_info
+		call okno_adv_ig
+		jump_to_label byp_end
+	endif
+	if "byp10.CONTAINS temp_byp" == true
+		fake_hero = 0
+		call write_user_info
+		call okno_adv_ig
+		jump_to_label byp_end
+	endif
+	if "byp11.CONTAINS temp_byp" == true
+		fake_hero = 1
+		call write_user_info
+		call okno_adv_ig
+		jump_to_label byp_end
+	endif
+	if "byp12.CONTAINS temp_byp" == true
+		fake_agh = 0
+		call write_user_info
+		call okno_adv_ig
+		jump_to_label byp_end
+	endif
+	if "byp13.CONTAINS temp_byp" == true
+		fake_agh = 1
+		call write_user_info
+		call okno_adv_ig
+		jump_to_label byp_end
+	endif	
+	if "byp22.CONTAINS temp_byp" == true
+		osd = 0
+		call okno_adv_ig
+		jump_to_label byp_end
+	endif
+	if "byp23.CONTAINS temp_byp" == true
+		osd = 1
+		call okno_adv_ig
+		jump_to_label byp_end
+	endif
+//////////////////////////////////////////////////////// other
+	if "byp14.CONTAINS temp_byp" == true
+		tar_tag = 0
+		call refr_chars
+		call okno_adv_ig
+		jump_to_label byp_end
+	endif
+	if "byp15.CONTAINS temp_byp" == true
+		tar_tag = 1
+		call refr_chars
+		call okno_adv_ig
+		jump_to_label byp_end
+	endif
+	if "byp16.CONTAINS temp_byp" == true
+		siege_alag = 0
+		call refr_chars
+		call okno_adv_ig
+		jump_to_label byp_end
+	endif
+	if "byp17.CONTAINS temp_byp" == true
+		siege_alag = 1
+		call refr_chars
+		call okno_adv_ig
+		jump_to_label byp_end
+	endif
+	if "byp18.CONTAINS temp_byp" == true
+		race_dif = 0
+		call refr_chars
+		call okno_adv_ig
+		jump_to_label byp_end
+	endif
+	if "byp19.CONTAINS temp_byp" == true
+		race_dif = 1
+		call refr_chars
+		call okno_adv_ig
+		jump_to_label byp_end
+	endif
+	if "byp20.CONTAINS temp_byp" == true
+		call refr_chars
+		heal_tit = 0
+		call okno_adv_ig
+		jump_to_label byp_end
+	endif
+	if "byp21.CONTAINS temp_byp" == true
+		heal_tit = 1
+		call refr_chars
+		call okno_adv_ig
+		jump_to_label byp_end
+	endif
+	if "temp_byp.CONTAINS #$l2net_agh_id" == true
+		max_cou2 = temp_byp.count - min_cou2
+		if temp_byp.count > 13
+		kic2 = temp_byp.SUBSTRING min_cou2 max_cou2
+		id_agha = kic2
+		call write_user_info
+		call okno_adv_ig
+		endif
+	endif
+
+
+	if "temp_byp.CONTAINS #$l2net_page" == true
+		pag_c = temp_byp.count - pag_in
+		kic2 = temp_byp.SUBSTRING pag_in pag_c
+		call okno_lista void 1 kic2
+	endif
+
+	if "temp_byp.CONTAINS #$l2net_next" == true
+		pag_c = temp_byp.count - pag_in
+		kic2 = temp_byp.SUBSTRING pag_in pag_c
+		pag_c = ppl_arr.count
+		pag_in = pag_c / 15
+		pag_in = pag_in + 1
+		if kic2 < pag_in
+			kic2 = kic2 + 1
+			call okno_lista void 1 kic2
+		else
+			call okno_lista void 1 pag_in
+		endif
+
+	endif
+	if "temp_byp.CONTAINS #$l2net_back" == true
+		pag_c = temp_byp.count - pag_in
+		kic2 = temp_byp.SUBSTRING pag_in pag_c
+		if kic2 > 1
+			kic2 = kic2 - 1
+			call okno_lista void 1 kic2
+		else
+			call okno_lista void 1 1
+		endif
+
+	endif
+
+
+
+else
+
+
+injectbb packet
+
+endif
+
+
+label byp_end
+
+return void
+
+Function my_tar
+
+packet.read_byte null
+packet.read_int32 my_target_id
+
+
+return void
+
+
+Function req_can_ta
+
+my_tar_un = 1
+
+return void
+
+Function sysmsg
+define string disa "Disarm has been removed."
+define string disa2 "Weapon Blockade has been removed."
+
+
+if anti_disa == 1
+	if "MESSAGE.CONTAINS disa" == true
+		print_text " zakladam <&id_wep&>"
+ 		inject "19 <&id_wep.get_hex32&> 00 00 00 00"
+	endif
+	if "MESSAGE.CONTAINS disa2" == true
+ 		inject "19 <&id_wep.get_hex32&> 00 00 00 00"
+	endif
+endif
+return void
+
+
+Function polec
+define string pol1 "a"
+define string pol2 "stop"
+define string pol3 "start"
+define string pol4 "o"
+define string pol5 "l"
+define string pol6 "c"
+
+
+if MESSAGE == pol1
+	call okno_ig
+endif
+if MESSAGE == pol2
+	anti_disa = 0
+	anti_mira = 0
+	auto_pots = 0
+	call okno_ig
+endif
+if MESSAGE == pol3
+	if id_wep == 0
+		anti_disa = 0
+	else
+		anti_disa = 1
+	endif
+	anti_mira = 1
+	auto_pots = 1
+	call okno_ig
+endif
+if MESSAGE == pol4
+call okno_adv_ig
+
+endif
+if MESSAGE == pol5
+call prep_okno_lista
+endif
+
+return void
+
+/////////////////////////////
+function add_class
+  class.ADD "#$H -Fi  (0)"
+  class.ADD "#$H -Wa  (1)"
+  class.ADD "#$H -Glad(2)"
+  class.ADD "#$H -Wl  (2)"
+  class.ADD "#$H -Kn  (1)"
+  class.ADD "#$H -Pal (2)"
+  class.ADD "#$H -DA  (2)"
+  class.ADD "#$H -Ro  (1)"
+  class.ADD "#$H -TH  (2)"
+  class.ADD "#$H -HE  (2)"
+  class.ADD "#$H -Hm  (0)"
+  class.ADD "#$H -Hw  (1)"
+  class.ADD "#$H -Sorc(2)"
+  class.ADD "#$H -Necr(2)"
+  class.ADD "#$H -Warl(2)"
+  class.ADD "#$H -Cl  (1)"
+  class.ADD "#$H -Bish(2)"
+  class.ADD "#$H -PP  (2)"
+  class.ADD "#$E -Ef  (0)"
+  class.ADD "#$E -Ek  (1)"
+  class.ADD "#$E -TK  (2)"
+  class.ADD "#$E -SwS (2)"
+  class.ADD "#$E -Es  (1)"
+  class.ADD "#$E -PW  (2)"
+  class.ADD "#$E -SR  (2)"
+  class.ADD "#$E -Em  (0)"
+  class.ADD "#$E -Ew  (1)"
+  class.ADD "#$E -SpS (2)"
+  class.ADD "#$E -ES  (2)"
+  class.ADD "#$E -Eo  (1)"
+  class.ADD "#$E -EE  (2)"
+  class.ADD "#$DE-Ef  (0)"
+  class.ADD "#$DE-Pk  (1)"
+  class.ADD "#$DE-SK  (2)"
+  class.ADD "#$DE-BD  (2)"
+  class.ADD "#$DE-Da  (1)"
+  class.ADD "#$DE-AW  (2)"
+  class.ADD "#$DE-PR  (2)"
+  class.ADD "#$DE-Dm  (0)"
+  class.ADD "#$DE-Dw  (1)"
+  class.ADD "#$DE-SH  (2)"
+  class.ADD "#$DE-PS  (2)"
+  class.ADD "#$DE-So  (1)"
+  class.ADD "#$DE-SE  (2)"
+  class.ADD "#$O -Of  (0)"
+  class.ADD "#$O -Or  (1)"
+  class.ADD "#$O -Des (2)"
+  class.ADD "#$O -Om  (1)"
+  class.ADD "#$O -Tyr (2)"
+  class.ADD "#$O -Om  (0)"
+  class.ADD "#$O -Os  (1)"
+  class.ADD "#$O -OL  (2)"
+  class.ADD "#$O -WC  (2)"
+  class.ADD "#$D -Df  (0)"
+  class.ADD "#$D -Sca (1)"
+  class.ADD "#$D -Bh  (2)"
+  class.ADD "#$D -Art (1)"
+  class.ADD "#$D -War (2)"
+ class.ADD "#$non"
+ class.ADD "#$non"
+ class.ADD "#$non"
+ class.ADD "#$non"
+ class.ADD "#$non"
+ class.ADD "#$non"
+ class.ADD "#$non"
+ class.ADD "#$non"
+ class.ADD "#$non"
+ class.ADD "#$non"
+ class.ADD "#$non"
+ class.ADD "#$non"
+ class.ADD "#$non"
+ class.ADD "#$non"
+ class.ADD "#$non"
+ class.ADD "#$non"
+ class.ADD "#$non"
+ class.ADD "#$non"
+ class.ADD "#$non"
+ class.ADD "#$non"
+ class.ADD "#$non"
+ class.ADD "#$non"
+ class.ADD "#$non"
+ class.ADD "#$non"
+ class.ADD "#$non"
+ class.ADD "#$non"
+ class.ADD "#$non"
+ class.ADD "#$non"
+ class.ADD "#$non"
+ class.ADD "#$non"
+  class.ADD "#$H -Dl  (3)"
+  class.ADD "#$H -WL  (3)"
+  class.ADD "#$H -PK  (3)"
+  class.ADD "#$H -HK  (3)"
+  class.ADD "#$H -Sag (3)"
+  class.ADD "#$H -Adv (3)"
+  class.ADD "#$H -Arch(3)"
+  class.ADD "#$H -Necr(3)"
+  class.ADD "#$H -AL  (3)"
+  class.ADD "#$H -Card(3)"
+  class.ADD "#$H -PP  (3)"
+  class.ADD "#$E -ET  (3)"
+  class.ADD "#$E -SWS (3)"
+  class.ADD "#$E -WR  (3)"
+  class.ADD "#$E -SR  (3)"
+  class.ADD "#$E -SPS (3)"
+  class.ADD "#$E -ES  (3)"
+  class.ADD "#$E -EE  (3)"
+  class.ADD "#$DE-SK  (3)"
+  class.ADD "#$DE-BD  (3)"
+  class.ADD "#$DE-GH  (3)"
+  class.ADD "#$DE-PR  (3)"
+  class.ADD "#$DE-SH  (3)"
+  class.ADD "#$DE-PS  (3)"
+  class.ADD "#$DE-SE  (3)"
+  class.ADD "#$O -Tit (3)"
+  class.ADD "#$O -Gk  (3)"
+  class.ADD "#$O -OL  (3)"
+  class.ADD "#$O -WC  (3)"
+  class.ADD "#$D -FS  (3)"
+  class.ADD "#$D -Mae (3)"
+ class.ADD "#$non"
+ class.ADD "#$non"
+ class.ADD "#$non"
+ class.ADD "#$non"
+  class.ADD "#$K -Kms (0)"
+  class.ADD "#$K -Kfs (0)"
+  class.ADD "#$K -Kmt (1)"
+  class.ADD "#$K -Kfw (1)"
+  class.ADD "#$K -Ber (2)"
+  class.ADD "#$K -M-SB(2)"
+  class.ADD "#$K -F-SB(2)"
+  class.ADD "#$K -Arb (2)"
+  class.ADD "#$K -Db  (3)"
+  class.ADD "#$K -M-SH(3)"
+  class.ADD "#$K -F-SH(3)"
+  class.ADD "#$K -Tri (3)"
+  class.ADD "#$K -Ins (2)"
+  class.ADD "#$K -Judi(3)"
+return void
+/////////////////////
+Function class_name 1 id_class
+define string cl_name ""
+if id_class >= 0
+	if id_class < 137
+		cl_name = class.id_class
+	endif
+endif
+
+
+
+return cl_name
+
+function read_user_info
+
+packet.read_byte null
+packet.read_int32 pak.x
+packet.read_int32 pak.y
+packet.read_int32 pak.z
+packet.read_int32 pak.airship
+packet.read_int32 pak.uid
+packet.read_string pak.name
+packet.read_int32 pak.race
+packet.read_int32 pak.sex
+packet.read_int32 pak.class
+packet.read_int32 pak.lvl
+packet.read_int64 pak.exp // 8 bit ?
+packet.read_int32 pak.str
+packet.read_int32 pak.dex
+packet.read_int32 pak.con
+packet.read_int32 pak.int
+packet.read_int32 pak.wit
+packet.read_int32 pak.men
+packet.read_int32 pak.max_hp
+packet.read_int32 pak.cur_hp
+packet.read_int32 pak.max_mp
+packet.read_int32 pak.cur_mp
+packet.read_int32 pak.sp
+packet.read_int32 pak.cur_load
+packet.read_int32 pak.max_load
+packet.read_int32 pak.active_wep
+packet.read_int32 pak.uid_under
+packet.read_int32 pak.uid_rear
+packet.read_int32 pak.uid_lear
+packet.read_int32 pak.uid_neck
+packet.read_int32 pak.uid_rfinger
+packet.read_int32 pak.uid_lfinger
+packet.read_int32 pak.uid_head
+packet.read_int32 pak.uid_rhand
+packet.read_int32 pak.uid_lhand
+packet.read_int32 pak.uid_gloves
+packet.read_int32 pak.uid_chest
+packet.read_int32 pak.uid_legs
+packet.read_int32 pak.uid_feet
+packet.read_int32 pak.uid_back
+packet.read_int32 pak.uid_lrhand
+packet.read_int32 pak.uid_hair
+packet.read_int32 pak.uid_hair2
+packet.read_int32 pak.uid_rbracelet
+packet.read_int32 pak.uid_lbracelet
+packet.read_int32 pak.uid_deco1
+packet.read_int32 pak.uid_deco2
+packet.read_int32 pak.uid_deco3
+packet.read_int32 pak.uid_deco4
+packet.read_int32 pak.uid_deco5
+packet.read_int32 pak.uid_deco6
+packet.read_int32 pak.uid_belt
+packet.read_int32 pak.id_under
+packet.read_int32 pak.id_rear
+packet.read_int32 pak.id_lear
+packet.read_int32 pak.id_neck
+packet.read_int32 pak.id_rfinger
+packet.read_int32 pak.id_lfinger
+packet.read_int32 pak.id_head
+packet.read_int32 pak.id_rhand
+packet.read_int32 pak.id_lhand
+packet.read_int32 pak.id_gloves
+packet.read_int32 pak.id_chest
+packet.read_int32 pak.id_legs
+packet.read_int32 pak.id_feet
+packet.read_int32 pak.id_back
+packet.read_int32 pak.id_lrhand
+packet.read_int32 pak.id_hair
+packet.read_int32 pak.id_hair2
+packet.read_int32 pak.id_rbracelet
+packet.read_int32 pak.id_lbracelet
+packet.read_int32 pak.id_deco1
+packet.read_int32 pak.id_deco2
+packet.read_int32 pak.id_deco3
+packet.read_int32 pak.id_deco4
+packet.read_int32 pak.id_deco5
+packet.read_int32 pak.id_deco6
+packet.read_int32 pak.id_belt
+packet.read_int32 pak.aug_id_under
+packet.read_int32 pak.aug_id_rear
+packet.read_int32 pak.aug_id_lear
+packet.read_int32 pak.aug_id_neck
+packet.read_int32 pak.aug_id_rfinger
+packet.read_int32 pak.aug_id_lfinger
+packet.read_int32 pak.aug_id_head
+packet.read_int32 pak.aug_id_rhand
+packet.read_int32 pak.aug_id_lhand
+packet.read_int32 pak.aug_id_gloves
+packet.read_int32 pak.aug_id_chest
+packet.read_int32 pak.aug_id_legs
+packet.read_int32 pak.aug_id_feet
+packet.read_int32 pak.aug_id_back
+packet.read_int32 pak.aug_id_lrhand
+packet.read_int32 pak.aug_id_hair
+packet.read_int32 pak.aug_id_hair2
+packet.read_int32 pak.aug_id_rbracelet
+packet.read_int32 pak.aug_id_lbracelet
+packet.read_int32 pak.aug_id_deco1
+packet.read_int32 pak.aug_id_deco2
+packet.read_int32 pak.aug_id_deco3
+packet.read_int32 pak.aug_id_deco4
+packet.read_int32 pak.aug_id_deco5
+packet.read_int32 pak.aug_id_deco6
+packet.read_int32 pak.aug_id_belt
+packet.read_int32 pak.tal_count
+packet.read_int32 pak.clo_status
+packet.read_int32 pak.patak
+packet.read_int32 pak.patakspd // obadac
+packet.read_int32 pak.pdef
+packet.read_int32 pak.evasion
+packet.read_int32 pak.accu
+packet.read_int32 pak.crit
+packet.read_int32 pak.matak
+packet.read_int32 pak.matakspd
+packet.read_int32 null
+packet.read_int32 pak.mdef
+packet.read_int32 pak.pvpflag
+packet.read_int32 pak.karma
+packet.read_int32 pak.runspd
+packet.read_int32 pak.walkspd
+packet.read_int32 pak.runspd // swiming
+packet.read_int32 pak.walkspd //swiming
+packet.read_int32 null
+packet.read_int32 null
+packet.read_int32 pak.is_flying_run
+packet.read_int32 pak.is_flying_walk
+packet.read_double pak.move_mult // double ?
+packet.read_double pak.atak_spd_mult //double?
+packet.read_double pak.coli_radious //double
+packet.read_double pak.coli_heigh //double
+packet.read_int32 pak.hairstyle
+packet.read_int32 pak.haircolor
+packet.read_int32 pak.face
+packet.read_int32 pak.is_gm
+packet.read_string pak.title
+packet.read_int32 pak.clanid
+packet.read_int32 pak.clancrestid
+packet.read_int32 pak.alyid
+packet.read_int32 pak.alycrestid
+packet.read_int32 pak.relation
+packet.read_byte pak.mount_type
+packet.read_byte pak.storetype
+packet.read_byte pak.dwarvencraft
+packet.read_int32 pak.pkkills
+packet.read_int32 pak.pvpkills // debug
+packet.read_int16 pak.cub_size
+if pak.cub_size > 0
+	for a 0 "<&pak.cub_size&>" 1
+		packet.read_int16 pak."cub_<&a&>_id"
+	next
+endif
+packet.read_byte pak.find_pt
+packet.read_int32 pak.abnormaleffect
+packet.read_byte pak.flymounted
+packet.read_int32 pak.clan_priv
+packet.read_int16 pak.recleft
+packet.read_int16 pak.rechave
+packet.read_int32 pak.mount_npc_id
+packet.read_int16 pak.inv_limit
+packet.read_int32 pak.class_id
+packet.read_int32 pak.seffect //efekt duela ?
+packet.read_int32 pak.max_cp
+packet.read_int32 pak.cur_cp
+packet.read_byte pak.ismounted
+packet.read_byte pak.team // 1 nieb - 2 red
+packet.read_int32 pak.clancrestlargeid
+packet.read_byte pak.nobles
+packet.read_byte pak.hero
+packet.read_byte pak.isfishing
+packet.read_int32 pak.fishx
+packet.read_int32 pak.fishy
+packet.read_int32 pak.fishz
+packet.read_int32 pak.namecolor
+packet.read_byte pak.isrunning
+packet.read_int32 pak.pledgeclass
+packet.read_int32 pak.pledgetype
+packet.read_int32 pak.appearance
+packet.read_int32 pak.cursedwep
+packet.read_int32 pak.trans_id
+packet.read_int16 pak.attack_att
+packet.read_int16 pak.attack_elem
+packet.read_int16 pak.def_fire 
+packet.read_int16 pak.def_water 
+packet.read_int16 pak.def_wind 
+packet.read_int16 pak.def_earth 
+packet.read_int16 pak.def_holy 
+packet.read_int16 pak.def_dark 
+packet.read_int32 pak.agh_id
+packet.read_int32 pak.fame
+packet.read_int32 pak.mini_map
+packet.read_int32 pak.vital
+packet.read_int32 pak.effect
+packet.read_int32 pak.terit_id
+packet.read_int32 pak.xx_ct23
+packet.read_int32 pak.terit_id
+
+call write_user_info
+return void
+
+
+
+function write_user_info
+define BYTEBUFFER pak_send 3000
+if pak.uid != 0
+pak_send.write_byte #i50
+pak_send.write_int32 CHAR_X
+pak_send.write_int32 CHAR_y
+pak_send.write_int32 CHAR_z
+pak_send.write_int32 pak.airship
+pak_send.write_int32 pak.uid
+pak_send.write_string pak.name
+pak_send.write_int32 pak.race
+pak_send.write_int32 pak.sex
+pak_send.write_int32 pak.class
+pak_send.write_int32 pak.lvl
+pak_send.write_int64 pak.exp // 8 bit ?
+pak_send.write_int32 pak.str
+pak_send.write_int32 pak.dex
+pak_send.write_int32 pak.con
+pak_send.write_int32 pak.int
+pak_send.write_int32 pak.wit
+pak_send.write_int32 pak.men
+pak_send.write_int32 CHAR_MAX_HP
+pak_send.write_int32 CHAR_CUR_HP
+pak_send.write_int32 CHAR_MAX_MP
+pak_send.write_int32 CHAR_CUR_MP
+pak_send.write_int32 pak.sp
+pak_send.write_int32 pak.cur_load
+pak_send.write_int32 pak.max_load
+pak_send.write_int32 pak.active_wep
+pak_send.write_int32 pak.uid_under
+pak_send.write_int32 pak.uid_rear
+pak_send.write_int32 pak.uid_lear
+pak_send.write_int32 pak.uid_neck
+pak_send.write_int32 pak.uid_rfinger
+pak_send.write_int32 pak.uid_lfinger
+pak_send.write_int32 pak.uid_head
+pak_send.write_int32 pak.uid_rhand
+pak_send.write_int32 pak.uid_lhand
+pak_send.write_int32 pak.uid_gloves
+pak_send.write_int32 pak.uid_chest
+pak_send.write_int32 pak.uid_legs
+pak_send.write_int32 pak.uid_feet
+pak_send.write_int32 pak.uid_back
+pak_send.write_int32 pak.uid_lrhand
+pak_send.write_int32 pak.uid_hair
+pak_send.write_int32 pak.uid_hair2
+pak_send.write_int32 pak.uid_rbracelet
+pak_send.write_int32 pak.uid_lbracelet
+pak_send.write_int32 pak.uid_deco1
+pak_send.write_int32 pak.uid_deco2
+pak_send.write_int32 pak.uid_deco3
+pak_send.write_int32 pak.uid_deco4
+pak_send.write_int32 pak.uid_deco5
+pak_send.write_int32 pak.uid_deco6
+pak_send.write_int32 pak.uid_belt
+pak_send.write_int32 pak.id_under
+pak_send.write_int32 pak.id_rear
+pak_send.write_int32 pak.id_lear
+pak_send.write_int32 pak.id_neck
+pak_send.write_int32 pak.id_rfinger
+pak_send.write_int32 pak.id_lfinger
+pak_send.write_int32 pak.id_head
+pak_send.write_int32 pak.id_rhand
+pak_send.write_int32 pak.id_lhand
+pak_send.write_int32 pak.id_gloves
+pak_send.write_int32 pak.id_chest
+pak_send.write_int32 pak.id_legs
+pak_send.write_int32 pak.id_feet
+pak_send.write_int32 pak.id_back
+pak_send.write_int32 pak.id_lrhand
+pak_send.write_int32 pak.id_hair
+pak_send.write_int32 pak.id_hair2
+pak_send.write_int32 pak.id_rbracelet
+pak_send.write_int32 pak.id_lbracelet
+pak_send.write_int32 pak.id_deco1
+pak_send.write_int32 pak.id_deco2
+pak_send.write_int32 pak.id_deco3
+pak_send.write_int32 pak.id_deco4
+pak_send.write_int32 pak.id_deco5
+pak_send.write_int32 pak.id_deco6
+pak_send.write_int32 pak.id_belt
+pak_send.write_int32 pak.aug_id_under
+pak_send.write_int32 pak.aug_id_rear
+pak_send.write_int32 pak.aug_id_lear
+pak_send.write_int32 pak.aug_id_neck
+pak_send.write_int32 pak.aug_id_rfinger
+pak_send.write_int32 pak.aug_id_lfinger
+pak_send.write_int32 pak.aug_id_head
+pak_send.write_int32 pak.aug_id_rhand
+pak_send.write_int32 pak.aug_id_lhand
+pak_send.write_int32 pak.aug_id_gloves
+pak_send.write_int32 pak.aug_id_chest
+pak_send.write_int32 pak.aug_id_legs
+pak_send.write_int32 pak.aug_id_feet
+pak_send.write_int32 pak.aug_id_back
+pak_send.write_int32 pak.aug_id_lrhand
+pak_send.write_int32 pak.aug_id_hair
+pak_send.write_int32 pak.aug_id_hair2
+pak_send.write_int32 pak.aug_id_rbracelet
+pak_send.write_int32 pak.aug_id_lbracelet
+pak_send.write_int32 pak.aug_id_deco1
+pak_send.write_int32 pak.aug_id_deco2
+pak_send.write_int32 pak.aug_id_deco3
+pak_send.write_int32 pak.aug_id_deco4
+pak_send.write_int32 pak.aug_id_deco5
+pak_send.write_int32 pak.aug_id_deco6
+pak_send.write_int32 pak.aug_id_belt
+pak_send.write_int32 pak.tal_count
+pak_send.write_int32 pak.clo_status
+pak_send.write_int32 pak.patak
+pak_send.write_int32 pak.patakspd // obadac
+pak_send.write_int32 pak.pdef
+pak_send.write_int32 pak.evasion
+pak_send.write_int32 pak.accu
+pak_send.write_int32 pak.crit
+pak_send.write_int32 pak.matak
+pak_send.write_int32 pak.matakspd
+pak_send.write_int32 null
+pak_send.write_int32 pak.mdef
+pak_send.write_int32 pak.pvpflag
+pak_send.write_int32 pak.karma
+pak_send.write_int32 pak.runspd
+pak_send.write_int32 pak.walkspd
+pak_send.write_int32 pak.runspd // swiming
+pak_send.write_int32 pak.walkspd //swiming
+pak_send.write_int32 null
+pak_send.write_int32 null
+pak_send.write_int32 pak.is_flying_run
+pak_send.write_int32 pak.is_flying_walk
+pak_send.write_double pak.move_mult // double ?
+pak_send.write_double pak.atak_spd_mult //double?
+pak_send.write_double pak.coli_radious //double
+pak_send.write_double pak.coli_heigh //double
+pak_send.write_int32 pak.hairstyle
+pak_send.write_int32 pak.haircolor
+pak_send.write_int32 pak.face
+if fake_gm == 1
+	pak_send.write_int32 #i1
+else
+	pak_send.write_int32 pak.is_gm
+endif
+pak_send.write_string pak.title
+pak_send.write_int32 pak.clanid
+pak_send.write_int32 pak.clancrestid
+pak_send.write_int32 pak.alyid
+pak_send.write_int32 pak.alycrestid
+pak_send.write_int32 pak.relation
+pak_send.write_byte pak.mount_type
+pak_send.write_byte pak.storetype
+pak_send.write_byte pak.dwarvencraft
+pak_send.write_int32 pak.pkkills
+pak_send.write_int32 pak.pvpkills // debug
+pak_send.write_int16 pak.cub_size
+if pak.cub_size > 0
+	for a 0 "<&pak.cub_size&>" 1
+		pak_send.write_int16 pak."cub_<&a&>_id"
+	next
+endif
+pak_send.write_byte pak.find_pt
+pak_send.write_int32 pak.abnormaleffect
+pak_send.write_byte pak.flymounted
+pak_send.write_int32 pak.clan_priv
+pak_send.write_int16 pak.recleft
+pak_send.write_int16 pak.rechave
+pak_send.write_int32 pak.mount_npc_id
+pak_send.write_int16 pak.inv_limit
+pak_send.write_int32 pak.class_id
+pak_send.write_int32 pak.seffect //efekt duela ?
+pak_send.write_int32 CHAR_MAX_CP
+pak_send.write_int32 CHAR_CUR_CP
+pak_send.write_byte pak.ismounted
+pak_send.write_byte pak.team // 1 nieb - 2 red
+pak_send.write_int32 pak.clancrestlargeid
+pak_send.write_byte pak.nobles
+if fake_hero == 1
+	pak_send.write_byte #i1
+else
+	pak_send.write_byte pak.hero
+endif
+pak_send.write_byte pak.isfishing
+pak_send.write_int32 pak.fishx
+pak_send.write_int32 pak.fishy
+pak_send.write_int32 pak.fishz
+pak_send.write_int32 pak.namecolor
+pak_send.write_byte pak.isrunning
+pak_send.write_int32 pak.pledgeclass
+pak_send.write_int32 pak.pledgetype
+pak_send.write_int32 pak.appearance
+pak_send.write_int32 pak.cursedwep
+pak_send.write_int32 pak.trans_id
+pak_send.write_int16 pak.attack_att
+pak_send.write_int16 pak.attack_elem
+pak_send.write_int16 pak.def_fire 
+pak_send.write_int16 pak.def_water 
+pak_send.write_int16 pak.def_wind 
+pak_send.write_int16 pak.def_earth 
+pak_send.write_int16 pak.def_holy 
+pak_send.write_int16 pak.def_dark 
+if fake_agh == 1
+	pak_send.write_int32 id_agha
+else
+	pak_send.write_int32 pak.agh_id
+endif
+pak_send.write_int32 pak.fame
+pak_send.write_int32 pak.mini_map
+pak_send.write_int32 pak.vital
+pak_send.write_int32 pak.effect
+pak_send.write_int32 pak.terit_id
+pak_send.write_int32 pak.xx_ct23
+pak_send.write_int32 pak.terit_id
+
+
+pak_send.TRIM_TO_INDEX
+
+INJECTBB_CLIENT pak_send
+endif
+return void
+
+
+FUNCTION read_char_info
+define int kik 0
+define char_nfo cha_pak 0
+
+packet.read_byte null
+packet.read_int32 cha_pak.x
+packet.read_int32 cha_pak.y
+packet.read_int32 cha_pak.z
+packet.read_int32 null
+packet.read_int32 cha_pak.uid
+packet.read_string cha_pak.name
+packet.read_int32 cha_pak.race
+packet.read_int32 cha_pak.sex
+packet.read_int32 cha_pak.class
+packet.read_int32 cha_pak.id_under
+packet.read_int32 cha_pak.id_head
+packet.read_int32 cha_pak.id_rhand
+packet.read_int32 cha_pak.id_lhand
+packet.read_int32 cha_pak.id_gloves
+packet.read_int32 cha_pak.id_chest
+packet.read_int32 cha_pak.id_legs
+packet.read_int32 cha_pak.id_feet
+packet.read_int32 cha_pak.id_back
+packet.read_int32 cha_pak.id_lrhand
+packet.read_int32 cha_pak.id_hair
+packet.read_int32 cha_pak.id_hair2
+packet.read_int32 cha_pak.id_rbracklet
+packet.read_int32 cha_pak.id_lbracklet
+packet.read_int32 cha_pak.id_deco1
+packet.read_int32 cha_pak.id_deco2
+packet.read_int32 cha_pak.id_deco3
+packet.read_int32 cha_pak.id_deco4
+packet.read_int32 cha_pak.id_deco5
+packet.read_int32 cha_pak.id_deco6
+packet.read_int32 cha_pak.id_belt
+packet.read_int32 cha_pak.aug_id_under
+packet.read_int32 cha_pak.aug_id_head
+packet.read_int32 cha_pak.aug_id_rhand
+packet.read_int32 cha_pak.aug_id_lhand
+packet.read_int32 cha_pak.aug_id_gloves
+packet.read_int32 cha_pak.aug_id_chest
+packet.read_int32 cha_pak.aug_id_legs
+packet.read_int32 cha_pak.aug_id_feet
+packet.read_int32 cha_pak.aug_id_back
+packet.read_int32 cha_pak.aug_id_lrhand
+packet.read_int32 cha_pak.aug_id_hair
+packet.read_int32 cha_pak.aug_id_hair2
+packet.read_int32 cha_pak.aug_id_rbracklet
+packet.read_int32 cha_pak.aug_id_lbracklet
+packet.read_int32 cha_pak.aug_id_deco1
+packet.read_int32 cha_pak.aug_id_deco2
+packet.read_int32 cha_pak.aug_id_deco3
+packet.read_int32 cha_pak.aug_id_deco4
+packet.read_int32 cha_pak.aug_id_deco5
+packet.read_int32 cha_pak.aug_id_deco6
+packet.read_int32 cha_pak.aug_id_belt
+packet.read_int32 null
+packet.read_int32 null
+packet.read_int32 cha_pak.pvpflag
+packet.read_int32 cha_pak.karma
+packet.read_int32 cha_pak.matakspd
+packet.read_int32 cha_pak.patakspd
+packet.read_int32 null
+packet.read_int32 null
+packet.read_int32 cha_pak.runspd
+packet.read_int32 cha_pak.walkspd
+packet.read_int32 null
+packet.read_int32 null
+packet.read_int32 null
+packet.read_int32 null
+packet.read_int32 null
+packet.read_int32 null
+packet.READ_DOUBLE cha_pak.spdmulti
+packet.READ_DOUBLE cha_pak.atakspdmulti
+packet.READ_DOUBLE cha_pak.colisradio
+packet.READ_DOUBLE cha_pak.coliheigh
+packet.read_int32 cha_pak.hairstyle
+packet.read_int32 cha_pak.haircolor
+packet.read_int32 cha_pak.face
+packet.read_string cha_pak.title
+packet.read_int32 cha_pak.clanid
+packet.read_int32 cha_pak.clancrestid
+packet.read_int32 cha_pak.alyid
+packet.read_int32 cha_pak.alycrestid
+packet.read_int32 null
+packet.read_byte cha_pak.issitting
+packet.read_byte cha_pak.isrunning
+packet.read_byte cha_pak.incombat
+packet.read_byte cha_pak.isdead
+packet.read_byte cha_pak.invis
+packet.read_byte cha_pak.mount_type
+packet.read_byte cha_pak.store_type
+packet.read_int16 cha_pak.cub_size
+if cha_pak.cub_size > 0
+	for a 0 "<&cha_pak.cub_size&>" 1
+		packet.read_int16 cha_pak."cub_<&a&>_id"
+	next
+endif
+packet.read_byte cha_pak.find_pt
+packet.read_int32 cha_pak.abnormaleffect
+packet.read_byte cha_pak.is_flying
+packet.read_int16 cha_pak.rechave
+packet.read_int32 cha_pak.mount_npc_id
+packet.read_int32 cha_pak.class_id_2
+packet.read_int32 null
+packet.read_byte cha_pak.ismounted
+packet.read_byte cha_pak.team
+packet.read_int32 cha_pak.clancrestlargeid
+packet.read_byte cha_pak.nobles
+packet.read_byte cha_pak.hero
+packet.read_byte cha_pak.isfishing
+packet.read_int32 cha_pak.fishx
+packet.read_int32 cha_pak.fishy
+packet.read_int32 cha_pak.fishz
+packet.read_int32 cha_pak.namecolor
+packet.read_int32 cha_pak.heading
+packet.read_int32 cha_pak.pledgeclass
+packet.read_int32 cha_pak.pledgetype
+packet.read_int32 cha_pak.titlecolor
+packet.read_int32 cha_pak.cursedwep
+packet.read_int32 cha_pak.rep_score
+packet.read_int32 cha_pak.trans_id
+packet.read_int32 cha_pak.agh_id
+packet.read_int32 cha_pak.xx1
+packet.read_int32 cha_pak.effect
+packet.read_int32 cha_pak.terit_id
+packet.read_int32 cha_pak.xx2
+packet.read_int32 null 		//terit id
+lock opera
+if "<&char_list.CONTAINS_KEY <&cha_pak.uid&>&>" == true
+	if "<&char_list.#$<&cha_pak.uid&>.team&>" != 0
+		cha_pak.team = "char_list.#$<&cha_pak.uid&>.team"
+	endif
+	char_list.remove "<&cha_pak.uid&>"
+endif
+char_list.add cha_pak "<&cha_pak.uid&>"
+unlock opera
+
+call write_char_info void 1 cha_pak.uid
+
+return void
+
+//////////////////////////////////////////////////////write CHAR
+
+Function write_char_info 1 cha_uid
+
+define BYTEBUFFER cha_pak_send 2500
+
+lock opera
+if cha_uid != 0
+if "<&char_list.CONTAINS_KEY <&cha_uid&>&>" == true
+
+cha_pak_send.write_byte #i49
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.x"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.y"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.z"
+cha_pak_send.write_int32 null
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.uid"
+cha_pak_send.write_string "char_list.#$<&cha_uid&>.name"
+if race_dif == 1
+	if ( "char_list.#$<&cha_uid&>.class" == 16 ) || ( "char_list.#$<&cha_uid&>.class" == 97 )
+		cha_pak_send.write_int32 #i0
+	else
+		cha_pak_send.write_int32 #i4
+	endif
+else
+	cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.race"
+endif
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.sex"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.class"
+if siege_alag == 1
+cha_pak_send.write_int32 null
+cha_pak_send.write_int32 null
+cha_pak_send.write_int32 null
+cha_pak_send.write_int32 null
+cha_pak_send.write_int32 null
+cha_pak_send.write_int32 null
+cha_pak_send.write_int32 null
+cha_pak_send.write_int32 null
+cha_pak_send.write_int32 null
+cha_pak_send.write_int32 null
+cha_pak_send.write_int32 null
+cha_pak_send.write_int32 null
+cha_pak_send.write_int32 null
+cha_pak_send.write_int32 null
+cha_pak_send.write_int32 null
+cha_pak_send.write_int32 null
+cha_pak_send.write_int32 null
+cha_pak_send.write_int32 null
+cha_pak_send.write_int32 null
+cha_pak_send.write_int32 null
+cha_pak_send.write_int32 null
+cha_pak_send.write_int32 null
+cha_pak_send.write_int32 null
+cha_pak_send.write_int32 null
+cha_pak_send.write_int32 null
+cha_pak_send.write_int32 null
+cha_pak_send.write_int32 null
+cha_pak_send.write_int32 null
+cha_pak_send.write_int32 null
+cha_pak_send.write_int32 null
+cha_pak_send.write_int32 null
+cha_pak_send.write_int32 null
+cha_pak_send.write_int32 null
+cha_pak_send.write_int32 null
+cha_pak_send.write_int32 null
+cha_pak_send.write_int32 null
+cha_pak_send.write_int32 null
+cha_pak_send.write_int32 null
+cha_pak_send.write_int32 null
+cha_pak_send.write_int32 null
+cha_pak_send.write_int32 null
+cha_pak_send.write_int32 null
+else
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.id_under"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.id_head"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.id_rhand"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.id_lhand"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.id_gloves"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.id_chest"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.id_legs"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.id_feet"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.id_back"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.id_lrhand"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.id_hair"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.id_hair2"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.id_rbracklet"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.id_lbracklet"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.id_deco1"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.id_deco2"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.id_deco3"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.id_deco4"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.id_deco5"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.id_deco6"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.id_belt"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.aug_id_under"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.aug_id_head"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.aug_id_rhand"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.aug_id_lhand"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.aug_id_gloves"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.aug_id_chest"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.aug_id_legs"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.aug_id_feet"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.aug_id_back"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.aug_id_lrhand"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.aug_id_hair"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.aug_id_hair2"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.aug_id_rbracklet"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.aug_id_lbracklet"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.aug_id_deco1"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.aug_id_deco2"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.aug_id_deco3"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.aug_id_deco4"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.aug_id_deco5"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.aug_id_deco6"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.aug_id_belt"
+endif
+cha_pak_send.write_int32 null
+cha_pak_send.write_int32 null
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.pvpflag"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.karma"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.matakspd"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.patakspd"
+cha_pak_send.write_int32 null
+cha_pak_send.write_int32 null
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.runspd"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.walkspd"
+cha_pak_send.write_int32 null
+cha_pak_send.write_int32 null
+cha_pak_send.write_int32 null
+cha_pak_send.write_int32 null
+cha_pak_send.write_int32 null
+cha_pak_send.write_int32 null
+cha_pak_send.write_DOUBLE "char_list.#$<&cha_uid&>.spdmulti"
+cha_pak_send.write_DOUBLE "char_list.#$<&cha_uid&>.atakspdmulti"
+cha_pak_send.write_DOUBLE "char_list.#$<&cha_uid&>.colisradio"
+cha_pak_send.write_DOUBLE "char_list.#$<&cha_uid&>.coliheigh"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.hairstyle"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.haircolor"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.face"
+if heal_tit == 1
+	if ( "char_list.#$<&cha_uid&>.class" == 16 ) || ( "char_list.#$<&cha_uid&>.class" == 97 )
+		cha_pak_send.write_string "#$ == BISHOP == "
+	else
+		if ( "char_list.#$<&cha_uid&>.class" == 43 ) || ( "char_list.#$<&cha_uid&>.class" == 112 )
+			cha_pak_send.write_string "#$ = SE = "
+		else
+			if ( "char_list.#$<&cha_uid&>.class" == 30 ) || ( "char_list.#$<&cha_uid&>.class" == 105 )
+				cha_pak_send.write_string "#$ = EE = "
+			else
+			
+			cha_pak_send.write_string "#$ "
+			endif
+
+		endif
+		
+	endif
+else
+	cha_pak_send.write_string "char_list.#$<&cha_uid&>.title"
+endif
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.clanid"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.clancrestid"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.alyid"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.alycrestid"
+cha_pak_send.write_int32 null
+cha_pak_send.write_byte "char_list.#$<&cha_uid&>.issitting"
+cha_pak_send.write_byte "char_list.#$<&cha_uid&>.isrunning"
+cha_pak_send.write_byte "char_list.#$<&cha_uid&>.incombat"
+cha_pak_send.write_byte "char_list.#$<&cha_uid&>.isdead"
+cha_pak_send.write_byte "char_list.#$<&cha_uid&>.invis"
+cha_pak_send.write_byte "char_list.#$<&cha_uid&>.mount_type"
+cha_pak_send.write_byte "char_list.#$<&cha_uid&>.store_type"
+cha_pak_send.write_int16 "char_list.#$<&cha_uid&>.cub_size"
+if "char_list.#$<&cha_uid&>.cub_size" > 0
+	for a 0 "<&char_list.#$<&cha_uid&>.cub_size&>" 1
+		cha_pak_send.write_int16 "char_list.#$<&cha_uid&>.cub_<&a&>_id"
+	next
+endif
+cha_pak_send.write_byte "char_list.#$<&cha_uid&>.find_pt"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.abnormaleffect"
+cha_pak_send.write_byte "char_list.#$<&cha_uid&>.is_flying"
+cha_pak_send.write_int16 "char_list.#$<&cha_uid&>.rechave"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.mount_npc_id"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.class_id_2"
+cha_pak_send.write_int32 null
+cha_pak_send.write_byte "char_list.#$<&cha_uid&>.ismounted"
+cha_pak_send.write_byte "char_list.#$<&cha_uid&>.team"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.clancrestlargeid"
+cha_pak_send.write_byte "char_list.#$<&cha_uid&>.nobles"
+cha_pak_send.write_byte "char_list.#$<&cha_uid&>.hero"
+cha_pak_send.write_byte "char_list.#$<&cha_uid&>.isfishing"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.fishx"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.fishy"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.fishz"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.namecolor"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.heading"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.pledgeclass"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.pledgetype"
+if heal_tit == 1
+	cha_pak_send.write_int32 #i1048575
+else
+	cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.titlecolor"
+endif
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.cursedwep"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.rep_score"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.trans_id"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.agh_id"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.xx1"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.effect"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.terit_id"
+cha_pak_send.write_int32 "char_list.#$<&cha_uid&>.xx2"
+cha_pak_send.write_int32 null 		//terit id
+cha_pak_send.TRIM_TO_INDEX
+
+INJECTBB_CLIENT cha_pak_send
+call shop_send void 1 cha_uid
+endif // char list.cou != 0
+endif
+unlock opera
+return void
+////////////////////////////////////////////////////////// fun pod okno
+Function refr_chars
+
+// dodac delete object
+for a 0 "<&char_list.count&>" 1
+	if race_dif == 1
+	inject_client "08 <&char_list.a.uid.get_hex32&> 00 00 00 00"
+	endif
+	call write_char_info void 1 char_list.a.uid
+	
+next
+
+return void
+////////////////////////////////////////////////////////
+function okno_adv_ig
+Define bytebuffer okno 6000
+define int p1 25
+define int p2 5
+define int p3 0
+define int max_tab 0
+define int max_tab__l 0
+
+
+
+define string html_string ""
+Define string htm_1 "<html>"
+Define string htm_2 "</CENTER></body></html>"
+Define string htm_3 "</CENTER>"
+Define string htm_4 "<title>"
+Define string htm_5 "</title>"
+Define string htm_6 "<body><CENTER>"
+Define string on_t "ON"
+Define string off_t "OFF"
+
+Define string mp_p "MP: "
+Define string hp_p "HP: "
+Define string cp_p "CP: "
+
+
+Define string kol1 "<font color=\"LEVEL\">" // zulty
+Define string kol2 "<font color=\"00FFFF\">" // morski
+Define string kol3 "<font color=\"FF0000\">"  // red
+Define string kol_end "</font>"
+
+Define string ent "<br>"
+Define string spc "  "
+Define string lin "--------------------------------------------------"
+
+
+
+// guziki - linki
+
+Define string gu1 "<button value=\""  // tu napis
+Define string gu2 "\" action=\"" //zatym bypas
+Define string gu3 "\" width=30 height=21 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\">"
+
+Define string gu4 "<a action=\""  //bypass
+Define string gu5 "\">" //napis
+Define string gu6 "</a>" 
+
+/// wpis
+Define string wp1 "<edit var=\"" // zatym zmienna
+Define string wp2 "\" width=50>"
+Define string wp3 "$agh_id"
+//
+// tabela
+Define string tab1 "<table width=280 border=0 bgcolor=\"444444\">"     
+Define string tab2 "</table>"
+Define string tab3 "<td>"
+Define string tab4 "</td>"
+Define string tab5 "<table width=260 border=0>" 
+Define string tab6 "<tr>"
+Define string tab7 "</tr>"
+//
+define string text "Advanced Settings"
+define string text2 "Self: "
+define string text3 "Others:"
+define string text4 "Fake GM:"
+define string text5 "Fake Hero:"
+define string text6 "it fix hellbound map"
+define string text7 "fake hero glow"
+define string text8 "Fake Aghation:"
+define string text9 "gues what ;P"
+define string text10 "Aghation ID:"
+define string text11 "Target Tag:"
+define string text12 "Red circle on ppl  who target u"
+define string text13 "Siege Anti Lag:"
+define string text14 "ppl without armor/wep"
+define string text15 "Race Mix:"
+define string text16 "Change all race to draff (no healer class)"
+define string text17 "Title Healer"
+define string text18 "Bishop have special titile"
+define string text19 "OSD:"
+define string text20 "Dmg on screen "
+
+okno.write_byte p1
+okno.write_int32 p2
+
+////////////////////////////// tworzenie
+html_string = htm_1
+html_string = html_string + htm_4
+html_string = html_string + "#$PVP Helper"
+html_string = html_string + htm_5
+html_string = html_string + htm_6
+html_string = html_string + kol1
+html_string = html_string + text
+html_string = html_string + kol_end
+html_string = html_string + htm_3
+html_string = html_string + ent
+/////////////////////////////////// opcje oth
+html_string = html_string + kol1
+html_string = html_string + text2
+html_string = html_string + kol_end
+html_string = html_string + ent
+
+html_string = html_string + tab5
+html_string = html_string + tab6
+html_string = html_string + tab3
+html_string = html_string + text4
+html_string = html_string + tab4
+if fake_gm == 1
+html_string = html_string + tab3
+html_string = html_string + gu1
+html_string = html_string + on_t
+html_string = html_string + gu2
+html_string = html_string + byp8
+html_string = html_string + gu3
+html_string = html_string + tab4
+else
+html_string = html_string + tab3
+html_string = html_string + gu1
+html_string = html_string + off_t
+html_string = html_string + gu2
+html_string = html_string + byp9
+html_string = html_string + gu3
+html_string = html_string + tab4
+endif
+html_string = html_string + tab3
+html_string = html_string + text6
+html_string = html_string + tab4
+html_string = html_string + tab7
+
+html_string = html_string + tab6
+html_string = html_string + tab3
+html_string = html_string + text5
+html_string = html_string + tab4
+if fake_hero == 1
+html_string = html_string + tab3
+html_string = html_string + gu1
+html_string = html_string + on_t
+html_string = html_string + gu2
+html_string = html_string + byp10
+html_string = html_string + gu3
+html_string = html_string + tab4
+else
+html_string = html_string + tab3
+html_string = html_string + gu1
+html_string = html_string + off_t
+html_string = html_string + gu2
+html_string = html_string + byp11
+html_string = html_string + gu3
+html_string = html_string + tab4
+endif
+
+html_string = html_string + tab3
+html_string = html_string + text7
+html_string = html_string + tab4
+html_string = html_string + tab7
+
+
+html_string = html_string + tab6
+html_string = html_string + tab3
+html_string = html_string + text19
+html_string = html_string + tab4
+if osd == 1
+html_string = html_string + tab3
+html_string = html_string + gu1
+html_string = html_string + on_t
+html_string = html_string + gu2
+html_string = html_string + byp22
+html_string = html_string + gu3
+html_string = html_string + tab4
+else
+html_string = html_string + tab3
+html_string = html_string + gu1
+html_string = html_string + off_t
+html_string = html_string + gu2
+html_string = html_string + byp23
+html_string = html_string + gu3
+html_string = html_string + tab4
+endif
+
+html_string = html_string + tab3
+html_string = html_string + text20
+html_string = html_string + tab4
+html_string = html_string + tab7
+
+html_string = html_string + tab6
+html_string = html_string + tab3
+html_string = html_string + text8
+html_string = html_string + tab4
+
+if fake_agh == 1
+html_string = html_string + tab3
+html_string = html_string + gu1
+html_string = html_string + on_t
+html_string = html_string + gu2
+html_string = html_string + byp12
+html_string = html_string + gu3
+html_string = html_string + tab4
+else
+html_string = html_string + tab3
+html_string = html_string + gu1
+html_string = html_string + off_t
+html_string = html_string + gu2
+html_string = html_string + byp13
+html_string = html_string + gu3
+html_string = html_string + tab4
+endif
+
+html_string = html_string + tab3
+html_string = html_string + text9
+html_string = html_string + tab4
+html_string = html_string + tab7
+html_string = html_string + tab2
+
+html_string = html_string + tab5
+
+
+html_string = html_string + tab6
+html_string = html_string + tab3
+html_string = html_string + text10
+html_string = html_string + tab4
+
+html_string = html_string + tab3
+html_string = html_string + kol1
+html_string = html_string + id_agha
+html_string = html_string + kol_end
+html_string = html_string + tab4
+html_string = html_string + tab3
+html_string = html_string + wp1
+html_string = html_string + "#$agh_id"
+html_string = html_string + wp2
+html_string = html_string + tab4
+html_string = html_string + tab3
+html_string = html_string + gu1
+html_string = html_string + "#$send"
+html_string = html_string + gu2
+html_string = html_string + byp24
+html_string = html_string + wp3
+html_string = html_string + gu3
+html_string = html_string + tab4
+
+html_string = html_string + tab7
+
+html_string = html_string + tab2
+html_string = html_string + kol1
+html_string = html_string + text3
+html_string = html_string + kol_end
+html_string = html_string + ent
+
+html_string = html_string + tab5
+html_string = html_string + tab6
+html_string = html_string + tab3
+html_string = html_string + text11
+html_string = html_string + tab4
+
+if tar_tag == 1
+html_string = html_string + tab3
+html_string = html_string + gu1
+html_string = html_string + on_t
+html_string = html_string + gu2
+html_string = html_string + byp14
+html_string = html_string + gu3
+html_string = html_string + tab4
+else
+html_string = html_string + tab3
+html_string = html_string + gu1
+html_string = html_string + off_t
+html_string = html_string + gu2
+html_string = html_string + byp15
+html_string = html_string + gu3
+html_string = html_string + tab4
+endif
+
+html_string = html_string + tab3
+html_string = html_string + text12
+html_string = html_string + tab4
+html_string = html_string + tab7
+
+html_string = html_string + tab6
+html_string = html_string + tab3
+html_string = html_string + text13
+html_string = html_string + tab4
+
+if siege_alag == 1
+html_string = html_string + tab3
+html_string = html_string + gu1
+html_string = html_string + on_t
+html_string = html_string + gu2
+html_string = html_string + byp16
+html_string = html_string + gu3
+html_string = html_string + tab4
+else
+html_string = html_string + tab3
+html_string = html_string + gu1
+html_string = html_string + off_t
+html_string = html_string + gu2
+html_string = html_string + byp17
+html_string = html_string + gu3
+html_string = html_string + tab4
+endif
+
+html_string = html_string + tab3
+html_string = html_string + text14
+html_string = html_string + tab4
+html_string = html_string + tab7
+
+html_string = html_string + tab6
+html_string = html_string + tab3
+html_string = html_string + text15
+html_string = html_string + tab4
+
+if race_dif == 1
+html_string = html_string + tab3
+html_string = html_string + gu1
+html_string = html_string + on_t
+html_string = html_string + gu2
+html_string = html_string + byp18
+html_string = html_string + gu3
+html_string = html_string + tab4
+else
+html_string = html_string + tab3
+html_string = html_string + gu1
+html_string = html_string + off_t
+html_string = html_string + gu2
+html_string = html_string + byp19
+html_string = html_string + gu3
+html_string = html_string + tab4
+endif
+
+html_string = html_string + tab3
+html_string = html_string + text16
+html_string = html_string + tab4
+html_string = html_string + tab7
+
+html_string = html_string + tab6
+html_string = html_string + tab3
+html_string = html_string + text17
+html_string = html_string + tab4
+
+if heal_tit == 1
+html_string = html_string + tab3
+html_string = html_string + gu1
+html_string = html_string + on_t
+html_string = html_string + gu2
+html_string = html_string + byp20
+html_string = html_string + gu3
+html_string = html_string + tab4
+else
+html_string = html_string + tab3
+html_string = html_string + gu1
+html_string = html_string + off_t
+html_string = html_string + gu2
+html_string = html_string + byp21
+html_string = html_string + gu3
+html_string = html_string + tab4
+endif
+html_string = html_string + tab3
+html_string = html_string + text18
+html_string = html_string + tab4
+html_string = html_string + tab7
+
+////////////////////////////////// koniec tworzenia ///////////////////
+okno.write_string html_string
+okno.write_int32 p3
+okno.TRIM_TO_INDEX
+
+
+INJECTBB_CLIENT okno
+return void
+
+
+
+
+///////////////////////////////////////////////////////////////////
+
+function okno_lista 1 pag_j
+
+Define bytebuffer okno 8000
+define int p1 25
+define int p2 5
+define int p3 0
+define int max_tab 0
+define int max_tab__l 0
+
+define int tot_cout 0
+define int resz 0
+define string cla ""
+
+define string html_string ""
+Define string htm_1 "<html>"
+Define string htm_2 "</CENTER></body></html>"
+Define string htm_3 "</CENTER>"
+Define string htm_4 "<title>"
+Define string htm_5 "</title>"
+Define string htm_6 "<body><CENTER>"
+Define string on_t "ON"
+Define string off_t "OFF"
+
+Define string mp_p "MP: "
+Define string hp_p "HP: "
+Define string cp_p "CP: "
+
+
+Define string kol1 "<font color=\"LEVEL\">" // zulty
+Define string kol2 "<font color=\"00FFFF\">" // morski
+Define string kol3 "<font color=\"FF0000\">"  // red
+Define string kol4 "<font color=\"BD00DB\">" 
+Define string kol_end "</font>"
+
+Define string ent "<br>"
+Define string spc "  "
+Define string lin "--------------------------------------------------"
+
+
+
+// guziki - linki
+
+Define string gu1 "<button value=\""  // tu napis
+Define string gu2 "\" action=\"" //zatym bypas
+Define string gu3 "\" width=30 height=21 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\">"
+//li
+Define string gu4 "<a action=\""  //bypass
+Define string gu5 "\">" //napis
+Define string gu6 "</a>" 
+
+/// wpis
+Define string wp1 "<edit var=\"" // zatym zmienna
+Define string wp2 "\" width=50>"
+Define string wp3 "$agh_id"
+//
+// tabela
+Define string tab1 "<table width=280 border=0 bgcolor=\"444444\">"     
+Define string tab2 "</table>"
+Define string tab3 "<td>"
+Define string tab4 "</td>"
+Define string tab5 "<table width=280 border=0>" 
+Define string tab6 "<tr>"
+Define string tab7 "</tr>"
+//special
+Define string tabs3 "<td width=70 align=center>"
+Define string tabs4 "<td><center>"
+Define string tabs5 "<td width=50 align=center>"
+
+//
+define int pop_up 0
+Define string text1 " <&pop_up&> "
+
+okno.write_byte p1
+okno.write_int32 p2
+
+////////////////////////////// tworzenie
+html_string = htm_1
+html_string = html_string + htm_4
+html_string = html_string + "#$PVP Helper"
+html_string = html_string + htm_5
+html_string = html_string + htm_6
+html_string = html_string + kol1
+html_string = html_string + "#$Pages"
+html_string = html_string + kol_end
+html_string = html_string + htm_3
+html_string = html_string + ent
+
+// jingjing
+tot_cout = ppl_arr.count
+
+
+resz = tot_cout / 15
+resz = resz + 1
+
+if resz > 1
+html_string = html_string + "#$<CENTER>"
+html_string = html_string + tab5
+html_string = html_string + tab6
+
+html_string = html_string + tabs4
+html_string = html_string + gu4
+html_string = html_string + byp25
+html_string = html_string + "#$1"
+html_string = html_string + gu5
+html_string = html_string + "#$1"
+html_string = html_string + gu6
+html_string = html_string + tab4
+
+
+html_string = html_string + tabs4
+html_string = html_string + gu1
+html_string = html_string + "#$<-"
+html_string = html_string + gu2
+html_string = html_string + byp27
+html_string = html_string + pag_j
+html_string = html_string + gu3
+html_string = html_string + tab4
+
+html_string = html_string + tab3
+html_string = html_string + pag_j
+html_string = html_string + tab4
+
+html_string = html_string + tabs4
+html_string = html_string + gu1
+html_string = html_string + "#$->"
+html_string = html_string + gu2
+html_string = html_string + byp26
+html_string = html_string + pag_j
+html_string = html_string + gu3
+html_string = html_string + tab4
+
+html_string = html_string + tabs4
+html_string = html_string + gu4
+html_string = html_string + byp25
+html_string = html_string + "#$<&resz&>"
+html_string = html_string + gu5
+html_string = html_string + "#$<&resz&>"
+html_string = html_string + gu6
+html_string = html_string + tab4
+
+
+html_string = html_string + tab7
+html_string = html_string + tab2
+html_string = html_string + "#$</CENTER>"
+html_string = html_string + ent
+endif
+////////
+
+
+html_string = html_string + tab5
+html_string = html_string + tab6
+html_string = html_string + tabs5
+html_string = html_string + kol1
+html_string = html_string + "#$Class"
+html_string = html_string + kol_end
+html_string = html_string + tab4
+html_string = html_string + tabs5
+html_string = html_string + kol1
+html_string = html_string + "#$Nick"
+html_string = html_string + kol_end
+html_string = html_string + tab4
+html_string = html_string + tabs5
+html_string = html_string + kol1
+html_string = html_string + "#$Clan"
+html_string = html_string + kol_end
+html_string = html_string + tab4
+html_string = html_string + tab2
+
+
+define string cls ""
+define int ter 1
+define int help_temp 0
+if pag_j == 1
+jum = 0
+else
+help_temp = pag_j * 15
+help_temp = help_temp - 15 
+
+jum = help_temp
+endif	
+html_string = html_string + tab5
+
+
+
+if ppl_arr.count > 0
+if ppl_arr.count > jum
+	for a "<&jum&>" "<&ppl_arr.count&>" 1
+		if ter >= 15
+			jum = a.clone
+			jump_to_label kon_za
+		endif
+	if ppl_arr.a.level == 3
+		html_string = html_string + tab6
+		html_string = html_string + tabs5
+		call class_name cls 1 ppl_arr.a.class
+		html_string = html_string + cls
+		html_string = html_string + tab4
+		html_string = html_string + tabs3
+		html_string = html_string + kol3
+		html_string = html_string + gu4
+		html_string = html_string + byp7
+		html_string = html_string + ppl_arr.a.id
+		html_string = html_string + gu5
+		html_string = html_string + ppl_arr.a.name
+		html_string = html_string + gu6
+		html_string = html_string + kol_end
+		html_string = html_string + tab4
+		html_string = html_string + tabs3
+		call cl_name cla 1 ppl_arr.a.clan
+		html_string = html_string + cla
+		html_string = html_string + tab4
+		html_string = html_string + tab7
+	endif
+	if ppl_arr.a.level == 2
+		html_string = html_string + tab6
+		html_string = html_string + tabs5
+		call class_name cls 1 ppl_arr.a.class
+		html_string = html_string + cls
+		html_string = html_string + tab4
+		html_string = html_string + tabs3
+		html_string = html_string + kol4
+		html_string = html_string + gu4
+		html_string = html_string + byp7
+		html_string = html_string + ppl_arr.a.id
+		html_string = html_string + gu5
+		html_string = html_string + ppl_arr.a.name
+		html_string = html_string + gu6
+		html_string = html_string + kol_end
+		html_string = html_string + tab4
+		html_string = html_string + tabs3
+		call cl_name cla 1 ppl_arr.a.clan
+		html_string = html_string + cla
+		html_string = html_string + tab4
+		html_string = html_string + tab7
+	endif
+	if ppl_arr.a.level == 1
+		html_string = html_string + tab6
+		html_string = html_string + tabs5
+		call class_name cls 1 ppl_arr.a.class
+		html_string = html_string + cls
+		html_string = html_string + tab4
+		html_string = html_string + tabs3
+		html_string = html_string + gu4
+		html_string = html_string + byp7
+		html_string = html_string + ppl_arr.a.id
+		html_string = html_string + gu5
+		html_string = html_string + ppl_arr.a.name
+		html_string = html_string + gu6
+		html_string = html_string + tab4
+		html_string = html_string + tabs3
+		call cl_name cla 1 ppl_arr.a.clan
+		html_string = html_string + cla
+		html_string = html_string + tab4
+		html_string = html_string + tab7
+	endif
+
+
+		ter = ter + 1
+	next
+endif
+endif
+label kon_za
+
+
+
+
+html_string = html_string + tab2
+////////////////////////////////// koniec tworzenia ///////////////////
+okno.write_string html_string
+okno.write_int32 p3
+okno.TRIM_TO_INDEX
+
+
+INJECTBB_CLIENT okno
+return void
+
+/////////////////////////////////////////////////////////
+// war_enem - arraylist z warami
+
+function prep_okno_lista
+define arraylist ppl_nea 0
+define int tem_hel 0
+/////////////////////////////////////
+define arraylist ppl_karma 0
+define arraylist ppl_war 0
+define arraylist ppl_oth 0
+ppl_arr.clear
+/////////////////////////////////////
+GET_PLAYERS ppl_nea
+
+//tem_hel = ppl_nea.count
+for a 0 "<&ppl_nea.count&>" 1
+	if ppl_nea.a.KARMA > 0
+	ppl_nea.a.LEVEL = #i3
+	ppl_karma.add ppl_nea.a.clone
+	ppl_nea.remove "<&a&>"
+	a = a - 1
+endif
+next
+
+
+for a 0 "<&ppl_nea.count&>" 1
+	if "<&war_enem.CONTAINS_KEY <&ppl_nea.a.clan&>&>" == true
+		ppl_nea.a.LEVEL = #i2
+		ppl_war.add ppl_nea.a.clone
+		ppl_nea.remove "<&a&>"
+		a = a - 1
+	endif
+next
+
+for a 0 "<&ppl_nea.count&>" 1
+	ppl_nea.a.LEVEL = #i1
+	ppl_oth.add ppl_nea.a.clone
+next
+
+
+
+// sort by dist 
+
+if sort_type == 2
+if ppl_karma.count > 1
+call sort_array_2 void 1 ppl_karma
+endif
+if ppl_war.count > 1
+call sort_array_2 void 1 ppl_war
+endif
+if ppl_oth.count > 1
+call sort_array_2 void 1 ppl_oth
+endif
+else
+if ppl_karma.count > 1
+call sort_array void 1 ppl_karma
+endif
+if ppl_war.count > 1
+call sort_array void 1 ppl_war
+endif
+if ppl_oth.count > 1
+call sort_array void 1 ppl_oth
+endif
+
+endif
+print_text " kar = <&ppl_karma.count&> war = <&ppl_war.count&> oth = <&ppl_oth.count&>"
+if ppl_karma.count > 0
+for a 0 "<&ppl_karma.count&>" 1
+	ppl_arr.add ppl_karma.a
+next
+endif
+if ppl_war.count > 0
+for a 0 "<&ppl_war.count&>" 1
+	ppl_arr.add ppl_war.a
+next
+endif
+if ppl_oth.count > 0
+for a 0 "<&ppl_oth.count&>" 1
+	ppl_arr.add ppl_oth.a
+next
+endif
+print_text " all <&ppl_arr.count&>"
+call okno_lista void 1 1
+
+
+return void
+
+
+function sort_array 1 array_lis
+define arraylist temp_ob 0
+define int tem_dist 0
+define int tem_dist2 0
+for a 0 "<&array_lis.count&>" 1
+	for b 1 "<&array_lis.count&>" 1
+	DISTANCE tem_dist CHAR_X CHAR_Y CHAR_Z array_lis.a.x array_lis.a.y array_lis.a.z
+	DISTANCE tem_dist CHAR_X CHAR_Y CHAR_Z array_lis.b.x array_lis.b.y array_lis.b.z
+	if tem_dist2 < tem_dist
+		temp_ob.add array_lis.a.clone
+		array_lis.a = array_lis.b.clone
+		array_lis.b = temp_ob.0.clone
+		temp_ob.clear
+	endif
+	next
+
+next
+
+return void
+
+function clans
+define clan_nfo temp_cl 
+define int tem_ch 0
+
+packet.read_byte null
+packet.read_int32 temp_cl.clan_id
+packet.read_string temp_cl.clan_name
+packet.read_string temp_cl.aly_name
+lock cl
+if "<&clan_data.CONTAINS_KEY <&temp_cl.clan_id&>&>" == false
+	clan_data.add temp_cl "<&temp_cl.clan_id&>"
+endif
+unlock cl
+return void
+
+
+
+function cl_name 1 cl_id
+define string cl_str ""
+if cl_id != 0
+	if "<&clan_data.CONTAINS_KEY <&cl_id&>&>" == true
+		cl_str = "clan_data.#$<&cl_id&>.clan_name"
+	endif
+endif
+
+return cl_str
+
+
+
+
+function sort_array_2 1 array_lis
+define arraylist temp_ob 0
+define int tem_ind 0
+define int tem_dist2 0
+
+for a 0 "<&array_lis.count&>" 1
+	if ( array_lis.a.class == 16 ) || ( array_lis.a.class == 97 ) //bish
+	temp_ob.add array_lis.a.clone
+	array_lis.a = array_lis.tem_ind.clone
+	array_lis.tem_ind = temp_ob.0
+	tem_ind = tem_ind + 1
+	temp_ob.clear
+	endif
+
+next
+
+for a 0 "<&array_lis.count&>" 1
+	if ( array_lis.a.class == 43 ) || ( array_lis.a.class == 112 ) //se
+	temp_ob.add array_lis.a.clone
+	array_lis.a = array_lis.tem_ind.clone
+	array_lis.tem_ind = temp_ob.0
+	tem_ind = tem_ind + 1
+	temp_ob.clear
+	endif
+next
+for a 0 "<&array_lis.count&>" 1
+	if ( array_lis.a.class == 30 ) || ( array_lis.a.class == 105 ) //ee
+	temp_ob.add array_lis.a.clone
+	array_lis.a = array_lis.tem_ind.clone
+	array_lis.tem_ind = temp_ob.0
+	tem_ind = tem_ind + 1
+	temp_ob.clear
+	endif
+next
+for a 0 "<&array_lis.count&>" 1
+	if ( array_lis.a.class == 17 ) || ( array_lis.a.class == 98 ) //pp
+	temp_ob.add array_lis.a.clone
+	array_lis.a = array_lis.tem_ind.clone
+	array_lis.tem_ind = temp_ob.0
+	tem_ind = tem_ind + 1
+	temp_ob.clear
+	endif
+next
+for a 0 "<&array_lis.count&>" 1
+	if ( array_lis.a.class == 40 ) || ( array_lis.a.class == 110 ) //sh
+	temp_ob.add array_lis.a.clone
+	array_lis.a = array_lis.tem_ind.clone
+	array_lis.tem_ind = temp_ob.0
+	tem_ind = tem_ind + 1
+	temp_ob.clear
+	endif
+next
+for a 0 "<&array_lis.count&>" 1
+	if ( array_lis.a.class == 13 ) || ( array_lis.a.class == 95 ) //necro
+	temp_ob.add array_lis.a.clone
+	array_lis.a = array_lis.tem_ind.clone
+	array_lis.tem_ind = temp_ob.0
+	tem_ind = tem_ind + 1
+	temp_ob.clear
+	endif
+next
+for a 0 "<&array_lis.count&>" 1
+	if ( array_lis.a.class == 132 ) || ( array_lis.a.class == 133 ) //soul hund male/female
+	temp_ob.add array_lis.a.clone
+	array_lis.a = array_lis.tem_ind.clone
+	array_lis.tem_ind = temp_ob.0
+	tem_ind = tem_ind + 1
+	temp_ob.clear
+	endif
+next
+
+return void
+
+
+
+
+
+function rela
+define int obj_id
+define int rel
+define int karma
+define int pvp_flag
+define int combat
+
+packet.read_byte null
+packet.read_int32 null
+packet.read_int32 obj_id
+packet.read_int32 rel
+packet.read_int32 combat
+packet.read_int32 karma
+packet.read_int32 pvp_flag
+lock opera
+if "<&char_list.CONTAINS_KEY <&obj_id&>&>" == true
+	"char_list.#$<&obj_id&>.pvpflag" = pvp_flag
+	"char_list.#$<&obj_id&>.karma" = karma
+	"char_list.#$<&obj_id&>.incombat" = combat
+	"char_list.#$<&obj_id&>.relation" = rel
+endif
+
+if (( rel > 49152 ) && ( rel < 65536 )) || ( rel > 114688 )
+	if "<&char_list.CONTAINS_KEY <&obj_id&>&>" == true
+		if "<&war_enem.CONTAINS_KEY <&char_list.#$<&obj_id&>.clanid&>&>" == false
+			war_enem.add "char_list.#$<&obj_id&>.clanid" "<&char_list.#$<&obj_id&>.clanid&>"
+		endif
+	endif
+endif
+unlock opera
+return void
+
+function auto_stop_combat
+define int obj_id
+packet.read_byte null
+packet.read_int32 obj_id
+
+if obj_id != CHAR_ID
+lock opera
+if "<&char_list.CONTAINS_KEY <&obj_id&>&>" == true
+	"char_list.#$<&obj_id&>.incombat" = #i0
+endif
+unlock opera
+endif
+
+return void
+
+function sys_msg_pck2
+DEFINE bytebuffer pac_rdy 1000
+DEFINE INT DMG_ZAD 0
+DEFINE INT DMG_OTZ 0
+
+DEFINE INT ID_msg_1 2261
+DEFINE INT ID_msg_2 2262
+DEFINE INT ID_msg_3 0
+
+DEFINE INT TMP_id 0
+if osd == 1
+PACKET.READ_BYTE null
+PACKET.READ_INT32 TMP_id
+
+if TMP_id == ID_msg_1
+	PACKET.READ_INT32 null
+	PACKET.READ_INT32 ID_msg_3
+	if ID_msg_3 == 0
+		PACKET.READ_STRING null
+	else
+		PACKET.READ_int32 null
+	endif
+	PACKET.READ_INT32 ID_msg_3
+	if ID_msg_3 == 0
+		PACKET.READ_STRING null
+	else
+		PACKET.READ_int32 null
+	
+	endif
+	PACKET.READ_INT32 ID_msg_3
+	if ID_msg_3 == 0
+		PACKET.READ_STRING null
+	else
+		PACKET.READ_INT32 DMG_ZAD
+	
+	endif
+	IF osd_type == 2
+		pac_rdy.WRITE_BYTE #i98
+		pac_rdy.WRITE_INT32 #i6602 //1987
+		pac_rdy.WRITE_INT32 #i1
+		pac_rdy.WRITE_INT32 #i0
+		pac_rdy.WRITE_STRING DMG_ZAD
+		pac_rdy.TRIM_TO_INDEX
+		INJECTBB_CLIENT pac_rdy
+	endif
+	IF osd_type == 1
+		pac_rdy.WRITE_BYTE #i254
+		pac_rdy.write_int16 #i57
+		pac_rdy.write_int32 #i1 // 1 inan wiad --- 0 sys mas
+		pac_rdy.write_int32 #i2 // system ssg id
+		pac_rdy.write_int32 #i2 // pozycja
+		pac_rdy.write_int32 #i0
+		pac_rdy.write_int32 #i0
+		pac_rdy.write_int32 #i0
+		pac_rdy.write_int32 #i0
+		pac_rdy.write_int32 #i1
+		pac_rdy.write_int32 #i1000 // czas
+		pac_rdy.write_int32 #i0
+		pac_rdy.write_string "#$HIT: <&DMG_ZAD&>"
+		pac_rdy.TRIM_TO_INDEX
+		INJECTBB_CLIENT pac_rdy
+	endif
+
+jump_to_label sys_msg_pck_end
+endif
+
+if TMP_id == ID_msg_2
+	PACKET.READ_INT32 null
+	PACKET.READ_INT32 ID_msg_3
+	if ID_msg_3 == 0
+		PACKET.READ_STRING null
+	else
+		PACKET.READ_int32 null
+	endif
+	PACKET.READ_INT32 ID_msg_3
+	if ID_msg_3 == 0
+		PACKET.READ_STRING null
+	else
+		PACKET.READ_int32 null
+	
+	endif
+	PACKET.READ_INT32 ID_msg_3
+	if ID_msg_3 == 0
+		PACKET.READ_STRING null
+	else
+		PACKET.READ_INT32 DMG_OTZ
+	
+	endif
+	IF osd_type == 2
+		pac_rdy.WRITE_BYTE #i98
+		pac_rdy.WRITE_INT32 #i6603 //1987
+		pac_rdy.WRITE_INT32 #i1
+		pac_rdy.WRITE_INT32 #i0
+		pac_rdy.WRITE_STRING DMG_OTZ
+		pac_rdy.TRIM_TO_INDEX
+		INJECTBB_CLIENT pac_rdy
+	endif
+	IF osd_type == 1
+		pac_rdy.WRITE_BYTE #i254
+		pac_rdy.write_int16 #i57
+		pac_rdy.write_int32 #i1 // 1 inan wiad --- 0 sys mas
+		pac_rdy.write_int32 #i2 // system ssg id
+		pac_rdy.write_int32 #i2 // pozycja
+		pac_rdy.write_int32 #i0
+		pac_rdy.write_int32 #i0
+		pac_rdy.write_int32 #i0
+		pac_rdy.write_int32 #i0
+		pac_rdy.write_int32 #i1
+		pac_rdy.write_int32 #i1000 // czas
+		pac_rdy.write_int32 #i0
+		pac_rdy.write_string "#$DMG: <&DMG_OTZ&>"
+		pac_rdy.TRIM_TO_INDEX
+		INJECTBB_CLIENT pac_rdy
+	endif
+endif
+
+jump_to_label sys_msg_pck_end
+endif
+INJECTBB_CLIENT packet
+label sys_msg_pck_end
+endif
+return void
+
+
+
+function sys_msg_pck
+DEFINE bytebuffer pac_rdy 1000
+DEFINE INT DMG 0
+DEFINE INT DMG_OTZ 0
+
+DEFINE INT ID_msg_1 2261
+DEFINE INT ID_msg_2 2262
+DEFINE INT ID_msg_3 0
+
+DEFINE INT TMP_id 0
+if osd == 1
+PACKET.READ_BYTE null
+PACKET.READ_INT32 TMP_id
+
+if ( TMP_id == ID_msg_1 ) || ( TMP_id == ID_msg_2 )
+	PACKET.READ_INT32 null
+	PACKET.READ_INT32 ID_msg_3
+	if ID_msg_3 == 0
+		PACKET.READ_STRING null
+	else
+		PACKET.READ_int32 null
+	endif
+	PACKET.READ_INT32 ID_msg_3
+	if ID_msg_3 == 0
+		PACKET.READ_STRING null
+	else
+		PACKET.READ_int32 null
+	
+	endif
+	PACKET.READ_INT32 ID_msg_3
+	if ID_msg_3 == 0
+		PACKET.READ_STRING null
+	else
+		PACKET.READ_INT32 DMG
+	
+	endif
+	IF osd_type == 2
+		pac_rdy.WRITE_BYTE #i98
+		if TMP_id == ID_msg_1
+			pac_rdy.WRITE_INT32 #i6602 //1987
+		else
+			pac_rdy.WRITE_INT32 #i6603 //1987
+		endif
+		pac_rdy.WRITE_INT32 #i1
+		pac_rdy.WRITE_INT32 #i0
+		pac_rdy.WRITE_STRING DMG
+		pac_rdy.TRIM_TO_INDEX
+		INJECTBB_CLIENT pac_rdy
+	endif
+	IF osd_type == 1
+		pac_rdy.WRITE_BYTE #i254
+		pac_rdy.write_int16 #i57
+		pac_rdy.write_int32 #i1 // 1 inan wiad --- 0 sys mas
+		pac_rdy.write_int32 #i2 // system ssg id
+		pac_rdy.write_int32 #i2 // pozycja
+		pac_rdy.write_int32 #i0
+		pac_rdy.write_int32 #i0
+		pac_rdy.write_int32 #i0
+		pac_rdy.write_int32 #i0
+		pac_rdy.write_int32 #i0
+		pac_rdy.write_int32 #i1000 // czas
+		pac_rdy.write_int32 #i0
+		if TMP_id == ID_msg_1
+			pac_rdy.write_string "#$HIT: <&DMG&>"
+		else
+			pac_rdy.write_string "#$DMG: <&DMG&>"
+		endif
+		pac_rdy.TRIM_TO_INDEX
+		INJECTBB_CLIENT pac_rdy
+		
+	endif
+
+else
+	//INJECTBB_CLIENT packet
+endif
+endif
+return void
+
+
+function shop_tit
+define int obj_id
+define string title_shop ""
+
+packet.read_byte null
+packet.read_int32 obj_id
+packet.read_string title_shop
+
+if "<&Shop_list.CONTAINS_KEY <&obj_id&>&>" == true
+	Shop_list.REMOVE "<&obj_id&>"
+	Shop_list.add title_shop "<&obj_id&>"
+else
+	Shop_list.add title_shop "<&obj_id&>"
+endif
+
+return void
+
+function shop_tit2
+define int obj_id
+define string title_shop ""
+
+packet.read_byte null
+packet.read_int32 obj_id
+packet.read_string title_shop
+
+if "<&Shop_list2.CONTAINS_KEY <&obj_id&>&>" == true
+	Shop_list2.REMOVE "<&obj_id&>"
+	Shop_list2.add title_shop "<&obj_id&>"
+else
+	Shop_list2.add title_shop "<&obj_id&>"
+endif
+
+return void
+
+function shop_send 1 id_shop
+define bytebuffer pak 500
+
+if "<&Shop_list.CONTAINS_KEY <&id_shop&>&>" == true
+pak.write_byte #i162
+pak.write_int32 id_shop
+pak.write_string "Shop_list.#$<&id_shop&>"
+pak.TRIM_TO_INDEX
+
+INJECTBB_CLIENT pak
+Shop_list.REMOVE "<&id_shop&>"
+endif
+
+if "<&Shop_list2.CONTAINS_KEY <&id_shop&>&>" == true
+pak.write_byte #i191
+pak.write_int32 id_shop
+pak.write_string "Shop_list2.#$<&id_shop&>"
+pak.TRIM_TO_INDEX
+
+INJECTBB_CLIENT pak
+Shop_list2.REMOVE "<&id_shop&>"
+endif
+
+return void

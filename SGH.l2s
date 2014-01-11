@@ -1,0 +1,252 @@
+// Kratky popis
+// Server: 
+// Autor: mochitto
+// Date: 
+// Special thanks for L2.NET contributors
+// rev.: 0
+PRINT_TEXT "SCRIPT STARTED!]"
+
+// Event section
+// ===============================
+SET_EVENT "<&SCRIPTEVENT_SELFDIE&>" "<&SYSTEM_CURRENTFILE&>" SelfDie
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" TeleportToLocation 34
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" NpcHtmlMessage 25
+//SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" MagicSkillUse 72
+//SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" TargetSelected 35
+	
+// Define section
+// ===============================
+DEFINE_GLOBAL STRING BF "Fairy Princess"
+DEFINE_GLOBAL STRING GK "Tatiana"
+DEFINE_GLOBAL STRING GMSHOP "Craven"
+DEFINE_GLOBAL INT Distance_to 0
+DEFINE_GLOBAL INT Distance_to2 0
+DEFINE_GLOBAL INT COMM 0          	
+DEFINE_GLOBAL STRING _html 0
+DEFINE_GLOBAL INT TeleBug 0
+DEFINE_GLOBAL INT TeleID 0
+
+DEFINE_GLOBAL INT REUSE 0
+DEFINE_GLOBAL INT STATUS 0
+DEFINE_GLOBAL INT CANATTACK 1
+DEFINE_GLOBAL INT VortexReus 0
+DEFINE_GLOBAL INT VampReus 0
+DEFINE_GLOBAL INT stuck 0
+
+DEFINE_GLOBAL INT hitTime 0
+DEFINE_GLOBAL INT ObjId 0
+DEFINE_GLOBAL INT skillId 0
+DEFINE_GLOBAL INT CASTTIME 0
+DEFINE_GLOBAL INT not 0
+DEFINE_GLOBAL INT HasVortex 0
+
+
+DEFINE_GLOBAL INT MAXHP 0
+MAXHP = CHAR_MAX_HP * 8
+MAXHP = MAXHP / 10
+
+// Main section
+// ===============================
+THREAD MP
+
+WHILE ZERO == ZERO
+	SLEEP 12342
+WEND
+
+END_SCRIPT
+
+// Function section
+// ===============================
+FUNCTION SelfDie
+	PRINT_TEXT "== f:SelfDie"
+	COMM = #i1
+	CANATTACK = #i0
+	TeleBug = #i0
+	BOTSET ACTIVE_TARGET_ON "<&FALSE&>"
+	SLEEP 1000
+	CANCEL_TARGET
+	SLEEP 2000
+	TAP_TO TOWN
+RETURN VOID
+
+FUNCTION NpcHtmlMessage
+	PRINT_TEXT "== f:NpcHtmlMessage"
+	//buffer
+	DEFINE STRING Link1 "bypass -h npc_<&TARGET_ID&>_Buff 1040 1035 1059 1078 1085 1204 1036 1045 1048 1240 1303 1389 1460 273 276 264 265 267 268 304 349 363 1500 1503 1461 1501 1307 1352 1504 1413 1391 1284 1259 1257 1062 1499 365 305 529"
+	//DEFINE STRING Link2 "bypass -h npc_<&TARGET_ID&>_Chat 2"
+	//DEFINE STRING Link3 "bypass -h npc_<&TARGET_ID&>_Chat 7"
+	//DEFINE STRING Link4 "bypass -h npc_<&TARGET_ID&>_Buff 1062"
+	//gk
+	DEFINE STRING Link5 "bypass -h npc_<&TARGET_ID&>_Chat 24"  
+	DEFINE STRING Link6 "bypass -h npc_<&TARGET_ID&>_goto 1253"
+
+    PACKET.READ_BYTE NULL
+	PACKET.READ_INT32 NULL
+	PACKET.READ_STRING _html 	
+
+	SLEEP 2000
+
+	SWITCH COMM
+		CASE #i1
+			CLICK VOID 3 _html Link1 #i5
+			BUYPOTS
+			COMMAND "/target <&GK&>"
+			SLEEP 1000
+			TALK_TARGET
+			BREAK 1
+	/*	CASE #i2
+			CLICK VOID 3 _html Link2 #i3
+			BREAK 1
+		CASE #i3
+			CLICK VOID 3 _html Link3 #i4
+			BREAK 1
+		CASE #i4
+			CLICK VOID 3 _html Link4 #i5
+			COMMAND "/target <&GK&>"
+			SLEEP 1000
+			TALK_TARGET
+			BREAK 1 */
+		CASE #i5
+			CLICK VOID 3 _html Link5 #i6
+			BREAK 1
+		CASE #i6
+			CLICK VOID 3 _html Link6 #i0
+			SLEEP 5000
+			MOVE_TO "-112939" "66368" "-2879" // (Near Kamael Village)
+			SLEEP 20000
+			CANATTACK = #i1
+			BOTSET ACTIVE_TARGET_ON "<&TRUE&>"
+			BREAK 1
+	ENDSWITCH
+RETURN VOID
+
+FUNCTION TeleportToLocation
+	PRINT_TEXT "== f:TeleportToLocation"
+	PACKET.READ_BYTE NULL
+	PACKET.READ_INT32 TeleID 
+	
+	IF TeleID == CHAR_ID
+		TeleBug = TeleBug + #i1 
+		SLEEP 1000
+		DISTANCE Distance_to  CHAR_X CHAR_Y CHAR_Z "-119089" "44191" "512"	
+		DISTANCE Distance_to2 CHAR_X CHAR_Y CHAR_Z "-117113" "44194" "542"	
+		IF ((Distance_to < 80) || (Distance_to2 < 80)) && ((COMM == #i1) && (TeleBug == #i2)) 
+			TeleBug = #i0
+			PRINT_TEXT "== at spawn move to buffer"
+			SLEEP 1000
+			MOVE_TO -118320 44414 546 //(Near Kamael Village)
+			SLEEP 15000
+			MOVE_TO -116712 46309 360 //(Near Kamael Village)
+			SLEEP 15000
+			MOVE_TO -116781 46737 367 //(Near Kamael Village)   
+			SLEEP 15000
+			COMMAND "/TARGET <&BF&>"
+			SLEEP 2000
+			TALK_TARGET
+		ELSE
+			IF (COMM == #i1) && (TeleBug == #i2)
+				TeleBug = #i0
+				PRINT_TEXT "== use soe" 
+				SLEEP 5000
+				USE_ITEM 736 //soe
+			ENDIF
+		ENDIF
+	ENDIF
+RETURN VOID
+
+FUNCTION CLICK 3 html link comd
+	IF "html.CONTAINS link" == TRUE 
+		NPC_DIALOG "<&link&>"
+		PRINT_TEXT "Click in htm window..."
+		COMM = comd
+	ENDIF
+RETURN VOID
+
+// Inject packety pro nakup shotu (10k) a mana potu (700) vzdy dopocita potrebne mnozstvi
+FUNCTION BUYPOTS
+	PRINT_TEXT "== f:BUYPOTSSHOTS"
+	DEFINE INT MANAPOTS 0
+	DEFINE INT MANAPOTSNEED 0
+		
+	ITEM_COUNT MANAPOTS 728 	
+	MANAPOTSNEED = #i2000 - MANAPOTS 
+	COMMAND "/target <&GMSHOP&>"
+	SLEEP 2000   
+	       
+	// Buy Mana Pots
+	INJECT "B0 A4 5F 01 00 A0 86 01 00 <&MANAPOTSNEED.GET_HEX32&>00 00 00 00 00 00 00 00 00 00 00 00 00 00 FE FF 00 00 00 00 00 00 00 00 00 00 00 00 00 00"
+	SLEEP 2000	
+RETURN
+
+FUNCTION MagicSkillUse
+	PACKET.READ_BYTE not
+	PACKET.READ_INT32 ObjId
+	PACKET.READ_INT32 not
+	PACKET.READ_INT32 skillId
+	PACKET.READ_INT32 not
+	PACKET.READ_INT32 hitTime
+//	PACKET.READ_INT32 not
+	
+	IF ObjId == CHAR_ID
+		SLEEP 100
+		SWITCH skillId
+			CASE #i1341 // Wind Vortex
+				SLEEP "<&hitTime&>"
+				SKILLUSE VOID 1 #i1456
+				break 1
+			CASE #i1239 // Hurricane
+			CASE #i1234 // Vamp
+			CASE #i1456 // wv slug
+				SLEEP "<&hitTime&>"
+				PRINT_TEXT "<&hitTime&>"
+				SKILL_GET_REUSE VampReus 1234
+				IF (CHAR_CUR_HP < MAXHP) && (VampReus == #i0)
+					SKILLUSE VOID 1 #i1234
+					PRINT_TEXT "Vampiric Claw: <&CHAR_CUR_HP&> <&MAXHP&>"
+				ELSE
+					SKILL_GET_REUSE VortexReus 1341
+					IF VortexReus == #i0
+						SKILLUSE VOID 1 #i1341
+					ELSE
+						SKILLUSE VOID 1 #i1239
+					ENDIF
+				ENDIF
+				//CASTTIME = hitTime
+				//SLEEP "<&hitTime&>"
+				BREAK 1				
+		ENDSWITCH
+	ENDIF
+RETURN VOID
+
+FUNCTION TargetSelected
+	SLEEP 1000
+	SKILLUSE VOID 1 #i1239
+RETURN VOID  
+
+FUNCTION SKILLUSE 1 SKILLID
+	IF (TARGET_ID > #i0)
+		//DEFINE INT REUSE 0
+		//SKILL_GET_REUSE REUSE SKILLID
+		//REUSE = REUSE 
+		//SLEEP "<&REUSE&>"
+		USE_SKILL "<&SKILLID&>"
+		//SLEEP "<&CASTTIME&>"
+	ELSE
+		SLEEP 1000
+	ENDIF
+RETURN VOID
+
+FUNCTION MP
+	DEFINE DOUBLE ASD 0
+	WHILE ZERO == ZERO  
+		ASD = CHAR_MAX_MP * #d0.11 		
+		IF  CHAR_CUR_MP < ASD
+			ASD = CHAR_MAX_MP * #d0.81			
+			WHILE  CHAR_CUR_MP < ASD 
+				USE_ITEM 728 // Mana Potion
+				SLEEP 500
+			WEND
+		ENDIF
+		SLEEP 1000	
+	WEND
+RETURN VOID

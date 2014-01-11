@@ -1,0 +1,22 @@
+
+	INCLUDE Include/EngineX.l2c
+	DEFINE_GLOBAL ENGINEX ENGINEX 0
+
+	PRINT_TEXT ""
+	PRINT_TEXT "-------------------------------------------------"
+
+	DEFINE INT DEG 45
+	DEFINE INT RAD 0
+
+	PRINT_TEXT "Deg: <&DEG&>"
+
+	ENGINEX.GEO.DEG2RAD RAD 1 DEG
+	PRINT_TEXT "Rad: <&RAD&>"
+
+	ENGINEX.GEO.RAD2DEG DEG 1 RAD
+	PRINT_TEXT "Deg: <&DEG&>"
+
+	PRINT_TEXT "-------------------------------------------------"
+	PRINT_TEXT ""
+
+END_SCRIPT

@@ -1,0 +1,20 @@
+// PartySpelled Packet class data
+// for L2.net.
+// by d00d
+//
+// v1.0 - Initial Draft
+
+CLASS PartySpelled null
+VAR_START
+
+  PUBLIC INT IS_DIRTY
+  PUBLIC INT AGE
+  PUBLIC INT OBJECT_TYPE
+  PUBLIC INT OBJECT_ID
+  PUBLIC INT SKILL_ID
+  PUBLIC INT EFFECT_TYPE
+  PUBLIC INT EFFECT_DURATION
+  
+VAR_END
+
+END_CLASS

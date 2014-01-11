@@ -1,0 +1,7 @@
+PRINT_TEXT "start"
+FOR A 0 10 1
+PRINT_TEXT "<&A&>"
+NEXT
+PRINT_TEXT "done"
+
+END_SCRIPT

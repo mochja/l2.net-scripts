@@ -1,0 +1,11 @@
+CLASS Configuration null
+VAR_START
+ 
+  PUBLIC DataDecay DataDecay
+  PUBLIC PotionManagement AutoPot
+  PUBLIC SORTEDLIST Temp
+  PUBLIC SORTEDLIST CONFIG
+  
+VAR_END
+ 
+END_CLASS

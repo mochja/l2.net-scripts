@@ -1,0 +1,41 @@
+
+CLASS LAZY_RETURNING_IFTHENELSE LAZY_RETURNING_BASEPIECE
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT
+
+      // the state that will be checked. the value, variable or reference needs to return "TRUE" or "FALSE"
+      THIS.SET_VALUE VOID 2 #$IF TRUE
+
+      // the value, variable or string that will be returned when the IF state returns TRUE
+      THIS.SET_VALUE VOID 2 #$THEN TRUE
+
+      // the value, variable or string that will be returned when the IF state returns FALSE
+      THIS.SET_VALUE VOID 2 #$ELSE TRUE
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC _GET_RETURN 1 CALLTIME
+
+      DEFINE INT _IF 0
+      DEFINE INT _THEN 0
+      DEFINE INT _ELSE 0
+
+      THIS.DATA.#$IF.GET_RETURN _IF 1 CALLTIME
+      THIS.DATA.#$THEN.GET_RETURN _THEN 1 CALLTIME
+      THIS.DATA.#$ELSE.GET_RETURN _ELSE 1 CALLTIME
+
+      // --- --- ---
+
+      IF (_IF == TRUE)
+         RETURN _THEN
+      ENDIF
+
+   RETURN _ELSE
+
+//-------------------------------------------------------------------------------------
+
+END_CLASS

@@ -1,0 +1,2 @@
+<font color=7E7E7E>[<a action="bypass -h <&THIS.MENUKEY&>_WriteTo <&THIS.WRITINGS.GET_KEY I1&>"><&THIS.WRITINGS.I1&></a>]</font>
+__EOF

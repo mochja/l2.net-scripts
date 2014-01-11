@@ -1,0 +1,36 @@
+
+	INCLUDE Include/EngineX.l2c
+	DEFINE_GLOBAL ENGINEX ENGINEX 0
+
+	PRINT_TEXT ""
+	PRINT_TEXT "-------------------------------------------------"
+
+	DEFINE STRING MESSAGE "hello world"
+
+	DEFINE INT POSITION 2
+	/*
+	1 = left
+	2 = center
+	3 = right
+
+	4 = left
+	5 = center
+	6 = right
+
+	7 = middle
+	8 = right
+
+	9 = middle
+	*/
+
+	DEFINE INT SMALLFONT 0 // use smallfont (true/false)
+	DEFINE INT DURATION 5000
+	DEFINE INT EFFECT 0 // use effect (true/false)
+	DEFINE INT FADING 0 // fade in/out (true/false)
+
+	ENGINEX.UTILS.SCREENMESSAGE VOID 4 MESSAGE POSITION SMALLFONT DURATION EFFECT FADING
+
+	PRINT_TEXT "-------------------------------------------------"
+	PRINT_TEXT ""
+
+END_SCRIPT

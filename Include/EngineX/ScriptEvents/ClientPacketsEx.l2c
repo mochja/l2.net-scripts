@@ -1,0 +1,204 @@
+
+//-------------------------------------------------------------------------------------
+CLASS ENGINEX_SCRIPTEVENTS_CLIENTPACKETSEX NULL
+//-------------------------------------------------------------------------------------
+
+   VAR_START
+
+		PUBLIC SORTEDLIST PIPELIST 0
+      PUBLIC ARRAYLIST PIPEQUEUE 0
+
+		PUBLIC SORTEDLIST BLOCKDATA 0
+
+		PUBLIC SORTEDLIST READFILES 0
+		PUBLIC SORTEDLIST WRITEFILES 0
+
+   VAR_END
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT
+      THIS.SET_FILE VOID 3 "3" "102" "#$Include/EngineX/ScriptEvents/ClientPacketsEx/102_RequestSendPost.l2f"
+      THIS.SET_FILE VOID 3 "3" "103" "#$Include/EngineX/ScriptEvents/ClientPacketsEx/103_RequestReceivedPostList.l2f"
+      THIS.SET_FILE VOID 3 "3" "105" "#$Include/EngineX/ScriptEvents/ClientPacketsEx/105_RequestReceivedPost.l2f"
+      THIS.SET_FILE VOID 3 "3" "106" "#$Include/EngineX/ScriptEvents/ClientPacketsEx/106_RequestReceivePost.l2f"
+      THREAD PIPELOOP
+      SLEEP 1
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC SET_FILE 3 MODE PID FILEPATH
+      THIS.READFILES.REMOVE "<&PID&>"
+      THIS.WRITEFILES.REMOVE "<&PID&>"
+      IF ( ( MODE == 1 ) || ( MODE == 3 ) )
+         THIS.READFILES.ADD "#$<&FILEPATH&>" "<&PID&>"
+      ENDIF
+      IF ( ( MODE == 2 ) || ( MODE == 3 ) )
+         THIS.WRITEFILES.ADD "#$<&FILEPATH&>" "<&PID&>"
+      ENDIF
+      SLEEP 1
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC ADD_PIPE 3 PID FUNCTION FILE
+
+      IF ( "THIS.PIPELIST.CONTAINS_KEY <&PID&>" == FALSE )
+         DEFINE ARRAYLIST PIPECALLS 0
+         THIS.PIPELIST.ADD PIPECALLS "<&PID&>"
+         DELETE PIPECALLS
+         SET_EVENT "<&SCRIPTEVENT_CLIENTPACKETEX&>" "<&SYSTEM_CURRENTFILE&>" RECEIVE "<&PID&>"
+      ENDIF
+
+      DEFINE SORTEDLIST PIPECALL 0
+      PIPECALL.ADD "#$<&FUNCTION&>" "FUNCTION"
+      IF ( FILE.CLASSNAME != "#$NULL" )
+         PIPECALL.ADD "#$<&FILE&>" "FILE"
+      ENDIF
+      DEFINE STRING PID2STR "<&PID&>"
+      THIS.PIPELIST.PID2STR.ADD "PIPECALL"
+
+      SLEEP 1
+	RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC ADD_BLOCK 3 PID FUNCTION FILE
+
+      IF ( "THIS.BLOCKDATA.CONTAINS_KEY <&PID&>" == FALSE )
+         DEFINE ARRAYLIST BLOCKCALLS 0
+         THIS.BLOCKDATA.ADD BLOCKCALLS "<&PID&>"
+         DELETE BLOCKCALLS
+         SET_EVENT "<&SCRIPTEVENT_CLIENTPACKET&>" "<&SYSTEM_CURRENTFILE&>" RECEIVE "<&PID&>"
+         BLOCKEX_CLIENT "<&PID&>"
+      ENDIF
+
+      DEFINE SORTEDLIST BLOCKCALL 0
+      BLOCKCALL.ADD "#$<&FUNCTION&>" "FUNCTION"
+      IF ( FILE.CLASSNAME != "#$NULL" )
+         BLOCKCALL.ADD "#$<&FILE&>" "FILE"
+      ENDIF
+      DEFINE STRING PID2STR "<&PID&>"
+      THIS.BLOCKDATA.PID2STR.ADD "BLOCKCALL"
+
+      SLEEP 1
+	RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+	PUBLIC RECEIVE 1 PACKET
+
+		DEFINE INT PID 0
+		PACKET.READ_BYTE PID
+		PACKET.RESET_INDEX
+
+      DEFINE STRING PID2STR "<&PID&>"
+
+      IF ( "ENGINEX.SCRIPTEVENTS.CLIENTPACKETSEX.PIPELIST.CONTAINS_KEY <&PID&>" == TRUE )
+         FOR PIPE_I 0 "<&ENGINEX.SCRIPTEVENTS.CLIENTPACKETSEX.PIPELIST.PID2STR.COUNT&>" 1
+            DEFINE ARRAYLIST PIPEQUEUED 0
+            PIPEQUEUED.ADD "#$<&PID2STR&>"
+            PIPEQUEUED.ADD "#i<&PIPE_I&>"
+            PIPEQUEUED.ADD PACKET
+            ENGINEX.SCRIPTEVENTS.CLIENTPACKETSEX.PIPEQUEUE.ADD PIPEQUEUED
+            DELETE PIPEQUEUED
+         NEXT
+      ENDIF
+
+      DEFINE INT VALID 1
+      IF ( "ENGINEX.SCRIPTEVENTS.CLIENTPACKETSEX.BLOCKDATA.CONTAINS_KEY <&PID&>" == TRUE )
+         FOR BLOCK_I 0 "<&ENGINEX.SCRIPTEVENTS.CLIENTPACKETSEX.BLOCKDATA.PID2STR.COUNT&>" 1
+            IF ( "ENGINEX.SCRIPTEVENTS.CLIENTPACKETSEX.BLOCKDATA.PID2STR.BLOCK_I.CONTAINS_KEY FILE" == TRUE )
+               CALL_EXTERN "<&ENGINEX.SCRIPTEVENTS.CLIENTPACKETSEX.BLOCKDATA.PID2STR.BLOCK_I.#$FILE&>" "<&ENGINEX.SCRIPTEVENTS.CLIENTPACKETSEX.BLOCKDATA.PID2STR.BLOCK_I.#$FUNCTION&>" VALID 1 PACKET
+            ELSE
+               CALL "<&ENGINEX.SCRIPTEVENTS.CLIENTPACKETSEX.BLOCKDATA.PID2STR.BLOCK_I.#$FUNCTION&>" VALID 1 PACKET
+            ENDIF
+            PACKET.RESET_INDEX
+            IF ( VALID == FALSE )
+               BREAK 3
+            ENDIF
+         NEXT
+      ENDIF
+      IF ( VALID == TRUE )
+         INJECTBB PACKET
+      ENDIF
+
+	RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+	PUBLIC PIPELOOP 0
+      DEFINE NULL THIS 0
+      THIS = ENGINEX.SCRIPTEVENTS.CLIENTPACKETSEX
+      WHILE ( THIS.CLASSNAME == #$STRING )
+         SLEEP 1
+      WEND
+      WHILE ( TRUE == TRUE )
+         IF ( THIS.PIPEQUEUE.COUNT != ZERO )
+            THREAD PIPE
+            WHILE ( THIS.PIPEQUEUE.0.COUNT != ZERO )
+               SLEEP 1
+            WEND
+            THIS.PIPEQUEUE.REMOVE 0
+         ENDIF
+         SLEEP 1
+      WEND
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+	PUBLIC PIPE 0
+
+      DEFINE STRING PID2STR "<&ENGINEX.SCRIPTEVENTS.CLIENTPACKETSEX.PIPEQUEUE.0.0&>"
+      DEFINE INT CALLDATA_I "<&ENGINEX.SCRIPTEVENTS.CLIENTPACKETSEX.PIPEQUEUE.0.1&>"
+      DEFINE BYTEBUFFER PACKET 0
+      PACKET = ENGINEX.SCRIPTEVENTS.CLIENTPACKETSEX.PIPEQUEUE.0.2.CLONE
+      ENGINEX.SCRIPTEVENTS.CLIENTPACKETSEX.PIPEQUEUE.0.CLEAR
+
+      IF ( "ENGINEX.SCRIPTEVENTS.CLIENTPACKETSEX.PIPELIST.PID2STR.CALLDATA_I.CONTAINS_KEY FILE" == TRUE )
+         CALL_EXTERN "<&ENGINEX.SCRIPTEVENTS.CLIENTPACKETSEX.PIPELIST.PID2STR.CALLDATA_I.#$FILE&>" "<&ENGINEX.SCRIPTEVENTS.CLIENTPACKETSEX.PIPELIST.PID2STR.CALLDATA_I.#$FUNCTION&>" VOID 1 PACKET
+      ELSE
+         CALL "<&ENGINEX.SCRIPTEVENTS.CLIENTPACKETSEX.PIPELIST.PID2STR.CALLDATA_I.#$FUNCTION&>" VOID 1 PACKET
+      ENDIF
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC READ 1 PACKET
+
+		DEFINE INT PID 0
+		PACKET.RESET_INDEX
+		PACKET.READ_BYTE VOID
+		PACKET.READ_INT16 PID
+		PACKET.RESET_INDEX
+
+      DEFINE SORTEDLIST DATA 0
+      IF ( "THIS.READFILES.CONTAINS_KEY <&PID&>" == TRUE )
+         DEFINE STRING PID2STR "<&PID&>"
+         CALL_EXTERN "<&THIS.READFILES.PID2STR&>" READ DATA 1 PACKET
+      ENDIF
+
+      SLEEP 1
+   RETURN DATA
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC WRITE 3 PID DATA AUTOINJECT
+      DEFINE BYTEBUFFER PACKET 0
+      IF ( "THIS.WRITEFILES.CONTAINS_KEY <&PID&>" == TRUE )
+         DEFINE STRING PID2STR "<&PID&>"
+         CALL_EXTERN "<&THIS.WRITEFILES.PID2STR&>" WRITE PACKET 1 DATA
+      ENDIF
+      IF ( AUTOINJECT.TYPE == INT )
+         IF ( AUTOINJECT == TRUE )
+            INJECTBB PACKET
+         ENDIF
+      ENDIF
+      SLEEP 1
+   RETURN PACKET
+
+//-------------------------------------------------------------------------------------
+END_CLASS
+//-------------------------------------------------------------------------------------

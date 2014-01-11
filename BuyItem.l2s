@@ -1,0 +1,108 @@
+// Kratky popis
+// Server: 
+// Autor: mochitto
+// Date: 
+// Special thanks for L2.NET contributors
+// rev.: 0
+PRINT_TEXT "SCRIPT STARTED!]"
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKETEX&>" "<&SYSTEM_CURRENTFILE&>" SPacket::BuyList 183
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" SPacket::NpcHtmlMessage 25
+//SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" SPacket::BuyList 7
+INCLUDE "Include\packets\BuyListItem.l2c"
+INCLUDE "Include\packets\BuyList.l2c"
+INCLUDE "Include\packets\RequestBuyItem.l2c"
+INCLUDE "Include\packets\NpcHtmlMessage.l2c"
+
+DEFINE_GLOBAL ARRAYLIST BUY_ITEM_LIST
+DEFINE_GLOBAL INT COMM
+
+// Main section
+// ===============================
+
+BUY_ITEM VOID 2 1829 -1
+BUY_ITEM VOID 2 5858 -1
+
+DO
+	TALK_TARGET
+	SLEEP 30000
+LOOP 1 == 1
+
+SLEEP 8973234	
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT
+
+FUNCTION SPacket::NpcHtmlMessage
+	DEFINE NpcHtmlMessage NpcHtmlMessage
+	DEFINE INT R_INT
+	
+	NpcHtmlMessage.READ VOID 1 PACKET
+
+	DEFINE STRING Link0 "bypass -h npc_<&TARGET_ID&>_functions"
+	DEFINE STRING Link1 "bypass -h npc_<&TARGET_ID&>_functions item_creation 35455"
+	
+	SLEEP 600
+	
+	SWITCH COMM
+		CASE #i0
+			IF "NpcHtmlMessage.HTML.CONTAINS Link0" == TRUE
+				NPC_DIALOG "<&Link0&>"
+				//PRINT_TEXT ""
+				COMM = #i1
+			ENDIF
+			BREAK 1
+		CASE #i1
+			IF "NpcHtmlMessage.HTML.CONTAINS Link1" == TRUE
+				NPC_DIALOG "<&Link1&>"
+				//PRINT_TEXT ""
+				COMM = #i-1
+			ENDIF
+			BREAK 1
+	ENDSWITCH	
+	
+RETURN VOID
+
+FUNCTION SPacket::BuyList
+	DEFINE BuyList BuyList
+	DEFINE RequestBuyItem RequestBuyItem
+	
+	// READ THE PACKET FOR GRACIA EPILOGUE
+	BuyList.READ_GPLUS VOID 1 PACKET
+	                        
+	RequestBuyItem.LIST_ID = BuyList.LIST_ID		
+
+	SLEEP 500
+
+	FOREACH A BuyListItem BUY_ITEM_LIST	
+		FOREACH B BuyListItem BuyList.ITEM_LIST
+			IF BUY_ITEM_LIST.A.ITEM_ID == BuyList.ITEM_LIST.B.ITEM_ID  
+				DEFINE BuyListItem TMP_ITEM
+				TMP_ITEM = BuyList.ITEM_LIST.B.CLONE
+				IF ( ( BUY_ITEM_LIST.A.COUNT == -1 ) && ( BuyList.ITEM_LIST.B.COUNT > 0 ) )
+					RequestBuyItem.ADD NULL 1 TMP_ITEM
+				ELSE 
+					TMP_ITEM.COUNT = BUY_ITEM_LIST.A.COUNT 	
+					RequestBuyItem.ADD NULL 1 TMP_ITEM
+				ENDIF
+				DELETE TMP_ITEM
+			ENDIF
+		NEXTEACH  
+	NEXTEACH 
+	
+	PRINT_TEXT "I have <&RequestBuyItem.ITEM_LIST.COUNT&> items to buy in the list..."
+		
+	RequestBuyItem.WRITE
+
+	// TODO BUY ITEM
+	
+	INJECT "D0 76 00"
+	//23:06:04 :[Scroll of Escape: Clan Hall 1829 5
+
+RETURN VOID
+
+FUNCTION BUY_ITEM 2 ID COUNT
+	DEFINE BuyListItem ITEM
+	ITEM.ITEM_ID = "<&ID&>"
+	ITEM.COUNT = "<&COUNT&>"
+	BUY_ITEM_LIST.ADD ITEM
+	PRINT_TEXT "Added item <&ID&>"
+RETURN VOID

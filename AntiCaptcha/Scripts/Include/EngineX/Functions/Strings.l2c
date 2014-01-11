@@ -1,0 +1,503 @@
+
+//-------------------------------------------------------------------------------------
+CLASS ENGINEX_FUNCTIONS_STRINGS NULL
+//-------------------------------------------------------------------------------------
+
+   VAR_START
+      PUBLIC SORTEDLIST ASCII 0
+      PUBLIC SORTEDLIST HEXDEC 0
+      PUBLIC STRING QUOTE ""
+      PUBLIC SORTEDLIST VALID_HTMLTAGS 0
+   VAR_END
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT 0
+
+      THIS.ASCII.CLEAR
+      DEFINE STRING ASCIISYMBOL ""
+      DEFINE STRING ASCIINUMBER ""
+      DEFINE INT LASTLETTERS ""
+      DEFINE FILEREADER FROPEN "../Include/EngineX/Functions/Strings/Ascii.txt"
+      DEFINE STRING LINEREADER ""
+      WHILE ( TRUE == TRUE )
+         FROPEN.READ LINEREADER
+         IF ( LINEREADER == "#$" )
+            BREAK 2
+         ELSE
+            ASCIISYMBOL = LINEREADER.SUBSTRING #i0 #i1
+            LASTLETTERS = LINEREADER.LENGTH - #i1
+            ASCIINUMBER = LINEREADER.SUBSTRING #i1 "#i<&LASTLETTERS&>"
+            THIS.ASCII.ADD "#$<&ASCIISYMBOL&>" "<&ASCIINUMBER&>"
+         ENDIF
+      WEND
+      FROPEN.CLOSE
+      DELETE LINEREADER
+      DELETE FROPEN
+      DELETE LASTLETTERS
+      DELETE ASCIINUMBER
+      DELETE ASCIISYMBOL
+
+      THIS.CHR THIS.QUOTE 1 #i34
+
+      THIS.VALID_HTMLTAGS.CLEAR
+      DEFINE FILEREADER FROPEN "../Include/EngineX/Functions/Strings/ValidHtmlTags.txt"
+      DEFINE STRING LINEREADER ""
+      DEFINE ARRAYLIST TAGSPLITS 0
+      DEFINE ARRAYLIST ATTRIBSPLITS 0
+      WHILE ( TRUE == TRUE )
+         FROPEN.READ LINEREADER
+         IF ( LINEREADER == "#$" )
+            BREAK 2
+         ELSE
+            LINEREADER = LINEREADER.TRIM
+            IF ( "LINEREADER.STARTSWITH #$//" == FALSE )
+               THIS.EXPLODE TAGSPLITS 2 "#$|" LINEREADER
+               IF ( TAGSPLITS.COUNT == 3 )
+                  TAGSPLITS.0 = TAGSPLITS.0.TRIM
+                  TAGSPLITS.1 = TAGSPLITS.1.TRIM
+                  TAGSPLITS.2 = TAGSPLITS.2.TRIM
+                  IF ( "THIS.VALID_HTMLTAGS.CONTAINS_KEY <&TAGSPLITS.0&>" == FALSE )
+                     THIS.EXPLODE ATTRIBSPLITS 2 "#$," TAGSPLITS.2
+                     DEFINE HTMLTAG NEWTAG 0
+                     NEWTAG.CLOSED = "#i<&TAGSPLITS.1&>"
+                     FOR I 0 "<&ATTRIBSPLITS.COUNT&>" 1
+                        ATTRIBSPLITS.I = ATTRIBSPLITS.I.TRIM
+                        IF ( "NEWTAG.ATTRIBUTES.CONTAINS_KEY <&ATTRIBSPLITS.I&>" == FALSE )
+                           NEWTAG.ATTRIBUTES.ADD NULL "<&ATTRIBSPLITS.I&>"
+                        ENDIF
+                     NEXT
+                     THIS.VALID_HTMLTAGS.ADD NEWTAG "<&TAGSPLITS.0&>"
+                     DELETE NEWTAG
+                  ENDIF
+               ENDIF
+            ENDIF
+         ENDIF
+      WEND
+      FROPEN.CLOSE
+      DELETE LINEREADER
+      DELETE FROPEN
+      DELETE TAGSPLITS
+      DELETE ATTRIBSPLITS
+
+      THIS.HEXDEC.ADD #i0 "0"
+      THIS.HEXDEC.ADD #i1 "1"
+      THIS.HEXDEC.ADD #i2 "2"
+      THIS.HEXDEC.ADD #i3 "3"
+      THIS.HEXDEC.ADD #i4 "4"
+      THIS.HEXDEC.ADD #i5 "5"
+      THIS.HEXDEC.ADD #i6 "6"
+      THIS.HEXDEC.ADD #i7 "7"
+      THIS.HEXDEC.ADD #i8 "8"
+      THIS.HEXDEC.ADD #i9 "9"
+      THIS.HEXDEC.ADD #i10 "A"
+      THIS.HEXDEC.ADD #i11 "B"
+      THIS.HEXDEC.ADD #i12 "C"
+      THIS.HEXDEC.ADD #i13 "D"
+      THIS.HEXDEC.ADD #i14 "E"
+      THIS.HEXDEC.ADD #i15 "F"
+
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC HEX2DEC 1 HEX
+
+      DEFINE INT DEC -1
+      DEFINE STRING HEX_CHAR ""
+      DEFINE INT CUR 0
+      DEFINE INT TMP 0
+      HEX.REVERSE
+      FOR I1 0 "<&HEX.LENGTH&>" 1
+			HEX_CHAR = HEX.SUBSTRING "<&I1&>" 1
+         CUR = THIS.HEXDEC.HEX_CHAR
+         IF ( DEC < ZERO )
+            DEC = CUR
+         ELSE
+            TMP = 16 ^ I1
+            TMP = TMP * CUR
+            DEC = DEC + TMP
+         ENDIF
+      NEXT
+
+   RETURN DEC
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CHR 1 DECVALUE
+      DEFINE STRING RETURNSTRING ""
+      IF ( DECVALUE.TYPE == INT )
+         IF ( "THIS.ASCII.CONTAINS_KEY <&DECVALUE&>" == TRUE )
+            RETURNSTRING = "#$<&THIS.ASCII.#$<&DECVALUE&>&>"
+         ENDIF
+      ELSE
+         IF ( ( DECVALUE.TYPE == ARRAYLIST ) || ( DECVALUE.TYPE == SORTEDLIST ) )
+            FOR I 0 "<&DECVALUE.COUNT&>" 1
+               IF ( "THIS.ASCII.CONTAINS_KEY <&DECVALUE.I&>" == TRUE )
+                  RETURNSTRING = "#$<&RETURNSTRING&><&THIS.ASCII.#$<&DECVALUE.I&>&>"
+               ENDIF
+            NEXT
+         ENDIF
+      ENDIF
+   RETURN RETURNSTRING
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC DEC2BIN 1 DECVALUE
+      DEFINE STRING RETURNSTRING ""
+      DEFINE INT LAST_REST 0
+      WHILE ( DECVALUE > #i0 )
+         LAST_REST = DECVALUE % #i2
+         DECVALUE = DECVALUE - LAST_REST
+         DECVALUE = DECVALUE / #i2
+         RETURNSTRING = "#$<&LAST_REST&><&RETURNSTRING&>"
+      WEND
+   RETURN RETURNSTRING
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC EXPLODE 2 SEPARATOR GETSTRING
+      DEFINE ARRAYLIST STRINGS 0
+      DEFINE INT STRPOS 0
+      DEFINE STRING SUBSTR ""
+      IF ( SEPARATOR == "#$" )
+			WHILE ( STRPOS < GETSTRING.LENGTH )
+            SUBSTR = GETSTRING.SUBSTRING STRPOS #i1
+            STRINGS.ADD "#$<&SUBSTR&>"
+            STRPOS = STRPOS + #i1
+			WEND
+      ELSE
+			DEFINE INT LAST_LETTERS_COUNT 0
+			DEFINE STRING OLDSTR ""
+			WHILE ( STRPOS < GETSTRING.LENGTH )
+            LAST_LETTERS_COUNT = GETSTRING.LENGTH - STRPOS
+            IF ( LAST_LETTERS_COUNT > SEPARATOR.LENGTH )
+               SUBSTR = GETSTRING.SUBSTRING STRPOS "#i<&SEPARATOR.LENGTH&>"
+               IF ( SEPARATOR == SUBSTR )
+                  STRINGS.ADD "#$<&OLDSTR&>"
+                  OLDSTR = "#$"
+                  STRPOS = STRPOS + "#i<&SEPARATOR.LENGTH&>"
+               ELSE
+                  SUBSTR = GETSTRING.SUBSTRING STRPOS #i1
+                  OLDSTR = "#$<&OLDSTR&><&SUBSTR&>"
+                  STRPOS = STRPOS + #i1
+               ENDIF
+            ELSE
+               SUBSTR = GETSTRING.SUBSTRING STRPOS "#i<&LAST_LETTERS_COUNT&>"
+               IF ( SEPARATOR == SUBSTR )
+						STRINGS.ADD "#$<&OLDSTR&>"
+						STRINGS.ADD "#$"
+					ELSE
+						STRINGS.ADD "#$<&OLDSTR&><&SUBSTR&>"
+					ENDIF
+               STRPOS = GETSTRING.LENGTH
+            ENDIF
+			WEND
+      ENDIF
+   RETURN STRINGS
+
+//-------------------------------------------------------------------------------------
+
+	PUBLIC IMPLODE 2 SEPARATOR GETARRAY
+		DEFINE STRING NEWSTRING ""
+		IF ( GETARRAY.COUNT > ZERO )
+			NEWSTRING = "#$<&GETARRAY.0&>"
+		ENDIF
+		IF ( GETARRAY.COUNT > ONE )
+			FOR I 1 "<&GETARRAY.COUNT&>" 1
+				NEWSTRING = "#$<&NEWSTRING&><&SEPARATOR&><&GETARRAY.I&>"
+			NEXT
+		ENDIF
+	RETURN NEWSTRING
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC SUBSTR_COUNT 3 GETSTRING SEARCHSTRING RADICAL
+      DEFINE INT COUNT 0
+		DEFINE INT STRPOS 0
+		DEFINE STRING SUBSTR ""
+		DEFINE INT LAST_LETTERS_COUNT 0
+		WHILE ( STRPOS < GETSTRING.LENGTH )
+			LAST_LETTERS_COUNT = GETSTRING.LENGTH - STRPOS
+			IF ( LAST_LETTERS_COUNT < SEARCHSTRING.LENGTH )
+				STRPOS = GETSTRING.LENGTH
+			ELSE
+				SUBSTR = GETSTRING.SUBSTRING STRPOS "#i<&SEARCHSTRING.LENGTH&>"
+				IF ( SUBSTR == SEARCHSTRING )
+					COUNT = COUNT + #i1
+					IF ( RADICAL == FALSE )
+						STRPOS = STRPOS + SEARCHSTRING.LENGTH
+						STRPOS = STRPOS - #i1
+					ENDIF
+				ENDIF
+				STRPOS = STRPOS + #i1
+			ENDIF
+		WEND
+   RETURN COUNT
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC SPLIT 2 GETSTRING LENGTH
+      DEFINE ARRAYLIST STRINGS 0
+      DEFINE INT STRPOS 0
+      DEFINE STRING SUBSTR ""
+      DEFINE INT LAST_LETTERS_COUNT 0
+      WHILE ( STRPOS < GETSTRING.LENGTH )
+         LAST_LETTERS_COUNT = GETSTRING.LENGTH - STRPOS
+         IF ( LAST_LETTERS_COUNT <= LENGTH )
+            SUBSTR = GETSTRING.SUBSTRING STRPOS "#i<&LAST_LETTERS_COUNT&>"
+            STRINGS.ADD "#$<&SUBSTR&>"
+            STRPOS = GETSTRING.LENGTH
+         ELSE
+            SUBSTR = GETSTRING.SUBSTRING STRPOS "#i<&LENGTH&>"
+            STRINGS.ADD "#$<&SUBSTR&>"
+            STRPOS = STRPOS + LENGTH
+         ENDIF
+      WEND
+   RETURN STRINGS
+
+//-------------------------------------------------------------------------------------
+
+	PUBLIC IS_VALID_HTMLTAG 1 TAGNAME
+      DEFINE INT IS_VALID 0
+      IF ( "THIS.VALID_HTMLTAGS.CONTAINS_KEY <&TAGNAME&>" == TRUE )
+         IS_VALID = TRUE
+      ENDIF
+   RETURN IS_VALID
+
+//-------------------------------------------------------------------------------------
+
+	PUBLIC IS_VALID_HTMLATTRIBUTE 2 TAGNAME ATTRKEY
+      DEFINE INT IS_VALID 0
+      IF ( "THIS.VALID_HTMLTAGS.CONTAINS_KEY <&TAGNAME&>" == TRUE )
+         IF ( ( "THIS.VALID_HTMLTAGS.TAGNAME.ATTRIBUTES.CONTAINS_KEY <&ATTRKEY&>" == TRUE ) || ( "THIS.VALID_HTMLTAGS.TAGNAME.ATTRIBUTES.CONTAINS_KEY *" == TRUE ) )
+            IS_VALID = TRUE
+         ENDIF
+      ENDIF
+   RETURN IS_VALID
+
+//-------------------------------------------------------------------------------------
+
+	PUBLIC HTMLDATA 1 HTML
+      DEFINE ARRAYLIST HTMLTAGS 0
+
+      DEFINE INT IS_INSIGNS 0
+      DEFINE STRING INSIGNS_STRING ""
+      DEFINE STRING OUTSIGNS_STRING ""
+      DEFINE INT IS_VALID 0
+
+      DEFINE INT TAG_IS_CLOSING 0
+      DEFINE INT TAG_IS_QUOTED 0
+      DEFINE INT TAG_STATUS 0
+      // 0 = name
+      // 1 = attribute key
+      // 2 = attribute seperator
+      // 3 = attribute value
+      DEFINE STRING TAG_NAME ""
+      DEFINE SORTEDLIST TAG_ATTRIBUTES 0
+
+      DEFINE STRING ATTRIBUTE_NAME ""
+      DEFINE STRING ATTRIBUTE_VALUE ""
+
+      DEFINE INT HANDLE_ATTRIBUTE 0
+      DEFINE INT HANDLE_TAG 0
+      DEFINE INT HANDLE_TAG_AFTER_QUOTE 0
+
+		DEFINE STRING CHAR ""
+		FOR STRPOS 0 "<&HTML.LENGTH&>" 1
+			CHAR = HTML.SUBSTRING "<&STRPOS&>" 1
+
+         IF ( TAG_IS_QUOTED == TRUE )
+            INSIGNS_STRING = "#$<&INSIGNS_STRING&><&CHAR&>"
+            IF ( CHAR == "#$<&THIS.QUOTE&>" )
+               TAG_IS_QUOTED = FALSE
+               HANDLE_ATTRIBUTE = TRUE
+            ELSE
+               IF ( CHAR == "#$>" )
+                  IS_INSIGNS = FALSE
+                  HANDLE_TAG_AFTER_QUOTE = TRUE
+               ELSE
+                  IF ( TAG_STATUS == 3 )
+                     ATTRIBUTE_VALUE = "#$<&ATTRIBUTE_VALUE&><&CHAR&>"
+                  ENDIF
+               ENDIF
+            ENDIF
+         ELSE
+
+            IF ( IS_INSIGNS == FALSE )
+               IF ( CHAR == "#$<" )
+
+                  FOR HTMLTAGS_I 0 "<&HTMLTAGS.COUNT&>" 1
+                     IF ( HTMLTAGS.HTMLTAGS_I.CLOSED == FALSE )
+                        HTMLTAGS.HTMLTAGS_I.INNER_VISIBLE = "#$<&HTMLTAGS.HTMLTAGS_I.INNER_VISIBLE&><&OUTSIGNS_STRING&>"
+                        HTMLTAGS.HTMLTAGS_I.INNER_ALL = "#$<&HTMLTAGS.HTMLTAGS_I.INNER_ALL&><&OUTSIGNS_STRING&>"
+                     ENDIF
+                  NEXT
+
+                  IS_INSIGNS = TRUE
+                  OUTSIGNS_STRING = "#$"
+                  INSIGNS_STRING = "#$<&CHAR&>"
+                  TAG_NAME = "#$"
+               ELSE
+                  OUTSIGNS_STRING = "#$<&OUTSIGNS_STRING&><&CHAR&>"
+               ENDIF
+            ELSE
+               IF ( CHAR == "#$>" )
+                  HANDLE_TAG = TRUE
+                  IS_INSIGNS = FALSE
+                  HANDLE_ATTRIBUTE = TRUE
+               ELSE
+
+                  SWITCH TAG_STATUS
+
+                     CASE 0
+                        IF ( ( CHAR == "#$/" ) && ( TAG_NAME == "#$" ) && ( TAG_IS_CLOSING == FALSE ) )
+                           TAG_IS_CLOSING = TRUE
+                        ELSE
+                           IF ( ( TAG_NAME != "#$" ) && ( CHAR == "#$ " ) )
+                              ATTRIBUTE_NAME = "#$"
+                              HANDLE_ATTRIBUTE = FALSE
+                              ATTRIBUTE_VALUE = "#$"
+                              TAG_STATUS = 1
+                           ELSE
+                              IF ( CHAR != "#$ " )
+                                 TAG_NAME = "#$<&TAG_NAME&><&CHAR&>"
+                              ENDIF
+                           ENDIF
+                        ENDIF
+                        BREAK 1
+
+                     CASE 1
+                        IF ( TAG_IS_CLOSING == FALSE )
+                           IF ( ( ATTRIBUTE_NAME != "#$" ) && ( CHAR == "#$ " ) )
+                              TAG_STATUS = 2
+                           ELSE
+                              IF ( CHAR == "#$=" )
+                                 TAG_STATUS = 3
+                              ELSE
+                                 IF ( CHAR != "#$ " )
+                                    ATTRIBUTE_NAME = "#$<&ATTRIBUTE_NAME&><&CHAR&>"
+                                 ENDIF
+                              ENDIF
+                           ENDIF
+                        ENDIF
+                        BREAK 1
+
+                     CASE 2
+                        IF ( CHAR == "#$<&THIS.QUOTE&>" )
+                           TAG_IS_QUOTED = TRUE
+                        ELSE
+                           IF ( CHAR != "#$ " )
+                              IF ( CHAR == "#$=" )
+                                 TAG_STATUS = 3
+                              ELSE
+                                 HANDLE_ATTRIBUTE = TRUE
+                              ENDIF
+                           ENDIF
+                        ENDIF
+                        BREAK 1
+
+                     CASE 3
+                        IF ( ( CHAR == "#$<&THIS.QUOTE&>" ) && ( ATTRIBUTE_VALUE == "#$" ) )
+                           TAG_IS_QUOTED = TRUE
+                        ELSE
+                           IF ( ( CHAR == "#$ " ) && ( ATTRIBUTE_VALUE == "#$" ) )
+                           ELSE
+                              IF ( CHAR == "#$ " )
+                                 HANDLE_ATTRIBUTE = TRUE
+                              ELSE
+                                 ATTRIBUTE_VALUE = "#$<&ATTRIBUTE_VALUE&><&CHAR&>"
+                              ENDIF
+                           ENDIF
+                        ENDIF
+                        BREAK 1
+
+                  ENDSWITCH
+
+               ENDIF
+               INSIGNS_STRING = "#$<&INSIGNS_STRING&><&CHAR&>"
+            ENDIF
+         ENDIF
+
+         IF ( HANDLE_ATTRIBUTE == TRUE )
+            HANDLE_ATTRIBUTE = FALSE
+            IF ( HANDLE_TAG_AFTER_QUOTE == TRUE )
+               HANDLE_TAG_AFTER_QUOTE = FALSE
+               HANDLE_TAG = TRUE
+            ENDIF
+            IF ( ( "TAG_ATTRIBUTES.CONTAINS_KEY <&ATTRIBUTE_NAME&>" == FALSE ) && ( ATTRIBUTE_NAME != "#$" ) )
+               TAG_ATTRIBUTES.ADD "#$<&ATTRIBUTE_VALUE&>" "<&ATTRIBUTE_NAME&>"
+            ENDIF
+            ATTRIBUTE_NAME = "#$"
+            ATTRIBUTE_VALUE = "#$"
+            TAG_STATUS = 1
+         ENDIF
+
+         IF ( HANDLE_TAG == TRUE )
+            HANDLE_TAG = FALSE
+            IF ( TAG_NAME != "#$" )
+               IF ( TAG_IS_CLOSING == FALSE )
+
+                  THIS.IS_VALID_HTMLTAG IS_VALID 1 TAG_NAME
+                  IF ( IS_VALID == TRUE )
+
+                     DEFINE HTMLTAG NEWTAG 0
+                     NEWTAG.CLOSED = THIS.VALID_HTMLTAGS.TAG_NAME.CLOSED
+                     NEWTAG.NAME = "#$<&TAG_NAME&>"
+                     FOR ATTR_I 0 "<&TAG_ATTRIBUTES.COUNT&>" 1
+                        THIS.IS_VALID_HTMLATTRIBUTE IS_VALID 2 TAG_NAME "#$<&TAG_ATTRIBUTES.GET_KEY <&ATTR_I&>&>"
+                        IF ( IS_VALID == TRUE )
+                           NEWTAG.ATTRIBUTES.ADD "#$<&TAG_ATTRIBUTES.ATTR_I&>" "<&TAG_ATTRIBUTES.GET_KEY <&ATTR_I&>&>"
+                        ENDIF
+                     NEXT
+                     TAG_ATTRIBUTES.CLEAR
+
+                     HTMLTAGS.REVERSE
+                     FOR HTMLTAGS_I 0 "<&HTMLTAGS.COUNT&>" 1
+                        IF ( HTMLTAGS.HTMLTAGS_I.CLOSED == FALSE )
+                           NEWTAG.PARENT = HTMLTAGS.HTMLTAGS_I
+                           HTMLTAGS.HTMLTAGS_I.CHILDS.ADD NEWTAG
+                           BREAK 2
+                        ENDIF
+                     NEXT
+                     HTMLTAGS.REVERSE
+                     HTMLTAGS.ADD NEWTAG
+                     DELETE NEWTAG
+                  ENDIF
+               ELSE
+                  TAG_IS_CLOSING = FALSE
+                  HTMLTAGS.REVERSE
+                  FOR HTMLTAGS_I 0 "<&HTMLTAGS.COUNT&>" 1
+                     IF ( ( HTMLTAGS.HTMLTAGS_I.CLOSED == FALSE ) &&  ( HTMLTAGS.HTMLTAGS_I.NAME.TO_UPPER == TAG_NAME.TO_UPPER ) )
+                        HTMLTAGS.HTMLTAGS_I.CLOSED = TRUE
+                        BREAK 2
+                     ENDIF
+                  NEXT
+                  HTMLTAGS.REVERSE
+               ENDIF
+            ENDIF
+            DEFINE INT INNER_ALL_DEBUG 0
+            FOR HTMLTAGS_I 0 "<&HTMLTAGS.COUNT&>" 1
+               IF ( HTMLTAGS.HTMLTAGS_I.CLOSED == FALSE )
+                  IF ( HTMLTAGS.HTMLTAGS_I.NAME.TO_UPPER == TAG_NAME.TO_UPPER )
+                     IF ( INNER_ALL_DEBUG == FALSE )
+                        INNER_ALL_DEBUG = TRUE
+                     ELSE
+                        HTMLTAGS.HTMLTAGS_I.INNER_ALL = "#$<&HTMLTAGS.HTMLTAGS_I.INNER_ALL&><&INSIGNS_STRING&>"
+                     ENDIF
+                  ELSE
+                     HTMLTAGS.HTMLTAGS_I.INNER_ALL = "#$<&HTMLTAGS.HTMLTAGS_I.INNER_ALL&><&INSIGNS_STRING&>"
+                  ENDIF
+               ENDIF
+            NEXT
+            DELETE INNER_ALL_DEBUG
+            TAG_STATUS = 0
+            INSIGNS_STRING = "#$"
+         ENDIF
+      NEXT
+
+   RETURN HTMLTAGS
+
+//-------------------------------------------------------------------------------------
+END_CLASS
+//-------------------------------------------------------------------------------------

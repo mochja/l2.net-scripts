@@ -1,0 +1,101 @@
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" MultiSellList 208
+
+    WHILE ZERO == ZERO
+        SLEEP 999999
+    WEND
+END_SCRIPT
+
+
+FUNCTION MultiSellList 1 PACKET
+
+    DEFINE INT PktId 0
+    DEFINE INT ListID 0
+    DEFINE INT Page_beg 0
+    DEFINE INT Page_end 0
+    DEFINE INT onpage 0
+    DEFINE INT entrycount 0
+
+    PACKET.READ_BYTE PktId
+    PACKET.READ_INT32 ListID
+    PACKET.READ_INT32 Page_beg
+    PACKET.READ_INT32 Page_end
+    PACKET.READ_INT32 onpage
+    PACKET.READ_INT32 entrycount
+
+    PRINT_TEXT "ListID: <&ListID&>"
+    PRINT_TEXT "Page_beg: <&Page_beg&> | Page_end: <&Page_end&>"
+    PRINT_TEXT "onpage: <&onpage&> | entrycount: <&entrycount&>"
+
+    DEFINE INT EntryID 0
+    DEFINE INT Unk 0
+    DEFINE INT Unk2 0
+    DEFINE INT Unk3 0
+    DEFINE INT Unk4 0
+    DEFINE INT Unk5 0
+    DEFINE INT Unk6 0
+    DEFINE INT Unk7 0
+    DEFINE INT Unk8 0
+    DEFINE INT Unk9 0
+    DEFINE INT ItemID 0
+    DEFINE INT Unk10 0
+    DEFINE INT Unk11 0
+    DEFINE INT Unk12 0
+    DEFINE INT Unk13 0
+    DEFINE INT Unk14 0
+    DEFINE INT Unk15 0
+    DEFINE INT Unk16 0
+    DEFINE INT Unk17 0
+    DEFINE INT Unk18 0
+    DEFINE INT Unk19 0
+    DEFINE INT Unk20 0
+    DEFINE INT Unk21 0
+    DEFINE INT Unk22 0
+    DEFINE INT Unk23 0
+    DEFINE INT Unk24 0
+    DEFINE INT Unk25 0
+    DEFINE INT Unk26 0
+    DEFINE INT Unk27 0
+    DEFINE INT Unk28 0
+    DEFINE INT Unk29 0
+    DEFINE INT Byte1 0
+    DEFINE INT Byte2 0
+
+
+    FOR MultiSellListEntryIDX 0 "<&entrycount&>" 1
+        PACKET.READ_INT32 EntryID
+        PACKET.READ_INT16 Unk
+        PACKET.READ_INT32 Unk2
+        PACKET.READ_INT32 Unk3
+        PACKET.READ_INT32 Unk4
+        PACKET.READ_INT32 Unk5
+        PACKET.READ_INT32 Unk6
+        PACKET.READ_INT32 Unk7
+        PACKET.READ_INT32 Unk8
+        PACKET.READ_BYTE Byte1
+        PACKET.READ_INT16 ItemID
+        PACKET.READ_BYTE Byte2
+        PACKET.READ_INT32 Unk9
+        PACKET.READ_INT32 Unk10
+        PACKET.READ_INT32 Unk11
+        PACKET.READ_INT32 Unk12
+        PACKET.READ_INT32 Unk13
+        PACKET.READ_INT32 Unk14
+        PACKET.READ_INT32 Unk15
+        PACKET.READ_INT32 Unk16
+        PACKET.READ_INT32 Unk17
+        PACKET.READ_INT32 Unk18
+        PACKET.READ_INT32 Unk19
+        PACKET.READ_INT32 Unk20
+        PACKET.READ_INT32 Unk21
+        PACKET.READ_INT32 Unk22
+        PACKET.READ_INT32 Unk23
+        PACKET.READ_INT32 Unk24
+        PACKET.READ_INT32 Unk25
+        PACKET.READ_INT32 Unk26
+        PACKET.READ_INT32 Unk27
+        PACKET.READ_INT32 Unk28
+        PACKET.READ_BYTE Unk29
+        PRINT_TEXT "MultiSellListEntry] EntryID: <&EntryID&> | ItemID: <&ItemID&>"
+    NEXT
+
+RETURN VOID

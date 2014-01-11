@@ -1,0 +1,291 @@
+// Smart Potions v1.1
+// by d00d.mailbox@gmail.com
+//
+// This will manage potions for you inserting random delays based on your preference
+// to avoid server side tracking.
+//
+// The script also checks to see if you have the item you are trying to use rather
+// then attempting to send a bad USE_ITEM call.
+//
+// This script has a basic understanding of when you are in a combat zone and
+// has the ability to use items specific to that zone.  Right now the only time that
+// will get confused is when you use the script in the arena, but who needs potion
+// management in the arena :P
+//
+// REQUIRES DLIB 0.9c+
+//
+// Changelog
+// v1.0 - Inital Release
+// v1.1 - quick bugfix with STATUS == vs. STATUS =
+// v1.2 - quick fix from HP random variance of static 500ms to _iSleepDelta
+
+Init::GlobalVariables VOID 0
+
+	Launcher.ADD CP         // Type CP or HP or MP
+    Launcher.ADD "#D70.0"   // Pot below this percent
+    Launcher.ADD "#I5592"   // Use this Item (Greater CP)
+    Launcher.ADD "#I500"    // Base Sleep time in ms
+    Launcher.ADD "#I200"    // Maximum Random Delay Variance in ms
+    Launcher.ADD FALSE      // Usable only in Siege Zone
+    THREAD Action::Potion
+/*    
+    Launcher.ADD MP         // Type CP or HP or MP
+    Launcher.ADD "#D98.0"   // Pot below this percent
+    Launcher.ADD "#I728"    // Use this Item (Greater CP)
+    Launcher.ADD "#I5000"   // Base Sleep time in ms
+    Launcher.ADD "#I200"    // Maximum Random Delay Variance in ms
+    Launcher.ADD FALSE      // Usable only in Siege Zone
+    THREAD Action::Potion
+
+/*
+    Rule Format:
+    
+    Launcher.ADD value1
+    Launcher.ADD value2
+    Launcher.ADD value3
+    Launcher.ADD value4
+    Launcher.ADD value5
+    THREAD Action::Potion
+
+    Example Rules
+
+    Launcher.ADD CP         // Type CP or HP
+    Launcher.ADD "#D70.0"   // Pot below this percent
+    Launcher.ADD "#I5592"   // Use this Item (Greater CP)
+    Launcher.ADD "#I500"    // Base Sleep time in ms
+    Launcher.ADD "#I200"    // Maximum Random Delay Variance in ms
+    Launcher.ADD FALSE      // Usable only in Siege Zone
+    THREAD Action::Potion
+    
+    Launcher.ADD CP         // Type CP or HP
+    Launcher.ADD "#D70.0"   // Pot below this percent
+    Launcher.ADD "#I5591"   // Use this Item (Lesser CP)
+    Launcher.ADD "#I500"    // Base Sleep time
+    Launcher.ADD "#I200"    // Maximum Random Delay Variance in ms
+    Launcher.ADD FALSE      // Usable only in Siege Zone
+    THREAD Action::Potion
+    
+    Launcher.ADD CP         // Type CP or HP
+    Launcher.ADD "#D1.0"    // Pot below this percent
+    Launcher.ADD "#I8639"   // Use this Item (Elixer of CP)
+    Launcher.ADD "#I300000" // Base Sleep time
+    Launcher.ADD "#I2500"   // Maximum Random Delay Variance in ms
+    Launcher.ADD FALSE      // Usable only in Siege Zone
+    THREAD Action::Potion
+    
+    Launcher.ADD CP         // Type CP or HP
+    Launcher.ADD "#D1.0"    // Pot below this percent
+    Launcher.ADD "#I10154"  // Use this Item (Battleground: CP Recovery Potion)
+    Launcher.ADD "#I180000" // Base Sleep time
+    Launcher.ADD "#I2500"   // Maximum Random Delay Variance in ms
+    Launcher.ADD TRUE       // Usable only in Siege Zone
+    THREAD Action::Potion
+    
+    Launcher.ADD HP         // Type CP or HP
+    Launcher.ADD "#D85.0"   // Pot below this percent
+    Launcher.ADD "#I1539"   // Use this Item (Greater Healing Potion)
+    Launcher.ADD "#I15000"  // Base Sleep time
+    Launcher.ADD "#I2000"   // Maximum Random Delay Variance in ms
+    Launcher.ADD FALSE      // Usable only in Siege Zone
+    THREAD Action::Potion
+    
+    Launcher.ADD HP         // Type CP or HP
+    Launcher.ADD "#D45.0"   // Pot below this percent
+    Launcher.ADD "#I8627"   // Use this Item (Elixer of Health)
+    Launcher.ADD "#I300000" // Base Sleep time
+    Launcher.ADD "#I2000"   // Maximum Random Delay Variance in ms
+    Launcher.ADD FALSE      // Usable only in Siege Zone
+    THREAD Action::Potion
+    
+    Launcher.ADD HP         // Type CP or HP
+    Launcher.ADD "#D45.0"   // Pot below this percent
+    Launcher.ADD "#I10152"  // Use this Item (Battleground: CP Recovery Potion)
+    Launcher.ADD "#I180000" // Base Sleep time
+    Launcher.ADD "#I2500"   // Maximum Random Delay Variance in ms
+    Launcher.ADD TRUE       // Usable only in Siege Zone
+    THREAD Action::Potion
+
+*/
+
+IF ACTION_THREADS > ZERO
+  PRINT_TEXT "<&ACTION_THREADS&> rules loaded, open your inventory to start."
+  WHILE ONE == ONE
+    SLEEP 60000
+  WEND
+ELSE
+  PRINT_TEXT "You defined no potion rules -- exiting."
+  END_SCRIPT
+ENDIF
+
+FUNCTION Init::GlobalVariables
+
+  DEFINE_GLOBAL SORTEDLIST UserInfo_SL
+  DEFINE_GLOBAL SORTEDLIST SystemMessage_SL
+  
+  DEFINE_GLOBAL QUEUE LAUNCHER
+  
+  DEFINE_GLOBAL INT HP 0
+  DEFINE_GLOBAL INT CP 1
+  DEFINE_GLOBAL INT MP 2
+  DEFINE_GLOBAL INT COMBAT_ZONE 0
+  DEFINE_GLOBAL INT ACTION_THREADS 0
+  
+  DEFINE_GLOBAL STRING Packet::UserInfo::Mutex      "LOCK"
+  DEFINE_GLOBAL STRING Packet::SystemMessage::Mutex "LOCK"
+  DEFINE_GLOBAL STRING Action::Potion               "LOCK"
+  
+  Init::Events VOID 0
+  
+RETURN VOID
+
+FUNCTION Init::Events
+
+  SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" Packet::UserInfo 50
+  SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" Packet::SystemMessage 98
+  
+RETURN VOID
+
+FUNCTION Packet::UserInfo
+
+  LOCK Packet::UserInfo::Mutex
+    CALL_EXTERN "DLIB\Packets\ReadUserInfo.l2s" DLIB::Packets::ReadUserInfo UserInfo_SL 1 PACKET
+  UNLOCK Packet::UserInfo::Mutex
+  
+RETURN VOID
+
+FUNCTION Packet::SystemMessage
+
+  LOCK Packet::SystemMessage::Mutex
+    CALL_EXTERN "DLIB\Packets\ReadSystemMessage.l2s" DLIB::Packets::ReadSystemMessage SystemMessage_SL 1 PACKET
+    
+    IF "SystemMessage_SL.#$MESSAGE_ID" == #I283
+      COMBAT_ZONE = TRUE
+    ENDIF
+    
+    IF "SystemMessage_SL.#$MESSAGE_ID" == #I284
+      COMBAT_ZONE = FALSE
+    ENDIF
+    
+  UNLOCK Packet::SystemMessage::Mutex
+
+RETURN VOID
+
+FUNCTION Action::Potion
+
+  LOCK Action::Potion
+    ACTION_THREADS = ACTION_THREADS + ONE
+  UNLOCK ACTION::Potion
+  
+  WHILE UserInfo_SL.COUNT == ZERO
+    SLEEP 100
+  WEND
+
+  DEFINE INT    _iType       "<&Launcher.POP&>"
+  DEFINE DOUBLE _dThreshold  "<&Launcher.POP&>"
+  DEFINE INT    _iItem       "<&Launcher.POP&>"
+  DEFINE INT    _iSleep      "<&Launcher.POP&>"
+  DEFINE INT    _iSleepDelta "<&Launcher.POP&>"
+  DEFINE INT    _iOnlySiege  "<&Launcher.POP&>"
+  
+  DEFINE DOUBLE CURRENT_PERCENT 0.0
+  DEFINE INT    R_SLEEP         0
+  DEFINE INT    STATUS          0
+  DEFINE INT    HAS_ITEM        0
+  
+    SWITCH _iType
+      CASE HP
+        WHILE ONE == ONE
+          IF _iOnlySiege == TRUE
+            IF COMBAT_ZONE == TRUE
+              STATUS = TRUE
+            ENDIF
+          ENDIF
+          
+          ITEM_COUNT HAS_ITEM "<&_iItem&>"
+          
+          IF HAS_ITEM > ZERO
+            STATUS = TRUE
+          ELSE
+            STATUS = FALSE
+          ENDIF
+          
+          IF STATUS == TRUE
+            CURRENT_PERCENT = "UserInfo_SL.#$CURRENT_HP" / "UserInfo_SL.#$MAX_HP"
+            CURRENT_PERCENT = CURRENT_PERCENT * #I100
+          
+            GET_RAND R_SLEEP 0 _iSleepDelta
+          
+            IF CURRENT_PERCENT < _dThreshold
+              USE_ITEM "<&_iITem&>"
+              SLEEP "<&R_SLEEP&>"
+            ENDIF
+          ENDIF
+          
+          SLEEP 100
+        WEND          
+        BREAK 1          
+      CASE CP
+        WHILE ONE == ONE
+          IF _iOnlySiege == TRUE
+            IF COMBAT_ZONE == TRUE
+              STATUS = TRUE
+            ENDIF
+          ENDIF
+
+          ITEM_COUNT HAS_ITEM "<&_iItem&>"
+          
+          IF HAS_ITEM > ZERO
+            STATUS = TRUE
+          ELSE
+            STATUS = FALSE
+          ENDIF
+
+          IF STATUS == TRUE
+            CURRENT_PERCENT = "UserInfo_SL.#$CURRENT_CP" / "UserInfo_SL.#$MAX_CP"
+            CURRENT_PERCENT = CURRENT_PERCENT * #I100
+            
+            GET_RAND R_SLEEP 0 _iSleepDelta
+            
+            IF CURRENT_PERCENT < _dThreshold
+              USE_ITEM "<&_iITem&>"
+              SLEEP "<&R_SLEEP&>"
+            ENDIF            
+          ENDIF
+          
+          SLEEP 100
+        WEND
+        BREAK 1
+     CASE MP
+        WHILE ONE == ONE
+          IF _iOnlySiege == TRUE
+            IF COMBAT_ZONE == TRUE
+              STATUS = TRUE
+            ENDIF
+          ENDIF
+          
+          ITEM_COUNT HAS_ITEM "<&_iItem&>"
+          
+          IF HAS_ITEM > ZERO
+            STATUS = TRUE
+          ELSE
+            STATUS = FALSE
+          ENDIF
+          
+          IF STATUS == TRUE
+            CURRENT_PERCENT = "UserInfo_SL.#$CURRENT_MP" / "UserInfo_SL.#$MAX_MP"
+            CURRENT_PERCENT = CURRENT_PERCENT * #I100
+          
+            GET_RAND R_SLEEP 0 _iSleepDelta
+          
+            IF CURRENT_PERCENT < _dThreshold
+              USE_ITEM "<&_iITem&>"
+              SLEEP "<&R_SLEEP&>"
+            ENDIF
+          ENDIF
+          
+          SLEEP 100
+        WEND          
+        BREAK 1     
+    ENDSWITCH
+    
+RETURN VOID

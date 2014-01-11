@@ -1,0 +1,96 @@
+// DLIB::Packets::ReadRelationChanged - v1.0 for Gracia +
+// by d00d [05/22/10]
+//
+// Takes an byte buffer (_bInBuffer) containing the 
+// RelationChanged packet and dumps the data into a class Object
+//
+// Requires RelationChanged.L2C
+//
+// Version 1.0 - Initial Release
+
+FUNCTION DLIB::Packets::ReadRelationChanged 1 _bInBuffer
+
+  DEFINE RelationChanged relchange
+  
+  DEFINE SORTEDLIST _oSortedList
+  
+  DEFINE INT RELMASK
+  DEFINE INT B_RESULT
+  
+  IF _bInBuffer.CLASSNAME == "#$BYTEBUFFER"
+  
+    relchange.InitRelationStates relchange.RelationStates 0
+
+    _bInBuffer.RESET_INDEX
+    _bInBuffer.READ_BYTE NULL
+    _bInBuffer.READ_INT32 relchange.UNKNOWN_00
+    _bInBuffer.READ_INT32 relchange.OBJECT_ID
+    _bInBuffer.READ_INT32 relchange.RELATION
+    _bInBuffer.READ_INT32 relchange.AUTO_ATTACKABLE
+    _bInBUffer.READ_INT32 relchange.KARMA
+    _bInBuffer.READ_INT32 relchange.PVP_FLAG
+
+    FOREACH STATE INT relchange.RelationStates
+
+      B_RESULT = relchange.RELATION & relchange.RelationStates.state
+
+      SWITCH B_RESULT
+        CASE #I1
+          relchange.PARTY_MEMBER1 = TRUE
+          BREAK 1
+        CASE #I2
+          relchange.PARTY_MEMBER2 = TRUE
+          BREAK 1
+        CASE #I4
+          relchange.PARTY_MEMBER3 = TRUE
+          BREAK 1
+        CASE #I8
+          relchange.PARTY_MEMBER4 = TRUE
+          BREAK 1
+        CASE #I16
+          relchange.PARTY_LEADER = TRUE
+          BREAK 1
+        CASE #I32
+          relchange.IN_PARTY = TRUE
+          BREAK 1
+        CASE #I64
+          relchange.IN_CLAN = TRUE
+          BREAK 1
+        CASE #I128
+          relchange.CLAN_LEADER = TRUE
+          BREAK 1
+        CASE #I256
+          relchange.CLAN_MEMBER = TRUE
+          BREAK 1
+        CASE #I512
+          relchange.IN_SIEGE = TRUE
+          BREAK 1
+        CASE #I1024
+          relchange.SIEGE_ATTACKER = TRUE
+          BREAK 1
+        CASE #I2048
+          relchange.SIEGE_ALLY = TRUE
+          BREAK 1
+        CASE #I4096
+          relchange.SIEGE_ENEMY = TRUE
+          BREAK 1
+        CASE #I16384
+          relchange.MUTUAL_WAR = TRUE
+          BREAK 1
+        CASE #I32768
+          relchange.1SIDE_WAR = TRUE
+          BREAK 1
+        CASE #I65536
+          relchange.IN_ALLY = TRUE
+          BREAK 1
+        CASE #I524288
+          relchange.IN_TWAR = TRUE
+          BREAK 1
+      ENDSWITCH
+
+    NEXTEACH
+  ELSE
+    PRINT_TEXT "_bInBuffer is not a ByteBuffer"
+  ENDIF
+  
+RETURN relchange

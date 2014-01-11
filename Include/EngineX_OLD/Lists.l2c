@@ -1,0 +1,140 @@
+
+CLASS ENGINEX_LISTS NULL
+
+//-------------------------------------------------------------------------------------
+
+   VAR_START
+   VAR_END
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONSTRUCT 0
+   RETURN VOID
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC RANDSORT 1 OLDARRAY
+		DEFINE ARRAYLIST NEWARRAY 0
+		DEFINE ARRAYLIST INDEXES 0
+		DEFINE INT OLD_INDEX 0
+		DEFINE INT NEW_INDEX 0
+		FOR I 0 "<&OLDARRAY.COUNT&>" 1
+			INDEXES.ADD "#i<&I&>"
+		NEXT
+		WHILE (INDEXES.COUNT > ZERO)
+			GET_RAND OLD_INDEX 1 "<&INDEXES.COUNT&>"
+			OLD_INDEX = OLD_INDEX - #i1
+			NEW_INDEX = INDEXES.OLD_INDEX
+			NEWARRAY.ADD OLDARRAY.NEW_INDEX
+			INDEXES.REMOVE "<&OLD_INDEX&>"
+		WEND
+   RETURN NEWARRAY
+
+//-------------------------------------------------------------------------------------
+
+   PUBLIC CONTAINS 2 LIST TOCONTAIN
+		DEFINE INT CONTAINS 0
+		FOREACH I "<&TOCONTAIN.CLASSNAME&>" LIST
+			IF (LIST.I == TOCONTAIN)
+				CONTAINS = TRUE
+				BREAK 2
+			ENDIF
+		ENDIF
+		NEXTEACH
+   RETURN CONTAINS
+
+//-------------------------------------------------------------------------------------
+
+	// (c) dood (thx)
+	PUBLIC SEARCH_OBJECT 2 OBJECT VALUE
+		DEFINE SORTEDLIST LOCATIONS
+		SWITCH OBJECT.CLASSNAME
+			CASE "#$SORTEDLIST"
+				FOREACH I STRING OBJECT
+					IF (OBJECT.I == VALUE)
+						LOCATIONS.ADD "#$<&VALUE&>" "<&I&>"
+					ENDIF
+				NEXTEACH
+				BREAK 1
+			CASE "#$ARRAYLIST"
+				FOREACH I INT OBJECT
+					IF (OBJECT.I == VALUE)
+						LOCATIONS.ADD VALUE "<&I&>"
+					ENDIF
+				NEXTEACH
+				BREAK 1
+			DEFAULT
+				BREAK 1
+		ENDSWITCH
+	RETURN LOCATIONS
+
+//-------------------------------------------------------------------------------------
+
+	PUBLIC DUMP 1 OBJECT
+		DEFINE ARRAYLIST DUMPDATA 0
+		ENGINEX.LISTS.__DUMP DUMPDATA 3 OBJECT "#$   " "#$"
+	RETURN DUMPDATA
+
+//-------------------------------------------------------------------------------------
+
+	PUBLIC __DUMP 3 OBJECT SPACESTRING KEY_OR_INDEX
+		DEFINE ARRAYLIST DUMPDATA 0
+		DEFINE ARRAYLIST __DUMPDATA 0
+		SWITCH OBJECT.CLASSNAME
+			CASE "#$ARRAYLIST"
+				DUMPDATA.ADD "#$<&SPACESTRING&><&KEY_OR_INDEX&>(<&OBJECT.CLASSNAME&>) {"
+				FOR I1 0 "<&OBJECT.COUNT&>" 1
+					ENGINEX.LISTS.__DUMP __DUMPDATA 3 OBJECT.I1 "#$<&SPACESTRING&>   " "#$<&I1&> => "
+					FOREACH I2 STRING __DUMPDATA
+						DUMPDATA.ADD "#$<&__DUMPDATA.I2&>"
+					NEXTEACH
+				NEXT
+				DUMPDATA.ADD "#$<&SPACESTRING&>}"
+				BREAK 1
+			CASE "#$SORTEDLIST"
+				DUMPDATA.ADD "#$<&SPACESTRING&><&KEY_OR_INDEX&>(<&OBJECT.CLASSNAME&>) {"
+				FOR I1 0 "<&OBJECT.COUNT&>" 1
+					ENGINEX.LISTS.__DUMP __DUMPDATA 3 OBJECT.I1 "#$<&SPACESTRING&>   " "#$<&OBJECT.GET_KEY I1&> => "
+					FOREACH I2 STRING __DUMPDATA
+						DUMPDATA.ADD "#$<&__DUMPDATA.I2&>"
+					NEXTEACH
+				NEXT
+				DUMPDATA.ADD "#$<&SPACESTRING&>}"
+				BREAK 1
+			CASE "#$VECTOR2"
+				DUMPDATA.ADD "#$<&SPACESTRING&><&KEY_OR_INDEX&>(<&OBJECT.CLASSNAME&>) {"
+				ENGINEX.LISTS.__DUMP __DUMPDATA 3 OBJECT.X "#$<&SPACESTRING&>   " "#$X => "
+				FOREACH I2 STRING __DUMPDATA
+					DUMPDATA.ADD "#$<&__DUMPDATA.I2&>"
+				NEXTEACH
+				ENGINEX.LISTS.__DUMP __DUMPDATA 3 OBJECT.Y "#$<&SPACESTRING&>   " "#$Y => "
+				FOREACH I2 STRING __DUMPDATA
+					DUMPDATA.ADD "#$<&__DUMPDATA.I2&>"
+				NEXTEACH
+				DUMPDATA.ADD "#$<&SPACESTRING&>}"
+				BREAK 1
+			CASE "#$VECTOR3"
+				DUMPDATA.ADD "#$<&SPACESTRING&><&KEY_OR_INDEX&>(<&OBJECT.CLASSNAME&>) {"
+				ENGINEX.LISTS.__DUMP __DUMPDATA 3 OBJECT.X "#$<&SPACESTRING&>   " "#$X => "
+				FOREACH I2 STRING __DUMPDATA
+					DUMPDATA.ADD "#$<&__DUMPDATA.I2&>"
+				NEXTEACH
+				ENGINEX.LISTS.__DUMP __DUMPDATA 3 OBJECT.Y "#$<&SPACESTRING&>   " "#$Y => "
+				FOREACH I2 STRING __DUMPDATA
+					DUMPDATA.ADD "#$<&__DUMPDATA.I2&>"
+				NEXTEACH
+				ENGINEX.LISTS.__DUMP __DUMPDATA 3 OBJECT.Z "#$<&SPACESTRING&>   " "#$Z => "
+				FOREACH I2 STRING __DUMPDATA
+					DUMPDATA.ADD "#$<&__DUMPDATA.I2&>"
+				NEXTEACH
+				DUMPDATA.ADD "#$<&SPACESTRING&>}"
+				BREAK 1
+			DEFAULT
+				DUMPDATA.ADD "#$<&SPACESTRING&><&KEY_OR_INDEX&>(<&OBJECT.CLASSNAME&>) <&OBJECT&>"
+				BREAK 1
+		ENDSWITCH
+	RETURN DUMPDATA
+
+//-------------------------------------------------------------------------------------
+
+END_CLASS

@@ -1,0 +1,70 @@
+// DLIB::Packets::Warehouse v1.0 for Gracia 2.2
+// by d00d [02/19/09]
+//
+// Takes an byte buffer (_bInBuffer) containing the 
+// ItemList packet and dumps the data into a sorted list
+// (_oWarehouse).
+//
+// This packet handler can be used for both withdraw and
+// deposit packets.
+//
+// REQUIRES - ItemList.l2c - placed in calling script
+//
+// Version 1.0 - Initial Release
+// Version 1.1 - updates
+
+FUNCTION DLIB::Packets::ReadWarehouse 1 _bInBuffer
+
+  DEFINE INT _iPlayerAdena 0
+  DEFINE INT _iItemCount 0
+  DEFINE INT _iWHtype 0
+  
+  IF _bInBuffer.CLASSNAME == "#$BYTEBUFFER"
+    IF _oWarehouse.CLASSNAME == "#$SORTEDLIST"
+    
+    _bInBuffer.RESET_INDEX
+
+    _bInBuffer.READ_BYTE NULL
+    
+    _bInBuffer.READ_INT16 _iWHtype    
+    _bInBuffer.READ_INT32 _iPlayerAdena
+    _bInBuffer.READ_INT16 _iItemCount
+
+    _oWarehouse.ADD _iWHtype "WH_TYPE"
+    _oWarehouse.ADD _iPlayerAdena "ADENA"
+    _oWarehouse.ADD _iItemCount "ITEM_COUNT"
+
+    
+    FOR Z 0 "<&_iItemCount&>" 1
+      DEFINE ItemList ITEM 0      
+      _bInBuffer.READ_INT16 ITEM.BASE_TYPE1
+      _bInBuffer.READ_INT32 ITEM.OBJECT_ID
+      _bInBuffer.READ_INT32 ITEM.TEMPLATE_ID
+      _bInBuffer.READ_INT32 ITEM.QUANTITY
+      _bInBuffer.READ_INT16 ITEM.BASE_TYPE2
+      _bInBuffer.READ_INT16 ITEM.CUSTOM_TYPE1
+      _bInBuffer.READ_INT32 ITEM.LOCATION_SLOT
+      _bInBuffer.READ_INT16 ITEM.ENCHANT_LEVEL
+      _bInBuffer.READ_INT16 ITEM.CUSTOM_TYPE2      
+      _bInBuffer.READ_INT16 NULL
+      _bInBuffer.READ_INT32 ITEM.OBJECT_ID
+      _bInBuffer.READ_INT32 ITEM.AUGMENT_ID1
+      _bInBuffer.READ_INT32 ITEM.AUGMENT_ID2
+      _bInBuffer.READ_INT32 ITEM.ATTACK_ELEMENT
+      _bInBuffer.READ_INT32 ITEM.ELEMENT_MAGNITUDE
+      _bInBuffer.READ_INT32 ITEM.FIRE_DEFENSE
+      _bInBuffer.READ_INT32 ITEM.WATER_DEFENSE
+      _bInBuffer.READ_INT32 ITEM.WIND_DEFENSE
+      _bInBuffer.READ_INT32 ITEM.EARTH_DEFENSE
+      _bInBuffer.READ_INT32 ITEM.HOLY_DEFENSE
+      _bInBuffer.READ_INT32 ITEM.DARK_DEFENSE
+      _bInBuffer.READ_INT32 ITEM.MANA
+      _bInBuffer.READ_INT32 ITEM.LEASE_TIME
+      
+      ITEM_GET_NAME ITEM.ITEM_NAME "<&ITEM.TEMPLATE_ID&>"
+      
+      _oWarehouse.ADD ITEM "<&ITEM.OBJECT_ID&>"
+      DELETE ITEM
+    NEXT
+  
+RETURN _oWarehouse

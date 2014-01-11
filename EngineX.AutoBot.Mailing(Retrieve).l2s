@@ -1,0 +1,28 @@
+
+/**
+ * retrieves all received items via mail from multiple characters
+ * Test: edit and start script
+ *
+ * Alpha Version!
+ *
+ * ToDo:
+ * - auto delete sent and read mails
+**/
+
+//-------------------------------------------------------------------------------------
+   INCLUDE Include/EngineX.l2c
+   DEFINE_GLOBAL ENGINEX ENGINEX 0
+//-------------------------------------------------------------------------------------
+   DEFINE NULL xAUTOMAIL 0
+   ENGINEX.CONSTRUCT xAUTOMAIL 1 #$EngineX.AutoBot.Mailing
+//-------------------------------------------------------------------------------------
+
+   xAUTOMAIL.RETRIEVE_FROM.ADD #$EmoBaby
+   xAUTOMAIL.RETRIEVE_FROM.ADD #$Giovane
+   xAUTOMAIL.RETRIEVE_FROM.ADD #$Dixie
+
+   xAUTOMAIL.RETRIEVE_ITEMS VOID 0
+
+//-------------------------------------------------------------------------------------
+END_SCRIPT
+//-------------------------------------------------------------------------------------

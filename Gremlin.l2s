@@ -1,0 +1,27 @@
+// Kratky popis
+// Server: 
+// Autor: mochitto
+// Date: 
+// Special thanks for L2.NET contributors
+// rev.: 0
+PRINT_TEXT "SCRIPT STARTED!]"
+INCLUDE "StdLib\Player.l2c"
+
+DEFINE_GLOBAL ARRAYLIST PLAYERS
+
+// Main section
+// ===============================  
+//USE_ITEM 4425
+
+//SLEEP 30000
+
+INJECT "95 EE 4D 0C 10 E8 03 00 00 00 00 00 00"
+
+WHILE ZERO == ZERO  
+//	INJECT "94 C5 5C 0C 10"
+	SLEEP 15000
+WEND 
+
+//PLAYALARM
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT

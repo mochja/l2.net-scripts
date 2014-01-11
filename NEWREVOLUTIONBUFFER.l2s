@@ -1,0 +1,105 @@
+// Kratky popis
+// Server: 
+// Autor: mochitto
+// Date: 
+// Special thanks for L2.NET contributors
+// rev.: 0
+PRINT_TEXT "SCRIPT STARTED!]"
+DEFINE_GLOBAL INT SUBCLASS 0
+
+
+bypass -h npc_<&TARGET_ID&>_Subclass 0
+bypass -h npc_<&TARGET_ID&>_Subclass 2
+bypass -h npc_<&TARGET_ID&>_Subclass 5 <&SUBCLASS&>
+
+
+// Main section
+// ===============================
+
+	
+PRINT_TEXT "SCRIPT STOPED!]"
+END_SCRIPT
+
+FUNCTION BUFFER_L2UNIT
+	IF IN_PROGRESS == 1
+		RETURN VOID
+	ENDIF
+	
+	IN_PROGRESS = 1
+	SWITCH MESSAGE
+		CASE #i1 // full buff
+			
+			BREAK 1
+		CASE #i2 // specialy me buff
+		    BREAK 1
+		CASE #i3 // counter crit and blazing skin
+	ENDSWITCH
+	IN_PROGRESS = 0
+RETURN VOID
+
+
+FUNCTION NPCHTMLWINDOW
+	DEFINE STRING _html
+	DEFINE INT N1
+	DEFINE INT N2
+	DEFINE INT N3
+	
+	PACKET.READ_BYTE NULL
+	PACKET.READ_INT32 NULL
+	PACKET.READ_STRING _html
+	SLEEP 800	
+	
+	DEFINE STRING LINK1 "bypass -h npc_<&TARGET_ID&>_Subclass 0"
+	DEFINE STRING LINK2 "bypass -h npc_<&TARGET_ID&>_Subclass 2"
+	DEFINE STRING LINK3 "bypass -h npc_<&TARGET_ID&>_Subclass 5 <&SUBCLASS&>" 	
+	
+	SWITCH COMM
+		CASE #i1
+			IF "_html.CONTAINS LINK1" == TRUE
+				COMM = #i2
+				NPC_DIALOG "<&LINK1&>"
+				PRINT_TEXT "Click <&LINK1&>"
+			ENDIF
+			BREAK 1
+		CASE #i2
+			IF "_html.CONTAINS LINK2" == TRUE
+				COMM = #i10
+				NPC_DIALOG "<&LINK2&>"
+				PRINT_TEXT "Click <&LINK2&>"
+				SLEEP 5000
+				COMMAND "/TARGET Cruma Border"
+				SLEEP 1000
+				TALK_TARGET
+				COMM = #i3
+			ENDIF
+			BREAK 1
+		//buff
+		CASE #i3
+			IF "_html.CONTAINS LINK3" == TRUE
+				COMM = #i10
+				NPC_DIALOG "<&LINK3&>"
+				PRINT_TEXT "Click <&LINK3&>"
+			ENDIF
+			BREAK 1  
+		CASE #i4
+			IF "_html.CONTAINS LINK4" == TRUE
+				COMM = #i5
+				NPC_DIALOG "<&LINK4&>"
+				PRINT_TEXT "Click <&LINK4&>"
+			ENDIF
+			BREAK 1
+		CASE #i5
+			IF "_html.CONTAINS LINK5" == TRUE
+				COMM = #i10
+				NPC_DIALOG "<&LINK5&>"
+				PRINT_TEXT "Click <&LINK5&>"
+				SLEEP 5000
+				GO_TO VOID 3 -79448 -174904 -10728
+				SLEEP 1000
+				BOTSET ACTIVE_TARGET_ON "<&TRUE&>"
+				BOTSET ACTIVE_ATTACK_ON "<&TRUE&>"
+				USE_SKILL 312 // VISIOU STANCE
+			ENDIF
+			BREAK 1
+	ENDSWITCH
+RETURN VOID

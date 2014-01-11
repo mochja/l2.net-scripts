@@ -1,0 +1,40 @@
+// DLIB::Packets::ReadTargetUnselected - v1.0 for Gracia Epilogue
+// by d00d [04/27/10]
+//
+// Takes an byte buffer (_bInBuffer) containing the 
+// TargetUnelected Packet and dumps the data into a sorted list
+// (_oStatusUpdate).
+
+// Version 1.0 - Initial Release
+
+FUNCTION DLIB::Packets::ReadTargetUnselected 1 _bInBuffer
+
+  DEFINE INT SOURCE_OID
+  DEFINE INT X
+  DEFINE INT Y
+  DEFINE INT Z
+  DEFINE INT UNKNOWN_00
+  
+  DEFINE SORTEDLIST _oTargetUnselected
+
+  IF _bInBuffer.CLASSNAME == "#$BYTEBUFFER"
+    
+    _bInBuffer.RESET_INDEX
+    _bInBuffer.READ_BYTE  NULL
+    _bInBuffer.READ_INT32 SOURCE_OID
+    _bInBuffer.READ_INT32 X
+    _bInBuffer.READ_INT32 Y
+    _bInBuffer.READ_INT32 Z
+    _bInBuffer.READ_INT32 UNKNOWN_00
+    
+    _oTargetUnselected.ADD SOURCE_OID "SOURCE_OID"
+    _oTargetUnselected.ADD X "X"
+    _oTargetUnselected.ADD Y "Y"
+    _oTargetUnselected.ADD Z "Z"
+    _oTargetUnselected.ADD UNKNOWN_00 "UNKNOWN_00"
+    
+  ELSE
+    PRINT_TEXT "_bInBuffer is not a ByteBuffer"
+  ENDIF
+  
+RETURN _oTargetUnselected

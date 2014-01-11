@@ -1,0 +1,38 @@
+// DLIB::Utility::ByteCheck - v1.0
+// by d00d [06/06/09]
+//
+// Takes an byte buffer (_bExemplar) and does a byte comparison with
+// another byte buffer (_bSubject) 
+
+// Version 1.0 - Initial Release
+
+FUNCTION DLIB::Utility::ByteCheck 2 _bExemplar _bSubject
+
+  DEFINE INT _iTmp0
+  DEFINE INT _iTmp1
+  
+  IF _bExemplar.CLASSNAME != "#$BYTEBUFFER"
+    PRINT_TEXT "DLIB::Utility::ByteCheck arg 1, is not a byte buffer"
+    END_SCRIPT
+  ENDIF
+  
+  IF _bSubject.CLASSNAME != "#$BYTEBUFFER"
+    PRINT_TEXT "DLIB::Utility::ByteCheck arg 2, is not a byte buffer"
+    END_SCRIPT
+  ENDIF
+  
+  IF _bExemplar.COUNT != _bSubject.COUNT
+    PRINT_TEXT "_bExemplar and _bSubject do not have the same byte count"
+    END_SCRIPT
+  ELSE
+    FOR Z 0 "<&_bExemplar.COUNT&>" 1
+      _bExemplar.READ_BYTE _iTmp0
+      _bSubject.READ_BYTE _iTmp1
+      
+      IF _iTmp0 != _iTmp1
+        PRINT_TEXT "DLIB::Utility::ByteCheck Mismatch detected Offset:<&_bExemplar.INDEX&>, byte reads <&_iTmp1&> should be <&_iTmp0&>"
+      ENDIF
+    NEXT
+  ENDIF
+  
+RETURN VOID

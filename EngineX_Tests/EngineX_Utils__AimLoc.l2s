@@ -1,0 +1,15 @@
+
+	INCLUDE Include/EngineX.l2c
+	DEFINE_GLOBAL ENGINEX ENGINEX 0
+
+	PRINT_TEXT ""
+	PRINT_TEXT "-------------------------------------------------"
+
+	ENGINEX.UTILS.AIMLOC VOID 3 TARGET_X TARGET_Y TARGET_Z
+	SLEEP 10000
+	ENGINEX.UTILS.UNAIMLOC VOID 0
+
+	PRINT_TEXT "-------------------------------------------------"
+	PRINT_TEXT ""
+
+END_SCRIPT

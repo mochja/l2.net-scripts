@@ -1,0 +1,206 @@
+// Automatic BUFF on Join pt
+// Server: ALL
+// Autor: mochitto
+// Date: 13. 2. 11
+// Special thanks for L2.NET contributors
+// rev.:     
+PRINT_TEXT "SCRIPT STARTED!]"
+INCLUDE "StdLib\Player.l2c"
+INCLUDE "StdLib\Effect.l2c"
+
+// Variable section
+// ================================================================================================
+DEFINE_GLOBAL INT       BLOCKED       0
+DEFINE_GLOBAL ARRAYLIST NICKLIST      0
+DEFINE_GLOBAL ARRAYLIST BUFFLIST      0
+DEFINE_GLOBAL INT       BUFF_DISTANCE 0
+DEFINE_GLOBAL INT       DEBUG         1
+
+// Event section
+// ================================================================================================
+SET_EVENT "<&SCRIPTEVENT_SERVERPACKET&>" "<&SYSTEM_CURRENTFILE&>" JOINPT2 57 
+
+// Main section
+// ================================================================================================
+MESSAGE VOID 1 "#$Prophet buff script by mochitto"
+MESSAGE VOID 1 "#$ver. 0.1 beta - L2.NET v389+"
+
+IF SYSTEM_VERSION < 388 
+	DEFINE STRING E1     
+	E1 = E1 + "#$Your L2NET is too old, please use v388+ or higher." 
+	MESSAGE_BOX "INCOMPATIBLE L2NET VERSION" "<&E1&>" HAND
+	END_SCRIPT
+ENDIF
+
+MESSAGE VOID 1 "#$More at http://insane-gamers.com"
+MESSAGE VOID 1 "#$Im waiting for party..."
+
+BUFF_DISTANCE = 400
+
+//NON-CASE SENSITIVE
+NICKLIST.ADD "#$Janie"
+NICKLIST.ADD "#$Drakonus"
+NICKLIST.ADD "#$Oscorp"
+NICKLIST.ADD "#$sphere"
+
+//ID OF SKILL WHAT WANT BUFFS
+BUFFLIST.ADD #i1542 //counter crititcal
+BUFFLIST.ADD #i1389 //greater shield
+BUFFLIST.ADD #i1182 //resist aqua
+BUFFLIST.ADD #i1191 //rezist fire
+BUFFLIST.ADD #i1189 //rezist wind
+BUFFLIST.ADD #i1393 //uholyrezist
+BUFFLIST.ADD #i1392 //holy rezist
+BUFFLIST.ADD #i1352 //elemntal rezist
+BUFFLIST.ADD #i1501 //condition
+
+//If Im moved come back to started script place
+THREAD CHECK_POSITION
+
+//checking selfbuff...
+THREAD CHECK_SELFBUFF
+
+WHILE ZERO == ZERO
+	SLEEP 98762364829
+WEND
+	
+PRINT_TEXT "STOP SCRIPT!]"
+END_SCRIPT
+
+// Function section
+// ===============================
+FUNCTION JOINPT2
+	IF BLOCKED == TRUE
+		RETURN VOID
+	ENDIF
+	BLOCKED = TRUE
+
+	DEFINE INT       REUSE       0
+	DEFINE STRING    PARTYLEADER
+	DEFINE ARRAYLIST PARTY
+	DEFINE INT       DIST
+  
+	PACKET.READ_BYTE NULL
+	PACKET.READ_STRING PARTYLEADER
+	PACKET.READ_INT32 NULL
+  
+	FOREACH A STRING NICKLIST
+		IF "NICKLIST.A.TO_UPPER" == "PARTYLEADER.TO_UPPER"
+			SLEEP 800 
+			INJECT "43 01 00 00 00"
+			SLEEP 500
+			PRINT_TEXT "Joined party <&PARTYLEADER.TO_UPPER&>"
+			
+			GET_PARTY PARTY
+			FOREACH B PLAYER PARTY
+				DISTANCE DIST CHAR_X CHAR_Y 0 PARTY.B.X PARTY.B.Y 0
+				IF DIST < BUFF_DISTANCE
+					PRINT_TEXT "Buffing nearest player with ID: <&PARTY.B.ID&>[<&PARTY.B.NAME&>]"
+					BUFF VOID 1 "PARTY.B.ID"
+				ENDIF
+				GET_PARTY PARTY
+				SLEEP 25
+			NEXTEACH
+			
+			SLEEP 983
+
+            PRINT_TEXT "Leave <&PARTYLEADER&>`s party.."
+			COMMAND "/leave"
+			BREAK 2
+		ENDIF
+	NEXTEACH 
+	  		
+	BLOCKED = FALSE
+RETURN VOID
+
+FUNCTION BUFF 1 OBJ_ID
+	DEFINE INT RAND
+	
+	TARGET "<&OBJ_ID&>"
+	SLEEP 500
+	FOREACH A INT BUFFLIST
+		IF TARGET_ID == OBJ_ID	
+			//USE_SKILL_SMART "<&BUFFLIST.A&>"
+			GET_RAND RAND 750 900
+			USE_SKILL "<&BUFFLIST.A&>"
+			SLEEP "<&RAND&>"
+		ENDIF
+	NEXTEACH
+RETURN VOID
+
+FUNCTION CHECK_SELFBUFF
+	DEFINE SORTEDLIST EFFECTS
+	DO
+		IF BLOCKED != TRUE
+			BLOCKED = TRUE
+			
+			GET_EFFECTS EFFECTS "<&CHAR_ID&>"
+			
+			IF ( EFFECTS.CONTAINS_KEY 1085 == FALSE ) || ( EFFECTS.CONTAINS_KEY 1062 == FALSE ) || ( EFFECTS.CONTAINS_KEY 1356 == FALSE ) 
+				TARGET "<&CHAR_ID&>"
+				SLEEP 500
+				USE_SKILL_SMART 1085
+				USE_SKILL_SMART 1062
+				USE_SKILL_SMART 1356
+			ENDIF 
+			
+			BLOCKED = FALSE
+		ENDIF
+		SLEEP 3333
+	LOOP 1 == 1
+RETURN VOID
+
+FUNCTION CHECK_POSITION
+	DEFINE INT DEFAULT_X 
+	DEFINE INT DEFAULT_Y
+	DEFINE INT DEFAULT_Z
+	
+	DEFINE INT TMP_X 
+	DEFINE INT TMP_Y
+	//DEFINE INT DEFAULT_Z
+	
+	DEFINE INT MAX_DISTANCE 60
+	DEFINE INT DIST
+	DEFINE INT RAND
+	
+	DEFAULT_X = CHAR_X 
+	DEFAULT_Y = CHAR_Y
+	DEFAULT_Z = CHAR_Z
+	
+	DO
+		IF BLOCKED == FALSE 		
+			DISTANCE DIST "<&CHAR_X&>" "<&CHAR_Y&>" 0 "<&DEFAULT_X&>" "<&DEFAULT_Y&>" 0
+			IF ( ( DIST > MAX_DISTANCE ) && ( DIST < 200 ) )
+				GET_RAND RAND 0 10
+				TMP_X = DEFAULT_X + RAND
+				GET_RAND RAND 0 10
+				TMP_Y = DEFAULT_Y + RAND
+				MOVE_TO "<&TMP_X&>" "<&TMP_Y&>" "<&DEFAULT_Z&>"
+				SLEEP 800
+			ENDIF    		
+		ENDIF
+		SLEEP 25
+	LOOP 1 == 1
+	
+RETURN VOID
+
+FUNCTION MESSAGE 1 TEXT
+	IF DEBUG == 1
+		DEFINE STRING TIME
+		DEFINE INT    MIN
+		DEFINE INT    HOUR
+		HOUR = ( NOW / TICKS_PER_H ) % 60
+		MIN  = ( NOW / TICKS_PER_M ) % 60
+		TIME = "#$<&HOUR&>:<&MIN&>" 
+		PRINT_TEXT "<&TEXT&>"
+		DEFINE BYTEBUFFER SAY 2048
+		SAY.WRITE_BYTE 0x4A
+		SAY.WRITE_INT32 NULL
+		SAY.WRITE_INT32 18
+		SAY.WRITE_STRING "#$"
+		SAY.WRITE_STRING "#$[<&TIME&>]: <&TEXT&>"
+		SAY.TRIM_TO_INDEX
+		INJECTBB_CLIENT SAY
+		DELETE SAY
+	ENDIF
+RETURN VOID

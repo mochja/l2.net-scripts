@@ -1,0 +1,64 @@
+// Counter Hide
+// Prevents Daggers using skill 922 from being invisible to the IG client
+
+FUNCTION CounterHideAdmin
+
+  IF "AEGIS.OPTIONS.CONFIG.CONTAINS_KEY COUNTER_HIDE" == FALSE
+    AEGIS.OPTIONS.CONFIG.ADD FALSE "COUNTER_HIDE"
+  ENDIF
+
+  IF "AEGIS.OPTIONS.CONFIG.#$COUNTER_HIDE" == TRUE
+    // Stop unfiltered CharInfo Packets
+    BLOCK 49
+    PRINT_TEXT "HIDE countermeasures active."
+  ELSE
+    PRINT_TEXT "HIDE countermeasures disabled."
+  ENDIF  
+  
+RETURN VOID
+
+FUNCTION AEGIS::CounterHide::ProcessMSU 1 _oMagicSkillUse
+
+  DEFINE BYTEBUFFER _bCharInfo 4096
+  DEFINE SORTEDLIST CI_CLONE
+  DEFINE INT SKILL_DELAY
+  
+  IF "_oMagicSkillUse.#$SKILL" == #I922
+    IF "AEGIS.ENTITYTRACKING.PLAYERS.CONTAINS_KEY <&_oMagicSkillUse.#$SOURCE&>" == TRUE
+      LOCK AEGIS.MUTEX.ENTITYTRACKING.PLAYERS
+        "AEGIS.ENTITYTRACKING.PLAYERS.#$<&_oMagicSkillUse.#$SOURCE&>.USED_HIDE" = TRUE
+        GET_TIME "AEGIS.ENTITYTRACKING.PLAYERS.#$<&_oMagicSkillUse.#$SOURCE&>.HIDE_TIME"
+      UNLOCK AEGIS.MUTEX.ENTITYTRACKING.PLAYERS
+    ENDIF
+  ENDIF
+  
+RETURN VOID
+  
+FUNCTION AEGIS::CounterHide::ProcessCharInfo 1 _oCharInfo
+
+  DEFINE BYTEBUFFER _bCharInfo 4096
+  DEFINE DOUBLE _dTime 0.0
+  DEFINE INT B_RESULT 0
+  
+  _oCharInfo.#$HIDE_MODE = FALSE
+  
+  IF "AEGIS.ENTITYTRACKING.PLAYERS.CONTAINS_KEY <&_oCharInfo.#$OBJECT_ID&>" == TRUE
+    IF "AEGIS.ENTITYTRACKING.PLAYERS.#$<&_oCharInfo.#$OBJECT_ID&>.USED_HIDE" == TRUE
+      B_RESULT = "AEGIS.ENTITYTRACKING.PLAYERS.#$<&_oCharInfo.#$OBJECT_ID&>.CharInfo.#$ABNORMAL_VFX" & #I1048576
+      PRINT_TEXT "B_RESULT = <&B_RESULT&>"
+      
+      IF B_RESULT == #I1048576
+        _oCharInfo.#$VISIBLE_TITLE = "#$Invisible"
+        _oCharInfo.#$TITLE_COLOR = #I6684927
+      ELSE
+        LOCK AEGIS.MUTEX.ENTITYTRACKING.PLAYERS
+          "AEGIS.ENTITYTRACKING.PLAYERS.#$<&_oCharInfo.#$OBJECT_ID&>.USED_HIDE" = FALSE
+        UNLOCK AEGIS.MUTEX.ENTITYTRACKING.PLAYERS
+      ENDIF
+    ENDIF
+  ENDIF
+  
+  // Rewrite the modified packet
+  CALL_EXTERN "DLIB\Packets\WriteCharInfo.L2S" DLIB::Packets::WriteCharInfo _bCharInfo 1 _oCharInfo
+  
+RETURN _bCharInfo

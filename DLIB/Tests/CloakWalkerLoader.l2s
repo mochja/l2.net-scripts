@@ -1,0 +1,3 @@
+CALL_EXTERN "DLIB\Modules\CloakWalker.l2s" Module::DLIB::CloakWalker VOID 0
+SLEEP 123456789098
+END_SCRIPT
